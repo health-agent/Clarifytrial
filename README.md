@@ -38,6 +38,14 @@ and a pytest validation harness.
 See `docs/architecture.md` (Mermaid flowchart) and
 `docs/state_transition.md` (Mermaid state diagram) for details.
 
+Presentation & proposal materials:
+
+- `docs/project_status_report.md` — current status, test coverage, what
+  is and is not proven, safest next steps
+- `docs/proposal_brief.md` — proposal-ready project description
+- `docs/demo_script.md` — 60-second and 3-minute presentation scripts
+- `docs/evidence_table.md` — claims mapped to repo evidence
+
 ## File structure
 
 ```
