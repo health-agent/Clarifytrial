@@ -1,0 +1,141 @@
+{
+  "scenarios": [
+    {
+      "scenario_id": "SC-001",
+      "patient_id": "synthetic-patient-101",
+      "trial_id": "MOCK-TRIAL-001",
+      "patient_profile": {
+        "patient_id": "synthetic-patient-101",
+        "age": 62,
+        "sex": "female",
+        "conditions": ["mock non-small cell lung cancer, stage IIIB"],
+        "medications": [],
+        "variables": {
+          "age": 62,
+          "ecog_performance_status": 1,
+          "prior_systemic_therapy": false,
+          "active_untreated_brain_metastases": false
+        },
+        "free_text_notes": "Synthetic scenario patient, all criteria resolvable."
+      },
+      "expected_recommendation": "likely_eligible",
+      "expected_missing_variables": [],
+      "expected_blocking_criteria": [],
+      "explanation_of_label": "All inclusion criteria met and no exclusion criteria met; nothing unknown, no review triggers. Synthetic rule-validation example, not clinical truth."
+    },
+    {
+      "scenario_id": "SC-002",
+      "patient_id": "synthetic-patient-102",
+      "trial_id": "MOCK-TRIAL-002",
+      "patient_profile": {
+        "patient_id": "synthetic-patient-102",
+        "age": 66,
+        "sex": "male",
+        "conditions": ["mock non-small cell lung cancer, stage IV"],
+        "medications": [],
+        "variables": {
+          "age": 66,
+          "ecog_performance_status": 1,
+          "prior_platinum_chemotherapy": true
+        },
+        "free_text_notes": "Synthetic scenario patient with a met exclusion criterion."
+      },
+      "expected_recommendation": "likely_ineligible",
+      "expected_missing_variables": [],
+      "expected_blocking_criteria": ["MOCK-TRIAL-002-EXC-01"],
+      "explanation_of_label": "Exclusion criterion (prior platinum-based chemotherapy) is met, so eligibility_effect blocks_eligibility dominates the precedence. Synthetic example only."
+    },
+    {
+      "scenario_id": "SC-003",
+      "patient_id": "synthetic-patient-103",
+      "trial_id": "MOCK-TRIAL-001",
+      "patient_profile": {
+        "patient_id": "synthetic-patient-103",
+        "age": 59,
+        "sex": "female",
+        "conditions": ["mock non-small cell lung cancer, stage IV"],
+        "medications": [],
+        "variables": {
+          "age": 59
+        },
+        "free_text_notes": "Synthetic scenario patient with unknown performance status and unknown prior therapy."
+      },
+      "expected_recommendation": "uncertain",
+      "expected_missing_variables": [
+        "ecog_performance_status",
+        "prior_systemic_therapy"
+      ],
+      "expected_blocking_criteria": [],
+      "explanation_of_label": "No blocking or review-required criteria, but the uncertainty ratio exceeds the threshold because two required variables are missing. Synthetic example only."
+    },
+    {
+      "scenario_id": "SC-004",
+      "patient_id": "synthetic-patient-104",
+      "trial_id": "MOCK-TRIAL-002",
+      "patient_profile": {
+        "patient_id": "synthetic-patient-104",
+        "age": 71,
+        "sex": "male",
+        "conditions": ["mock non-small cell lung cancer, stage IV"],
+        "medications": [],
+        "variables": {
+          "age": 71,
+          "ecog_performance_status": 2,
+          "prior_platinum_chemotherapy": false
+        },
+        "free_text_notes": "Synthetic scenario patient whose records conflict about cardiac disease status."
+      },
+      "expected_recommendation": "needs_human_review",
+      "expected_missing_variables": [],
+      "expected_blocking_criteria": [],
+      "explanation_of_label": "Conflicting evidence on the cardiac-disease exclusion criterion sets review_required with reason conflicting_evidence; no criterion blocks, so precedence yields needs_human_review. Synthetic example only."
+    },
+    {
+      "scenario_id": "SC-005",
+      "patient_id": "synthetic-patient-105",
+      "trial_id": "MOCK-TRIAL-003",
+      "patient_profile": {
+        "patient_id": "synthetic-patient-105",
+        "age": 55,
+        "sex": "male",
+        "conditions": ["mock type 2 diabetes"],
+        "medications": ["metformin"],
+        "variables": {
+          "age": 55,
+          "hba1c": 8.2,
+          "metformin_stable_3_months": true,
+          "type_1_diabetes": false,
+          "egfr": 78,
+          "current_insulin_use": false
+        },
+        "free_text_notes": "Synthetic scenario patient fully characterized for the diabetes mock trial."
+      },
+      "expected_recommendation": "likely_eligible",
+      "expected_missing_variables": [],
+      "expected_blocking_criteria": [],
+      "explanation_of_label": "All inclusion criteria met, all exclusion criteria unmet, nothing unknown. Synthetic example only."
+    },
+    {
+      "scenario_id": "SC-006",
+      "patient_id": "synthetic-patient-106",
+      "trial_id": "MOCK-TRIAL-003",
+      "patient_profile": {
+        "patient_id": "synthetic-patient-106",
+        "age": 61,
+        "sex": "female",
+        "conditions": ["mock type 2 diabetes"],
+        "medications": ["metformin", "insulin glargine"],
+        "variables": {
+          "age": 61,
+          "hba1c": 9.1,
+          "current_insulin_use": true
+        },
+        "free_text_notes": "Synthetic scenario patient currently using insulin."
+      },
+      "expected_recommendation": "likely_ineligible",
+      "expected_missing_variables": [],
+      "expected_blocking_criteria": ["MOCK-TRIAL-003-EXC-03"],
+      "explanation_of_label": "Current insulin use meets an exclusion criterion, which blocks eligibility regardless of any other status. Synthetic example only."
+    }
+  ]
+}

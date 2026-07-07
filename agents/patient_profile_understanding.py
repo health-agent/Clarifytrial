@@ -13,6 +13,25 @@ from typing import Any
 from models import AnswerUpdate, FollowUpQuestion, PatientProfile
 
 
+def extract_patient_profile_from_summary(
+    patient_id: str, summary_text: str
+) -> PatientProfile:
+    """Extract a structured profile from a natural-language case summary.
+
+    Input contract for professor-style synthetic patient summaries: the
+    summary is a patient INPUT only, never eligibility ground truth.
+
+    This stub does NOT call an LLM. It returns a minimal placeholder
+    profile that keeps the raw text in ``free_text_notes`` so the contract
+    is callable and testable.
+
+    TODO: replace the placeholder with LLM-based extraction of
+    demographics, conditions, medications, and normalized variables from
+    the summary text.
+    """
+    return PatientProfile(patient_id=patient_id, free_text_notes=summary_text)
+
+
 def build_patient_profile(patient_id: str, free_text: str) -> PatientProfile:
     """Extract a structured profile from patient free text.
 

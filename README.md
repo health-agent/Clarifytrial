@@ -59,15 +59,24 @@ clarify_trial_agent/
 │   ├── trial_recommendation.py
 │   └── result_explanation.py
 ├── examples/
-│   └── demo_patient_session.json          # synthetic session, model-valid
+│   ├── demo_patient_session.json          # synthetic session, model-valid
+│   ├── synthetic_patients.json            # 10 professor-style case summaries (inputs only)
+│   ├── synthetic_trial_protocols.json     # 3 mock TrialProtocol records
+│   └── synthetic_matching_scenarios.json  # 6 labeled rule-validation scenarios
+├── scripts/
+│   └── validate_synthetic_data.py         # validates datasets, writes outputs/ summary
 ├── docs/
 │   ├── architecture.md
-│   └── state_transition.md
+│   ├── state_transition.md
+│   └── synthetic_data_strategy.md
 └── tests/
     ├── test_effect_rules.py
     ├── test_recommendation_rules.py
     ├── test_missing_variable_dedup.py
-    └── test_models_validate.py
+    ├── test_models_validate.py
+    ├── test_synthetic_patients_load.py
+    ├── test_synthetic_trial_protocols_load.py
+    └── test_synthetic_matching_scenarios.py
 ```
 
 ## Mapping to locked v1.2-final invariants
@@ -96,6 +105,35 @@ clarify_trial_agent/
   `source_url`, `retrieved_at`). No API response paths are assumed.
 - Orchestration/runtime loop, persistence, and any UI/web app.
 
+## Synthetic data validation harness
+
+Three synthetic datasets live in `examples/` (see
+`docs/synthetic_data_strategy.md` for the rationale):
+
+- `synthetic_patients.json` — 10 professor-style synthetic patient case
+  summaries (`{"topics": [{"num": "S001", "title": "..."}]}`). These are
+  natural-language patient **inputs only**, validating the input contract
+  of the Patient Profile Understanding Agent
+  (`extract_patient_profile_from_summary`). They are **not** eligibility
+  ground truth.
+- `synthetic_trial_protocols.json` — 3 mock, source-agnostic
+  `TrialProtocol` records with inclusion/exclusion criteria text and
+  static source metadata (no live API calls).
+- `synthetic_matching_scenarios.json` — 6 labeled scenarios covering all
+  four recommendation labels, with expected missing variables and blocking
+  criteria. These validate the locked rule semantics, not clinical truth.
+
+**What the harness proves:** the datasets conform to the Pydantic
+schemas, the extraction stub's input contract is callable with every
+summary, the scenario labels use the locked `Recommendation` enum with
+full label coverage, and the protocols carry the fields a future
+ingestion adapter needs — all offline and fully synthetic.
+
+**What it does NOT prove:** any clinical correctness, real extraction
+quality (the agent is a placeholder stub), real trial matching accuracy,
+or anything about real ClinicalTrials.gov data. It is a schema/contract
+harness, not clinical decision support.
+
 ## How to run tests
 
 From the `clarify_trial_agent/` directory:
@@ -106,6 +144,20 @@ pytest
 ```
 
 All tests verify the locked rule mappings, recommendation precedence,
-global missing-variable deduplication, and that
+global missing-variable deduplication, that
 `examples/demo_patient_session.json` validates against the
-`PatientSession` model.
+`PatientSession` model, and that the three synthetic datasets load and
+satisfy their contracts.
+
+## How to run the synthetic data validator
+
+From the `clarify_trial_agent/` directory (any cwd works — the script
+resolves paths from its own location):
+
+```bash
+python scripts/validate_synthetic_data.py
+```
+
+It prints validation counts and writes
+`outputs/synthetic_data_validation_summary.md` (the `outputs/` directory
+is created at runtime and is git-ignored).

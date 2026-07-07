@@ -91,6 +91,9 @@ class TrialProtocol(BaseModel):
     trial_id: str
     nct_id: Optional[str] = None
     title: Optional[str] = None
+    trial_description: Optional[str] = None
+    inclusion_criteria_text: Optional[str] = None
+    exclusion_criteria_text: Optional[str] = None
     eligibility_criteria_raw: str = ""
     conditions: list[str] = Field(default_factory=list)
     interventions: list[str] = Field(default_factory=list)
@@ -275,6 +278,59 @@ class FinalOutput(BaseModel):
     trial_recommendations: list[TrialRecommendation] = Field(default_factory=list)
     explanations: dict[str, str] = Field(default_factory=dict)
     pending_questions: list[FollowUpQuestion] = Field(default_factory=list)
+
+
+# ---------------------------------------------------------------------------
+# Synthetic validation datasets (harness only — not clinical truth)
+# ---------------------------------------------------------------------------
+
+
+class SyntheticPatientCase(BaseModel):
+    """One professor-style synthetic patient case summary.
+
+    These are natural-language patient INPUTS only — NOT eligibility ground
+    truth. They validate the input contract of the Patient Profile
+    Understanding Agent.
+    """
+
+    num: str
+    title: str
+
+
+class SyntheticPatientDataset(BaseModel):
+    """Dataset of professor-style synthetic patient case summaries."""
+
+    topics: list[SyntheticPatientCase] = Field(default_factory=list)
+
+
+class SyntheticTrialProtocolDataset(BaseModel):
+    """Dataset of mock, source-agnostic trial protocols."""
+
+    trials: list[TrialProtocol] = Field(default_factory=list)
+
+
+class SyntheticMatchingScenario(BaseModel):
+    """A labeled synthetic matching scenario for rule validation.
+
+    Separate from patient summaries: scenarios carry expected
+    recommendation labels and expected missing variables, purely to test
+    the locked rules — they are not clinical truth.
+    """
+
+    scenario_id: str
+    patient_id: str
+    trial_id: str
+    patient_profile: PatientProfile
+    expected_recommendation: Recommendation
+    expected_missing_variables: list[str] = Field(default_factory=list)
+    expected_blocking_criteria: list[str] = Field(default_factory=list)
+    explanation_of_label: str
+
+
+class SyntheticMatchingScenarioDataset(BaseModel):
+    """Dataset of labeled synthetic matching scenarios."""
+
+    scenarios: list[SyntheticMatchingScenario] = Field(default_factory=list)
 
 
 class RequestLog(BaseModel):

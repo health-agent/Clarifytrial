@@ -1,0 +1,46 @@
+{
+  "trials": [
+    {
+      "trial_id": "MOCK-TRIAL-001",
+      "nct_id": "NCT00000001",
+      "title": "Synthetic Phase II Study of Mock-Drug-A in Advanced NSCLC",
+      "trial_description": "A synthetic phase II single-arm study evaluating mock-drug-A in adults with advanced non-small cell lung cancer. Entirely fictional; for harness validation only.",
+      "inclusion_criteria_text": "Age 18 years or older. Histologically confirmed stage IIIB-IV non-small cell lung cancer. ECOG performance status 0-1.",
+      "exclusion_criteria_text": "Prior systemic therapy for advanced disease. Active untreated brain metastases.",
+      "eligibility_criteria_raw": "Inclusion Criteria:\n- Age 18 years or older\n- Histologically confirmed stage IIIB-IV non-small cell lung cancer\n- ECOG performance status 0-1\n\nExclusion Criteria:\n- Prior systemic therapy for advanced disease\n- Active untreated brain metastases",
+      "conditions": ["mock non-small cell lung cancer"],
+      "interventions": ["mock-drug-A"],
+      "source": "synthetic_mock",
+      "source_url": "https://example.invalid/mock-trial-001",
+      "retrieved_at": "2026-01-01T00:00:00Z"
+    },
+    {
+      "trial_id": "MOCK-TRIAL-002",
+      "nct_id": "NCT00000002",
+      "title": "Synthetic Phase III Study of Mock-Drug-B in Advanced NSCLC",
+      "trial_description": "A synthetic phase III randomized study of mock-drug-B versus standard of care in advanced non-small cell lung cancer. Entirely fictional; for harness validation only.",
+      "inclusion_criteria_text": "Age 18 years or older. Advanced non-small cell lung cancer. ECOG performance status 0-2. Adequate renal function (creatinine clearance >= 45 mL/min).",
+      "exclusion_criteria_text": "Prior platinum-based chemotherapy. Uncontrolled cardiac disease.",
+      "eligibility_criteria_raw": "Inclusion Criteria:\n- Age 18 years or older\n- Advanced non-small cell lung cancer\n- ECOG performance status 0-2\n- Adequate renal function (creatinine clearance >= 45 mL/min)\n\nExclusion Criteria:\n- Prior platinum-based chemotherapy\n- Uncontrolled cardiac disease",
+      "conditions": ["mock non-small cell lung cancer"],
+      "interventions": ["mock-drug-B"],
+      "source": "synthetic_mock",
+      "source_url": "https://example.invalid/mock-trial-002",
+      "retrieved_at": "2026-01-01T00:00:00Z"
+    },
+    {
+      "trial_id": "MOCK-TRIAL-003",
+      "nct_id": "NCT00000003",
+      "title": "Synthetic Study of Mock-Drug-C in Type 2 Diabetes",
+      "trial_description": "A synthetic study of mock-drug-C added to metformin in adults with inadequately controlled type 2 diabetes. Entirely fictional; for harness validation only.",
+      "inclusion_criteria_text": "Age 30-75 years. Type 2 diabetes on stable metformin for at least 3 months. HbA1c between 7.5% and 10.0%.",
+      "exclusion_criteria_text": "Type 1 diabetes. eGFR below 45 mL/min/1.73m2. Current insulin use.",
+      "eligibility_criteria_raw": "Inclusion Criteria:\n- Age 30-75 years\n- Type 2 diabetes on stable metformin for at least 3 months\n- HbA1c between 7.5% and 10.0%\n\nExclusion Criteria:\n- Type 1 diabetes\n- eGFR below 45 mL/min/1.73m2\n- Current insulin use",
+      "conditions": ["mock type 2 diabetes"],
+      "interventions": ["mock-drug-C", "metformin"],
+      "source": "synthetic_mock",
+      "source_url": "https://example.invalid/mock-trial-003",
+      "retrieved_at": "2026-01-01T00:00:00Z"
+    }
+  ]
+}
