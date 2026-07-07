@@ -191,6 +191,9 @@ class GlobalMissingVariablePoolItem(BaseModel):
     affected_criterion_ids: list[str] = Field(default_factory=list)
     affected_trial_ids: list[str] = Field(default_factory=list)
     description: Optional[str] = None
+    # Optional question priority ("high" | "medium" | "low"); assigned by
+    # the Missing Information Detection layer, None when not yet assigned.
+    priority: Optional[str] = None
 
 
 class FollowUpQuestion(BaseModel):

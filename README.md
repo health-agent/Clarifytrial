@@ -220,6 +220,23 @@ locked rules → global missing-variable dedup — and writes
 `unknown` with a `missing_variable_key`, never negative evidence. The
 LLM version will use `prompts/criterion_matching.md`.
 
+## How to run the missing-info + clarification queue demo
+
+Deterministic offline run (Missing Information Detection + Clarification
+Question Agent — no LLM, no API keys; see
+`docs/missing_info_clarification_notes.md`):
+
+```bash
+python scripts/run_missing_info_clarification_demo.py
+```
+
+It chains profile extraction → parsing → matching, then pools unknown
+criteria into the session-level missing-variable pool (deduplicated by
+`missing_variable_key`, traceable, prioritized) and generates ONE global
+clarification question per variable (round-capped at 3), writing
+`outputs/missing_info_clarification_demo.md`. The LLM version will use
+`prompts/clarification_question.md`.
+
 ## How to run the synthetic data validator
 
 From the `clarify_trial_agent/` directory (any cwd works — the script
