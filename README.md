@@ -162,6 +162,18 @@ global missing-variable deduplication, that
 `PatientSession` model, and that the three synthetic datasets load and
 satisfy their contracts.
 
+## How to run the end-to-end dry-run demo
+
+Deterministic pipeline walkthrough on synthetic data — no LLM calls, no
+API keys, no network (see `docs/end_to_end_demo_notes.md`):
+
+```bash
+python scripts/run_end_to_end_demo.py
+```
+
+It prints a stage-by-stage console walkthrough and writes
+`outputs/end_to_end_demo_summary.md`.
+
 ## How to run the synthetic data validator
 
 From the `clarify_trial_agent/` directory (any cwd works — the script
