@@ -174,6 +174,21 @@ python scripts/run_end_to_end_demo.py
 It prints a stage-by-stage console walkthrough and writes
 `outputs/end_to_end_demo_summary.md`.
 
+## How to run the patient profile extraction demo
+
+Deterministic offline extraction (regex/keyword fallback of the Patient
+Profile Understanding Agent — no LLM, no API keys; see
+`docs/patient_profile_extraction_notes.md`):
+
+```bash
+python scripts/run_patient_profile_extraction_demo.py
+```
+
+It extracts structured, Pydantic-validated `PatientProfile`s from
+synthetic summaries (age, sex, obvious diagnosis/stage; unknowns kept
+explicit) and writes `outputs/patient_profile_extraction_demo.md`. The
+LLM version will use `prompts/patient_profile_extraction.md`.
+
 ## How to run the synthetic data validator
 
 From the `clarify_trial_agent/` directory (any cwd works — the script
