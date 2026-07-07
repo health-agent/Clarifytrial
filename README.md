@@ -189,6 +189,21 @@ synthetic summaries (age, sex, obvious diagnosis/stage; unknowns kept
 explicit) and writes `outputs/patient_profile_extraction_demo.md`. The
 LLM version will use `prompts/patient_profile_extraction.md`.
 
+## How to run the criteria parser demo
+
+Deterministic offline parsing (Criteria Parser Agent fallback — no LLM,
+no API keys; see `docs/criteria_parser_notes.md`):
+
+```bash
+python scripts/run_criteria_parser_demo.py
+```
+
+It renders the mock protocols as raw trial text, parses them into typed
+`Criterion` objects with stable ids and canonical `required_variables`
+(inclusion/exclusion preserved; description never becomes a criterion),
+and writes `outputs/criteria_parser_demo.md`. The LLM version will use
+`prompts/criteria_parsing.md`.
+
 ## How to run the synthetic data validator
 
 From the `clarify_trial_agent/` directory (any cwd works — the script
