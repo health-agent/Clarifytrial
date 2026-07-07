@@ -204,6 +204,22 @@ It renders the mock protocols as raw trial text, parses them into typed
 and writes `outputs/criteria_parser_demo.md`. The LLM version will use
 `prompts/criteria_parsing.md`.
 
+## How to run the criterion matching demo
+
+Deterministic offline matching (Criterion Matching Agent fallback — no
+LLM, no API keys; see `docs/criterion_matching_notes.md`):
+
+```bash
+python scripts/run_criterion_matching_demo.py
+```
+
+It chains the implemented fallbacks end to end — profile extraction →
+criteria parsing → per-criterion matching → effect derivation via the
+locked rules → global missing-variable dedup — and writes
+`outputs/criterion_matching_demo.md`. Missing information becomes
+`unknown` with a `missing_variable_key`, never negative evidence. The
+LLM version will use `prompts/criterion_matching.md`.
+
 ## How to run the synthetic data validator
 
 From the `clarify_trial_agent/` directory (any cwd works — the script
