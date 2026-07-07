@@ -122,6 +122,11 @@ Three synthetic datasets live in `examples/` (see
 - `synthetic_matching_scenarios.json` — 6 labeled scenarios covering all
   four recommendation labels, with expected missing variables and blocking
   criteria. These validate the locked rule semantics, not clinical truth.
+- `professor_patient_summaries.json` — a professor-provided, read-only
+  input robustness dataset (10 case summaries, same shape as
+  `synthetic_patients.json` but kept separate). Input examples only —
+  never eligibility or recommendation ground truth. See
+  `docs/professor_patient_input_notes.md`.
 
 **What the harness proves:** the datasets conform to the Pydantic
 schemas, the extraction stub's input contract is callable with every
