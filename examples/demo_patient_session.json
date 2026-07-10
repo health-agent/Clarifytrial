@@ -1,0 +1,163 @@
+{
+  "patient_id": "synthetic-patient-001",
+  "patient_profile": {
+    "patient_id": "synthetic-patient-001",
+    "age": 62,
+    "sex": "female",
+    "conditions": ["mock non-small cell lung cancer, stage IIIB"],
+    "medications": ["mock-antihypertensive"],
+    "variables": {
+      "age": 62,
+      "prior_platinum_chemotherapy": false
+    },
+    "free_text_notes": "Synthetic demo patient. No real patient data."
+  },
+  "trial_states_by_trial_id": {
+    "MOCK-TRIAL-001": {
+      "trial_id": "MOCK-TRIAL-001",
+      "trial_context": {
+        "trial_id": "MOCK-TRIAL-001",
+        "description": "Synthetic phase II study of mock-drug-A in advanced NSCLC.",
+        "conditions": ["mock non-small cell lung cancer"],
+        "interventions": ["mock-drug-A"],
+        "relevance_notes": "Condition matches patient profile (synthetic)."
+      },
+      "trial_relevance_score": 0.8,
+      "criterion_states": [
+        {
+          "criterion_id": "MOCK-TRIAL-001-INC-01",
+          "trial_id": "MOCK-TRIAL-001",
+          "criterion_type": "inclusion",
+          "criterion_match_status": "met",
+          "eligibility_effect": "supports_eligibility",
+          "review_required": false,
+          "review_reason": null,
+          "missing_variable_keys": [],
+          "evidence": {
+            "criterion_id": "MOCK-TRIAL-001-INC-01",
+            "sentences": [
+              {
+                "sentence_id": "s1",
+                "text": "Patient is 62 years old (synthetic).",
+                "source": "patient_note"
+              }
+            ],
+            "profile_fields_used": ["age"]
+          }
+        },
+        {
+          "criterion_id": "MOCK-TRIAL-001-INC-02",
+          "trial_id": "MOCK-TRIAL-001",
+          "criterion_type": "inclusion",
+          "criterion_match_status": "unknown",
+          "eligibility_effect": "uncertain",
+          "review_required": false,
+          "review_reason": null,
+          "missing_variable_keys": ["ecog_performance_status"],
+          "evidence": null
+        }
+      ]
+    },
+    "MOCK-TRIAL-002": {
+      "trial_id": "MOCK-TRIAL-002",
+      "trial_context": {
+        "trial_id": "MOCK-TRIAL-002",
+        "description": "Synthetic phase III study of mock-drug-B in advanced NSCLC.",
+        "conditions": ["mock non-small cell lung cancer"],
+        "interventions": ["mock-drug-B"],
+        "relevance_notes": "Condition matches patient profile (synthetic)."
+      },
+      "trial_relevance_score": 0.6,
+      "criterion_states": [
+        {
+          "criterion_id": "MOCK-TRIAL-002-EXC-01",
+          "trial_id": "MOCK-TRIAL-002",
+          "criterion_type": "exclusion",
+          "criterion_match_status": "unmet",
+          "eligibility_effect": "supports_eligibility",
+          "review_required": false,
+          "review_reason": null,
+          "missing_variable_keys": [],
+          "evidence": {
+            "criterion_id": "MOCK-TRIAL-002-EXC-01",
+            "sentences": [
+              {
+                "sentence_id": "s2",
+                "text": "No prior platinum-based chemotherapy (synthetic).",
+                "source": "patient_note"
+              }
+            ],
+            "profile_fields_used": ["prior_platinum_chemotherapy"]
+          }
+        },
+        {
+          "criterion_id": "MOCK-TRIAL-002-INC-01",
+          "trial_id": "MOCK-TRIAL-002",
+          "criterion_type": "inclusion",
+          "criterion_match_status": "unknown",
+          "eligibility_effect": "uncertain",
+          "review_required": false,
+          "review_reason": null,
+          "missing_variable_keys": ["ecog_performance_status"],
+          "evidence": null
+        }
+      ]
+    }
+  },
+  "global_missing_variable_pool": {
+    "ecog_performance_status": {
+      "missing_variable_key": "ecog_performance_status",
+      "status": "pending",
+      "affected_criterion_ids": [
+        "MOCK-TRIAL-001-INC-02",
+        "MOCK-TRIAL-002-INC-01"
+      ],
+      "affected_trial_ids": ["MOCK-TRIAL-001", "MOCK-TRIAL-002"],
+      "description": "ECOG performance status, needed by criteria in both mock trials (deduplicated globally)."
+    }
+  },
+  "global_clarification_queue": [
+    {
+      "question_id": "q-001",
+      "missing_variable_key": "ecog_performance_status",
+      "target_profile_field": "variables.ecog_performance_status",
+      "expected_answer_type": "integer",
+      "allowed_values_or_schema": [0, 1, 2, 3, 4],
+      "affected_criterion_ids": [
+        "MOCK-TRIAL-001-INC-02",
+        "MOCK-TRIAL-002-INC-01"
+      ],
+      "question_text": "How would you rate your current level of daily activity? (ECOG performance status, 0 = fully active to 4 = fully bedridden)",
+      "priority_rank": 1,
+      "status": "pending"
+    }
+  ],
+  "clarification_round_count": 1,
+  "answer_updates": [],
+  "trial_recommendations": [
+    {
+      "trial_id": "MOCK-TRIAL-001",
+      "recommendation": "uncertain",
+      "rank": 1,
+      "trial_relevance_score": 0.8,
+      "ranking_score": 0.6,
+      "hard_filter_triggered": false,
+      "blocking_criteria": [],
+      "supporting_criteria": ["MOCK-TRIAL-001-INC-01"],
+      "uncertain_criteria": ["MOCK-TRIAL-001-INC-02"],
+      "pending_questions": ["ecog_performance_status"]
+    },
+    {
+      "trial_id": "MOCK-TRIAL-002",
+      "recommendation": "uncertain",
+      "rank": 2,
+      "trial_relevance_score": 0.6,
+      "ranking_score": 0.45,
+      "hard_filter_triggered": false,
+      "blocking_criteria": [],
+      "supporting_criteria": ["MOCK-TRIAL-002-EXC-01"],
+      "uncertain_criteria": ["MOCK-TRIAL-002-INC-01"],
+      "pending_questions": ["ecog_performance_status"]
+    }
+  ]
+}

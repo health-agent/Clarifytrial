@@ -1,0 +1,44 @@
+{
+  "topics": [
+    {
+      "num": "S001",
+      "title": "A 62-year-old woman with stage IIIB non-small cell lung cancer, no prior systemic therapy, well-controlled hypertension, asking about first-line trial options. (Synthetic case, not a real patient.)"
+    },
+    {
+      "num": "S002",
+      "title": "A 55-year-old man with newly diagnosed type 2 diabetes on metformin, HbA1c 8.2%, otherwise healthy, interested in a lifestyle-plus-drug combination study. (Synthetic case.)"
+    },
+    {
+      "num": "S003",
+      "title": "A 70-year-old man with metastatic castration-resistant prostate cancer previously treated with docetaxel, mild renal impairment, considering second-line options. (Synthetic case.)"
+    },
+    {
+      "num": "S004",
+      "title": "A 48-year-old woman with relapsing-remitting multiple sclerosis, two relapses in the past year on interferon therapy, no other comorbidities. (Synthetic case.)"
+    },
+    {
+      "num": "S005",
+      "title": "A 66-year-old woman with HER2-positive early breast cancer after surgery, completed adjuvant chemotherapy, left ventricular ejection fraction not yet documented. (Synthetic case.)"
+    },
+    {
+      "num": "S006",
+      "title": "A 59-year-old man with moderate ulcerative colitis failing mesalamine, steroid-dependent for six months, no history of tuberculosis. (Synthetic case.)"
+    },
+    {
+      "num": "S007",
+      "title": "A 73-year-old woman with heart failure with reduced ejection fraction (EF 32%) on guideline therapy, NYHA class II, chronic kidney disease stage 3a. (Synthetic case.)"
+    },
+    {
+      "num": "S008",
+      "title": "A 35-year-old woman with treatment-resistant major depressive disorder after two adequate SSRI trials, no psychotic features, not currently pregnant. (Synthetic case.)"
+    },
+    {
+      "num": "S009",
+      "title": "A 68-year-old man with idiopathic pulmonary fibrosis, FVC 72% predicted, on antifibrotic therapy for one year with continued decline. (Synthetic case.)"
+    },
+    {
+      "num": "S010",
+      "title": "A 44-year-old man with chronic hepatitis B, HBeAg-negative, mildly elevated ALT, no cirrhosis on elastography, treatment-naive. (Synthetic case.)"
+    }
+  ]
+}
