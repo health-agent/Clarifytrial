@@ -151,10 +151,14 @@ harness, not clinical decision support.
 
 From the `clarify_trial_agent/` directory:
 
+Python 3.10 or newer is required.
+
 ```bash
 pip install -r requirements.txt
 pytest
 ```
+
+The current repository passes 102 tests on Python 3.13.
 
 All tests verify the locked rule mappings, recommendation precedence,
 global missing-variable deduplication, that
