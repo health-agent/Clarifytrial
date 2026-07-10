@@ -26,6 +26,7 @@ def demo_output() -> FinalOutput:
 
 def test_demo_runs_without_error_and_returns_final_output(demo_output):
     assert isinstance(demo_output, FinalOutput)
+    assert "not medical advice" in demo_output.medical_disclaimer.lower()
 
 
 def test_demo_writes_summary_file(demo_output):

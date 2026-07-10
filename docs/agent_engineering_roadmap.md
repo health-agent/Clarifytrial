@@ -4,7 +4,7 @@ _A concrete, milestone-based plan for turning the current v1.2-final
 skeleton into a working agentic AI portfolio project before the final
 challenge submission. Timeline: ~6 weeks of focused development plus a
 final review/polish buffer. Grounded in the actual repository state as of
-2026-07-07._
+2026-07-11._
 
 ---
 
@@ -18,26 +18,25 @@ Already implemented in this repo:
   global clarification queue, schema-enforced 3-round cap).
 - **Deterministic rule layer** — `rules.py`: effect mapping, global
   dedup, recommendation precedence, ranking. Complete and fully tested.
-- **Agent stubs** — `agents/`: 10 modules with typed contracts and
-  TODOs. Two already delegate to real rules
-  (`missing_information_detection`, `trial_recommendation`); one returns
-  a working placeholder (`extract_patient_profile_from_summary`); the
-  rest raise `NotImplementedError`.
+- **Agent contracts** — `agents/`: 10 modules. Deterministic implementations
+  cover criteria parsing, basic patient extraction, matching, missing-info
+  detection, question construction and first-step answer normalization;
+  real LLM calls and several state-mutation/runtime paths remain TODOs.
 - **Synthetic data harness** — 4 datasets in `examples/` plus
   `scripts/validate_synthetic_data.py`.
 - **Professor dataset** — `examples/professor_patient_summaries.json`,
   read-only input robustness set (10 vignettes).
 - **Docs** — architecture/state diagrams, data strategy, status report,
   proposal brief, demo script, evidence table, application answers.
-- **40 passing tests** across 8 files.
+- **102 passing tests** across 14 files.
 
 What the tests prove: the decision core is correct (every effect mapping,
 both review paths, all four precedence outcomes, relevance never
 overriding blocks, global dedup) and all schemas/datasets are coherent.
 
-What they do NOT prove: no end-to-end pipeline runs yet; extraction is a
-placeholder; the labeled matching scenarios are validated for shape, not
-reproduced by execution; nothing about clinical accuracy or real data.
+What they do NOT prove: the end-to-end run uses deterministic mock statuses;
+there is no real LLM, RAG, live patient interaction, clinical accuracy claim
+or validation on real data.
 
 ## 2. Final portfolio target
 
@@ -65,7 +64,7 @@ Why it is portfolio-relevant (and more than a chatbot):
 ## 3. 6-week implementation roadmap + final buffer
 
 Realistic pace: each week assumes part-time focused work; every week ends
-with `python -m pytest -q` green (existing 40 tests never break) plus new
+with `python -m pytest -q` green (existing 102 tests never break) plus new
 tests for that week's layer.
 
 ### Week 1 — Runnable end-to-end dry run, no LLM
@@ -89,7 +88,7 @@ tests for that week's layer.
 - **Deliverables**: real `extract_patient_profile_from_summary` using an
   LLM with schema-constrained output (Pydantic-validated JSON), behind
   the existing typed contract; a config switch to keep the offline
-  placeholder for tests; extraction run over all 20 summaries (10
+  heuristic fallback for tests; extraction run over all 20 summaries (10
   synthetic + 10 professor) with results saved to `outputs/`.
 - **Exit criteria**: all 20 summaries extract to valid `PatientProfile`s
   without manual fixes; offline tests still pass without network.
@@ -188,9 +187,9 @@ Deferred until the core pipeline works end to end (Week 6 exit):
   agent behavior; the demo script is the interface for now.
 - **UI** — same reason; a readable `outputs/` report demos better than a
   half-built frontend.
-- **Full LangGraph (or other orchestration frameworks)** — the tracker +
-  plain Python loop is sufficient at this scale; adopting a framework
-  before the loop semantics are proven risks reworking state ownership.
+- **Premature graph complexity** — first finish tracker mutations and prove
+  the loop semantics with the deterministic harness. Then wrap the same
+  contracts in LangGraph to add persistence and question interrupt/resume.
 - **ClinicalTrials.gov live API** — the locked scope is synthetic-only;
   `TrialProtocol` already carries adapter-ready fields, so ingestion can
   be added later without schema changes.
@@ -215,4 +214,4 @@ Deferred until the core pipeline works end to end (Week 6 exit):
   `docs/application_answers.md`.
 
 _Rule for every step: `rules.py` and the locked schema invariants never
-change; all 40 existing tests must stay green after every commit._
+change; all 102 existing tests must stay green after every commit._

@@ -1,6 +1,6 @@
 # ClarifyTrial Agent v1.2-final — Project Status Report
 
-_Last updated: 2026-07-07. Grounded in the current repository contents;
+_Last updated: 2026-07-11. Grounded in the current repository contents;
 every claim below can be checked against a file in this repo (see
 `docs/evidence_table.md`)._
 
@@ -13,9 +13,9 @@ deduplicated clarification questions asked in a bounded loop (max 3
 rounds), and per-trial recommendations are produced by locked,
 deterministic precedence rules rather than by LLM judgment. The current
 repository is the v1.2-final skeleton and validation harness: the complete
-data schema layer (Pydantic v2), the complete pure-rule layer, typed stubs
-for all 10 agents, four synthetic/mock datasets, Mermaid architecture
-docs, and a pytest suite of 40 passing tests. No LLM calls, no external
+data schema layer (Pydantic v2), the complete pure-rule layer, mixed-maturity
+agent contracts and deterministic heuristic demos, four synthetic/mock
+datasets, architecture docs and a pytest suite of 102 passing tests. No LLM calls, no external
 APIs, no real patient data, and no clinical decision support.
 
 ## Current architecture status
@@ -44,10 +44,10 @@ The v1.2-final architecture is locked and encoded in code and docs:
 |---|---|
 | `models.py` — 21 Pydantic v2 models + 7 locked enums | Implemented |
 | `rules.py` — 4 pure rule functions | Implemented and fully tested |
-| `agents/` — 10 agent modules | Typed stubs with docstrings and TODOs; `extract_patient_profile_from_summary` returns a working placeholder; `trial_recommendation.recommend_trials` and `missing_information_detection.detect_missing_variables` delegate to the real rules |
-| `scripts/validate_synthetic_data.py` | Implemented, runnable from any cwd |
-| `tests/` — 8 files, 40 tests | All passing |
-| Docs — architecture, state transitions, data strategy, professor-input notes | Written |
+| `agents/` — 10 agent modules | Contracts for the full workflow; heuristic criteria parsing, patient extraction, matching, missing-info detection, question building and first-step answer normalization are runnable; state mutation, real LLM calls and final explanation remain incomplete |
+| `scripts/` — deterministic demos and dataset validation | Implemented, runnable from the repository root |
+| `tests/` — 14 files, 102 tests | All passing on Python 3.13; CI covers Python 3.10 and 3.13 |
+| Docs and visual workflow | Architecture, state transitions, easy Korean overview and implementation direction are written |
 
 ## Dataset files included (all synthetic/mock)
 
@@ -74,7 +74,7 @@ every title passes the input contract of
 eligibility or recommendation ground truth (see
 `docs/professor_patient_input_notes.md`).
 
-## Test coverage summary (40 tests, all passing)
+## Test coverage summary (102 tests, all passing)
 
 | File | Tests | Covers |
 |---|---|---|
@@ -86,6 +86,12 @@ eligibility or recommendation ground truth (see
 | `test_synthetic_trial_protocols_load.py` | 4 | Protocol schema, criteria present, static sources |
 | `test_synthetic_matching_scenarios.py` | 5 | Scenario schema, full label coverage, locked enum types |
 | `test_professor_patient_summaries_load.py` | 7 | Professor dataset shape + input contract |
+| `test_patient_profile_extraction.py` | 6 | Deterministic age/sex extraction boundaries |
+| `test_criteria_parser.py` | 9 | Criterion splitting, IDs and required-variable hints |
+| `test_criterion_matching.py` | 10 | Heuristic met/unmet/unknown/conflict matching behavior |
+| `test_missing_info_clarification.py` | 9 | Global pool priorities, deduplication and question construction |
+| `test_answer_update_step1.py` | 23 | Answer normalization and guarded patient-profile updates |
+| `test_end_to_end_demo.py` | 5 | Offline demo contract, recommendations, questions and disclaimer |
 
 ## What the passing tests prove
 
@@ -104,34 +110,33 @@ eligibility or recommendation ground truth (see
 ## What the tests do NOT prove
 
 - No clinical correctness of any kind — all data is synthetic/mock.
-- No real extraction quality: `extract_patient_profile_from_summary` is a
-  placeholder that stores the raw text; nothing is actually parsed.
+- No clinical extraction quality: the current deterministic implementation
+  extracts only a small set of explicitly written fields and remains a demo.
 - No end-to-end matching accuracy: the labeled scenarios validate schema
   and label coverage, not a running pipeline that reproduces the labels.
 - Nothing about real ClinicalTrials.gov data or any live source.
 
 ## Remaining TODOs
 
-- LLM-based logic in all 10 agents: criteria parsing, profile
-  extraction, answer normalization, evidence retrieval, criterion
-  matching, question generation/prioritization, explanations.
+- Replace current heuristics with versioned LLM implementations for criteria
+  parsing, profile extraction, evidence retrieval, criterion matching,
+  patient-friendly question phrasing and explanations.
 - Eligibility State Tracker mutations (trial registration, status
   updates, round increments) — currently stubs raising
   `NotImplementedError`.
-- An orchestration loop wiring the agents together.
+- A LangGraph orchestration loop with persistence, question interrupts and
+  targeted re-evaluation.
 - ClinicalTrials.gov API v2 ingestion adapter (fields already exist on
   `TrialProtocol`); Synthea-style richer synthetic patients (documented
   future work).
 
 ## Safest next implementation steps
 
-1. Implement the Eligibility State Tracker mutations (pure Python, no
-   LLM), reusing the already-tested rules — lowest risk, unlocks an
-   end-to-end deterministic pipeline.
-2. Add a deterministic mock Criterion Matching implementation that reads
-   `PatientProfile.variables` (no LLM), so the labeled matching
-   scenarios can be replayed end to end against their expected labels.
-3. Implement a rule-based question generator over the existing pool
-   model, keeping the global queue and 3-round cap.
-4. Only then swap deterministic mocks for real LLM calls, one agent at a
-   time, keeping the rule layer untouched.
+1. Implement the Eligibility State Tracker mutations with pure Python and keep
+   the tested decision rules unchanged.
+2. Wrap the existing agent interfaces as LangGraph nodes and pause at the
+   patient-answer boundary.
+3. Add ClinicalTrials.gov ingestion and independently measured RAG retrieval.
+4. Replace heuristics with real LLM calls one agent at a time, preserving
+   deterministic baselines and contract tests.
+5. Evaluate question value with an independent hidden-state patient simulator.

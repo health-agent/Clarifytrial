@@ -39,7 +39,7 @@ def test_every_case_has_num_and_nonempty_title():
         assert case.title.strip()
 
 
-def test_extraction_stub_contract_matches_dataset():
+def test_extraction_contract_matches_dataset():
     signature = inspect.signature(extract_patient_profile_from_summary)
     assert list(signature.parameters) == ["patient_id", "summary_text"]
 
@@ -48,6 +48,6 @@ def test_extraction_stub_contract_matches_dataset():
         profile = extract_patient_profile_from_summary(case.num, case.title)
         assert isinstance(profile, PatientProfile)
         assert profile.patient_id == case.num
-        # The stub is a placeholder: the summary is carried as raw input,
-        # never interpreted as eligibility ground truth.
+        # The original summary remains available and is never interpreted
+        # as eligibility ground truth.
         assert profile.free_text_notes == case.title

@@ -274,6 +274,7 @@ def main() -> FinalOutput:
         )
     lines += ["", "## Stage log", ""]
     lines += [f"{i + 1}. {msg}" for i, msg in enumerate(log)]
+    lines += ["", "## Medical disclaimer", "", final_output.medical_disclaimer]
     lines.append("")
     SUMMARY_PATH.write_text("\n".join(lines), encoding="utf-8")
     stage(f"Stage 11: wrote {SUMMARY_PATH.relative_to(PROJECT_ROOT)}.")

@@ -11,10 +11,10 @@
 > deduplicated clarification questions — one global queue, max three
 > rounds — and conflicting evidence escalates to human review instead of
 > being guessed away. What exists today is the complete schema and rule
-> layer with 40 passing tests: every rule mapping, the full
-> recommendation precedence, and four synthetic datasets, including a
-> professor-provided patient input set. The LLM internals are typed stubs
-> — deliberately, so the decision logic was verifiable first."
+> layer, several deterministic agent fallbacks, and 102 passing tests
+> across four synthetic datasets. The live LLM, RAG, and orchestration
+> runtime remain future work, so the decision logic stays verifiable
+> while each language component is added."
 
 ## 3-minute version
 
@@ -35,15 +35,15 @@ Add, in this order:
 3. **The guarantees** (45s): open `rules.py` — four pure functions, no
    side effects. Point at the precedence: a blocking criterion always
    wins; review beats uncertainty; relevance score affects ranking only.
-   Then run `python -m pytest -q` live: 40 tests pass in under a second.
+   Then run `python -m pytest -q` live: 102 tests pass in about a second.
 4. **The data harness** (30s): `examples/` has a full valid demo session,
    3 mock trial protocols, 6 labeled matching scenarios covering all four
    recommendation labels, and two patient-summary input sets. Run
    `python scripts/validate_synthetic_data.py` to show the validation
    summary.
-5. **What's next** (15s): state-tracker mutations, then a deterministic
-   mock matcher to replay the labeled scenarios end to end, then LLM
-   internals behind the same typed contracts.
+5. **What's next** (15s): state-tracker mutations and scenario replay,
+   then LangGraph interruption/resume, retrieval, and real LLM adapters
+   behind the same typed contracts.
 
 ## What to show first in the repo
 
@@ -51,7 +51,7 @@ Add, in this order:
 2. `models.py` — the locked invariants are in the module docstring and
    enforced by the schema (e.g. `clarification_round_count` capped at 3).
 3. `rules.py` — the decision logic, small enough to read in full.
-4. A live `python -m pytest -q` run — 40 passed.
+4. A live `python -m pytest -q` run — 102 passed.
 
 ## Which files prove the architecture
 
@@ -65,14 +65,12 @@ Add, in this order:
 
 ## How to explain the pytest results
 
-"40 tests, all passing, in four groups: (1) every locked effect mapping,
-including conflict → review and unknown-after-3-rounds → review; (2) the
-recommendation precedence — including that a relevance score of 1.0
-cannot rescue a blocked trial and blocked trials always rank last; (3)
-global missing-variable deduplication across trials; (4) schema and
-input-contract validation of all five example datasets. They prove the
-decision layer and schemas are correct. They do NOT claim clinical
-accuracy or LLM extraction quality — those layers are stubs by design."
+"102 tests, all passing. They cover the locked effect and recommendation
+rules, shared-state schemas, global missing-variable deduplication,
+heuristic criteria parsing, patient extraction, criterion matching,
+question construction, first-step answer normalization, synthetic datasets
+and the deterministic end-to-end demo. They prove software contracts and
+rule behavior, not clinical accuracy or real LLM quality."
 
 ## How to explain the professor patient summary dataset — correctly
 

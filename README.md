@@ -3,12 +3,34 @@
 A minimal, self-verifying Python skeleton for **ClarifyTrial Agent**, a
 shared-state multi-agent system for **Interactive Clinical Trial
 Recommendation**. This repository contains the locked v1.2-final data
-schemas, pure rule functions, agent stubs, docs, a synthetic demo session,
+schemas, pure rule functions, typed agent contracts with deterministic
+fallbacks, docs, a synthetic demo session,
 and a pytest validation harness.
 
 > All examples are synthetic/mock. No real patient data, credentials, or
 > private institutional information. This is a software skeleton and
 > validation harness — **not medical advice**.
+
+## 한눈에 보기
+
+![ClarifyTrial 전체 워크플로](docs/assets/clarifytrial-workflow.png)
+
+ClarifyTrial의 핵심은 에이전트 수가 아닙니다. 여러 임상시험의 판단을
+`PatientSession` 하나에 연결하고, 같은 부족 정보를 묻는 질문은 한 번으로
+합치며, 답변이 들어오면 관련된 기준만 다시 판단하는 구조입니다.
+
+이전 6-call 데모와 비교하면 다음 네 가지가 중요합니다.
+
+1. 에이전트 사이 JSON 전달을 넘어 환자·trial·criterion 변화를 공유 상태로 추적합니다.
+2. trial마다 질문하지 않고 공통 부족 정보를 전역 질문 큐에서 통합합니다.
+3. 답변 뒤 전체 판단을 다시 만들지 않고 영향받은 criterion만 재평가합니다.
+4. LLM은 추출·매칭·설명을 돕고, 제외·불확실·순위 규칙은 Python 코드가 고정합니다.
+
+현재 저장소에는 스키마, 결정 규칙, 휴리스틱 데모, 합성 데이터와 102개
+테스트가 구현돼 있습니다. 실제 ClinicalTrials.gov 수집/RAG, Solar 호출,
+LangGraph 실행·중단·재개, 독립 환자 답변 시뮬레이터는 다음 구현 단계입니다.
+쉽게 읽는 전체 설명과 구현 순서는
+[`docs/project-overview-ko.md`](docs/project-overview-ko.md)에 정리돼 있습니다.
 
 ## Architecture summary
 
@@ -55,7 +77,7 @@ clarify_trial_agent/
 ├── conftest.py                # sys.path setup so tests import the project
 ├── models.py                  # Pydantic v2 schemas (locked v1.2-final)
 ├── rules.py                   # pure rule functions (no side effects)
-├── agents/                    # 10 LLM-agent stubs (no real LLM calls)
+├── agents/                    # 10 agent contracts; several deterministic demos, no real LLM calls
 │   ├── criteria_parser.py
 │   ├── patient_profile_understanding.py   # also normalizes free-text answers
 │   ├── eligibility_state_tracker.py       # central shared state owner
@@ -71,20 +93,13 @@ clarify_trial_agent/
 │   ├── synthetic_patients.json            # 10 professor-style case summaries (inputs only)
 │   ├── synthetic_trial_protocols.json     # 3 mock TrialProtocol records
 │   └── synthetic_matching_scenarios.json  # 6 labeled rule-validation scenarios
-├── scripts/
-│   └── validate_synthetic_data.py         # validates datasets, writes outputs/ summary
+├── scripts/                  # deterministic stage demos + dataset validation
 ├── docs/
+│   ├── project-overview-ko.md # easy workflow and implementation direction
+│   ├── assets/                # workflow image and editable SVG
 │   ├── architecture.md
-│   ├── state_transition.md
-│   └── synthetic_data_strategy.md
-└── tests/
-    ├── test_effect_rules.py
-    ├── test_recommendation_rules.py
-    ├── test_missing_variable_dedup.py
-    ├── test_models_validate.py
-    ├── test_synthetic_patients_load.py
-    ├── test_synthetic_trial_protocols_load.py
-    └── test_synthetic_matching_scenarios.py
+│   └── state_transition.md
+└── tests/                    # 14 files, 102 tests
 ```
 
 ## Mapping to locked v1.2-final invariants
@@ -104,7 +119,8 @@ clarify_trial_agent/
 
 ## Intentionally not implemented yet
 
-- **Real LLM calls** — all agent functions are typed stubs with TODOs.
+- **Real LLM calls** — deterministic heuristics exercise several contracts,
+  but no agent currently calls an LLM provider.
 - **External API calls** — nothing in this skeleton touches the network.
 - **ClinicalTrials.gov adapter** — `models.TrialProtocol` is
   source-agnostic but already carries the fields needed for a planned
@@ -137,13 +153,13 @@ Three synthetic datasets live in `examples/` (see
   `docs/professor_patient_input_notes.md`.
 
 **What the harness proves:** the datasets conform to the Pydantic
-schemas, the extraction stub's input contract is callable with every
+schemas, the deterministic extraction contract is callable with every
 summary, the scenario labels use the locked `Recommendation` enum with
 full label coverage, and the protocols carry the fields a future
 ingestion adapter needs — all offline and fully synthetic.
 
-**What it does NOT prove:** any clinical correctness, real extraction
-quality (the agent is a placeholder stub), real trial matching accuracy,
+**What it does NOT prove:** any clinical correctness, production extraction
+quality, real trial matching accuracy,
 or anything about real ClinicalTrials.gov data. It is a schema/contract
 harness, not clinical decision support.
 

@@ -2,5 +2,6 @@
 
 All agents read from and write to the central shared state
 (``models.PatientSession``) owned by the Eligibility State Tracker.
-These modules are typed stubs: no real LLM calls or external APIs.
+These modules expose typed contracts and several deterministic fallbacks.
+There are no real LLM calls or external APIs yet.
 """

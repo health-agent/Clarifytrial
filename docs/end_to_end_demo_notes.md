@@ -23,8 +23,8 @@ report at `outputs/end_to_end_demo_summary.md`.
 Only the criterion match statuses (met / unmet / unknown / conflict) are
 mocked — they are hard-coded stand-ins for what the LLM Criterion
 Matching Agent would produce, and the patient profile comes from the
-existing placeholder extractor. Everything downstream of those statuses
-is the real production rule code, unmodified.
+small deterministic heuristic extractor. Everything downstream of those
+statuses is the real rule code, unmodified.
 
 ## What it proves
 
@@ -38,8 +38,8 @@ is the real production rule code, unmodified.
 
 ## What it does NOT prove
 
-- No language understanding: match statuses and the profile are mocks,
-  not extracted from text.
+- No clinical-grade language understanding: match statuses are mocked and
+  the profile extractor handles only a small set of explicit patterns.
 - No clinical accuracy of any kind — synthetic dry run, not medical
   advice.
 - No interactive loop yet: the clarification round is staged, not driven

@@ -69,26 +69,26 @@ central shared state. Every conclusion is reproducible and auditable.
 ## Current implementation progress
 
 Implemented and verified today: the complete Pydantic v2 schema layer
-(21 models, 7 enums), the complete deterministic rule layer, typed stubs
-for all 10 agents, four synthetic datasets (including a professor-provided
+(21 models, 7 enums), the complete deterministic rule layer, 10 typed agent
+contracts with several runnable heuristic stages, four synthetic datasets (including a professor-provided
 patient input set), Mermaid architecture and state-transition diagrams,
-a dataset validation script, and **40 passing pytest tests** covering
+a dataset validation script, and **102 passing pytest tests** covering
 every rule mapping, the full recommendation precedence, global
 deduplication, schema validity of all examples, and the natural-language
 input contract. Not yet implemented (by design, in order of planned
-work): state-tracker mutations, deterministic mock matching, LLM-based
-agent internals, and a ClinicalTrials.gov API v2 ingestion adapter. No
+work): state-tracker mutations, full scenario replay, LLM-based agent
+internals, LangGraph orchestration, and a ClinicalTrials.gov API v2
+ingestion adapter. No
 real patient data is used anywhere.
 
 ## Expected deliverables
 
-1. **Now (done):** locked architecture skeleton + self-verifying test
-   harness (this repository).
-2. **Next:** deterministic end-to-end pipeline (no LLM) that replays the
-   labeled synthetic matching scenarios and reproduces their expected
-   recommendation labels.
-3. **Then:** LLM-backed agent implementations behind the same typed
-   contracts, evaluated against the same harness.
+1. **Now (done):** locked architecture, deterministic rule and heuristic
+   demo layers, visual workflow, and self-verifying test harness.
+2. **Next:** state-tracker mutations and deterministic scenario replay,
+   followed by an interruptible LangGraph loop.
+3. **Then:** retrieval and LLM-backed agent implementations behind the
+   same typed contracts, evaluated against the same harness.
 4. **Later:** ClinicalTrials.gov API v2 ingestion adapter and richer
    synthetic patients (e.g. Synthea) — both already anticipated by the
    current schemas, neither implemented today.

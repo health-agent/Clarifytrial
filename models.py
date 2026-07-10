@@ -25,6 +25,10 @@ from typing import Any, Optional
 from pydantic import BaseModel, Field
 
 MAX_CLARIFICATION_ROUNDS = 3
+DEFAULT_MEDICAL_DISCLAIMER = (
+    "This synthetic software output is for research and demonstration only. "
+    "It is not medical advice and does not replace review by qualified clinical professionals."
+)
 
 
 # ---------------------------------------------------------------------------
@@ -281,6 +285,7 @@ class FinalOutput(BaseModel):
     trial_recommendations: list[TrialRecommendation] = Field(default_factory=list)
     explanations: dict[str, str] = Field(default_factory=dict)
     pending_questions: list[FollowUpQuestion] = Field(default_factory=list)
+    medical_disclaimer: str = DEFAULT_MEDICAL_DISCLAIMER
 
 
 # ---------------------------------------------------------------------------
