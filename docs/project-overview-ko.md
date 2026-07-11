@@ -10,9 +10,6 @@
 
 ## 연구 목표 및 접근 방법
 
-지원서의 “에이전트 구성·오케스트레이션·매칭·추천 전략”에는 아래 8줄을
-그대로 활용할 수 있다.
-
 1. Criteria & Patient Understanding Agent가 임상시험 기준과 환자 임상요약을 구조화한다.
 2. Candidate Trial Retrieval Module이 ClinicalTrials.gov에서 관련 후보 trial 3~5개를 찾는다.
 3. Criterion Matching Agent가 각 선정·제외 기준을 근거와 함께 `met / unmet / unknown / conflict`로 판정한다.
@@ -125,16 +122,6 @@ trial nDCG@10/Recall@10, 평균 질문 수, 호출·토큰·비용·지연이다
 | 고정 holdout 최종 평가 | $14 |
 | 재시도·예비비 | $7 |
 
-## 6주 실행 계획
-
-| 주차 | 목표 | 핵심 산출물 |
-|---|---|---|
-| 1주차 | 데이터 준비 | ClinicalTrials.gov·TrialGPT·TREC adapter, masked set |
-| 2주차 | 결정론적 기준선 | 상태 tracker, Fixed-input·Ask-all·ClarifyTrial CLI |
-| 3주차 | Solar 연결 | batch matching, schema validation, token·cost log |
-| 4주차 | 질문 실험 | Next-Best-Action, hidden answer, targeted re-evaluation |
-| 5주차 | 오케스트레이션 | LangGraph interrupt/resume, 선택적 Synthea FHIR |
-| 6주차 | 최종 평가 | 지표 비교표, 대표 환자 3명 데모, 결과 리포트 |
 
 ## 현재와 다음 단계
 
