@@ -42,20 +42,40 @@ construction. `SyntheticMatchingScenario` provides exactly that: a valid
 `explanation_of_label`. These are rule-validation fixtures, not clinical
 truth.
 
-## Future public trial protocol source (not implemented)
+## Verified public trial protocol source (adapter not implemented)
 
 `TrialProtocol` is source-agnostic but already carries the fields a future
-**ClinicalTrials.gov API v2 ingestion adapter** would populate (`nct_id`,
+**ClinicalTrials.gov API v2 ingestion adapter** will populate (`nct_id`,
 `eligibility_criteria_raw`, `conditions`, `interventions`, `source`,
-`source_url`, `retrieved_at`). No API is called anywhere in this project
-and no API response paths are assumed; the mock dataset stands in for that
-adapter's output.
+`source_url`, `retrieved_at`). The official API fields and a live recruiting
+study response were verified on 2026-07-11, but no adapter is called anywhere
+in this repository yet. Runs will record the API data timestamp, query, NCT IDs
+and response hash; raw registry caches stay outside Git. TREC ranking evaluation
+uses each track's corresponding historical corpus. See `DATA_SOURCES.md`.
+
+## Planned masked incomplete-information benchmark
+
+The public TrialGPT Criterion Annotations dataset contains 1,015 expert-reviewed
+criterion rows with expert labels and evidence sentence IDs. It can support a
+derived interactive benchmark, but it is not already a follow-up-question
+dataset.
+
+Only rows with explicit, non-empty expert evidence will be used. The evidence
+sentence will be hidden from the visible note and retained in an independent
+hidden-answer split. A manual audit must remove cases where the answer remains
+inferable from the remaining note. The model's own answer is never its gold.
+Development and holdout splits are made by `patient_id`, not criterion row, so
+the same note cannot leak across splits.
+
+TrialGPT does not contain a `conflict` gold label. Conflict behavior stays in
+separate synthetic and manually reviewed fixtures.
 
 ## Future richer synthetic patients (not added now)
 
-Synthetic EHR generators such as **Synthea** could later provide richer
+**Synthea** can provide richer
 structured patient profiles (longitudinal records, coded conditions,
 medications, labs) that map onto `PatientProfile.variables`. That would
-strengthen extraction and matching tests without ever involving real
-patient data. It is future work and intentionally not part of this
-harness.
+demonstrate a structured FHIR information-acquisition route without real
+patient data. It is optional because generated records do not guarantee every
+trial-specific biomarker or screening fact. It must not replace the TrialGPT
+and TREC gold sets.

@@ -48,6 +48,7 @@ The v1.2-final architecture is locked and encoded in code and docs:
 | `scripts/` — deterministic demos and dataset validation | Implemented, runnable from the repository root |
 | `tests/` — 14 files, 102 tests | All passing on Python 3.13; CI covers Python 3.10 and 3.13 |
 | Docs and visual workflow | Architecture, state transitions, easy Korean overview and implementation direction are written |
+| External data feasibility | ClinicalTrials.gov, TrialGPT Criterion Annotations, TREC 2021·2022 and Synthea roles/limits verified in `DATA_SOURCES.md`; adapters are not implemented |
 
 ## Dataset files included (all synthetic/mock)
 
@@ -118,6 +119,12 @@ eligibility or recommendation ground truth (see
 
 ## Remaining TODOs
 
+- Add provenance-tracked adapters for a ClinicalTrials.gov run cache,
+  TrialGPT expert criterion labels and TREC trial-level qrels. Keep the three
+  evaluation tasks separate.
+- Build and manually audit a 50–100 case masked incomplete-information set
+  from explicit TrialGPT evidence. TrialGPT has no `conflict` gold label, so
+  conflict remains a separate synthetic/reviewed fixture.
 - Replace current heuristics with versioned LLM implementations for criteria
   parsing, profile extraction, evidence retrieval, criterion matching,
   patient-friendly question phrasing and explanations.
@@ -126,17 +133,20 @@ eligibility or recommendation ground truth (see
   `NotImplementedError`.
 - A LangGraph orchestration loop with persistence, question interrupts and
   targeted re-evaluation.
-- ClinicalTrials.gov API v2 ingestion adapter (fields already exist on
-  `TrialProtocol`); Synthea-style richer synthetic patients (documented
-  future work).
+- Add token and cost fields to `RequestLog`, trial-level batching and
+  revision-keyed criteria caches before scaled API experiments.
+- Add Synthea/FHIR only as an optional information-acquisition demo after the
+  core comparison passes; it is not the primary eligibility gold source.
 
 ## Safest next implementation steps
 
-1. Implement the Eligibility State Tracker mutations with pure Python and keep
-   the tested decision rules unchanged.
-2. Wrap the existing agent interfaces as LangGraph nodes and pause at the
-   patient-answer boundary.
-3. Add ClinicalTrials.gov ingestion and independently measured RAG retrieval.
-4. Replace heuristics with real LLM calls one agent at a time, preserving
-   deterministic baselines and contract tests.
-5. Evaluate question value with an independent hidden-state patient simulator.
+1. Implement data manifests plus TrialGPT label mapping and TREC qrels loaders.
+2. Add a ClinicalTrials.gov run-cache adapter; keep live refresh outside
+   reproducible evaluation.
+3. Finish Eligibility State Tracker mutations and run Fixed-input, Ask-all and
+   ClarifyTrial with the same candidates and matcher.
+4. Build the masked hidden-answer set and targeted re-evaluation harness.
+5. Replace heuristics with Solar calls one stage at a time, with batch, cache,
+   token, cost and fallback logging.
+6. Wrap the proven loop with LangGraph interrupt/resume, then optionally add
+   one Synthea FHIR acquisition route.

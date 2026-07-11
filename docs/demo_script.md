@@ -41,9 +41,9 @@ Add, in this order:
    recommendation labels, and two patient-summary input sets. Run
    `python scripts/validate_synthetic_data.py` to show the validation
    summary.
-5. **What's next** (15s): state-tracker mutations and scenario replay,
-   then LangGraph interruption/resume, retrieval, and real LLM adapters
-   behind the same typed contracts.
+5. **What's next** (15s): provenance-tracked ClinicalTrials.gov, TrialGPT
+   and TREC adapters; then the three baseline modes and masked interactive
+   benchmark; Solar and LangGraph are added only after that offline harness.
 
 ## What to show first in the repo
 

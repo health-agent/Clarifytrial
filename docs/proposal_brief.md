@@ -84,11 +84,12 @@ real patient data is used anywhere.
 ## Expected deliverables
 
 1. **Now (done):** locked architecture, deterministic rule and heuristic
-   demo layers, visual workflow, and self-verifying test harness.
-2. **Next:** state-tracker mutations and deterministic scenario replay,
-   followed by an interruptible LangGraph loop.
-3. **Then:** retrieval and LLM-backed agent implementations behind the
-   same typed contracts, evaluated against the same harness.
-4. **Later:** ClinicalTrials.gov API v2 ingestion adapter and richer
-   synthetic patients (e.g. Synthea) — both already anticipated by the
-   current schemas, neither implemented today.
+   demo layers, visual workflow, verified data plan, and self-verifying test
+   harness.
+2. **Next:** provenance-tracked ClinicalTrials.gov, TrialGPT and TREC adapters,
+   state-tracker mutations, and the three deterministic baseline modes.
+3. **Then:** a 50–100 case masked interactive benchmark plus Solar-backed
+   matching, question generation and targeted re-evaluation.
+4. **After the core comparison:** LangGraph interrupt/resume and one optional
+   Synthea FHIR acquisition path. Synthea is a workflow demonstration, not the
+   eligibility gold set.
