@@ -1,4 +1,4 @@
-# ClarifyTrial 지원서 제출용 문안
+# ClarifyTrial 지원서 제출
 
 ## 1. 연구 목표 및 접근 방법
 
