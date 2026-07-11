@@ -1,6 +1,6 @@
-# ClarifyTrial Agent v1.2-final — Skeleton
+# ClarifyTrial Agent — Research Prototype
 
-A minimal, self-verifying Python skeleton for **ClarifyTrial Agent**, a
+A self-verifying Python research prototype for **ClarifyTrial Agent**, a
 shared-state multi-agent system for **Interactive Clinical Trial
 Recommendation**. This repository contains the locked v1.2-final data
 schemas, pure rule functions, typed agent contracts with deterministic
@@ -13,7 +13,7 @@ and a pytest validation harness.
 
 ## 한눈에 보기
 
-![ClarifyTrial 전체 워크플로](docs/assets/clarifytrial-workflow.png)
+![ClarifyTrial 연구 계획](docs/assets/clarifytrial-research-plan.png)
 
 ClarifyTrial의 핵심은 에이전트 수가 아닙니다. 여러 임상시험의 판단을
 `PatientSession` 하나에 연결하고, 같은 부족 정보를 묻는 질문은 한 번으로
@@ -26,9 +26,9 @@ ClarifyTrial의 핵심 구현 원칙은 다음 네 가지입니다.
 3. 답변 뒤 전체 판단을 다시 만들지 않고 영향받은 criterion만 재평가합니다.
 4. LLM은 추출·매칭·설명을 돕고, 제외·불확실·순위 규칙은 Python 코드가 고정합니다.
 
-현재 저장소에는 스키마, 결정 규칙, 휴리스틱 데모, 합성 데이터와 102개
-테스트가 구현돼 있습니다. 실제 ClinicalTrials.gov 수집/RAG, Solar 호출,
-LangGraph 실행·중단·재개, 독립 환자 답변 시뮬레이터는 다음 구현 단계입니다.
+현재 저장소에는 공유 상태, 결정 규칙, 휴리스틱 agent, 합성 데이터, 오프라인
+데모와 102개 테스트가 구현돼 있습니다. 다음 단계는 공개 데이터 adapter,
+세 baseline 실행기, Solar batch matching, masked 질문 평가와 LangGraph 실행입니다.
 쉽게 읽는 전체 설명과 구현 순서는
 [`docs/project-overview-ko.md`](docs/project-overview-ko.md)에 정리돼 있습니다.
 검증한 공개 데이터의 역할·라벨 범위·이용조건은
@@ -121,17 +121,13 @@ clarify_trial_agent/
 | Trial description never adds blocking criteria | `models.TrialContext` docstring, `agents/evidence_context_builder.py` |
 | Effect mappings & recommendation precedence | `rules.derive_eligibility_effect`, `rules.compute_trial_recommendation` |
 
-## Intentionally not implemented yet
+## Next implementation milestones
 
-- **Real LLM calls** — deterministic heuristics exercise several contracts,
-  but no agent currently calls an LLM provider.
-- **External API calls** — nothing in this skeleton touches the network.
-- **ClinicalTrials.gov adapter** — `models.TrialProtocol` is
-  source-agnostic but already carries the fields needed for a planned
-  future **ClinicalTrials.gov API v2 ingestion adapter** (`nct_id`,
-  `eligibility_criteria_raw`, `conditions`, `interventions`, `source`,
-  `source_url`, `retrieved_at`). No API response paths are assumed.
-- Orchestration/runtime loop, persistence, and any UI/web app.
+1. ClinicalTrials.gov, TrialGPT and TREC data adapters
+2. Fixed-input, Ask-all and ClarifyTrial baseline runner
+3. Solar Pro 3 batch matching with cache, validation and cost logs
+4. Masked hidden-answer clarification benchmark
+5. LangGraph interrupt/resume and optional Synthea FHIR acquisition
 
 ## Synthetic data validation harness
 
@@ -162,10 +158,9 @@ summary, the scenario labels use the locked `Recommendation` enum with
 full label coverage, and the protocols carry the fields a future
 ingestion adapter needs — all offline and fully synthetic.
 
-**What it does NOT prove:** any clinical correctness, production extraction
-quality, real trial matching accuracy,
-or anything about real ClinicalTrials.gov data. It is a schema/contract
-harness, not clinical decision support.
+**Harness scope:** the current suite verifies schemas, state transitions and
+deterministic rules. TrialGPT, TREC and the masked benchmark are the planned
+performance evaluation layers.
 
 ## How to run tests
 

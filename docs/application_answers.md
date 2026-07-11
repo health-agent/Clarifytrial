@@ -1,25 +1,38 @@
-# 지원서 초안 — ClarifyTrial Agent
-
-_현재 저장소(v1.2-final 연구 프로토타입, 테스트 102개 통과)를 근거로 작성한 신청서용 초안입니다._
+# ClarifyTrial 지원서 제출용 문안
 
 ## 1. 연구 목표 및 접근 방법
 
-- **목표**: 환자 요약문과 여러 임상시험의 선정/제외 기준을 대조하여, 부족한 정보를 능동적으로 되묻고 근거와 함께 시험별 추천을 제시하는 **대화형 임상시험 추천 멀티에이전트 시스템**(ClarifyTrial Agent) 개발.
-- **설계**: 기준 파싱, 환자 프로파일 이해, 상태 추적, 근거 구성, 기준 매칭, 결측정보 탐지, 질문 생성, 답변 반영·부분 재평가, 시험 추천, 결과 설명의 10개 역할 모듈이 **중앙 공유 상태인 Eligibility State Tracker**(환자 세션 단위, patient_id 기준)를 통해 협업. LLM은 언어 이해가 필요한 역할에만 사용하고 상태·판정 제어는 결정론적 코드가 담당.
-- **매칭·추천 전략**: LLM은 언어 이해(파싱·추출·질문·설명)만 담당하고, 적격성 판정은 **결정론적 규칙 계층**(rules.py)이 전담 — 기준 유형×매칭 상태의 고정 매핑, 우선순위 규칙(차단 기준 → 부적격, 검토 필요 → 인간 검토, 높은 불확실성 → 불확실, 그 외 → 적격 가능), 관련도 점수는 **랭킹에만** 반영.
-- **단순 챗봇이 아닌 이유**: (1) 시험·기준 단위의 타입화된 상태 추적(met/unmet/unknown/conflict/not_applicable), (2) 결측 변수의 **전역 중복 제거** 및 전역 질문 큐(세션당 최대 3라운드), (3) 답변 후 영향 기준만 **표적 재평가**, (4) 근거 문장 저장·충돌 시 인간 검토 라우팅으로 **재현 가능하고 감사 가능한** 판단.
+1. ClarifyTrial은 임상시험 코디네이터와 임상의를 위한 대화형 임상시험 추천 멀티에이전트 시스템이다.
+2. Criteria & Patient Understanding Agent가 ClinicalTrials.gov 기준과 환자 임상요약을 표준 변수로 구조화한다.
+3. Candidate Trial Retrieval Module이 질환, 바이오마커, 치료 이력, 연령과 지역을 이용해 후보 trial 3~5개를 찾는다.
+4. Criterion Matching Agent가 각 선정·제외 기준을 근거와 함께 `met / unmet / unknown / conflict`로 판정한다.
+5. Missing Information Controller가 여러 trial의 공통 부족정보를 합치고 판정 영향도와 확인 비용을 계산한다.
+6. Next-Best-Action Planner가 최대 3회 안에서 추천을 가장 크게 개선할 질문 또는 정보 조회를 선택한다.
+7. Information Acquisition & Re-evaluation Agent가 답변을 반영하고 관련 criterion만 다시 평가한다.
+8. Recommendation & Explanation Agent가 추천 순위, 기준별 근거, 남은 불확실성과 설명을 만들며 전체 흐름은 `PatientSession` 기반 deterministic controller가 관리한다.
 
-## 2. 예상 API 사용량 및 USD 70 사용 계획
+## 2. 예상 API 사용량 및 USD 70 계획
 
-- **예상 요청 규모**: 환자 1명과 후보 trial 3~5개 기준, 환자 정규화 1회 + trial별 criterion batch matching 3~5회 + 답변·표적 재평가 0~3회 + 최종 설명 1회로 **약 5~10회**를 목표로 함. criteria parsing은 trial revision별 한 번만 실행하고 캐시함.
-- **API와 로컬 코드 분담**: Solar는 환자 문장 정규화, 의미 매칭, 질문 표현과 설명에 사용. 검색, missing-variable 중복 제거·우선순위, 상태 갱신, 표적 dependency 탐색, 최종 판정 규칙과 평가는 로컬 Python으로 처리.
-- **가격 기준**: 2026-07-11 공개 Solar Pro 3 표준 가격(입력 $0.15/백만 토큰, 캐시 입력 $0.015/백만 토큰, 출력 $0.60/백만 토큰, VAT 별도)을 실행 전 다시 확인. 계정별 무료 크레딧은 예산에서 가정하지 않음.
-- **USD 70 상한**: 연결·adapter $7, 프롬프트·validator $14, baseline·ablation $28, 고정 holdout $14, 재시도·가격 변동 예비비 $7.
-- **데이터**: 환자 정보는 합성 공개 데이터와 프로젝트 생성 합성 데이터만 사용. ClinicalTrials.gov의 실제 공개 trial protocol metadata는 query·data timestamp·NCT ID·원문 URL·hash를 남긴 실행별 cache로 사용하고 raw cache는 Git에 배포하지 않음. 실제 환자 EHR은 사용하지 않음.
-- **비용 통제**: trial batch, revision cache, 최대 3회 정보 획득, 영향 criterion만 재평가, invalid batch만 부분 재시도. 실제 호출 전에 `RequestLog`에 입력·캐시·출력 토큰, 비용과 시도 횟수 필드를 추가함.
+- **실험 규모:** 합성 평가 세션 100개, 환자당 후보 trial 3~5개, 정보 획득 최대 3회.
+- **예상 요청 수:** 환자 정규화 100회 + trial batch matching 400회 + 질문 답변·표적 재평가 200회 + 최종 설명 100회로 전체 1회 실행 약 800회.
+- **개발 전체 상한:** 프롬프트 개발, 세 baseline과 최종 평가를 포함해 약 8,000요청.
+- **모델 사용 비중:** 유료 LLM 호출은 Solar Pro 3로 통일하고 matching 50%, parsing·patient extraction 20%, 질문·재평가 20%, 설명 10%로 배분.
+- **로컬 처리:** 후보 검색, missing-variable 중복 제거, 우선순위, 상태 갱신, 추천 규칙과 지표 계산은 Python으로 처리해 API 호출을 줄임.
+- **캐싱:** trial criteria와 공통 system prompt를 revision별로 저장하고, 세 baseline은 동일한 최초 매칭 결과를 재사용.
+- **가상데이터 활용:** 합성 환자, TrialGPT 기반 masked note와 독립 hidden answer를 반복 실험에 사용해 실제 환자정보 없이 질문 전후 변화를 평가.
+- **USD 70 배분:** 연결·adapter $7, 프롬프트·validator $14, baseline·ablation $28, 고정 holdout $14, 재시도·예비비 $7.
 
-## 3. 기대 산출물 및 완성 목표
+## 3. 기대 산출물
 
-- **최종 산출물**: (1) ClinicalTrials.gov 실행별 cache와 provenance manifest를 사용하는 파이프라인, (2) TrialGPT criterion 평가와 같은 연도 corpus를 사용하는 TREC trial ranking 평가, (3) `patient_id` 단위로 분리한 50~100개 masked 사례의 Fixed-input·Ask-all·ClarifyTrial 비교, (4) 대표 환자 3명의 질문·표적 재평가 데모, (5) 근거·불확실성·비용·면책 고지를 포함한 결과 리포트.
-- **현재 진행 상황(사실 기준)**: 잠금된 v1.2-final 아키텍처의 전체 스키마 계층(Pydantic v2, 21개 모델·7개 열거형), 결정론적 규칙 계층, 10개 에이전트 타입 계약과 일부 휴리스틱 단계, 합성 데이터 검증 하네스(데이터셋 4종 + 검증 스크립트), 전체 워크플로 문서, **pytest 102개 전부 통과**(규칙·공유 상태·파싱·매칭·질문·답변 정규화·오프라인 데모 검증). 실제 LLM, RAG, LangGraph 런타임과 임상 성능 검증은 아직 구현하지 않음.
-- **범위의 한계(명시)**: 본 시스템은 **연구용 프로토타입**으로 의학적 정확성을 주장하지 않으며, **실제 임상 의사결정 지원이나 의료 조언이 아님**. 모든 결과는 합성 데이터 기준 검증이며, 실환자 적용은 범위 밖임.
+- 합성 환자 100세션을 처리하는 멀티에이전트 CLI
+- criterion별 판정과 근거, 부족정보 질문, 답변 반영과 표적 재평가 이력
+- 환자별 임상시험 추천 순위와 설명
+- Fixed-input, Ask-all, ClarifyTrial의 정확도·질문 수·비용 비교표
+- 대표 환자 3명의 최종 데모와 재현 가능한 결과 JSON/Markdown
+- 데이터 출처와 의료적 면책 고지가 포함된 프로젝트 문서
+
+## 4. 현재 준비 상태
+
+공유 상태, 결정 규칙, agent contract, 질문 중복 제거, 합성 데이터, 오프라인
+데모와 102개 테스트가 준비되어 있다. 다음 구현은 공개 데이터 adapter, 세
+baseline 실행기, Solar batch matching과 masked 질문 평가 순서로 진행한다.

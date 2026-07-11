@@ -1,95 +1,53 @@
-# Proposal Brief — ClarifyTrial Agent
+# ClarifyTrial 제안 요약
 
-## Project title
+![ClarifyTrial 연구 계획](assets/clarifytrial-research-plan.png)
 
-**ClarifyTrial Agent: a shared-state multi-agent system for Interactive
-Clinical Trial Recommendation** (architecture v1.2-final).
+## 프로젝트명
 
-## Problem statement
+**ClarifyTrial Agent: 공유 상태 기반 대화형 임상시험 추천 멀티에이전트 시스템**
 
-Matching a patient to clinical trials is not a single question-answering
-task. Real eligibility assessment is interactive and stateful: a patient
-summary rarely contains every variable that trial criteria require, the
-same missing variable (e.g. performance status) blocks criteria in many
-trials at once, and evidence can be absent or contradictory. A one-shot
-LLM answer hides these gaps; a safe system must track what is known,
-unknown, and conflicting per criterion and per trial, ask targeted
-follow-up questions, and escalate to a human when evidence conflicts or
-questions run out.
+## 해결하려는 문제
 
-## Core idea
+환자 임상요약에는 임상시험 적격성 판단에 필요한 정보가 자주 빠져 있다.
+ClarifyTrial은 여러 trial의 부족정보를 통합하고, 추천 결과를 가장 크게 개선할
+정보부터 최대 3회 확인한 뒤 관련 criterion만 다시 평가한다.
 
-Separate **language understanding** from **eligibility decision-making**.
-LLM agents only normalize inputs (parse criteria, extract patient
-variables, phrase questions, explain results). Whether a criterion
-supports or blocks eligibility, and what the final recommendation is,
-comes exclusively from locked, deterministic, unit-tested rules over a
-central shared state. Every conclusion is reproducible and auditable.
+## 핵심 설계
 
-## Why this is not a simple chatbot
+- `PatientSession`에 환자, trial, criterion, 질문과 답변 상태를 통합한다.
+- criterion을 근거와 함께 `met / unmet / unknown / conflict`로 판단한다.
+- 여러 trial이 요구하는 같은 정보를 하나의 missing variable로 합친다.
+- Next-Best-Action이 질문 또는 EHR 조회의 순서를 결정한다.
+- 답변과 관련된 criterion만 표적 재평가한다.
+- LLM은 문장 이해와 생성을 맡고 Python 규칙은 상태와 추천 결정을 관리한다.
 
-- A chatbot has a transcript; ClarifyTrial has a **typed session state**
-  (`PatientSession`) tracking every criterion of every trial with an
-  explicit five-value match status (met / unmet / unknown / conflict /
-  not_applicable).
-- A chatbot answers once; ClarifyTrial runs a **bounded clarification
-  loop** (session-level, max 3 rounds) whose questions are generated from
-  a deduplicated pool of concretely missing variables, then performs
-  **targeted re-evaluation** of only the affected criteria.
-- A chatbot's reasoning is opaque; here eligibility effects and the final
-  recommendation come from **pure functions** (`rules.py`) with exact,
-  tested mappings, and conflicts route to `needs_human_review` instead of
-  being smoothed over.
+## 에이전트 흐름
 
-## Architecture pillars (locked v1.2-final)
+| 단계 | 역할 |
+|---|---|
+| 이해·검색 | 환자와 criteria 구조화, 후보 trial 3~5개 검색 |
+| 근거 매칭 | criterion별 상태와 근거 생성 |
+| 부족정보 제어 | 공통 missing variable과 다음 행동 선택 |
+| 정보 반영 | 질문·EHR 조회, 답변 정규화, 표적 재평가 |
+| 추천·설명 | 추천 순위, 근거, 불확실성, 설명 출력 |
 
-- **Shared-state Eligibility State Tracker** — the single owner of the
-  session state, keyed by `patient_id`.
-- **Multi-trial state** — `trial_states_by_trial_id`; each trial carries
-  its own `trial_context` and `criterion_state[]`, evaluated in parallel
-  within one session.
-- **Global missing-variable pool** — unknowns from all trials are
-  deduplicated by `missing_variable_key`, so the patient is asked about
-  ECOG status once, not once per trial.
-- **Global clarification queue** — questions are managed globally with
-  priority ranks, never per trial; rounds are capped at 3.
-- **Answer-based re-evaluation** — free-text answers are normalized by
-  the Patient Profile Understanding Agent before any rule update, then
-  only the criteria affected by the answered variable are re-evaluated.
-- **Trial ranking and recommendation precedence** — per trial, applied
-  exactly in order: any blocking criterion → likely_ineligible; else any
-  review flag → needs_human_review; else high uncertainty → uncertain;
-  else likely_eligible. A trial relevance score influences ranking order
-  only and can never override a hard block.
-- **Evidence and reviewability** — each criterion state can carry an
-  `EvidenceContext` (source sentences + profile fields used); conflicts
-  and exhausted question rounds set `review_required` with a typed
-  reason; every agent action is loggable via `RequestLog`.
+## 실험과 평가
 
-## Current implementation progress
+Fixed-input, Ask-all, ClarifyTrial을 같은 환자·후보·matcher에서 비교한다.
+criterion macro-F1, missing-variable recall, unknown 해소율, nDCG@10,
+평균 질문 수와 API 비용을 함께 측정한다.
 
-Implemented and verified today: the complete Pydantic v2 schema layer
-(21 models, 7 enums), the complete deterministic rule layer, 10 typed agent
-contracts with several runnable heuristic stages, four synthetic datasets (including a professor-provided
-patient input set), Mermaid architecture and state-transition diagrams,
-a dataset validation script, and **102 passing pytest tests** covering
-every rule mapping, the full recommendation precedence, global
-deduplication, schema validity of all examples, and the natural-language
-input contract. Not yet implemented (by design, in order of planned
-work): state-tracker mutations, full scenario replay, LLM-based agent
-internals, LangGraph orchestration, and a ClinicalTrials.gov API v2
-ingestion adapter. No
-real patient data is used anywhere.
+## MVP 규모
 
-## Expected deliverables
+- 합성 평가 세션 100개
+- 환자당 후보 trial 3~5개
+- 정보 획득 최대 3회
+- 환자당 API 5~10회, 전체 1회 실행 약 800요청
+- 대표 환자 3명의 최종 데모
 
-1. **Now (done):** locked architecture, deterministic rule and heuristic
-   demo layers, visual workflow, verified data plan, and self-verifying test
-   harness.
-2. **Next:** provenance-tracked ClinicalTrials.gov, TrialGPT and TREC adapters,
-   state-tracker mutations, and the three deterministic baseline modes.
-3. **Then:** a 50–100 case masked interactive benchmark plus Solar-backed
-   matching, question generation and targeted re-evaluation.
-4. **After the core comparison:** LangGraph interrupt/resume and one optional
-   Synthea FHIR acquisition path. Synthea is a workflow demonstration, not the
-   eligibility gold set.
+## 현재 준비 상태와 산출물
+
+공유 상태, 결정 규칙, agent contract, 합성 데이터, 오프라인 데모와 102개
+테스트가 준비되어 있다. 최종 산출물은 실행 가능한 CLI, 100세션 결과 JSON,
+criterion 근거와 질문·재평가 이력, 환자별 추천, 세 baseline 비교표, 재현 문서와
+의료적 면책 고지다.

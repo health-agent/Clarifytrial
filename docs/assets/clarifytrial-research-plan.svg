@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1050" viewBox="0 0 1800 1050" role="img" aria-labelledby="title desc">
+  <title id="title">ClarifyTrial 연구 및 실행 계획</title>
+  <desc id="desc">임상시험 데이터와 합성 환자 입력부터 멀티에이전트 판단, 부족정보 확인, 표적 재평가, 추천 평가와 API 예산까지 한눈에 보여주는 계획</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 34px 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 18px 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; fill: #475569; }
+      .section { font: 700 20px 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; fill: #0f172a; }
+      .goal { font: 700 22px 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; fill: #1e3a8a; text-anchor: middle; }
+      .step-no { font: 700 17px 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; fill: #ffffff; text-anchor: middle; }
+      .box-title { font: 700 19px 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; fill: #0f172a; text-anchor: middle; }
+      .box-text { font: 400 15px 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; fill: #475569; text-anchor: middle; }
+      .label { font: 700 16px 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; fill: #0f172a; }
+      .body { font: 400 15px 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; fill: #475569; }
+      .strong { font: 700 16px 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; fill: #1d4ed8; }
+      .tiny { font: 400 13px 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; fill: #64748b; }
+      .step { fill: #ffffff; stroke: #94a3b8; stroke-width: 2; rx: 8; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 8; }
+      .baseline-a { fill: #f1f5f9; stroke: #64748b; stroke-width: 2; rx: 8; }
+      .baseline-b { fill: #fff7ed; stroke: #ea580c; stroke-width: 2; rx: 8; }
+      .baseline-c { fill: #ecfdf5; stroke: #16a34a; stroke-width: 3; rx: 8; }
+      .line { fill: none; stroke: #475569; stroke-width: 3; marker-end: url(#arrow); }
+      .timeline { fill: none; stroke: #2563eb; stroke-width: 4; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1800" height="1050"/>
+  <text class="title" x="60" y="56">ClarifyTrial 연구 계획: 입력부터 질문·재평가·추천까지</text>
+  <text class="subtitle" x="60" y="88">타깃 사용자: 임상시험 코디네이터와 임상의 · 목표: 적은 정보 획득 행동으로 근거 있는 추천 완성</text>
+
+  <rect x="60" y="116" width="1680" height="66" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="8"/>
+  <text class="goal" x="900" y="157">모든 부족정보를 묻지 않고, 추천을 가장 크게 개선할 정보부터 확인한다</text>
+
+  <text class="section" x="60" y="222">멀티에이전트 오케스트레이션</text>
+
+  <rect class="step" x="60" y="250" width="290" height="212"/>
+  <circle cx="95" cy="283" r="19" fill="#2563eb"/>
+  <text class="step-no" x="95" y="289">1</text>
+  <text class="box-title" x="205" y="290">데이터 준비</text>
+  <text class="box-text" x="205" y="329">ClinicalTrials.gov 기준</text>
+  <text class="box-text" x="205" y="359">합성 환자·TrialGPT·TREC</text>
+  <text class="box-text" x="205" y="389">masked 불완전정보 세트</text>
+  <text class="box-text" x="205" y="430">출처·버전·정답 라벨 고정</text>
+
+  <rect class="step" x="405" y="250" width="290" height="212"/>
+  <circle cx="440" cy="283" r="19" fill="#7c3aed"/>
+  <text class="step-no" x="440" y="289">2</text>
+  <text class="box-title" x="550" y="290">이해·후보 검색</text>
+  <text class="box-text" x="550" y="329">Criteria Parser</text>
+  <text class="box-text" x="550" y="359">Patient Understanding</text>
+  <text class="box-text" x="550" y="389">Candidate Trial Retrieval</text>
+  <text class="box-text" x="550" y="430">환자 변수와 후보 trial 생성</text>
+
+  <rect class="step" x="750" y="250" width="290" height="212"/>
+  <circle cx="785" cy="283" r="19" fill="#d97706"/>
+  <text class="step-no" x="785" y="289">3</text>
+  <text class="box-title" x="895" y="290">매칭·질문 선택</text>
+  <text class="box-text" x="895" y="329">Criterion Matching</text>
+  <text class="box-text" x="895" y="359">Missing Info Controller</text>
+  <text class="box-text" x="895" y="389">Next-Best-Action Planner</text>
+  <text class="box-text" x="895" y="430">중요한 부족정보부터 선택</text>
+
+  <rect class="step" x="1095" y="250" width="290" height="212"/>
+  <circle cx="1130" cy="283" r="19" fill="#0891b2"/>
+  <text class="step-no" x="1130" y="289">4</text>
+  <text class="box-title" x="1240" y="290">정보 획득·재평가</text>
+  <text class="box-text" x="1240" y="329">질문 또는 선택적 EHR 조회</text>
+  <text class="box-text" x="1240" y="359">답변 정규화·상태 반영</text>
+  <text class="box-text" x="1240" y="389">Targeted Re-evaluation</text>
+  <text class="box-text" x="1240" y="430">관련 criterion만 다시 판단</text>
+
+  <rect class="step" x="1440" y="250" width="300" height="212"/>
+  <circle cx="1475" cy="283" r="19" fill="#16a34a"/>
+  <text class="step-no" x="1475" y="289">5</text>
+  <text class="box-title" x="1590" y="290">추천·설명</text>
+  <text class="box-text" x="1590" y="329">Recommendation Agent</text>
+  <text class="box-text" x="1590" y="359">Explanation Agent</text>
+  <text class="box-text" x="1590" y="389">추천 순위·criterion 근거</text>
+  <text class="box-text" x="1590" y="419">남은 불확실성·면책 고지</text>
+
+  <path class="line" d="M350 356 H405"/>
+  <path class="line" d="M695 356 H750"/>
+  <path class="line" d="M1040 356 H1095"/>
+  <path class="line" d="M1385 356 H1440"/>
+
+  <text class="section" x="60" y="512">비교 실험과 평가</text>
+  <rect class="panel" x="60" y="538" width="920" height="194"/>
+  <text class="label" x="86" y="571">같은 환자·후보 trial·matcher에서 정보 획득 정책만 비교</text>
+
+  <rect class="baseline-a" x="86" y="592" width="268" height="108"/>
+  <text class="box-title" x="220" y="626">Fixed-input</text>
+  <text class="box-text" x="220" y="658">추가 질문 없이 최초 판단</text>
+  <text class="box-text" x="220" y="683">질문 수 0회의 기준선</text>
+
+  <rect class="baseline-b" x="376" y="592" width="268" height="108"/>
+  <text class="box-title" x="510" y="626">Ask-all</text>
+  <text class="box-text" x="510" y="658">모든 부족정보 확인</text>
+  <text class="box-text" x="510" y="683">최대 정확도·부담 기준선</text>
+
+  <rect class="baseline-c" x="666" y="592" width="288" height="108"/>
+  <text class="box-title" x="810" y="626">ClarifyTrial</text>
+  <text class="box-text" x="810" y="658">최대 3회, 가치 높은 정보만</text>
+  <text class="box-text" x="810" y="683">표적 재평가로 비용 절감</text>
+
+  <rect class="panel" x="1015" y="538" width="725" height="194"/>
+  <text class="label" x="1042" y="571">평가 지표</text>
+  <text class="body" x="1042" y="610">criterion 판단</text>
+  <text class="strong" x="1215" y="610">macro-F1 · accuracy</text>
+  <text class="body" x="1042" y="643">부족정보 탐지</text>
+  <text class="strong" x="1215" y="643">recall · unknown 해소율</text>
+  <text class="body" x="1042" y="676">trial 추천</text>
+  <text class="strong" x="1215" y="676">nDCG@10 · Recall@10</text>
+  <text class="body" x="1042" y="709">운영 효율</text>
+  <text class="strong" x="1215" y="709">질문 수 · 호출 · 토큰 · 비용 · 지연</text>
+
+  <text class="section" x="60" y="782">MVP 규모와 API 계획</text>
+  <rect class="panel" x="60" y="808" width="500" height="152"/>
+  <text class="label" x="86" y="842">MVP 실행 단위</text>
+  <text class="body" x="86" y="877">평가 세션 100개 · 후보 trial 3~5개</text>
+  <text class="body" x="86" y="907">정보 획득 최대 3회 · 대표 데모 환자 3명</text>
+  <text class="strong" x="86" y="938">전체 1회 실행 약 800요청</text>
+
+  <rect class="panel" x="590" y="808" width="500" height="152"/>
+  <text class="label" x="616" y="842">모델·호출 비중</text>
+  <text class="body" x="616" y="877">Solar Pro 3: 유료 LLM 호출 100%</text>
+  <text class="body" x="616" y="907">매칭 50% · 파싱/추출 20% · 질문/재평가 20% · 설명 10%</text>
+  <text class="strong" x="616" y="938">환자당 5~10회 · 개발 전체 약 8,000요청</text>
+
+  <rect class="panel" x="1120" y="808" width="620" height="152"/>
+  <text class="label" x="1146" y="842">USD 70 배분과 절감</text>
+  <text class="body" x="1146" y="877">연결 $7 · 프롬프트 $14 · 비교실험 $28 · 최종평가 $14 · 예비비 $7</text>
+  <text class="body" x="1146" y="907">trial criteria·공통 prompt 캐싱 · 합성/hidden-answer 데이터 재사용</text>
+  <text class="strong" x="1146" y="938">trial 단위 batch + 관련 criterion만 재호출</text>
+
+  <path class="timeline" d="M105 998 H1690"/>
+  <circle cx="105" cy="998" r="8" fill="#2563eb"/><circle cx="420" cy="998" r="8" fill="#2563eb"/>
+  <circle cx="735" cy="998" r="8" fill="#2563eb"/><circle cx="1050" cy="998" r="8" fill="#2563eb"/>
+  <circle cx="1365" cy="998" r="8" fill="#2563eb"/><circle cx="1690" cy="998" r="8" fill="#2563eb"/>
+  <text class="tiny" x="72" y="1028">W1 데이터</text>
+  <text class="tiny" x="370" y="1028">W2 기준선</text>
+  <text class="tiny" x="685" y="1028">W3 Solar</text>
+  <text class="tiny" x="982" y="1028">W4 질문 실험</text>
+  <text class="tiny" x="1287" y="1028">W5 오케스트레이션</text>
+  <text class="tiny" x="1615" y="1028">W6 최종 평가</text>
+</svg>

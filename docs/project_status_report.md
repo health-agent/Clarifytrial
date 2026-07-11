@@ -12,11 +12,11 @@ are evaluated against a patient profile, unknowns are turned into
 deduplicated clarification questions asked in a bounded loop (max 3
 rounds), and per-trial recommendations are produced by locked,
 deterministic precedence rules rather than by LLM judgment. The current
-repository is the v1.2-final skeleton and validation harness: the complete
-data schema layer (Pydantic v2), the complete pure-rule layer, mixed-maturity
-agent contracts and deterministic heuristic demos, four synthetic/mock
-datasets, architecture docs and a pytest suite of 102 passing tests. No LLM calls, no external
-APIs, no real patient data, and no clinical decision support.
+repository provides the complete data schema and pure-rule layers, typed agent
+contracts, deterministic heuristic demos, four synthetic/mock datasets,
+architecture docs and a pytest suite of 102 passing tests. The next build
+connects the verified public datasets, Solar batch matching and the interactive
+evaluation loop.
 
 ## Current architecture status
 
@@ -44,11 +44,11 @@ The v1.2-final architecture is locked and encoded in code and docs:
 |---|---|
 | `models.py` — 21 Pydantic v2 models + 7 locked enums | Implemented |
 | `rules.py` — 4 pure rule functions | Implemented and fully tested |
-| `agents/` — 10 agent modules | Contracts for the full workflow; heuristic criteria parsing, patient extraction, matching, missing-info detection, question building and first-step answer normalization are runnable; state mutation, real LLM calls and final explanation remain incomplete |
+| `agents/` — 10 agent modules | Runnable heuristic stages plus typed interfaces for state mutation, Solar matching and final explanation |
 | `scripts/` — deterministic demos and dataset validation | Implemented, runnable from the repository root |
 | `tests/` — 14 files, 102 tests | All passing on Python 3.13; CI covers Python 3.10 and 3.13 |
 | Docs and visual workflow | Architecture, state transitions, easy Korean overview and implementation direction are written |
-| External data feasibility | ClinicalTrials.gov, TrialGPT Criterion Annotations, TREC 2021·2022 and Synthea roles/limits verified in `DATA_SOURCES.md`; adapters are not implemented |
+| External data plan | ClinicalTrials.gov, TrialGPT Criterion Annotations, TREC 2021·2022 and Synthea roles are verified in `DATA_SOURCES.md`; adapter implementation is scheduled for Week 1 |
 
 ## Dataset files included (all synthetic/mock)
 
@@ -108,41 +108,28 @@ eligibility or recommendation ground truth (see
 - The Patient Profile Understanding Agent's input contract accepts all
   20 natural-language summaries (10 synthetic + 10 professor-provided).
 
-## What the tests do NOT prove
-
-- No clinical correctness of any kind — all data is synthetic/mock.
-- No clinical extraction quality: the current deterministic implementation
-  extracts only a small set of explicitly written fields and remains a demo.
-- No end-to-end matching accuracy: the labeled scenarios validate schema
-  and label coverage, not a running pipeline that reproduces the labels.
-- Nothing about real ClinicalTrials.gov data or any live source.
-
-## Remaining TODOs
+## Next build targets
 
 - Add provenance-tracked adapters for a ClinicalTrials.gov run cache,
   TrialGPT expert criterion labels and TREC trial-level qrels. Keep the three
   evaluation tasks separate.
-- Build and manually audit a 50–100 case masked incomplete-information set
-  from explicit TrialGPT evidence. TrialGPT has no `conflict` gold label, so
-  conflict remains a separate synthetic/reviewed fixture.
+- Build a 50–100 case masked incomplete-information set from explicit TrialGPT
+  evidence and the independent hidden-answer evaluator.
 - Replace current heuristics with versioned LLM implementations for criteria
   parsing, profile extraction, evidence retrieval, criterion matching,
   patient-friendly question phrasing and explanations.
-- Eligibility State Tracker mutations (trial registration, status
-  updates, round increments) — currently stubs raising
-  `NotImplementedError`.
+- Complete Eligibility State Tracker mutations for trial registration,
+  criterion updates and clarification rounds.
 - A LangGraph orchestration loop with persistence, question interrupts and
   targeted re-evaluation.
 - Add token and cost fields to `RequestLog`, trial-level batching and
   revision-keyed criteria caches before scaled API experiments.
-- Add Synthea/FHIR only as an optional information-acquisition demo after the
-  core comparison passes; it is not the primary eligibility gold source.
+- Add one Synthea/FHIR information-acquisition route for the final demo.
 
-## Safest next implementation steps
+## Implementation order
 
 1. Implement data manifests plus TrialGPT label mapping and TREC qrels loaders.
-2. Add a ClinicalTrials.gov run-cache adapter; keep live refresh outside
-   reproducible evaluation.
+2. Add a ClinicalTrials.gov run-cache adapter.
 3. Finish Eligibility State Tracker mutations and run Fixed-input, Ask-all and
    ClarifyTrial with the same candidates and matcher.
 4. Build the masked hidden-answer set and targeted re-evaluation harness.
