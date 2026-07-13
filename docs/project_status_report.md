@@ -113,15 +113,15 @@ eligibility or recommendation ground truth (see
 - Add provenance-tracked adapters for a ClinicalTrials.gov run cache,
   TrialGPT expert criterion labels and TREC trial-level qrels. Keep the three
   evaluation tasks separate.
-- Build a 50–100 case masked incomplete-information set from explicit TrialGPT
-  evidence and the independent hidden-answer evaluator.
+- Build 100 patient-split masked session specifications from explicit TrialGPT
+  evidence, with multi-mask cases and a physically separate hidden-answer evaluator.
 - Replace current heuristics with versioned LLM implementations for criteria
   parsing, profile extraction, evidence retrieval, criterion matching,
   patient-friendly question phrasing and explanations.
 - Complete Eligibility State Tracker mutations for trial registration,
   criterion updates and clarification rounds.
-- A LangGraph orchestration loop with persistence, question interrupts and
-  targeted re-evaluation.
+- Validate the deterministic CLI loop first; add LangGraph persistence and
+  question interrupts only as an optional orchestration layer.
 - Add token and cost fields to `RequestLog`, trial-level batching and
   revision-keyed criteria caches before scaled API experiments.
 - Add one Synthea/FHIR information-acquisition route for the final demo.
@@ -130,10 +130,11 @@ eligibility or recommendation ground truth (see
 
 1. Implement data manifests plus TrialGPT label mapping and TREC qrels loaders.
 2. Add a ClinicalTrials.gov run-cache adapter.
-3. Finish Eligibility State Tracker mutations and run Fixed-input, Ask-all and
-   ClarifyTrial with the same candidates and matcher.
-4. Build the masked hidden-answer set and targeted re-evaluation harness.
+3. Finish Eligibility State Tracker mutations and run Fixed-input, FIFO@3,
+   Clarify@3 and Oracle Ask-all from the same immutable initial state.
+4. Build the multi-mask hidden-answer set and compare targeted re-evaluation
+   with full rerun using the same answer sequence.
 5. Replace heuristics with Solar calls one stage at a time, with batch, cache,
    token, cost and fallback logging.
-6. Wrap the proven loop with LangGraph interrupt/resume, then optionally add
-   one Synthea FHIR acquisition route.
+6. Optionally wrap the proven loop with LangGraph interrupt/resume and add one
+   Synthea FHIR acquisition route.

@@ -13,21 +13,21 @@
 
 ## 2. 예상 API 사용량 및 USD 70 계획
 
-- **실험 규모:** 합성 평가 세션 100개, 환자당 후보 trial 3~5개, 정보 획득 최대 3회.
+- **실험 규모:** patient 단위 분할에서 파생한 masked session specification 100개, 운영 데모의 환자당 후보 trial 3~5개, 정보 획득 최대 3회.
 - **예상 요청 수:** 환자 정규화 100회 + trial batch matching 400회 + 질문 답변·표적 재평가 200회 + 최종 설명 100회로 전체 1회 실행 약 800회.
-- **개발 전체 상한:** 프롬프트 개발, 세 baseline과 최종 평가를 포함해 약 8,000요청.
+- **개발 전체 상한:** 프롬프트 개발, 네 정책 비교와 최종 평가를 포함해 약 8,000요청.
 - **모델 사용 비중:** 유료 LLM 호출은 Solar Pro 3로 통일하고 matching 50%, parsing·patient extraction 20%, 질문·재평가 20%, 설명 10%로 배분.
 - **로컬 처리:** 후보 검색, missing-variable 중복 제거, 우선순위, 상태 갱신, 추천 규칙과 지표 계산은 Python으로 처리해 API 호출을 줄임.
-- **캐싱:** trial criteria와 공통 system prompt를 revision별로 저장하고, 세 baseline은 동일한 최초 매칭 결과를 재사용.
+- **캐싱:** trial criteria와 공통 system prompt를 revision별로 저장하고, Fixed·FIFO@3·Clarify@3·Ask-all은 동일한 최초 매칭 결과를 재사용.
 - **가상데이터 활용:** 합성 환자, TrialGPT 기반 masked note와 독립 hidden answer를 반복 실험에 사용해 실제 환자정보 없이 질문 전후 변화를 평가.
 - **USD 70 배분:** 연결·adapter $7, 프롬프트·validator $14, baseline·ablation $28, 고정 holdout $14, 재시도·예비비 $7.
 
 ## 3. 기대 산출물
 
-- 합성 환자 100세션을 처리하는 멀티에이전트 CLI
+- 100개의 masked session specification을 paired replay하는 멀티에이전트 CLI
 - criterion별 판정과 근거, 부족정보 질문, 답변 반영과 표적 재평가 이력
 - 환자별 임상시험 추천 순위와 설명
-- Fixed-input, Ask-all, ClarifyTrial의 정확도·질문 수·비용 비교표
+- Fixed-input, FIFO@3, Clarify@3, Oracle Ask-all과 targeted/full의 회복량·행동 수·비용 비교표
 - 대표 환자 3명의 최종 데모와 재현 가능한 결과 JSON/Markdown
 - 데이터 출처와 의료적 면책 고지가 포함된 프로젝트 문서
 

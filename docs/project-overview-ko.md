@@ -8,6 +8,11 @@
 부족정보를 묻지 않고 **추천을 가장 크게 개선할 정보부터 확인한 뒤 관련
 기준만 다시 판단하는 멀티에이전트 시스템**을 만든다.
 
+현재 schema·결정 규칙·102개 테스트는 **Implemented**, 합성 오프라인 실행은
+**Heuristic demo**, 공개 데이터 adapter·Solar·masked benchmark·본 평가는
+**Planned**다. 구현된 규칙과 테스트는 임상적 정확성이 아니라 소프트웨어 계약의
+일관성을 검증한다.
+
 ## 연구 목표 및 접근 방법
 
 1. Criteria & Patient Understanding Agent가 임상시험 기준과 환자 임상요약을 구조화한다.
@@ -18,6 +23,15 @@
 6. Information Acquisition & Re-evaluation Agent가 답변을 상태에 반영하고 관련 criterion만 다시 평가한다.
 7. Recommendation & Explanation Agent가 추천 순위, 기준별 근거, 남은 불확실성과 설명을 생성한다.
 8. 전체 흐름은 `PatientSession` 기반 결정론적 controller가 관리하며 LLM은 문장 이해와 생성에 집중한다.
+
+세부 우선순위, 정답지·누출 방지, 비교군과 지표의 연결은
+[`research-design-ko.md`](research-design-ko.md)를 따른다.
+
+## 검증할 연구가설
+
+1. `Clarify@3`가 추가 질문이 없는 Fixed-input보다 올바른 criterion 정보를 더 많이 회복하는가?
+2. 같은 세 번의 행동에서 `Clarify@3`가 비우선 `FIFO@3`보다 효율적인가?
+3. targeted re-evaluation이 full rerun과 결과를 유지하면서 호출·토큰·지연을 줄이는가?
 
 ## 에이전트 구성
 
@@ -48,9 +62,10 @@ Eligibility State Tracker는 모든 그룹이 읽고 쓰는 중앙 `PatientSessi
 | 재평가 | 답변과 연결된 criterion만 갱신 |
 | 최종 결과 | 추천 순위, 참여 가능성, 근거, 남은 질문, 설명, 면책 고지 |
 
-평가 세션 100개를 기본 실행 단위로 하고, 발표에서는 결과 변화가 분명한
-대표 환자 3명을 보여준다. Synthea FHIR 조회는 핵심 흐름이 완성된 뒤 한 개의
-정보 획득 경로로 연결한다.
+patient 단위로 development/holdout을 먼저 분리한 뒤 만든 **100개의 masked
+session specification**을 기본 실행 단위로 한다. 이는 100명의 독립 환자를
+뜻하지 않는다. 발표에서는 결과 변화가 분명한 대표 환자 3명을 보여준다.
+Synthea FHIR 조회는 핵심 흐름이 완성된 뒤 선택적 정보 획득 데모로 연결한다.
 
 ## 데이터와 정답지
 
@@ -63,20 +78,30 @@ Eligibility State Tracker는 모든 그룹이 읽고 쓰는 중앙 `PatientSessi
 | Synthea | 합성 FHIR 기반 EHR 조회 데모 |
 
 세부 라벨 변환, 출처, 버전과 이용조건은 [`DATA_SOURCES.md`](../DATA_SOURCES.md)에
-모아 두고 메인 계획에서는 위 역할만 사용한다.
+모아 두고 메인 계획에서는 위 역할만 사용한다. TrialGPT masked 실험, TREC
+historical ranking과 Synthea route demo의 점수는 서로 합쳐 하나의 end-to-end
+clinical gold로 사용하지 않는다.
 
 ## 비교 실험
 
-같은 환자, 후보 trial, matcher와 결정 규칙을 사용하고 정보 획득 정책만 바꾼다.
+같은 immutable initial state, 후보 trial, matcher, hidden answer와 결정 규칙을
+사용하고 정보 획득 정책만 바꾼다.
 
 | 방식 | 동작 | 비교 목적 |
 |---|---|---|
 | Fixed-input | 추가 질문 없이 최초 정보만 사용 | 질문 0회의 기준선 |
-| Ask-all | 발견한 부족정보를 모두 확인 | 정확도와 사용자 부담의 상한 |
-| ClarifyTrial | 최대 3회, 가치가 높은 정보만 확인 | 적은 행동으로 추천 개선 |
+| FIFO@3 | 발견 순서대로 3개 확인 | 동일예산 비우선 기준선 |
+| Clarify@3 | 최대 3회, potential impact가 큰 정보부터 확인 | 우선순위 정책의 추가 가치 |
+| Oracle Ask-all | benchmark의 모든 hidden answer 제공 | 합성 정보 상한선 |
 
-주요 평가는 criterion macro-F1/accuracy, missing-variable recall, unknown 해소율,
-trial nDCG@10/Recall@10, 평균 질문 수, 호출·토큰·비용·지연이다.
+질문 정책 비교에서는 모든 방식이 같은 targeted re-evaluation을 사용한다.
+targeted와 full rerun의 차이는 같은 answer sequence를 사용하는 별도 ablation으로
+측정한다.
+
+주요 평가는 correct/wrong criterion resolution, `U = CR - WR`, 행동당 올바른
+회복량, criterion macro-F1과 non-target mutation이다. 후보 3~5개 데모 panel은
+nDCG@5를, 별도 TREC historical ranking은 nDCG@10·P@10·RPrec·MRR을 사용한다.
+평균 행동 수와 호출·토큰·비용·median·p95 지연도 함께 기록한다.
 
 ## 예상 API 사용량 및 USD 70 계획
 
@@ -107,7 +132,7 @@ trial nDCG@10/Recall@10, 평균 질문 수, 호출·토큰·비용·지연이다
 ### 비용 절감
 
 - trial criteria와 공통 system prompt는 trial revision별로 캐싱한다.
-- 세 baseline은 동일한 최초 매칭 결과와 hidden answer를 재사용한다.
+- 네 정책은 동일한 최초 매칭 결과와 hidden answer를 재사용한다.
 - 합성 환자와 masked hidden-answer 데이터를 반복 실험에 사용한다.
 - 답변 후 전체 trial을 다시 호출하지 않고 관련 criterion만 재호출한다.
 - 누락되거나 형식이 깨진 batch만 선택적으로 재시도한다.
@@ -122,12 +147,11 @@ trial nDCG@10/Recall@10, 평균 질문 수, 호출·토큰·비용·지연이다
 | 고정 holdout 최종 평가 | $14 |
 | 재시도·예비비 | $7 |
 
-
 ## 현재와 다음 단계
 
 | 현재 확보 | 바로 다음 구현 |
 |---|---|
-| 공유 상태, 결정 규칙, 휴리스틱 agent, 합성 데이터, 102개 테스트 | 데이터 adapter와 세 baseline 실행기 |
+| 공유 상태, 결정 규칙, 휴리스틱 agent, 합성 데이터, 102개 테스트 | 데이터 adapter와 네 정책 실행기 |
 | 질문 중복 제거, 질문 큐, 답변 정규화 계약 | Solar batch matching과 masked 질문 평가 |
 | 워크플로·연구 계획·데이터 출처 문서 | LangGraph 실행과 최종 평가 리포트 |
 

@@ -89,38 +89,43 @@
 
   <text class="section" x="60" y="512">비교 실험과 평가</text>
   <rect class="panel" x="60" y="538" width="920" height="194"/>
-  <text class="label" x="86" y="571">같은 환자·후보 trial·matcher에서 정보 획득 정책만 비교</text>
+  <text class="label" x="86" y="571">같은 initial state·matcher·hidden answer에서 정보 획득 정책만 비교</text>
 
-  <rect class="baseline-a" x="86" y="592" width="268" height="108"/>
-  <text class="box-title" x="220" y="626">Fixed-input</text>
-  <text class="box-text" x="220" y="658">추가 질문 없이 최초 판단</text>
-  <text class="box-text" x="220" y="683">질문 수 0회의 기준선</text>
+  <rect class="baseline-a" x="86" y="592" width="198" height="108"/>
+  <text class="box-title" x="185" y="626">Fixed-input</text>
+  <text class="box-text" x="185" y="658">추가 질문 없음</text>
+  <text class="box-text" x="185" y="683">행동 예산 0</text>
 
-  <rect class="baseline-b" x="376" y="592" width="268" height="108"/>
-  <text class="box-title" x="510" y="626">Ask-all</text>
-  <text class="box-text" x="510" y="658">모든 부족정보 확인</text>
-  <text class="box-text" x="510" y="683">최대 정확도·부담 기준선</text>
+  <rect class="baseline-b" x="300" y="592" width="198" height="108"/>
+  <text class="box-title" x="399" y="626">FIFO@3</text>
+  <text class="box-text" x="399" y="658">발견 순서로 확인</text>
+  <text class="box-text" x="399" y="683">동일예산 기준선</text>
 
-  <rect class="baseline-c" x="666" y="592" width="288" height="108"/>
-  <text class="box-title" x="810" y="626">ClarifyTrial</text>
-  <text class="box-text" x="810" y="658">최대 3회, 가치 높은 정보만</text>
-  <text class="box-text" x="810" y="683">표적 재평가로 비용 절감</text>
+  <rect class="baseline-c" x="514" y="592" width="198" height="108"/>
+  <text class="box-title" x="613" y="626">Clarify@3</text>
+  <text class="box-text" x="613" y="658">영향 큰 정보 우선</text>
+  <text class="box-text" x="613" y="683">우선순위 정책</text>
+
+  <rect class="baseline-b" x="728" y="592" width="226" height="108"/>
+  <text class="box-title" x="841" y="626">Oracle Ask-all</text>
+  <text class="box-text" x="841" y="658">모든 hidden answer</text>
+  <text class="box-text" x="841" y="683">합성 정보 상한선</text>
 
   <rect class="panel" x="1015" y="538" width="725" height="194"/>
   <text class="label" x="1042" y="571">평가 지표</text>
-  <text class="body" x="1042" y="610">criterion 판단</text>
-  <text class="strong" x="1215" y="610">macro-F1 · accuracy</text>
-  <text class="body" x="1042" y="643">부족정보 탐지</text>
-  <text class="strong" x="1215" y="643">recall · unknown 해소율</text>
+  <text class="body" x="1042" y="610">정보 회복</text>
+  <text class="strong" x="1215" y="610">CR · WR · U · macro-F1</text>
+  <text class="body" x="1042" y="643">정책 효율</text>
+  <text class="strong" x="1215" y="643">행동당 회복 · GainRetention@3</text>
   <text class="body" x="1042" y="676">trial 추천</text>
-  <text class="strong" x="1215" y="676">nDCG@10 · Recall@10</text>
+  <text class="strong" x="1215" y="676">panel nDCG@5 · TREC nDCG@10</text>
   <text class="body" x="1042" y="709">운영 효율</text>
   <text class="strong" x="1215" y="709">질문 수 · 호출 · 토큰 · 비용 · 지연</text>
 
   <text class="section" x="60" y="782">MVP 규모와 API 계획</text>
   <rect class="panel" x="60" y="808" width="500" height="152"/>
   <text class="label" x="86" y="842">MVP 실행 단위</text>
-  <text class="body" x="86" y="877">평가 세션 100개 · 후보 trial 3~5개</text>
+  <text class="body" x="86" y="877">masked session 100개 · 데모 후보 trial 3~5개</text>
   <text class="body" x="86" y="907">정보 획득 최대 3회 · 대표 데모 환자 3명</text>
   <text class="strong" x="86" y="938">전체 1회 실행 약 800요청</text>
 

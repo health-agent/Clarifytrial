@@ -28,9 +28,12 @@ ClarifyTrial의 핵심 구현 원칙은 다음 네 가지입니다.
 
 현재 저장소에는 공유 상태, 결정 규칙, 휴리스틱 agent, 합성 데이터, 오프라인
 데모와 102개 테스트가 구현돼 있습니다. 다음 단계는 공개 데이터 adapter,
-세 baseline 실행기, Solar batch matching, masked 질문 평가와 LangGraph 실행입니다.
+네 정책 실행기, Solar batch matching과 masked 질문 평가입니다. LangGraph와
+Synthea FHIR는 핵심 가설 검증 뒤의 선택적 확장입니다.
 쉽게 읽는 전체 설명과 구현 순서는
 [`docs/project-overview-ko.md`](docs/project-overview-ko.md)에 정리돼 있습니다.
+연구가설, 정답지 접근 통제, 비교군과 채점식은
+[`docs/research-design-ko.md`](docs/research-design-ko.md)에 정리돼 있습니다.
 검증한 공개 데이터의 역할·라벨 범위·이용조건은
 [`DATA_SOURCES.md`](DATA_SOURCES.md)에 기록돼 있습니다.
 
@@ -65,6 +68,8 @@ See `docs/architecture.md` (Mermaid flowchart) and
 Presentation & proposal materials:
 
 - `DATA_SOURCES.md` — verified public data, label boundaries, terms and provenance
+- `docs/research-design-ko.md` — macro hypotheses, masked benchmark contract,
+  policy controls and metrics
 - `docs/project_status_report.md` — current status, test coverage, what
   is and is not proven, safest next steps
 - `docs/proposal_brief.md` — proposal-ready project description
@@ -124,7 +129,7 @@ clarify_trial_agent/
 ## Next implementation milestones
 
 1. ClinicalTrials.gov, TrialGPT and TREC data adapters
-2. Fixed-input, Ask-all and ClarifyTrial baseline runner
+2. Fixed-input, FIFO@3, Clarify@3 and Oracle Ask-all policy runner
 3. Solar Pro 3 batch matching with cache, validation and cost logs
 4. Masked hidden-answer clarification benchmark
 5. LangGraph interrupt/resume and optional Synthea FHIR acquisition

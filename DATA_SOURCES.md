@@ -22,13 +22,31 @@ credentials, private sponsor material, or identifiable patient data.
 This dataset does not exist as a ready-made public benchmark. It will be
 derived from TrialGPT Criterion Annotations under the following rules:
 
-1. Select records with non-empty `expert_sentences` and explicit evidence.
-2. Remove only the expert-linked sentence from the visible patient note.
-3. Keep the original note and removed sentence in a hidden evaluator split.
-4. Record the target missing variable and affected criterion IDs in a manifest.
-5. Manually audit a sample to reject cases inferable from remaining context.
-6. Split development and holdout data by `patient_id`, never by criterion row.
-7. Keep question generation and hidden-answer generation independent.
+1. Split development and holdout by `patient_id` before masking or template work.
+2. Select explicit met/unmet evidence; do not use source `unknown` or
+   `not_applicable` rows as answer-after-mask recovery cases.
+3. Build session-level multi-mask examples with 2–5 independent variables,
+   including budget-binding cases with more than three missing variables.
+4. Remove every equivalent evidence span for the masked fact, not only one
+   linked sentence. Reject cases inferable from the remaining visible context.
+5. Use neutral variable keys such as `egfr_value`; never encode polarity or
+   criterion satisfaction in the key.
+6. Store hidden answers as independently normalized typed objects rather than
+   copying the removed sentence verbatim.
+7. Physically separate visible input from original notes, removed spans and
+   hidden values. Hidden content must not enter prompts, RAG indexes, cache
+   keys, filenames, debug logs or model-visible traces.
+8. Record affected trial and criterion IDs without storing the answer value or
+   resulting met/unmet label in the visible manifest.
+9. Validate questions against exactly one intended variable; mismatches and
+   multi-variable questions receive `no_answer`.
+10. Require the counterfactual contract: full note reproduces the reference
+    label, masked note becomes unknown, and masked note plus hidden answer
+    reproduces the reference label without changing unrelated criteria.
+11. Keep question generation, hidden-answer construction and holdout audit
+    independent.
+12. Audit all holdout sessions and a development sample for leakage and
+    residual inferability.
 
 The derived artifact must record its parent dataset revision, transformation
 script version, random seed, row identifiers and SHA-256. Model-generated
@@ -50,6 +68,18 @@ TrialGPT does not provide a `conflict` gold label. Map labels as follows:
 Evaluate `conflict` only on separately constructed and reviewed synthetic
 cases. TREC qrels are trial-level judgments and must not be reused as
 criterion-level or follow-up-question gold.
+
+Adapters must preserve three separate layers:
+
+- `source_label`: the dataset's original label;
+- `criterion_status`: `met`, `unmet`, `unknown`, `not_applicable`, or
+  `conflict`;
+- `eligibility_effect`: `supports_eligibility`, `blocks_eligibility`,
+  `uncertain`, or `neutral`, plus separate review fields.
+
+An exclusion criterion mapped to `met` must become
+`blocks_eligibility` downstream. `not_applicable` remains distinct from
+`unknown`; it maps to `neutral` in the deterministic rules.
 
 ## External model service
 
