@@ -68,8 +68,8 @@
 
   <rect class="box" x="1030" y="220" width="230" height="132"/>
   <text class="label" x="1145" y="258">기준별 근거 매칭</text>
-  <text class="small" x="1145" y="289">충족 · 위반 · 모름 · 충돌</text>
-  <text class="small" x="1145" y="319">최초 판정</text>
+  <text class="small" x="1145" y="289">truth: 충족 · 위반 · 모름</text>
+  <text class="small" x="1145" y="319">effect: 지원 · 차단 · 불확실</text>
   <path class="line" d="M975 293 H1030"/>
 
   <polygon points="1330,286 1430,205 1530,286 1430,367" fill="#ffffff" stroke="#475569" stroke-width="3"/>
@@ -81,7 +81,7 @@
   <rect class="rule" x="1570" y="174" width="190" height="224"/>
   <text class="label" x="1665" y="216">판정·추천 규칙</text>
   <text class="small" x="1665" y="250">hard block 우선</text>
-  <text class="small" x="1665" y="280">불확실성 분리</text>
+  <text class="small" x="1665" y="280">필수 미확인 → 불확실</text>
   <text class="small" x="1665" y="310">관련성은 순위에만 사용</text>
   <text class="small" x="1665" y="340">상태 갱신과 추천은</text>
   <text class="small" x="1665" y="364">결정론적 코드로 처리</text>
@@ -97,21 +97,21 @@
 
   <rect class="question" x="1175" y="455" width="250" height="128"/>
   <text class="label" x="1300" y="493">공통 부족정보 통합</text>
-  <text class="small" x="1300" y="523">여러 trial이 같은 정보를</text>
-  <text class="small" x="1300" y="550">필요로 해도 질문은 한 번</text>
+  <text class="small" x="1300" y="523">concept·단위·시간 창이 같으면</text>
+  <text class="small" x="1300" y="550">여러 trial에서도 행동은 한 번</text>
   <path class="loop" d="M1430 367 V420 Q1430 455 1400 455"/>
   <text class="arrow-label" x="1445" y="416">예</text>
 
   <rect class="question" x="890" y="455" width="225" height="128"/>
   <text class="label" x="1002" y="493">질문 선택</text>
-  <text class="small" x="1002" y="523">결론을 바꿀 질문부터</text>
+  <text class="small" x="1002" y="523">trial 상태를 바꿀 변수부터</text>
   <text class="small" x="1002" y="550">추가 이득이 있는 동안 반복</text>
   <path class="loop" d="M1175 519 H1115"/>
 
   <rect class="future" x="615" y="455" width="220" height="128"/>
-  <text class="label" x="725" y="492">환자 답변</text>
-  <text class="small" x="725" y="522">실제 사용자 입력 또는</text>
-  <text class="small" x="725" y="549">독립된 환자 시뮬레이터</text>
+  <text class="label" x="725" y="492">정보 획득</text>
+  <text class="small" x="725" y="522">FHIR → note → 직접 질문</text>
+  <text class="small" x="725" y="549">확인 결과를 typed 답변으로</text>
   <path class="loop" d="M890 519 H835"/>
 
   <rect class="box" x="350" y="455" width="210" height="128"/>

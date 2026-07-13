@@ -56,25 +56,39 @@ See DATA_SOURCES.md in this directory for source details and label mapping.
 ## Next implementation targets
 
 1. Add ClinicalTrials.gov, TrialGPT and TREC adapters.
-2. Implement the Single-shot LLM matching path.
-3. Implement Ask-all over the shared missing-variable pool.
-4. Complete ClarifyTrial priority selection and targeted re-evaluation.
-5. Record results after every information-acquisition action so the useful
+2. Add Boolean criteria ASTs, source-span validation and semantic missing keys.
+3. Build the multi-mask interactive benchmark with separate visible and oracle
+   bundles.
+4. Implement No-acquisition, Fixed-order, Coverage-only, Clarify-priority and
+   Ask-all policies over the same shared missing-variable pool.
+5. Complete targeted re-evaluation and compare it with full re-evaluation on
+   the same answer trajectories.
+6. Record results after every information-acquisition action so the useful
    stopping point can be measured rather than fixed in advance.
-6. Add criterion, retrieval, ranking, action-count and API-usage reports.
-7. Add the optional Synthea FHIR route after the core comparison works.
+7. Add separate criterion, interactive-policy, TREC-ranking, route and
+   API-usage reports.
+8. Add the optional Synthea FHIR route after the core comparison works.
 
-## Planned comparison
+## Planned comparisons
 
-| Method | Behavior |
+### Acquisition policy
+
+| Policy | Behavior |
 |---|---|
-| Single-shot LLM matching | recommend from the initial patient information |
-| Ask-all | acquire every detected missing variable before re-evaluation |
-| ClarifyTrial | acquire high-impact variables first and re-evaluate only affected criteria |
+| No-acquisition | stop at the initial patient information |
+| Fixed-order | acquire variables in a stable non-prioritized order |
+| Coverage-only | prioritize the variable linked to the most criteria |
+| Clarify-priority | prioritize variables capable of changing more trial states |
+| Ask-all | acquire every answerable variable as an information ceiling |
 
-Primary metrics are criterion macro-F1 or accuracy, missing-variable Recall@k,
-retrieval Recall@k, recommendation nDCG@k, unknown resolution rate, average
-information-acquisition actions, API calls, token usage, cost, and latency.
+All policies use the same re-evaluation engine. A separate replay experiment
+holds the variable sequence and answers fixed, then compares Full and Targeted
+re-evaluation for state agreement, calls, tokens, cost and latency.
+
+Primary metrics include criterion recovery, trial-state exact match,
+quality-action and quality-cost AUC, wrong commitment, non-target mutation,
+TREC NDCG@10 in its separate historical track, API calls, token usage, cost,
+and latency.
 
 ## User-facing documents
 

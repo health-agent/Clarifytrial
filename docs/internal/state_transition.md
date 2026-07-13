@@ -49,7 +49,7 @@ stateDiagram-v2
 \* unknown remains uncertain during clarification. A configured stopping
 policy may route unresolved criteria to review.
 
-## Recommendation precedence (per trial, applied exactly in order)
+## Current offline-skeleton recommendation precedence
 
 1. any `eligibility_effect == blocks_eligibility` → **likely_ineligible**
 2. else any `review_required == true` → **needs_human_review**
@@ -58,3 +58,16 @@ policy may route unresolved criteria to review.
 
 `trial_relevance_score` influences `ranking_score` only; it can never
 override a hard eligibility block.
+
+This threshold rule is retained only to describe the behavior of the current
+offline skeleton. The public benchmark runner specified in the root README
+uses the stricter target contract:
+
+1. any blocking effect -> `likely_ineligible`
+2. else any conflict or manual-review flag -> `needs_human_review`
+3. else any unresolved decision-critical criterion -> `uncertain`
+4. else all applicable inclusion criteria must be met and all applicable
+   exclusion criteria unmet -> `likely_eligible`
+
+The uncertainty ratio may affect ordering inside a screening tier, but it does
+not decide the target eligibility class.
