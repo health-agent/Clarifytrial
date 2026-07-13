@@ -33,7 +33,7 @@
   <text class="subtitle" x="60" y="88">사용 대상: 임상시험 코디네이터와 임상의 · 목표: 필요한 정보를 순차 확인해 근거 있는 사전선별 상태 갱신</text>
 
   <rect x="60" y="116" width="1680" height="66" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="8"/>
-  <text class="goal" x="900" y="157">임상시험 판정을 바꿀 수 있는 정보를 우선 확인하고, 확인 순서와 재평가 범위는 따로 검증한다</text>
+  <text class="goal" x="900" y="157">자유서술 기준에서 관계망을 만들고, 정보 조합 정책과 재평가 정확도를 따로 검증한다</text>
 
   <text class="section" x="60" y="222">여러 전문 역할의 협업 흐름</text>
 
@@ -60,9 +60,9 @@
   <text class="step-no" x="785" y="289">3</text>
   <text class="box-title" x="895" y="290">기준 판정·질문 선택</text>
   <text class="box-text" x="895" y="329">참여 기준별 근거 판정</text>
-  <text class="box-text" x="895" y="359">부족 정보 관계망</text>
-  <text class="box-text" x="895" y="389">다음 정보 우선순위 계산</text>
-  <text class="box-text" x="895" y="430">판정을 바꿀 정보부터 선택</text>
+  <text class="box-text" x="895" y="359">정보 의존 관계망 자동 구축</text>
+  <text class="box-text" x="895" y="389">최소 결정 정보 집합 계산</text>
+  <text class="box-text" x="895" y="430">판정에 필요한 정보 조합 선택</text>
 
   <rect class="step" x="1095" y="250" width="290" height="212"/>
   <circle cx="1130" cy="283" r="19" fill="#0891b2"/>
@@ -71,7 +71,7 @@
   <text class="box-text" x="1240" y="329">FHIR → 임상 기록 → 직접 질문</text>
   <text class="box-text" x="1240" y="359">답변 정규화·상태 반영</text>
   <text class="box-text" x="1240" y="389">관련 기준 재평가</text>
-  <text class="box-text" x="1240" y="430">관련 참여 기준만 다시 판단</text>
+  <text class="box-text" x="1240" y="430">독립 정답·전체 계산과 검증</text>
 
   <rect class="step" x="1440" y="250" width="300" height="212"/>
   <circle cx="1475" cy="283" r="19" fill="#16a34a"/>
@@ -92,41 +92,41 @@
   <text class="label" x="86" y="571">실험 A · 같은 시작 상태와 재평가 방식에서 정보 확인 순서만 비교</text>
 
   <rect class="baseline-a" x="86" y="592" width="268" height="108"/>
-  <text class="box-title" x="220" y="626">고정 순서</text>
-  <text class="box-text" x="220" y="658">고정된 정보 키 순서</text>
-  <text class="box-text" x="220" y="683">우선순위 없는 순차 확인</text>
+  <text class="box-title" x="220" y="626">무작위·고정 순서</text>
+  <text class="box-text" x="220" y="658">순서 정책이 없는 기준선</text>
+  <text class="box-text" x="220" y="683">여러 무작위 순서를 반복</text>
 
   <rect class="baseline-b" x="376" y="592" width="268" height="108"/>
-  <text class="box-title" x="510" y="626">연결 기준 수 우선</text>
-  <text class="box-text" x="510" y="658">연결된 참여 기준 수 우선</text>
-  <text class="box-text" x="510" y="683">단순 중복 제거 기준선</text>
+  <text class="box-title" x="510" y="626">과거 비용·범위 우선</text>
+  <text class="box-text" x="510" y="658">비용·시험 수·기준 수 순서</text>
+  <text class="box-text" x="510" y="683">1998·2004년 방식과 비교</text>
 
   <rect class="baseline-c" x="666" y="592" width="288" height="108"/>
-  <text class="box-title" x="810" y="626">판정 변화 우선</text>
-  <text class="box-text" x="810" y="658">임상시험 판정 변화 우선</text>
-  <text class="box-text" x="810" y="683">추가 확인 없음·모두 확인도 비교</text>
+  <text class="box-title" x="810" y="626">한 단계 ↔ 최소 정보 집합</text>
+  <text class="box-text" x="810" y="658">즉시 효과와 정보 조합 비교</text>
+  <text class="box-text" x="810" y="683">추가 확인 없음·모두 확인 포함</text>
 
   <rect class="panel" x="1015" y="538" width="725" height="194"/>
-  <text class="label" x="1042" y="571">실험 B · 같은 질문·답변 이력에서 재평가 범위만 비교</text>
-  <text class="body" x="1042" y="610">전체 재평가</text>
-  <text class="strong" x="1280" y="610">모든 후보 참여 기준 재평가</text>
-  <text class="body" x="1042" y="653">관련 기준 재평가</text>
-  <text class="strong" x="1280" y="653">답변과 연결된 기준만 재평가</text>
-  <text class="body" x="1042" y="696">검증</text>
-  <text class="strong" x="1280" y="696">결과 일치 · 무관한 기준 불변 · 비용 감소</text>
+  <text class="label" x="1042" y="571">실험 B · 독립 정답·전체·관련 기준 재평가를 세 방향으로 비교</text>
+  <text class="body" x="1042" y="610">독립 정답</text>
+  <text class="strong" x="1280" y="610">완전 기록과 사람이 확인한 규칙</text>
+  <text class="body" x="1042" y="653">전체 재평가</text>
+  <text class="strong" x="1280" y="653">모든 후보 참여 기준 다시 계산</text>
+  <text class="body" x="1042" y="696">관련 기준 재평가</text>
+  <text class="strong" x="1280" y="696">연결된 기준만 계산 · 상태 안정성</text>
 
   <text class="section" x="60" y="782">분리된 평가 자료·평가 지표·API 계획</text>
   <rect class="panel" x="60" y="808" width="500" height="152"/>
   <text class="label" x="86" y="842">평가 자료</text>
-  <text class="body" x="86" y="877">A TrialGPT 기준 판정 · B 불완전 기록</text>
-  <text class="body" x="86" y="907">C TREC 과거 검색 · D 합성 출처</text>
+  <text class="body" x="86" y="877">A TrialGPT 기준 판정 · B 관계망 정답</text>
+  <text class="body" x="86" y="907">C 불완전 기록 · D TREC · E 합성 출처</text>
   <text class="strong" x="86" y="938">평가별 입력 형식과 결과표를 따로 유지</text>
 
   <rect class="panel" x="590" y="808" width="500" height="152"/>
   <text class="label" x="616" y="842">핵심 평가</text>
-  <text class="body" x="616" y="877">기준 정답 회복률 · 임상시험 상태 일치</text>
-  <text class="body" x="616" y="907">행동·비용 대비 품질 · TREC nDCG@10</text>
-  <text class="strong" x="616" y="938">고정 상한 없이 적절한 종료 지점 탐색</text>
+  <text class="body" x="616" y="877">관계망 F1 · 기준 정답 회복률</text>
+  <text class="body" x="616" y="907">판정 결정 비용 · TREC nDCG@10</text>
+  <text class="strong" x="616" y="938">조기 종료 · 오류 방향 · 재평가 정확도</text>
 
   <rect class="panel" x="1120" y="808" width="620" height="152"/>
   <text class="label" x="1146" y="842">API 사용 계획</text>
