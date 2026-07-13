@@ -22,9 +22,9 @@ deliberately NOT included (see "prepares for" below).
   creates exactly ONE `FollowUpQuestion` per variable with stable ids
   (Q-001, Q-002, ... in priority-then-key order), template-based plain-
   language wording for common variables, a generic fallback otherwise,
-  and full `affected_criterion_ids` traceability. If
-  `round_number > max_rounds` (3), no new questions are created — the
-  locked rules route remaining unknowns to human review instead.
+  and full `affected_criterion_ids` traceability. There is no fixed round
+  limit by default. Experiments may provide `max_rounds`; when that optional
+  limit is exceeded, no new questions are created.
 - LLM question phrasing will later use
   `prompts/clarification_question.md` behind the same contract.
 

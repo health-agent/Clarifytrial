@@ -13,7 +13,7 @@ per-trial `criterion_states` under `trial_states_by_trial_id` →
 `rules.derive_eligibility_effect` (including a conflict routed to
 review) → `rules.deduplicate_missing_variables` (the same
 `ecog_performance_status` key from two trials becomes ONE pool item) →
-global clarification queue (`FollowUpQuestion`, round 1 of max 3) →
+global clarification queue (`FollowUpQuestion`, round 1) →
 `rules.compute_trial_recommendation` + `rules.rank_trials` (a blocked
 trial ranks last regardless of relevance) → `FinalOutput` → a markdown
 report at `outputs/end_to_end_demo_summary.md`.

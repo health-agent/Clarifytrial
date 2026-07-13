@@ -37,7 +37,8 @@ def derive_eligibility_effect(
     - exclusion + unmet    -> supports_eligibility
     - exclusion + unknown  -> uncertain
     - conflict             -> uncertain, review_required, conflicting_evidence
-    - unknown after max rounds -> uncertain, review_required, max_rounds_exceeded
+    - unknown after an optional configured round limit -> uncertain,
+      review_required, max_rounds_exceeded
     - not_applicable       -> neutral
     """
     if criterion_match_status == CriterionMatchStatus.conflict:

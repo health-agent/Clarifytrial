@@ -45,7 +45,7 @@ def test_exclusion_unmet_supports_eligibility():
 @pytest.mark.parametrize(
     "criterion_type", [CriterionType.inclusion, CriterionType.exclusion]
 )
-def test_unknown_is_uncertain_without_review_before_max_rounds(criterion_type):
+def test_unknown_is_uncertain_without_a_configured_stop(criterion_type):
     effect, review_required, reason = derive_eligibility_effect(
         criterion_type, CriterionMatchStatus.unknown
     )
@@ -66,7 +66,7 @@ def test_conflict_uncertain_with_review(criterion_type):
     assert reason == ReviewReason.conflicting_evidence
 
 
-def test_unknown_after_max_rounds_requires_review():
+def test_unknown_after_an_optional_round_limit_requires_review():
     effect, review_required, reason = derive_eligibility_effect(
         CriterionType.inclusion,
         CriterionMatchStatus.unknown,

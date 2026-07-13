@@ -48,7 +48,7 @@ truth.
 **ClinicalTrials.gov API v2 ingestion adapter** will populate (`nct_id`,
 `eligibility_criteria_raw`, `conditions`, `interventions`, `source`,
 `source_url`, `retrieved_at`). The official API fields and a live recruiting
-study response were verified on 2026-07-11, but no adapter is called anywhere
+study response were verified on 2026-07-14, but no adapter is called anywhere
 in this repository yet. Runs will record the API data timestamp, query, NCT IDs
 and response hash; raw registry caches stay outside Git. TREC ranking evaluation
 uses each track's corresponding historical corpus. See `DATA_SOURCES.md`.
@@ -60,12 +60,10 @@ criterion rows with expert labels and evidence sentence IDs. It can support a
 derived interactive benchmark, but it is not already a follow-up-question
 dataset.
 
-Only rows with explicit, non-empty expert evidence will be used. The evidence
-sentence will be hidden from the visible note and retained in an independent
-hidden-answer split. A manual audit must remove cases where the answer remains
-inferable from the remaining note. The model's own answer is never its gold.
-Development and holdout splits are made by `patient_id`, not criterion row, so
-the same note cannot leak across splits.
+The benchmark masks a patient variable supported by expert evidence, records
+that value as the expected patient answer, runs missing-variable detection and
+question generation, and then checks whether answer-driven re-evaluation
+returns to the original expert criterion label.
 
 TrialGPT does not contain a `conflict` gold label. Conflict behavior stays in
 separate synthetic and manually reviewed fixtures.

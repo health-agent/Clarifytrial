@@ -7,9 +7,10 @@ its own ``trial_context`` and ``criterion_states``. This agent is the only
 writer of session state; all other agents read from it and propose updates
 through it.
 
-It also enforces the session-level ``clarification_round_count`` cap
-(max 3) and applies the pure rule functions from ``rules.py`` when
-criterion match statuses change.
+It tracks the session-level ``clarification_round_count`` without imposing a
+fixed cap and applies the pure rule functions from ``rules.py`` when criterion
+match statuses change. A configured experiment or stopping policy may still
+end clarification and route unresolved criteria to review.
 """
 
 from __future__ import annotations
@@ -45,17 +46,17 @@ def update_criterion_status(
 ) -> CriterionState:
     """Update one criterion's match status and re-derive its effect.
 
-    TODO: apply rules.derive_eligibility_effect (passing
-    max_rounds_exceeded=session.clarification_round_count >= 3 when the
-    status remains unknown) and persist the updated CriterionState.
+    TODO: apply rules.derive_eligibility_effect and persist the updated
+    CriterionState. If the active run has a configured stopping condition,
+    pass that result through ``max_rounds_exceeded`` for compatibility.
     """
     raise NotImplementedError("State update not implemented in skeleton")
 
 
 def increment_clarification_round(session: PatientSession) -> PatientSession:
-    """Increment the session-level round counter, capped at 3.
+    """Increment the session-level round counter.
 
-    TODO: raise/flag when the cap is reached so unknown criteria are routed
-    to review (max_rounds_exceeded).
+    TODO: persist the increment and let the orchestration policy decide whether
+    another information-acquisition action is worthwhile.
     """
     raise NotImplementedError("Round tracking not implemented in skeleton")

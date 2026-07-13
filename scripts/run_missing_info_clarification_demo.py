@@ -122,7 +122,7 @@ def main() -> list[FollowUpQuestion]:
     ]
     report += [
         "",
-        "## Global clarification queue (round 1 of max 3)",
+        "## Global clarification queue (round 1)",
         "",
         "| id | priority_rank | variable | question |",
         "|---|---|---|---|",

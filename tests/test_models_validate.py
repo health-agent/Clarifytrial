@@ -18,7 +18,12 @@ def load_session() -> PatientSession:
 def test_demo_session_validates_against_patient_session_model():
     session = load_session()
     assert session.patient_id == "synthetic-patient-001"
-    assert session.clarification_round_count <= 3
+    assert session.clarification_round_count >= 0
+
+
+def test_session_round_count_has_no_fixed_upper_bound():
+    session = load_session().model_copy(update={"clarification_round_count": 4})
+    assert PatientSession.model_validate(session.model_dump()).clarification_round_count == 4
 
 
 def test_demo_session_respects_locked_invariants():

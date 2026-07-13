@@ -225,7 +225,7 @@ def apply_answer_update(
 
     TODO: mark the question answered, mark the pool item resolved, write
     the normalized value into the patient profile, and bump/validate the
-    session-level clarification_round_count (max 3).
+    session-level clarification_round_count.
     """
     raise NotImplementedError("Answer application not implemented in skeleton")
 

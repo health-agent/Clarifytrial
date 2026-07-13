@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1800" height="900" viewBox="0 0 1800 900" role="img" aria-labelledby="title desc">
   <title id="title">ClarifyTrial 전체 워크플로</title>
-  <desc id="desc">임상시험과 환자 정보를 구조화하고, 여러 시험의 부족 정보를 하나의 질문으로 통합한 뒤, 답변과 관련된 기준만 다시 판단하고 규칙 기반 안전판을 거쳐 추천하는 흐름</desc>
+  <desc id="desc">임상시험과 환자 정보를 구조화하고, 여러 시험의 부족 정보를 통합한 뒤, 질문이나 조회 결과와 관련된 기준만 다시 판단해 추천하는 흐름</desc>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
@@ -28,12 +28,12 @@
   </defs>
 
   <rect class="bg" width="1800" height="900"/>
-  <text class="title" x="60" y="58">ClarifyTrial: 한 번 묻고, 관련된 임상시험만 다시 판단한다</text>
+  <text class="title" x="60" y="58">ClarifyTrial: 필요한 정보를 확인하고, 관련 기준만 다시 판단한다</text>
   <text class="subtitle" x="60" y="91">여러 임상시험을 하나의 환자 상태로 연결하는 대화형 추천 구조</text>
 
   <text class="section" x="60" y="132">1. 입력과 구조화</text>
   <text class="section" x="650" y="132">2. 공유 상태와 최초 판단</text>
-  <text class="section" x="1170" y="132">3. 질문 또는 최종 결정</text>
+  <text class="section" x="1170" y="132">3. 정보 획득 또는 최종 결정</text>
 
   <rect class="future" x="60" y="158" width="250" height="116"/>
   <text class="label" x="185" y="198">임상시험 원문</text>
@@ -61,7 +61,7 @@
   <text class="small" x="822" y="261">모든 임상시험 상태를 한곳에 저장</text>
   <text class="small" x="822" y="294">환자 프로필 · trial별 criterion 상태</text>
   <text class="small" x="822" y="327">공통 부족정보 · 질문 · 답변 기록</text>
-  <text class="small" x="822" y="360">최대 질문 라운드: 3회</text>
+  <text class="small" x="822" y="360">질문·답변 횟수와 이력</text>
 
   <path class="line" d="M615 216 H650 Q670 216 670 236"/>
   <path class="line" d="M615 364 H650 Q670 364 670 344"/>
@@ -79,12 +79,12 @@
   <path class="line" d="M1260 286 H1330"/>
 
   <rect class="rule" x="1570" y="174" width="190" height="224"/>
-  <text class="label" x="1665" y="216">규칙 기반 안전판</text>
+  <text class="label" x="1665" y="216">판정·추천 규칙</text>
   <text class="small" x="1665" y="250">hard block 우선</text>
   <text class="small" x="1665" y="280">불확실성 분리</text>
   <text class="small" x="1665" y="310">관련성은 순위에만 사용</text>
-  <text class="small" x="1665" y="340">LLM이 판정 규칙을</text>
-  <text class="small" x="1665" y="364">마음대로 바꾸지 못함</text>
+  <text class="small" x="1665" y="340">상태 갱신과 추천은</text>
+  <text class="small" x="1665" y="364">결정론적 코드로 처리</text>
   <path class="line" d="M1530 286 H1570"/>
   <text class="arrow-label" x="1537" y="270">아니오</text>
 
@@ -105,7 +105,7 @@
   <rect class="question" x="890" y="455" width="225" height="128"/>
   <text class="label" x="1002" y="493">질문 선택</text>
   <text class="small" x="1002" y="523">결론을 바꿀 질문부터</text>
-  <text class="small" x="1002" y="550">최대 3라운드</text>
+  <text class="small" x="1002" y="550">추가 이득이 있는 동안 반복</text>
   <path class="loop" d="M1175 519 H1115"/>
 
   <rect class="future" x="615" y="455" width="220" height="128"/>
@@ -130,8 +130,8 @@
 
   <rect class="review" x="1175" y="650" width="250" height="128"/>
   <text class="label" x="1300" y="689">사람 검토로 전환</text>
-  <text class="small" x="1300" y="719">근거 충돌 또는</text>
-  <text class="small" x="1300" y="746">3라운드 후에도 불확실</text>
+  <text class="small" x="1300" y="719">근거가 충돌하거나</text>
+  <text class="small" x="1300" y="746">추가 확인으로 판단 불가</text>
   <path class="dashed-line" d="M1300 583 V650"/>
 
   <line x1="60" y1="815" x2="1760" y2="815" stroke="#cbd5e1" stroke-width="2"/>

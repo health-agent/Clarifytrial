@@ -1,8 +1,8 @@
 # ClarifyTrial Agent v1.2-final — Criterion State Transitions (locked)
 
 Each criterion state starts uninitialized and is driven by the Criterion
-Matching Agent, the clarification loop (global queue, session-level max 3
-rounds), and the pure rules in `rules.py`.
+Matching Agent, the global clarification loop, and the pure rules in
+`rules.py`. The loop has no fixed round cap by default.
 
 ```mermaid
 stateDiagram-v2
@@ -25,7 +25,7 @@ stateDiagram-v2
     targeted_reevaluation --> conflict
 
     conflict --> review_required: effect=uncertain,<br/>reason=conflicting_evidence
-    unknown --> review_required: still unknown after<br/>max 3 rounds,<br/>reason=max_rounds_exceeded
+    unknown --> review_required: controller stops clarification<br/>with unresolved evidence
 
     met --> [*]
     unmet --> [*]
@@ -46,8 +46,8 @@ stateDiagram-v2
 | any            | conflict       | uncertain            | yes (conflicting_evidence) |
 | any            | not_applicable | neutral              | no     |
 
-\* unknown becomes review_required with reason `max_rounds_exceeded` once
-the session-level `clarification_round_count` reaches 3.
+\* unknown remains uncertain during clarification. A configured stopping
+policy may route unresolved criteria to review.
 
 ## Recommendation precedence (per trial, applied exactly in order)
 

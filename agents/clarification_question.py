@@ -3,8 +3,8 @@
 Responsibility: turn pending items of the global missing variable pool into
 ``FollowUpQuestion`` objects and manage them in the single GLOBAL
 clarification queue (locked invariant: questions are global, never
-per-trial). Question rounds are bounded by the session-level
-``clarification_round_count`` (max 3).
+per-trial). Question rounds are unbounded by default; experiments may pass
+an optional limit when comparing stopping policies.
 
 Current implementation: deterministic question templates for common
 variables with a generic fallback. LLM question phrasing, driven by
@@ -18,7 +18,6 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from models import (
-    MAX_CLARIFICATION_ROUNDS,
     FollowUpQuestion,
     GlobalMissingVariablePoolItem,
     PatientSession,
@@ -88,7 +87,7 @@ _PRIORITY_ORDER = {"high": 0, "medium": 1, "low": 2, None: 3}
 def build_global_clarification_queue(
     missing_variable_pool: dict[str, GlobalMissingVariablePoolItem],
     round_number: int = 1,
-    max_rounds: int = MAX_CLARIFICATION_ROUNDS,
+    max_rounds: Optional[int] = None,
 ) -> list[FollowUpQuestion]:
     """Build the global clarification queue from the missing-variable pool.
 
@@ -99,15 +98,16 @@ def build_global_clarification_queue(
     - traceability preserved via ``affected_criterion_ids``;
     - deterministic ordering (priority high->medium->low, then key) and
       stable ids Q-001, Q-002, ...;
-    - if ``round_number > max_rounds``, NO new questions are created
-      (the rules route remaining unknowns to review instead);
+    - no fixed round limit by default;
+    - if an experiment supplies ``max_rounds`` and the current round exceeds
+      it, no new questions are created;
     - no answer handling, no re-evaluation, no eligibility decisions.
 
     TODO: LLM question phrasing via prompts/clarification_question.md
     (plain-language wording tuned to the source criteria), keeping ids,
     ordering, and dedup semantics exactly as here.
     """
-    if round_number > max_rounds:
+    if max_rounds is not None and round_number > max_rounds:
         return []
 
     ordered = sorted(

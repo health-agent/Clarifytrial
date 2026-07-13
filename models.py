@@ -12,7 +12,7 @@ architecture invariants:
   (``global_missing_variable_pool``).
 - Clarification questions live in a single global clarification queue,
   not per trial (``global_clarification_queue``).
-- ``clarification_round_count`` is session-level with a max of 3.
+- ``clarification_round_count`` is session-level and has no fixed upper bound.
 - ``trial_relevance_score`` affects ranking only, never hard eligibility.
 """
 
@@ -24,7 +24,6 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
-MAX_CLARIFICATION_ROUNDS = 3
 DEFAULT_MEDICAL_DISCLAIMER = (
     "This synthetic software output is for research and demonstration only. "
     "It is not medical advice and does not replace review by qualified clinical professionals."
@@ -222,7 +221,7 @@ class AnswerUpdate(BaseModel):
     raw_answer_text: str
     normalized_value: Any = None
     updated_criterion_ids: list[str] = Field(default_factory=list)
-    round_number: int = Field(default=1, ge=1, le=MAX_CLARIFICATION_ROUNDS)
+    round_number: int = Field(default=1, ge=1)
 
 
 # ---------------------------------------------------------------------------
@@ -271,9 +270,7 @@ class PatientSession(BaseModel):
         default_factory=dict
     )
     global_clarification_queue: list[FollowUpQuestion] = Field(default_factory=list)
-    clarification_round_count: int = Field(
-        default=0, ge=0, le=MAX_CLARIFICATION_ROUNDS
-    )
+    clarification_round_count: int = Field(default=0, ge=0)
     answer_updates: list[AnswerUpdate] = Field(default_factory=list)
     trial_recommendations: list[TrialRecommendation] = Field(default_factory=list)
 

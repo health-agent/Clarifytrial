@@ -121,10 +121,15 @@ def test_generic_fallback_for_unknown_variable_names():
     assert question.target_profile_field == "variables.quality_of_life_score"
 
 
-def test_max_rounds_respected():
+def test_optional_max_rounds_respected():
     pool = build_global_missing_variable_pool(SHARED_KEY_STATES)
-    assert build_global_clarification_queue(pool, round_number=3) != []
-    assert build_global_clarification_queue(pool, round_number=4) == []
+    assert build_global_clarification_queue(pool, round_number=3, max_rounds=3) != []
+    assert build_global_clarification_queue(pool, round_number=4, max_rounds=3) == []
+
+
+def test_default_question_rounds_have_no_fixed_cap():
+    pool = build_global_missing_variable_pool(SHARED_KEY_STATES)
+    assert build_global_clarification_queue(pool, round_number=4) != []
 
 
 def test_demo_script_runs_and_writes_report():

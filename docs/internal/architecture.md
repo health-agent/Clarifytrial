@@ -7,8 +7,9 @@ central shared state (`PatientSession`), which is session-level and keyed by
 each trial has its own `trial_context` and `criterion_states`. Missing
 variables are deduplicated **globally** by `missing_variable_key`, and
 clarification questions live in a single **global clarification queue**
-(never per trial). `clarification_round_count` is session-level with a max
-of 3. `trial_relevance_score` affects ranking only, never hard eligibility.
+(never per trial). `clarification_round_count` is session-level and has no
+fixed upper bound. `trial_relevance_score` affects ranking only, never hard
+eligibility.
 
 ```mermaid
 flowchart TB
@@ -38,7 +39,7 @@ flowchart TB
         SESSION["PatientSession (session-level, keyed by patient_id)"]
         TSB["trial_states_by_trial_id<br/>(per trial: trial_context + criterion_states)"]
         GMVP["global_missing_variable_pool<br/>(deduplicated by missing_variable_key)"]
-        GCQ["global_clarification_queue<br/>(global, max 3 rounds per session)"]
+        GCQ["global_clarification_queue<br/>(global, no fixed round cap)"]
         SESSION --> TSB
         SESSION --> GMVP
         SESSION --> GCQ

@@ -203,7 +203,7 @@ def main() -> FinalOutput:
     session.clarification_round_count = 1
     stage(
         f"Stage 8: queued {len(session.global_clarification_queue)} clarification "
-        "question(s) in the GLOBAL queue (round 1 of max 3)."
+        "question(s) in the GLOBAL queue (round 1)."
     )
 
     # Stage 9: recommendations via the real precedence rules + ranking.
@@ -258,7 +258,7 @@ def main() -> FinalOutput:
         f"- Global missing variables (deduplicated): "
         f"{', '.join(session.global_missing_variable_pool) or 'none'}",
         f"- Clarification questions queued (global, round "
-        f"{session.clarification_round_count}/3): "
+        f"{session.clarification_round_count}): "
         f"{len(session.global_clarification_queue)}",
         "",
         "## Ranked recommendations",

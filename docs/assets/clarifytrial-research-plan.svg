@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1050" viewBox="0 0 1800 1050" role="img" aria-labelledby="title desc">
   <title id="title">ClarifyTrial 연구 및 실행 계획</title>
-  <desc id="desc">임상시험 데이터와 합성 환자 입력부터 멀티에이전트 판단, 부족정보 확인, 표적 재평가, 추천 평가와 API 예산까지 한눈에 보여주는 계획</desc>
+  <desc id="desc">임상시험 데이터와 환자 입력부터 멀티에이전트 판단, 부족정보 확인, 표적 재평가와 추천 평가까지 한눈에 보여주는 계획</desc>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
@@ -41,10 +41,10 @@
   <circle cx="95" cy="283" r="19" fill="#2563eb"/>
   <text class="step-no" x="95" y="289">1</text>
   <text class="box-title" x="205" y="290">데이터 준비</text>
-  <text class="box-text" x="205" y="329">ClinicalTrials.gov 기준</text>
-  <text class="box-text" x="205" y="359">합성 환자·TrialGPT·TREC</text>
-  <text class="box-text" x="205" y="389">masked 불완전정보 세트</text>
-  <text class="box-text" x="205" y="430">출처·버전·정답 라벨 고정</text>
+  <text class="box-text" x="205" y="329">ClinicalTrials.gov</text>
+  <text class="box-text" x="205" y="359">TrialGPT · Masked set</text>
+  <text class="box-text" x="205" y="389">TREC · 선택 Synthea</text>
+  <text class="box-text" x="205" y="430">입력·정답 데이터 연결</text>
 
   <rect class="step" x="405" y="250" width="290" height="212"/>
   <circle cx="440" cy="283" r="19" fill="#7c3aed"/>
@@ -89,66 +89,54 @@
 
   <text class="section" x="60" y="512">비교 실험과 평가</text>
   <rect class="panel" x="60" y="538" width="920" height="194"/>
-  <text class="label" x="86" y="571">같은 initial state·matcher·hidden answer에서 정보 획득 정책만 비교</text>
+  <text class="label" x="86" y="571">같은 환자·후보 trial·criterion에서 정보 획득 방식만 비교</text>
 
-  <rect class="baseline-a" x="86" y="592" width="198" height="108"/>
-  <text class="box-title" x="185" y="626">Fixed-input</text>
-  <text class="box-text" x="185" y="658">추가 질문 없음</text>
-  <text class="box-text" x="185" y="683">행동 예산 0</text>
+  <rect class="baseline-a" x="86" y="592" width="268" height="108"/>
+  <text class="box-title" x="220" y="626">Single-shot</text>
+  <text class="box-text" x="220" y="658">현재 정보만 사용</text>
+  <text class="box-text" x="220" y="683">질문 없이 바로 추천</text>
 
-  <rect class="baseline-b" x="300" y="592" width="198" height="108"/>
-  <text class="box-title" x="399" y="626">FIFO@3</text>
-  <text class="box-text" x="399" y="658">발견 순서로 확인</text>
-  <text class="box-text" x="399" y="683">동일예산 기준선</text>
+  <rect class="baseline-b" x="376" y="592" width="268" height="108"/>
+  <text class="box-title" x="510" y="626">Ask-all</text>
+  <text class="box-text" x="510" y="658">모든 부족정보 확인</text>
+  <text class="box-text" x="510" y="683">전체 정보 후 재평가</text>
 
-  <rect class="baseline-c" x="514" y="592" width="198" height="108"/>
-  <text class="box-title" x="613" y="626">Clarify@3</text>
-  <text class="box-text" x="613" y="658">영향 큰 정보 우선</text>
-  <text class="box-text" x="613" y="683">우선순위 정책</text>
-
-  <rect class="baseline-b" x="728" y="592" width="226" height="108"/>
-  <text class="box-title" x="841" y="626">Oracle Ask-all</text>
-  <text class="box-text" x="841" y="658">모든 hidden answer</text>
-  <text class="box-text" x="841" y="683">합성 정보 상한선</text>
+  <rect class="baseline-c" x="666" y="592" width="288" height="108"/>
+  <text class="box-title" x="810" y="626">ClarifyTrial</text>
+  <text class="box-text" x="810" y="658">영향 큰 정보부터 확인</text>
+  <text class="box-text" x="810" y="683">관련 criterion만 재평가</text>
 
   <rect class="panel" x="1015" y="538" width="725" height="194"/>
   <text class="label" x="1042" y="571">평가 지표</text>
-  <text class="body" x="1042" y="610">정보 회복</text>
-  <text class="strong" x="1215" y="610">CR · WR · U · macro-F1</text>
-  <text class="body" x="1042" y="643">정책 효율</text>
-  <text class="strong" x="1215" y="643">행동당 회복 · GainRetention@3</text>
+  <text class="body" x="1042" y="610">criterion 판단</text>
+  <text class="strong" x="1215" y="610">macro-F1 · accuracy</text>
+  <text class="body" x="1042" y="643">부족정보·검색</text>
+  <text class="strong" x="1215" y="643">missing Recall@k · retrieval Recall@k</text>
   <text class="body" x="1042" y="676">trial 추천</text>
-  <text class="strong" x="1215" y="676">panel nDCG@5 · TREC nDCG@10</text>
+  <text class="strong" x="1215" y="676">nDCG@k</text>
   <text class="body" x="1042" y="709">운영 효율</text>
   <text class="strong" x="1215" y="709">질문 수 · 호출 · 토큰 · 비용 · 지연</text>
 
-  <text class="section" x="60" y="782">MVP 규모와 API 계획</text>
+  <text class="section" x="60" y="782">데이터·질문 횟수·API 계획</text>
   <rect class="panel" x="60" y="808" width="500" height="152"/>
-  <text class="label" x="86" y="842">MVP 실행 단위</text>
-  <text class="body" x="86" y="877">masked session 100개 · 데모 후보 trial 3~5개</text>
-  <text class="body" x="86" y="907">정보 획득 최대 3회 · 대표 데모 환자 3명</text>
-  <text class="strong" x="86" y="938">전체 1회 실행 약 800요청</text>
+  <text class="label" x="86" y="842">평가 데이터</text>
+  <text class="body" x="86" y="877">ClinicalTrials.gov · TrialGPT</text>
+  <text class="body" x="86" y="907">Masked set · TREC</text>
+  <text class="strong" x="86" y="938">선택 기능: Synthea FHIR</text>
 
   <rect class="panel" x="590" y="808" width="500" height="152"/>
-  <text class="label" x="616" y="842">모델·호출 비중</text>
-  <text class="body" x="616" y="877">Solar Pro 3: 유료 LLM 호출 100%</text>
-  <text class="body" x="616" y="907">매칭 50% · 파싱/추출 20% · 질문/재평가 20% · 설명 10%</text>
-  <text class="strong" x="616" y="938">환자당 5~10회 · 개발 전체 약 8,000요청</text>
+  <text class="label" x="616" y="842">질문 횟수</text>
+  <text class="body" x="616" y="877">고정 상한 없이 정보 획득 반복</text>
+  <text class="body" x="616" y="907">각 행동 뒤 정확도·순위·비용 기록</text>
+  <text class="strong" x="616" y="938">성능 향상이 작아지는 지점 탐색</text>
 
   <rect class="panel" x="1120" y="808" width="620" height="152"/>
-  <text class="label" x="1146" y="842">USD 70 배분과 절감</text>
-  <text class="body" x="1146" y="877">연결 $7 · 프롬프트 $14 · 비교실험 $28 · 최종평가 $14 · 예비비 $7</text>
-  <text class="body" x="1146" y="907">trial criteria·공통 prompt 캐싱 · 합성/hidden-answer 데이터 재사용</text>
-  <text class="strong" x="1146" y="938">trial 단위 batch + 관련 criterion만 재호출</text>
+  <text class="label" x="1146" y="842">API 사용 계획</text>
+  <text class="body" x="1146" y="877">호출·토큰·비용은 소규모 실행에서 측정</text>
+  <text class="body" x="1146" y="907">trial criteria·공통 prompt 캐싱 · trial batch</text>
+  <text class="strong" x="1146" y="938">답변과 관련된 criterion만 재호출</text>
 
-  <path class="timeline" d="M105 998 H1690"/>
-  <circle cx="105" cy="998" r="8" fill="#2563eb"/><circle cx="420" cy="998" r="8" fill="#2563eb"/>
-  <circle cx="735" cy="998" r="8" fill="#2563eb"/><circle cx="1050" cy="998" r="8" fill="#2563eb"/>
-  <circle cx="1365" cy="998" r="8" fill="#2563eb"/><circle cx="1690" cy="998" r="8" fill="#2563eb"/>
-  <text class="tiny" x="72" y="1028">W1 데이터</text>
-  <text class="tiny" x="370" y="1028">W2 기준선</text>
-  <text class="tiny" x="685" y="1028">W3 Solar</text>
-  <text class="tiny" x="982" y="1028">W4 질문 실험</text>
-  <text class="tiny" x="1287" y="1028">W5 오케스트레이션</text>
-  <text class="tiny" x="1615" y="1028">W6 최종 평가</text>
+  <line x1="60" y1="998" x2="1740" y2="998" stroke="#cbd5e1" stroke-width="2"/>
+  <text class="tiny" x="60" y="1028">필수: 실제 criteria 입력 · criterion 근거 · 질문·답변 · 재평가 · 추천 순위 · 비교 리포트</text>
+  <text class="tiny" x="1330" y="1028">선택: Synthea FHIR 조회</text>
 </svg>
