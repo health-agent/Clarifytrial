@@ -30,56 +30,56 @@
 
   <rect class="bg" width="1800" height="1050"/>
   <text class="title" x="60" y="56">ClarifyTrial 연구 계획: 입력부터 질문·재평가·추천까지</text>
-  <text class="subtitle" x="60" y="88">타깃 사용자: 임상시험 코디네이터와 임상의 · 목표: 필요한 정보를 순차 확인해 근거 있는 사전선별 상태 갱신</text>
+  <text class="subtitle" x="60" y="88">사용 대상: 임상시험 코디네이터와 임상의 · 목표: 필요한 정보를 순차 확인해 근거 있는 사전선별 상태 갱신</text>
 
   <rect x="60" y="116" width="1680" height="66" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="8"/>
-  <text class="goal" x="900" y="157">trial 상태를 바꿀 수 있는 정보를 우선 확인하고, 질문 순서와 재평가 범위는 따로 검증한다</text>
+  <text class="goal" x="900" y="157">임상시험 판정을 바꿀 수 있는 정보를 우선 확인하고, 확인 순서와 재평가 범위는 따로 검증한다</text>
 
-  <text class="section" x="60" y="222">멀티에이전트 오케스트레이션</text>
+  <text class="section" x="60" y="222">여러 전문 역할의 협업 흐름</text>
 
   <rect class="step" x="60" y="250" width="290" height="212"/>
   <circle cx="95" cy="283" r="19" fill="#2563eb"/>
   <text class="step-no" x="95" y="289">1</text>
   <text class="box-title" x="205" y="290">데이터 준비</text>
   <text class="box-text" x="205" y="329">ClinicalTrials.gov</text>
-  <text class="box-text" x="205" y="359">TrialGPT · Multi-mask set</text>
-  <text class="box-text" x="205" y="389">TREC historical · 합성 route</text>
-  <text class="box-text" x="205" y="430">평가 트랙별 입력·정답 분리</text>
+  <text class="box-text" x="205" y="359">TrialGPT · 복수 정보 삭제 자료</text>
+  <text class="box-text" x="205" y="389">TREC 과거 자료 · 합성 출처 자료</text>
+  <text class="box-text" x="205" y="430">평가별 입력·정답 분리</text>
 
   <rect class="step" x="405" y="250" width="290" height="212"/>
   <circle cx="440" cy="283" r="19" fill="#7c3aed"/>
   <text class="step-no" x="440" y="289">2</text>
   <text class="box-title" x="550" y="290">이해·후보 검색</text>
-  <text class="box-text" x="550" y="329">Boolean Criteria Parser</text>
-  <text class="box-text" x="550" y="359">Patient Understanding</text>
-  <text class="box-text" x="550" y="389">Candidate Trial Retrieval</text>
-  <text class="box-text" x="550" y="430">환자 변수와 후보 trial 생성</text>
+  <text class="box-text" x="550" y="329">참여 기준 논리 구조화</text>
+  <text class="box-text" x="550" y="359">환자 정보 이해</text>
+  <text class="box-text" x="550" y="389">후보 임상시험 검색</text>
+  <text class="box-text" x="550" y="430">환자 정보와 후보 임상시험 생성</text>
 
   <rect class="step" x="750" y="250" width="290" height="212"/>
   <circle cx="785" cy="283" r="19" fill="#d97706"/>
   <text class="step-no" x="785" y="289">3</text>
-  <text class="box-title" x="895" y="290">매칭·질문 선택</text>
-  <text class="box-text" x="895" y="329">Criterion Matching</text>
-  <text class="box-text" x="895" y="359">Semantic Missing Graph</text>
-  <text class="box-text" x="895" y="389">Deterministic Priority Planner</text>
-  <text class="box-text" x="895" y="430">trial 상태를 바꿀 변수부터 선택</text>
+  <text class="box-title" x="895" y="290">기준 판정·질문 선택</text>
+  <text class="box-text" x="895" y="329">참여 기준별 근거 판정</text>
+  <text class="box-text" x="895" y="359">부족 정보 관계망</text>
+  <text class="box-text" x="895" y="389">다음 정보 우선순위 계산</text>
+  <text class="box-text" x="895" y="430">판정을 바꿀 정보부터 선택</text>
 
   <rect class="step" x="1095" y="250" width="290" height="212"/>
   <circle cx="1130" cy="283" r="19" fill="#0891b2"/>
   <text class="step-no" x="1130" y="289">4</text>
   <text class="box-title" x="1240" y="290">정보 획득·재평가</text>
-  <text class="box-text" x="1240" y="329">FHIR → note → 질문 cascade</text>
+  <text class="box-text" x="1240" y="329">FHIR → 임상 기록 → 직접 질문</text>
   <text class="box-text" x="1240" y="359">답변 정규화·상태 반영</text>
-  <text class="box-text" x="1240" y="389">Targeted Re-evaluation</text>
-  <text class="box-text" x="1240" y="430">관련 criterion만 다시 판단</text>
+  <text class="box-text" x="1240" y="389">관련 기준 재평가</text>
+  <text class="box-text" x="1240" y="430">관련 참여 기준만 다시 판단</text>
 
   <rect class="step" x="1440" y="250" width="300" height="212"/>
   <circle cx="1475" cy="283" r="19" fill="#16a34a"/>
   <text class="step-no" x="1475" y="289">5</text>
   <text class="box-title" x="1590" y="290">추천·설명</text>
-  <text class="box-text" x="1590" y="329">Recommendation Agent</text>
-  <text class="box-text" x="1590" y="359">Explanation Agent</text>
-  <text class="box-text" x="1590" y="389">추천 순위·criterion 근거</text>
+  <text class="box-text" x="1590" y="329">추천 에이전트</text>
+  <text class="box-text" x="1590" y="359">결과 설명 에이전트</text>
+  <text class="box-text" x="1590" y="389">추천 순위·참여 기준 근거</text>
   <text class="box-text" x="1590" y="419">남은 불확실성·면책 고지</text>
 
   <path class="line" d="M350 356 H405"/>
@@ -89,52 +89,52 @@
 
   <text class="section" x="60" y="512">비교 실험과 평가</text>
   <rect class="panel" x="60" y="538" width="920" height="194"/>
-  <text class="label" x="86" y="571">실험 A · 같은 초기 상태와 재평가 engine에서 변수 순서만 비교</text>
+  <text class="label" x="86" y="571">실험 A · 같은 시작 상태와 재평가 방식에서 정보 확인 순서만 비교</text>
 
   <rect class="baseline-a" x="86" y="592" width="268" height="108"/>
-  <text class="box-title" x="220" y="626">Fixed-order</text>
-  <text class="box-text" x="220" y="658">고정 key 순서</text>
+  <text class="box-title" x="220" y="626">고정 순서</text>
+  <text class="box-text" x="220" y="658">고정된 정보 키 순서</text>
   <text class="box-text" x="220" y="683">우선순위 없는 순차 확인</text>
 
   <rect class="baseline-b" x="376" y="592" width="268" height="108"/>
-  <text class="box-title" x="510" y="626">Coverage-only</text>
-  <text class="box-text" x="510" y="658">연결 criterion 수 우선</text>
+  <text class="box-title" x="510" y="626">연결 기준 수 우선</text>
+  <text class="box-text" x="510" y="658">연결된 참여 기준 수 우선</text>
   <text class="box-text" x="510" y="683">단순 중복 제거 기준선</text>
 
   <rect class="baseline-c" x="666" y="592" width="288" height="108"/>
-  <text class="box-title" x="810" y="626">Clarify-priority</text>
-  <text class="box-text" x="810" y="658">trial 상태 변화 우선</text>
-  <text class="box-text" x="810" y="683">No-acquisition·Ask-all도 함께 비교</text>
+  <text class="box-title" x="810" y="626">판정 변화 우선</text>
+  <text class="box-text" x="810" y="658">임상시험 판정 변화 우선</text>
+  <text class="box-text" x="810" y="683">추가 확인 없음·모두 확인도 비교</text>
 
   <rect class="panel" x="1015" y="538" width="725" height="194"/>
-  <text class="label" x="1042" y="571">실험 B · 같은 answer trajectory에서 재평가 범위만 비교</text>
-  <text class="body" x="1042" y="610">Full re-evaluation</text>
-  <text class="strong" x="1280" y="610">모든 candidate criterion 재평가</text>
-  <text class="body" x="1042" y="653">Targeted re-evaluation</text>
-  <text class="strong" x="1280" y="653">연결된 criterion만 재평가</text>
+  <text class="label" x="1042" y="571">실험 B · 같은 질문·답변 이력에서 재평가 범위만 비교</text>
+  <text class="body" x="1042" y="610">전체 재평가</text>
+  <text class="strong" x="1280" y="610">모든 후보 참여 기준 재평가</text>
+  <text class="body" x="1042" y="653">관련 기준 재평가</text>
+  <text class="strong" x="1280" y="653">답변과 연결된 기준만 재평가</text>
   <text class="body" x="1042" y="696">검증</text>
-  <text class="strong" x="1280" y="696">state 일치 · non-target 불변 · 비용 감소</text>
+  <text class="strong" x="1280" y="696">결과 일치 · 무관한 기준 불변 · 비용 감소</text>
 
-  <text class="section" x="60" y="782">분리된 데이터 트랙·평가 지표·API 계획</text>
+  <text class="section" x="60" y="782">분리된 평가 자료·평가 지표·API 계획</text>
   <rect class="panel" x="60" y="808" width="500" height="152"/>
-  <text class="label" x="86" y="842">평가 트랙</text>
-  <text class="body" x="86" y="877">A TrialGPT criterion · B Interactive mask</text>
-  <text class="body" x="86" y="907">C TREC historical · D Synthetic route</text>
-  <text class="strong" x="86" y="938">트랙별 schema와 결과표를 따로 유지</text>
+  <text class="label" x="86" y="842">평가 자료</text>
+  <text class="body" x="86" y="877">A TrialGPT 기준 판정 · B 불완전 기록</text>
+  <text class="body" x="86" y="907">C TREC 과거 검색 · D 합성 출처</text>
+  <text class="strong" x="86" y="938">평가별 입력 형식과 결과표를 따로 유지</text>
 
   <rect class="panel" x="590" y="808" width="500" height="152"/>
   <text class="label" x="616" y="842">핵심 평가</text>
-  <text class="body" x="616" y="877">criterion recovery · trial-state exact</text>
-  <text class="body" x="616" y="907">quality-action/cost AUC · TREC nDCG@10</text>
+  <text class="body" x="616" y="877">기준 정답 회복률 · 임상시험 상태 일치</text>
+  <text class="body" x="616" y="907">행동·비용 대비 품질 · TREC nDCG@10</text>
   <text class="strong" x="616" y="938">고정 상한 없이 적절한 종료 지점 탐색</text>
 
   <rect class="panel" x="1120" y="808" width="620" height="152"/>
   <text class="label" x="1146" y="842">API 사용 계획</text>
   <text class="body" x="1146" y="877">호출·토큰·비용은 소규모 실행에서 측정</text>
-  <text class="body" x="1146" y="907">trial criteria·공통 prompt 캐싱 · trial batch</text>
-  <text class="strong" x="1146" y="938">cold/warm cache와 Full/Targeted 비용 분리</text>
+  <text class="body" x="1146" y="907">참여 기준·공통 지시문 저장 · 묶음 처리</text>
+  <text class="strong" x="1146" y="938">최초 실행·재사용 실행·재평가 방식별 비용 분리</text>
 
   <line x1="60" y1="998" x2="1740" y2="998" stroke="#cbd5e1" stroke-width="2"/>
-  <text class="tiny" x="60" y="1028">필수: 실제 criteria 입력 · criterion 근거 · 질문·답변 · 재평가 · 추천 순위 · 비교 리포트</text>
+  <text class="tiny" x="60" y="1028">필수: 실제 참여 기준 입력 · 기준별 근거 · 질문·답변 · 재평가 · 추천 순위 · 비교 보고서</text>
   <text class="tiny" x="1330" y="1028">선택: Synthea FHIR 조회</text>
 </svg>

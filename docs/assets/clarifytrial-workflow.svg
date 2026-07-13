@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1800" height="900" viewBox="0 0 1800 900" role="img" aria-labelledby="title desc">
-  <title id="title">ClarifyTrial 전체 워크플로</title>
+  <title id="title">ClarifyTrial 전체 실행 흐름</title>
   <desc id="desc">임상시험과 환자 정보를 구조화하고, 여러 시험의 부족 정보를 통합한 뒤, 질문이나 조회 결과와 관련된 기준만 다시 판단해 추천하는 흐름</desc>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
@@ -38,7 +38,7 @@
   <rect class="future" x="60" y="158" width="250" height="116"/>
   <text class="label" x="185" y="198">임상시험 원문</text>
   <text class="small" x="185" y="228">향후 ClinicalTrials.gov</text>
-  <text class="small" x="185" y="251">+ RAG 후보 검색</text>
+  <text class="small" x="185" y="251">+ 후보 임상시험 검색</text>
 
   <rect class="box" x="60" y="310" width="250" height="108"/>
   <text class="label" x="185" y="351">환자 정보 문장</text>
@@ -47,7 +47,7 @@
   <rect class="box" x="365" y="158" width="250" height="116"/>
   <text class="label" x="490" y="197">선정·제외 기준 구조화</text>
   <text class="small" x="490" y="227">현재: 휴리스틱 데모</text>
-  <text class="small" x="490" y="250">다음: LLM + 원문 근거</text>
+  <text class="small" x="490" y="250">다음: 언어모델 + 원문 근거</text>
 
   <rect class="box" x="365" y="310" width="250" height="108"/>
   <text class="label" x="490" y="350">환자 정보 구조화</text>
@@ -57,19 +57,19 @@
   <path class="line" d="M310 364 H365"/>
 
   <rect class="state" x="670" y="190" width="305" height="206"/>
-  <text class="label" x="822" y="229">PatientSession</text>
+  <text class="label" x="822" y="229">환자별 공통 상태</text>
   <text class="small" x="822" y="261">모든 임상시험 상태를 한곳에 저장</text>
-  <text class="small" x="822" y="294">환자 프로필 · trial별 criterion 상태</text>
-  <text class="small" x="822" y="327">공통 부족정보 · 질문 · 답변 기록</text>
+  <text class="small" x="822" y="294">환자 정보 · 임상시험별 기준 상태</text>
+  <text class="small" x="822" y="327">공통 부족 정보 · 질문 · 답변 기록</text>
   <text class="small" x="822" y="360">질문·답변 횟수와 이력</text>
 
   <path class="line" d="M615 216 H650 Q670 216 670 236"/>
   <path class="line" d="M615 364 H650 Q670 364 670 344"/>
 
   <rect class="box" x="1030" y="220" width="230" height="132"/>
-  <text class="label" x="1145" y="258">기준별 근거 매칭</text>
-  <text class="small" x="1145" y="289">truth: 충족 · 위반 · 모름</text>
-  <text class="small" x="1145" y="319">effect: 지원 · 차단 · 불확실</text>
+  <text class="label" x="1145" y="258">기준별 근거 판정</text>
+  <text class="small" x="1145" y="289">조건 판단: 충족 · 위반 · 모름</text>
+  <text class="small" x="1145" y="319">참여 영향: 지원 · 차단 · 불확실</text>
   <path class="line" d="M975 293 H1030"/>
 
   <polygon points="1330,286 1430,205 1530,286 1430,367" fill="#ffffff" stroke="#475569" stroke-width="3"/>
@@ -80,7 +80,7 @@
 
   <rect class="rule" x="1570" y="174" width="190" height="224"/>
   <text class="label" x="1665" y="216">판정·추천 규칙</text>
-  <text class="small" x="1665" y="250">hard block 우선</text>
+  <text class="small" x="1665" y="250">참여 차단 기준 우선</text>
   <text class="small" x="1665" y="280">필수 미확인 → 불확실</text>
   <text class="small" x="1665" y="310">관련성은 순위에만 사용</text>
   <text class="small" x="1665" y="340">상태 갱신과 추천은</text>
@@ -96,22 +96,22 @@
   <path class="line" d="M1665 398 V456"/>
 
   <rect class="question" x="1175" y="455" width="250" height="128"/>
-  <text class="label" x="1300" y="493">공통 부족정보 통합</text>
-  <text class="small" x="1300" y="523">concept·단위·시간 창이 같으면</text>
-  <text class="small" x="1300" y="550">여러 trial에서도 행동은 한 번</text>
+  <text class="label" x="1300" y="493">공통 부족 정보 통합</text>
+  <text class="small" x="1300" y="523">의학 개념·단위·시간 범위가 같으면</text>
+  <text class="small" x="1300" y="550">여러 임상시험에서도 한 번만 확인</text>
   <path class="loop" d="M1430 367 V420 Q1430 455 1400 455"/>
   <text class="arrow-label" x="1445" y="416">예</text>
 
   <rect class="question" x="890" y="455" width="225" height="128"/>
   <text class="label" x="1002" y="493">질문 선택</text>
-  <text class="small" x="1002" y="523">trial 상태를 바꿀 변수부터</text>
+  <text class="small" x="1002" y="523">임상시험 판정을 바꿀 정보부터</text>
   <text class="small" x="1002" y="550">추가 이득이 있는 동안 반복</text>
   <path class="loop" d="M1175 519 H1115"/>
 
   <rect class="future" x="615" y="455" width="220" height="128"/>
   <text class="label" x="725" y="492">정보 획득</text>
-  <text class="small" x="725" y="522">FHIR → note → 직접 질문</text>
-  <text class="small" x="725" y="549">확인 결과를 typed 답변으로</text>
+  <text class="small" x="725" y="522">FHIR → 임상 기록 → 직접 질문</text>
+  <text class="small" x="725" y="549">확인 결과를 구조화된 답변으로</text>
   <path class="loop" d="M890 519 H835"/>
 
   <rect class="box" x="350" y="455" width="210" height="128"/>
@@ -121,9 +121,9 @@
   <path class="loop" d="M615 519 H560"/>
 
   <rect class="question" x="640" y="650" width="325" height="128"/>
-  <text class="label" x="802" y="689">표적 재평가</text>
-  <text class="small" x="802" y="720">답변과 관련된 criterion만 다시 판단</text>
-  <text class="small" x="802" y="748">전체 워크플로를 처음부터 반복하지 않음</text>
+  <text class="label" x="802" y="689">관련 기준 재평가</text>
+  <text class="small" x="802" y="720">답변과 관련된 참여 기준만 다시 판단</text>
+  <text class="small" x="802" y="748">전체 과정을 처음부터 반복하지 않음</text>
   <path class="loop" d="M455 583 V714 H640"/>
   <path class="loop" d="M965 714 H1010 Q1030 714 1030 690 V352"/>
   <text class="arrow-label" x="1000" y="699">업데이트 후 반복</text>
@@ -138,6 +138,6 @@
   <rect x="1375" y="835" width="18" height="18" fill="#ffffff" stroke="#64748b" stroke-width="2" stroke-dasharray="5 4"/>
   <text class="tiny" x="1404" y="850">향후 구현</text>
   <rect x="1505" y="835" width="18" height="18" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
-  <text class="tiny" x="1534" y="850">현재 스키마·규칙·데모</text>
+  <text class="tiny" x="1534" y="850">현재 자료 구조·규칙·시연</text>
   <text class="tiny" x="60" y="870">모든 예시는 합성 데이터 기반 소프트웨어 평가용이며, 실제 의료 판단을 대신하지 않습니다.</text>
 </svg>
