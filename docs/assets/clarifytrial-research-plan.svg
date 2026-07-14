@@ -125,8 +125,8 @@
   <rect class="panel" x="590" y="808" width="500" height="152"/>
   <text class="label" x="616" y="842">핵심 평가</text>
   <text class="body" x="616" y="877">관계망 F1 · 기준 정답 회복률</text>
-  <text class="body" x="616" y="907">판정 결정 비용 · TREC nDCG@10</text>
-  <text class="strong" x="616" y="938">조기 종료 · 오류 방향 · 재평가 정확도</text>
+  <text class="body" x="616" y="907">질문 뒤 순위 개선 · 판정 결정 비용</text>
+  <text class="strong" x="616" y="938">조기 종료 · 자동판정률-오류율 · 재평가 정확도</text>
 
   <rect class="panel" x="1120" y="808" width="620" height="152"/>
   <text class="label" x="1146" y="842">API 사용 계획</text>
