@@ -1,75 +1,203 @@
-# ClarifyTrial 에이전트 구조 원문·코드 색인
+# ClarifyTrial 에이전트 구조 근거문헌
 
-문서 역할: 에이전트 재설계에 사용한 논문, 공식 발표 자료와 공개 코드를 한곳에서 찾기 위한 색인  
 확인일: 2026-08-20  
-현재 실험 상태: ClarifyTrial v5 실행 전, 성능 미측정
+실험 상태: ClarifyTrial v5 구현·실험 전
 
-이 문서는 설계 설명을 반복하지 않는다. 실제 구조와 채택 판단은
-[에이전트 구조 재설계 문서](CLARIFYTRIAL_AGENT_ARCHITECTURE_REDESIGN.md)에서 다룬다.
+현재 워크플로우를 구성할 때 참고한 논문, 공식 발표, 코드와 자료를 모았다. 실제
+채택 구조는
+[에이전트 워크플로우](CLARIFYTRIAL_AGENT_ARCHITECTURE_REDESIGN.md)에서 확인할 수 있다.
 
-- `공식 코드`는 논문이나 저자·기관의 공식 페이지에서 연결된 저장소를 뜻한다.
-- `미확인`은 코드가 없다는 단정이 아니라, 원문과 공식 발표 페이지에서 공개
-  저장소를 확인하지 못했다는 뜻이다.
-- 외부 코드를 이 저장소에 복사하지 않는다. 논문 재현에는 공식 저장소와 논문이
-  지정한 버전이 있으면 그 버전을 사용한다.
-- 발표 사이트가 만드는 짧은 유효기간의 다운로드 주소 대신, 다시 열 수 있는
-  공식 논문·발표 페이지를 연결한다.
+`공식 코드 미확인`은 논문과 저자·기관 페이지에서 공개 저장소를 찾지 못했다는
+뜻이다. 외부 저장소의 현재 기본 브랜치와 논문 당시 코드는 다를 수 있으므로,
+논문이 지정한 버전이나 태그가 있으면 그 버전을 우선한다.
 
-## 1. 최종 구조에 직접 쓰는 원문과 코드
+## 1. 현재 구조의 중심 근거
 
-아래 연구는 전체 시스템 또는 특정 핵심 단계에 직접 사용한다.
+### PRomop
 
-현재 선택한 중심 흐름은 다음과 같다.
+- **한 일:** OMOP·FHIR 기반 장기 환자 기록을 여러 판정기가 함께 읽을 수 있는
+  `PatientRecord`로 정리하고, 검사·치료·질병 상태를 미리 계산했다.
+- **가져온 부분:** 날짜와 출처가 붙은 환자 상태표를 한 번 만들고 모든 단계가
+  함께 읽는 방식.
+- **공개 자료:** [논문](https://arxiv.org/abs/2607.13947),
+  [공식 코드](https://github.com/healthkey-ai/PRomop)
+- **적용 범위:** 첫 구현은 진단, 치료, 검사, 날짜, 출처와 확인 상태만 다룬다.
+  종양 중심 파생 규칙은 질환 범위가 정해진 뒤 필요한 부분만 채택한다.
 
-> **시험 조건 준비 → PRomop식 환자 상태표 → TrialMatchAI 검색·조건 판정
-> → CLEAR-MATCH 대화·후보 갱신 → TRIAGE식 단일 근거 검사 → MediQ식
-> 정보 충분성 판단 → DQueST·Fink식 다음 확인 우선순위 → v5의 후보 유지·현재
-> 확정 두 판단과 올바른 확인 경로**
+### TrialMatchAI
 
-Yang은 이 전체 흐름과 가장 가까운 독립 연구이고, EXACT는 구조화 규칙 엔진을
-교체해 비교할 때의 대안이다. TrialGPT는 강한 고정 입력 기준선으로 사용한다.
+- **한 일:** 임상 개념 표준화, 규칙 필터, BM25·의미 검색, 조건 재정렬, 조건별
+  판정과 시험 순위화를 한 흐름으로 구현했다.
+- **가져온 부분:** 후보 검색과 선정·제외 조건별 판단의 주 엔진.
+- **공개 자료:** [논문과 보충자료](https://www.nature.com/articles/s41467-026-70509-w),
+  [공식 코드](https://github.com/cbib/TrialMatchAI),
+  [논문 당시 v0.01](https://github.com/cbib/TrialMatchAI/tree/v0.01)
+- **적용 범위:** 첫 구조 비교는 같은 검색 결과를 모든 시스템에 제공한다. 공식
+  실행은 공통 평가기가 작동한 뒤 GPU 환경을 준비해 연결한다.
 
-| 연구 | 공식 원문·발표 자료 | 공식 코드·자료 | 공개 범위 | 재현할 때 주의할 점 |
-|---|---|---|---|---|
-| PRomop | [arXiv v2 원문](https://arxiv.org/abs/2607.13947) | [공식 코드](https://github.com/healthkey-ai/PRomop) | OMOP CDM 5.4와 FHIR 입력, 종양 확장, 환자의 장기 기록을 300개가 넘는 열로 정리한 `PatientRecord`, 검사·치료·질병 상태의 사전 계산, API·테스트·합성자료 재현 안내가 공개됨 | 임상시험을 검색하거나 적합성을 판단하는 에이전트가 아니라 여러 판정기가 함께 읽을 환자 상태표다. 종양 중심 파생 규칙을 그대로 모든 질환에 적용할 수 없고, 논문의 속도 향상이 조건 판정 정확도 향상을 뜻하지 않는다. |
-| TrialMatchAI | [Nature Communications 논문·보충자료](https://www.nature.com/articles/s41467-026-70509-w) | [공식 코드](https://github.com/cbib/TrialMatchAI), [논문 당시 `v0.01`](https://github.com/cbib/TrialMatchAI/tree/v0.01) | 자료 준비, 개념 표준화, 두 단계 검색, 재정렬, 기준 판정과 평가 코드가 공개됨 | 기본 브랜치는 논문 뒤에 바뀌었다. 논문 구조 재현은 `v0.01`과 보충자료를 기준으로 하고, 현재 코드는 별도 최신 구현으로 취급한다. 모델과 색인 구축에 큰 계산 자원이 필요하다. |
-| CLEAR-MATCH | [AMIA 공식 발표 페이지](https://amia.secure-platform.com/symposium/gallery/rounds/82021/details/20567) | 공식 코드·평가자료 미확인 | 포스터에 대화 단계, 주요 모듈, 질문 지침, 사용 기술과 소수 예비 사례가 공개됨 | 정식 논문, 대규모 정답 평가와 질문 선택 계산식이 공개되지 않았다. 따라서 전체 대화 흐름의 원형으로는 쓸 수 있지만 보고 성능을 재현하는 기준선으로는 아직 부족하다. |
-| TRIAGE | [JCO Oncology Practice 원문](https://doi.org/10.1200/OP-26-00076) | 공식 코드·프롬프트·평가자료 미확인 | 기준일 이전의 장기 EHR, 기준별 판정과 원문 근거, 별도 자동 검토, 시험 단위 점수와 사람 재검토가 설명됨 | 기관 EHR와 버전이 있는 프로토콜이 필요하고 기반 모델·검색 방식이 공개되지 않았다. ClarifyTrial에서는 전체 예측 구조가 아니라 첫 판정의 근거·날짜·원문을 한 번 검사하는 부분만 재구현한다. |
-| Yang, 2026 | [UTHealth Houston 공식 학위 소개와 초록](https://sbmi.uth.edu/research/phd-dissertations/a-patient-centric-chatbot-for-improving-clinical-trial-accessibility.htm) | 전체 학위논문, 코드와 세 주석자료의 공개 위치 미확인 | 기준 묶기, 환자용 질문, 답변 판정과 동적 시험 제거로 이어지는 전체 구성과 주요 결과가 공개됨 | 질문 우선순위 계산, 종료 조건, 비용 처리와 세부 프롬프트를 초록만으로 복제할 수 없다. 확인되지 않은 세부를 임의로 채우지 않는다. |
-| EXACT | [AMIA 2026 공식 시스템 시연](https://amia.secure-platform.com/amplify/gallery/rounds/82026/details/26163) | [공식 공개 엔진](https://github.com/healthkey-ai/exact) | 속성별 기준 구조화, 환자 정보 보완, 조건 판정, 환자 가치에 따른 순위화와 실행 가능한 API·평가 도구가 공개됨 | 공개 발표는 시스템 시연이며, 독립된 대규모 정답 평가 논문은 확인되지 않았다. 저장소는 계속 개발되는 엔진이고 실제 시험 목록·참조자료는 외부 데이터베이스 연결이 필요하다. |
-| TrialGPT | [Nature Communications 논문·보충자료](https://www.nature.com/articles/s41467-024-53081-z) | [공식 코드](https://github.com/ncbi-nlp/TrialGPT), [기준별 전문가 주석](https://huggingface.co/datasets/ncbi/TrialGPT-Criterion-Annotations) | 검색어 생성, BM25·MedCPT 검색, 순위 결합, 기준별 프롬프트, 판정·근거·순위화와 주석자료가 공개됨 | 당시 GPT 모델과 ClinicalTrials.gov 자료 시점을 그대로 맞추기 어렵다. 공개 주석 1,015건은 기준별 고정 입력 평가용이며 대화와 다음 행동의 정답은 아니다. |
-| MediQ | [NeurIPS 2024 원문](https://proceedings.neurips.cc/paper_files/paper/2024/file/32b80425554e081204e5988ab1c97e9a-Paper-Conference.pdf) | [공식 코드](https://github.com/stellalisy/mediQ) | 현재 정보로 답할지 보류할지를 질문 생성과 분리하고, 숨긴 전체 기록에서 질문과 관련된 사실만 답하는 환경이 공개됨 | 임상시험 매칭 연구가 아니다. 정보 충분성 판단과 합성 답변 환경만 사용하며, 최대 질문 수에 도달했다고 답을 강제로 확정하지 않는다. |
-| DQueST | [JAMIA 원문](https://academic.oup.com/jamia/article/26/11/1333/5544734) | [저자 공개 코드](https://github.com/stormliucong/dquest-flask) | 여러 남은 시험에 공통인 기준을 먼저 질문하고 답변 뒤 후보를 갱신하는 구조가 공개됨 | 실제 질문 점수는 완전한 정보이득 계산보다 후보 시험 범위에 가깝다. 한 답으로 시험을 곧바로 제거하는 규칙과 단순 조건 논리는 사용하지 않는다. |
-| Fink 계열 | [Artificial Intelligence in Medicine 원문](https://www.cs.cmu.edu/~eugene/research/full/trial-selection.pdf) | 공식 코드 미확인 | 비용이 낮고 여러 시험과 조건에 영향을 주는 검사·질문을 우선하고 새 결과마다 재판정하는 구조가 공개됨 | 점수 가중치가 공개되지 않았고 오래된 수동 규칙 환경이다. 임의 가중치를 복제하지 않고 부담·위험·시간을 포함한 우선순위 원칙만 사용한다. |
+### CLEAR-MATCH
 
-## 2. 실제 임상 업무형 추가 참고
+- **한 일:** 환자 답변을 표준화하고 규칙 검색과 의미 검색을 결합해 후보 시험을
+  갱신했다. 대화를 기본 정보, 상세 조건, 최종 확인 단계로 나눴다.
+- **가져온 부분:** 답변마다 후보와 대화 목적을 갱신하는 전체 대화 흐름.
+- **공개 자료:** [AMIA 공식 발표](https://amia.secure-platform.com/symposium/gallery/rounds/82021/details/20567)
+- **공개 범위:** 발표 자료에서 모듈, 대화 단계와 질문 지침을 확인했다. 대규모
+  평가자료, 질문 점수 계산식과 전체 코드는 공개 위치를 확인하지 못했다.
+- **적용 범위:** 공개된 대화 흐름을 공통 환경에서 재구성해 비교한다.
 
-| 연구 | 공식 원문·보충자료 | 공식 코드·자료 | 공개 범위 | 재현할 때 주의할 점 |
-|---|---|---|---|---|
-| OncoAgents | [공개 원문](https://pmc.ncbi.nlm.nih.gov/articles/PMC13091143/) | 공식 코드·공개 평가자료 미확인 | 환자 정보 추출·표준화·판정 역할, 종양 지식 그래프, 시간 규칙, 조건 개정과 사람 검토 구조가 논문에 설명됨 | 정확한 모델, 전체 프롬프트, 호출 횟수와 사내 자료가 공개되지 않았다. 비공개 자료의 보고 성능을 공개 기준선처럼 재현할 수 없다. |
+### TRIAGE
 
-## 3. 기타 구조와 평가 참고
+- **한 일:** 기준일 이전의 장기 EHR에서 조건별 판정과 원문 근거를 만들고, 별도
+  자동 검토와 코디네이터 재검토를 연결했다.
+- **가져온 부분:** 조건 판단 뒤 환자 원문, 시험 원문, 날짜와 설명을 한 번 대조하는
+  근거 검토.
+- **공개 자료:** [JCO Oncology Practice 논문](https://doi.org/10.1200/OP-26-00076)
+- **공개 범위:** 정확한 모델, 검색 설정, 프롬프트와 평가 코드는 공개 위치를
+  확인하지 못했다.
+- **적용 범위:** 시험 점수 예측 전체보다 근거 검토 단계를 사용한다.
 
-아래 연구는 특정 모듈이나 비교 실험의 근거다. 전체 ClarifyTrial 흐름의 주축으로
-삼지 않는다.
+### Yang, 2026
 
-| 연구 | 공식 원문 | 공식 코드·자료 | 공개 범위와 재현상 주의점 |
-|---|---|---|---|
-| Chen et al., 2025 | [Scientific Reports 원문·보충자료](https://www.nature.com/articles/s41598-025-11876-0) | 공식 코드·자료 미확인 | 기준에서 환자용 설문을 만들고 답변으로 판정하는 고정 흐름이 공개됐다. 여러 후보에 따라 다음 질문을 바꾸는 전체 정책의 재현 자료는 확인되지 않았다. |
-| MAKAR | [arXiv 최신 원문](https://arxiv.org/abs/2411.14637) | 공식 코드 미확인 | 논문과 원본 TeX에 의사코드와 역할별 프롬프트가 있다. 논문 버전이 여러 번 바뀌었으므로 사용할 때 버전을 명시한다. 실행 코드와 정확한 반복 종료 조건은 공개되지 않았다. |
-| MDAgents | [NeurIPS 2024 논문](https://proceedings.neurips.cc/paper_files/paper/2024/file/90d1fc07f46e31387978b88e7e057a31-Paper-Conference.pdf) | [공식 코드](https://github.com/mitmedialab/MDAgents) | 복잡도에 따른 실행 경로, 역할 모집과 단계별 프롬프트가 공개됐다. 공개 코드의 일부 모델 연결과 고정 역할 수가 논문 설정과 달라 둘을 같은 실행으로 보지 않는다. |
-| MedAgents | [ACL Anthology 원문](https://aclanthology.org/2024.findings-acl.33/) | [공식 코드](https://github.com/gersteinlab/MedAgents) | 분야 선정, 독립 분석, 보고서 통합, 검토와 수정 흐름이 공개됐다. 논문과 코드의 생성 온도 등 실행 설정에 차이가 있고 호출량이 크다. |
-| MCC | [Cell Reports Medicine 공개 원문](https://pmc.ncbi.nlm.nih.gov/articles/PMC12866169/) | [공식 코드](https://github.com/sunxinti/MCC) | 서로 다른 세 모델의 첫 판단, 불일치 때 추가 검토, 조기 종료와 최종 다수결이 공개됐다. 의료 객관식용 구조이며 임상시험 검색·기준 판정 하네스는 아니다. |
-| AIDS2 | [공개 원문](https://pmc.ncbi.nlm.nih.gov/articles/PMC2248545/) | 공식 코드 미확인 | 직접 확인한 사실과 의학적으로 추정한 상태를 나누고, 부족한 병력·진찰·검사를 제안하는 고전 구조다. 사람이 만든 지식베이스와 오래된 자료 환경을 현대 LLM 성능 기준선으로 직접 비교하지 않는다. |
-| CliniCARE-Bench | [arXiv v1 원문](https://arxiv.org/abs/2608.07796) | arXiv 공식 페이지에서 저자 코드·자료 링크 미확인 | 환자 기록과 정책 도구, 보류, 과정 위반과 비용을 함께 평가하는 하네스가 논문에 설명됐다. MIMIC-IV 접근 조건과 비공개 평가 구성요소 때문에 원문만으로 전체 환경을 다시 만들 수 없다. |
-| Should we be going MAD? | [ICML 2024 공식 원문](https://proceedings.mlr.press/v235/smit24a.html) | [공식 코드](https://github.com/instadeepai/DebateLLM) | 여러 검토 방식과 같은 문제 반복을 비교하는 일반 평가 코드가 공개됐다. 임상시험 매칭 연구가 아니며, 검토 방식 자체의 성능을 ClarifyTrial 성능으로 옮겨 말할 수 없다. |
+- **한 일:** 비슷한 시험 조건을 묶고, 환자용 질문을 만들고, 답변으로 조건을
+  판단해 맞지 않는 시험을 줄이는 환자 중심 챗봇을 연구했다.
+- **가져온 부분:** 질문, 답변 판단과 동적 후보 갱신을 잇는 가장 가까운 전체
+  비교 흐름.
+- **공개 자료:** [UTHealth Houston 학위 연구 소개](https://sbmi.uth.edu/research/phd-dissertations/a-patient-centric-chatbot-for-improving-clinical-trial-accessibility.htm)
+- **공개 범위:** 연구 개요, 자료 규모와 주요 결과가 공개됐다. 전체 학위논문,
+  코드, 세부 프롬프트, 질문 우선순위와 종료 규칙의 공개 위치는 확인하지 못했다.
+- **적용 범위:** 보고 수치를 직접 비교하지 않고, 공개된 흐름을 구조 비교 대상으로
+  사용한다.
 
-## 4. 이 색인에서 성능 수치를 다루는 원칙
+### MediQ
 
-- 각 논문의 수치는 그 논문의 자료, 모델, 호출량과 정답 정의에서만 유효하다.
-- 공개 코드가 있어도 현재 기본 브랜치가 논문 당시 실행과 같다는 뜻은 아니다.
-- 코드를 공개하지 않은 연구의 보고 수치는 구조 선택의 참고 근거로만 사용한다.
-- ClarifyTrial v5 구조는 아직 실행하지 않았다. 이 문서의 어떤 수치나 구조도
-  ClarifyTrial의 현재 성능을 뜻하지 않는다.
-- 과거 Solar 합성 데모 수치, 특히 84%를 v5 기준선이나 현재 성능으로 사용하지
-  않는다.
+- **한 일:** 현재 정보로 답할지 보류할지를 먼저 판단하고, 부족할 때 질문을 만드는
+  단계를 분리했다. 질문 시스템과 숨은 전체 기록에서 답을 반환하는 환경도 나눴다.
+- **가져온 부분:** 정보 충분성 판단과 독립된 합성 답변 환경.
+- **공개 자료:** [NeurIPS 2024 논문](https://proceedings.neurips.cc/paper_files/paper/2024/file/32b80425554e081204e5988ab1c97e9a-Paper-Conference.pdf),
+  [공식 코드](https://github.com/stellalisy/mediQ)
+- **적용 범위:** 질문 한도에 도달해도 자료가 부족하면 확인 대기나 보류 상태를
+  유지한다.
+
+### DQueST
+
+- **한 일:** 남은 여러 임상시험에 공통으로 필요한 조건을 먼저 질문하고, 답변 뒤
+  후보 시험을 갱신했다.
+- **가져온 부분:** 한 번 확인했을 때 영향을 받는 후보 시험과 조건 수를 보는 기준.
+- **공개 자료:** [JAMIA 논문](https://academic.oup.com/jamia/article/26/11/1333/5544734),
+  [저자 공개 코드](https://github.com/stormliucong/dquest-flask)
+- **적용 범위:** 실제 질문 점수는 후보 시험 범위와 OMOP 매핑 신뢰도의 합에
+  가깝다. ClarifyTrial은 이를 완전한 정보이득으로 부르지 않고 영향 범위 기준으로
+  사용한다.
+
+### Fink 계열
+
+- **한 일:** 검사·질문의 비용, 영향을 받는 시험과 조건 수를 함께 고려해 다음
+  확인을 골랐고, 새 결과가 들어올 때 모든 시험을 다시 판단했다.
+- **가져온 부분:** 영향 범위가 비슷할 때 부담, 위험, 대기 시간과 비용이 낮은
+  확인을 우선하는 원칙.
+- **공개 자료:** [Artificial Intelligence in Medicine 논문](https://www.cs.cmu.edu/~eugene/research/full/trial-selection.pdf)
+- **공개 범위:** 상세 점수 가중치와 실행 코드는 공개 위치를 확인하지 못했다.
+- **적용 범위:** 첫 구현은 순서 규칙을 사용하고, 숫자 가중치는 정답 자료가 생긴
+  뒤 별도 실험에서 조정한다.
+
+## 2. 교체 가능한 판정 엔진과 고정 입력 기준선
+
+### EXACT
+
+- **한 일:** 구조화한 환자 속성과 시험 조건을 비교해 조건별 통과, 실패와 자료
+  부족을 계산하고 시험을 `eligible`, `potential`, `ineligible`로 정리한다.
+- **용도:** 구조화 규칙이 많은 좁은 질환에서 TrialMatchAI식 LLM 판정을 바꿔
+  끼우는 대안.
+- **공개 자료:** [AMIA 2026 공식 시연](https://amia.secure-platform.com/amplify/gallery/rounds/82026/details/26163),
+  [공식 코드](https://github.com/healthkey-ai/exact)
+- **적용 범위:** 현재 저장소는 계속 개발 중이다. 논문 시점과 실행 버전을 구분하고,
+  외부 시험 데이터베이스 연결 뒤 비교한다.
+
+### TrialGPT
+
+- **한 일:** 환자별 검색어 생성, BM25·MedCPT 검색, 순위 결합, 조건별 판단·근거와
+  시험 순위화를 연결했다.
+- **용도:** 공통 검색기의 출발점, 고정 입력 조건 판단 기준선, 전문가 주석 평가.
+- **공개 자료:** [Nature Communications 논문](https://www.nature.com/articles/s41467-024-53081-z),
+  [공식 코드](https://github.com/ncbi-nlp/TrialGPT),
+  [조건별 전문가 주석 1,015건](https://huggingface.co/datasets/ncbi/TrialGPT-Criterion-Annotations)
+- **적용 범위:** 1,015건은 조건 상태와 근거 선택을 평가한다. 대화, 다음 행동과
+  v5의 두 판단은 별도 합성 자료에서 평가한다.
+
+## 3. 구현과 평가에 참고하는 연구
+
+### OncoAgents
+
+- **내용:** 환자 정보 추출·표준화·판정 역할, 종양 지식 그래프, 시간 규칙, 조건
+  수정과 사람 검토를 연결했다.
+- **참고 부분:** 시간, 부정, 단위 처리와 새 기록 뒤 재선별.
+- **공개 자료:** [논문](https://pmc.ncbi.nlm.nih.gov/articles/PMC13091143/)
+- **공개 범위:** 정확한 모델, 전체 프롬프트, 호출 횟수와 기관 자료의 공개 위치는
+  확인하지 못했다.
+
+### Chen et al., 2025
+
+- **내용:** 임상시험 조건을 환자용 설문으로 바꾸고 환자 답변으로 적합성을 판단했다.
+- **참고 부분:** 조건을 이해하기 쉬운 질문으로 바꾸는 지침.
+- **공개 자료:** [Scientific Reports 논문과 보충자료](https://www.nature.com/articles/s41598-025-11876-0)
+- **적용 범위:** 고정 설문 흐름이다. 여러 후보에 따라 다음 질문이 달라지는 정책은
+  CLEAR-MATCH, Yang과 DQueST를 참고한다.
+
+### MAKAR
+
+- **내용:** 여러 역할이 임상시험 조건을 설명하고 원문과 맞는지 다시 확인하는
+  구조를 제시했다.
+- **참고 부분:** 역할별 프롬프트와 원문 보존 검사.
+- **공개 자료:** [arXiv 원문](https://arxiv.org/abs/2411.14637)
+- **공개 범위:** 원본 TeX에 의사코드와 프롬프트가 있다. 실행 코드와 정확한 반복
+  종료 규칙의 공개 위치는 확인하지 못했다.
+
+### MDAgents, MedAgents, MCC
+
+- **내용:** 문제 난이도나 첫 판단의 불일치에 따라 여러 의료 역할을 모집하고,
+  검토·수정 또는 다수결을 수행한다.
+- **참고 부분:** 실제 오답이 모인 뒤 반복 검토 구조를 비교할 때 사용한다.
+- **공개 자료:** [MDAgents 논문](https://proceedings.neurips.cc/paper_files/paper/2024/file/90d1fc07f46e31387978b88e7e057a31-Paper-Conference.pdf)·[코드](https://github.com/mitmedialab/MDAgents),
+  [MedAgents 논문](https://aclanthology.org/2024.findings-acl.33/)·[코드](https://github.com/gersteinlab/MedAgents),
+  [MCC 논문](https://pmc.ncbi.nlm.nih.gov/articles/PMC12866169/)·[코드](https://github.com/sunxinti/MCC)
+- **적용 범위:** 첫 버전의 중심 구조에는 반복 토론을 넣지 않는다. 같은 모델을
+  여러 번 부른 효과와 역할 구조의 효과를 분리해 비교한다.
+
+### CliniCARE-Bench
+
+- **내용:** EHR와 정책 도구, 보류 판단, 필수 절차 위반, 비용과 과정을 함께
+  평가하는 의료 에이전트 하네스를 제시했다.
+- **참고 부분:** 최종 답뿐 아니라 근거 사용, 허용 행동, 보류와 비용도 함께 보는
+  평가 방식.
+- **공개 자료:** [arXiv v1](https://arxiv.org/abs/2608.07796)
+- **공개 범위:** MIMIC-IV 접근 조건과 비공개 평가 구성요소가 있다. 공개 원문에서
+  확인한 평가 원칙만 사용한다.
+
+### TrialSim-10k
+
+- **내용:** 임상시험 사전 선별을 위한 9,864개 다회 대화와 논리·의사소통 평가를
+  제공한다.
+- **참고 부분:** 여러 차례 질문하고 답을 받는 합성 대화의 자료 구조와 평가 항목.
+- **공개 자료:** [논문](https://www.sciencedirect.com/science/article/pii/S2352648326000504)
+- **적용 범위:** ClarifyTrial의 날짜·출처·확인 절차 정답은 별도로 만든다.
+
+### AIDS2와 다중 토론 비교 연구
+
+- **내용:** AIDS2는 직접 확인한 사실과 의학적으로 추정한 상태를 나눠 부족한
+  병력·진찰·검사를 제안했다. *Should we be going MAD?*는 여러 토론 방식과 독립
+  반복 답변을 비교했다.
+- **참고 부분:** 확인된 사실과 추정의 분리, 반복 호출이 항상 이득을 주는지 확인할
+  비교 방식.
+- **공개 자료:** [AIDS2](https://pmc.ncbi.nlm.nih.gov/articles/PMC2248545/),
+  [토론 비교 논문](https://proceedings.mlr.press/v235/smit24a.html),
+  [DebateLLM 코드](https://github.com/instadeepai/DebateLLM)
+
+## 4. 문헌 수치와 재현 결과를 구분하는 기준
+
+- 논문 수치는 해당 논문의 자료, 모델, 호출량과 정답 정의에서 해석한다.
+- 공식 코드 원형 실행, 공개 설명을 옮긴 재구현, 같은 조건의 구조 비교를 별도
+  결과로 표시한다.
+- 코드가 계속 바뀌는 저장소는 논문 당시 태그와 현재 기본 브랜치를 구분한다.
+- 코드나 프롬프트가 공개되지 않은 연구는 확인된 구조까지만 재구성한다.
+- ClarifyTrial v5 성능표는 실제 실행 뒤 작성한다. 현재 성능은 미측정이다.
+- 과거 Solar 합성 데모와 84% 결과는 v5 결과에 포함하지 않는다.
