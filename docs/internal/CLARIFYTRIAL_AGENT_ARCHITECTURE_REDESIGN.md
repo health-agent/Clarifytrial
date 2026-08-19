@@ -6,7 +6,8 @@
 - 연구 기준: [CLARIFYTRIAL_RESEARCH_PLAN_V5.md](CLARIFYTRIAL_RESEARCH_PLAN_V5.md)
 - 근거문헌과 공개 코드: [CLARIFYTRIAL_AGENT_SOURCE_INDEX.md](CLARIFYTRIAL_AGENT_SOURCE_INDEX.md)
 - RAG와 평가 구현: [CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md](CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)
-- 그림 원본: [diagrams/clarifytrial-performance-agent-architecture.mmd](diagrams/clarifytrial-performance-agent-architecture.mmd)
+- 완성 그림: [diagrams/clarifytrial-workflow.svg](diagrams/clarifytrial-workflow.svg)
+- Mermaid 원본: [diagrams/clarifytrial-performance-agent-architecture.mmd](diagrams/clarifytrial-performance-agent-architecture.mmd)
 
 ## 1. 결정된 구조
 
@@ -26,33 +27,9 @@ ClarifyTrial은 임상시험 조건을 미리 정리하고, 날짜와 출처가 
 
 ## 2. 전체 흐름
 
-```mermaid
-flowchart TD
-    subgraph PREP[1. 판단에 사용할 자료 준비]
-        T1[버전이 확인된 임상시험 원문]
-        T2[조건·수치·기간·논리와<br/>원문 위치 정리]
-        P1[현재까지 확보한 합성 환자 기록]
-        P2[값·출처·사건 날짜가 붙은<br/>환자 상태표]
-        T1 --> T2
-        P1 --> P2
-    end
+![ClarifyTrial 임상시험 사전 선별 흐름](diagrams/clarifytrial-workflow.svg)
 
-    T2 --> S[2. 후보 시험을 넓게 검색]
-    P2 --> S
-    S --> J[3. 선정·제외 조건을 항목별로 판단]
-    J --> A[4. 환자 원문·시험 원문·날짜·수치 확인]
-    A --> G1[판단 1<br/>후보로 계속 검토할 것인가]
-    A --> G2[판단 2<br/>현재 자료로 조건을 확인할 수 있는가]
-    G1 --> C{5. 중요한 조건을<br/>지금 결정할 수 있는가}
-    G2 --> C
-
-    C -->|예| O[6. 후보·확인 상태·근거·남은 정보 표시]
-    C -->|아니오| M[결과를 바꿀 수 있는<br/>부족 정보 하나 선택]
-    M --> R[확인 경로 선택<br/>기존 기록 / 환자 질문 / 공식 확인 / 보류]
-    R -->|현재 확인이 어려움| O
-    R -->|새 정보 확보| U[출처와 날짜를 환자 상태표에 추가]
-    U -. 관련 조건만 다시 판단 .-> J
-```
+[수정 가능한 Mermaid 원본](diagrams/clarifytrial-performance-agent-architecture.mmd)
 
 ## 3. 단계별 설계
 
