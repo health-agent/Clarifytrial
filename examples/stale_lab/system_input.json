@@ -1,0 +1,60 @@
+{
+  "case_id": "synthetic-stale-lab",
+  "trial_id": "NCT-SYNTHETIC-001",
+  "criteria": [
+    {
+      "criterion_id": "criterion-platelets",
+      "trial_id": "NCT-SYNTHETIC-001",
+      "kind": "inclusion",
+      "statement": "최근 14일 안에 받은 공식 검사에서 혈소판 수치가 100 x10^9/L 이상이어야 한다.",
+      "source_location": "synthetic-protocol#inclusion-4",
+      "required": true,
+      "numeric_constraint": {
+        "concept": "platelet_count",
+        "operator": "gte",
+        "threshold": 100,
+        "unit": "10^9/L"
+      },
+      "evidence_requirement": {
+        "max_age_days": 14,
+        "allowed_source_types": [
+          "official_verification"
+        ],
+        "allowed_verification_statuses": [
+          "verified"
+        ]
+      }
+    }
+  ],
+  "initial_patient_state": {
+    "patient_id": "synthetic-patient-001",
+    "as_of": "2026-08-20T00:00:00Z",
+    "facts": [
+      {
+        "evidence_id": "platelets-old-record",
+        "statement": "3개월 전 혈소판 수치는 132 x10^9/L였다.",
+        "source_type": "medical_record",
+        "source_location": "synthetic-record#lab-2026-05-20",
+        "event_date": "2026-05-20",
+        "recorded_date": "2026-05-20",
+        "verification_status": "verified",
+        "concept": "platelet_count",
+        "value": 132,
+        "unit": "10^9/L"
+      }
+    ]
+  },
+  "evidence_requests": [
+    {
+      "fact_id": "platelets-recent-official",
+      "description": "최근 14일 안에 받은 공식 혈소판 검사 결과",
+      "related_criterion_ids": [
+        "criterion-platelets"
+      ],
+      "acceptable_actions": [
+        "REQUEST_VERIFICATION"
+      ],
+      "reason": "오래된 결과를 보면 참가 가능성은 남아 있지만, 현재 조건을 확인하려면 최근 공식 결과가 필요하다."
+    }
+  ]
+}

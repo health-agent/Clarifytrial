@@ -1,0 +1,18 @@
+[
+  {
+    "fact_id": "platelets-recent-official",
+    "access_path": "REQUEST_VERIFICATION",
+    "evidence": {
+      "evidence_id": "platelets-2026-08-18",
+      "statement": "2026년 8월 18일 혈소판 수치는 126 x10^9/L였다.",
+      "source_type": "official_verification",
+      "source_location": "synthetic-central-lab#result-001",
+      "event_date": "2026-08-18",
+      "recorded_date": "2026-08-18",
+      "verification_status": "verified",
+      "concept": "platelet_count",
+      "value": 126,
+      "unit": "10^9/L"
+    }
+  }
+]

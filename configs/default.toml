@@ -1,0 +1,14 @@
+[model]
+provider = "unconfigured"
+model_alias = "claude-sonnet-5"
+effort = "medium"
+timeout_seconds = 120
+format_repair_limit = 1
+
+[episode]
+max_external_actions = 3
+max_selective_reviews = 1
+max_cycles = 6
+
+[trace]
+write_jsonl = true

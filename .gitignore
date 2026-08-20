@@ -1,3 +1,4 @@
+.venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -5,11 +6,13 @@ __pycache__/
 .ruff_cache/
 .research-cache/
 .codex/
-.venv/
 venv/
+.coverage
+htmlcov/
 build/
 dist/
 *.egg-info/
+runs/
 outputs/
 artifacts/
 data/raw/

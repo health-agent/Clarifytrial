@@ -1,0 +1,20 @@
+{
+  "candidate_status": "retain",
+  "confirmation_status": "not_confirmed",
+  "criteria": [
+    {
+      "criterion_id": "criterion-platelets",
+      "clinical_status": "supports",
+      "evidence_sufficiency": "insufficient",
+      "evidence_ids": [
+        "platelets-old-record"
+      ]
+    }
+  ],
+  "acceptable_actions": [
+    "REQUEST_VERIFICATION"
+  ],
+  "acceptable_target_fact_ids": [
+    "platelets-recent-official"
+  ]
+}

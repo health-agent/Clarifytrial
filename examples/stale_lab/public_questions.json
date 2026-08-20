@@ -1,0 +1,9 @@
+[
+  {
+    "fact_id": "platelets-recent-official",
+    "description": "최근 14일 안에 받은 공식 혈소판 검사 결과",
+    "available_actions": [
+      "REQUEST_VERIFICATION"
+    ]
+  }
+]
