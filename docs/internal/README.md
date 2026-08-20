@@ -5,7 +5,7 @@
 1. [현재 상태](CURRENT_STATUS.md)
    - 완료한 설계, 구현 전 항목과 바로 시작할 작업
 2. [에이전트 워크플로우](CLARIFYTRIAL_AGENT_ARCHITECTURE_REDESIGN.md)
-   - 환자 입력부터 후보 검색, 두 판단, 다음 확인과 재판정까지의 전체 흐름
+   - 고정 에이전트 3개와 선택적 검토 1개의 역할, 호출 조건과 전체 흐름
 3. [근거문헌](CLARIFYTRIAL_AGENT_SOURCE_INDEX.md)
    - 각 단계의 원 논문, 공개 코드, 가져온 부분과 재현 범위
 4. [RAG·평가 구현계획](CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)
@@ -21,5 +21,5 @@
 | [쉬운 실험 설명](CLARIFYTRIAL_V5_DEVELOPED_EXPERIMENT_GUIDE.md) | 사례 제작부터 결과 해석까지의 전체 순서 |
 
 연구계획은 v5 문서 하나를 기준으로 삼는다. 나머지 문서는 현재 상태, 구현, 자료와
-근거를 설명한다. 에이전트 구조와 실행계획은 설계가 끝났으며, v5 코드와 성능
-실험은 아직 시작하지 않았다.
+근거를 설명한다. 진행 관리·검색/판정·다음 확인의 세 고정 에이전트와 선택적 근거
+검토의 경계까지 설계했으며, v5 코드와 성능 실험은 아직 시작하지 않았다.
