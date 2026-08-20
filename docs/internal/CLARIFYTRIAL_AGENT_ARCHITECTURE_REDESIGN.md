@@ -6,9 +6,8 @@
 - 연구 기준: [CLARIFYTRIAL_RESEARCH_PLAN_V5.md](CLARIFYTRIAL_RESEARCH_PLAN_V5.md)
 - 근거문헌과 공개 코드: [CLARIFYTRIAL_AGENT_SOURCE_INDEX.md](CLARIFYTRIAL_AGENT_SOURCE_INDEX.md)
 - RAG와 평가 구현: [CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md](CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)
-- PNG: [diagrams/clarifytrial-workflow.png](diagrams/clarifytrial-workflow.png)
-- SVG: [diagrams/clarifytrial-workflow.svg](diagrams/clarifytrial-workflow.svg)
-- Mermaid 원본: [diagrams/clarifytrial-performance-agent-architecture.mmd](diagrams/clarifytrial-performance-agent-architecture.mmd)
+- 전체 구조: [PNG](diagrams/clarifytrial-workflow.png) · [SVG](diagrams/clarifytrial-workflow.svg) · [Mermaid](diagrams/clarifytrial-performance-agent-architecture.mmd)
+- 상세 실행 흐름: [PNG](diagrams/clarifytrial-detailed-workflow.png) · [SVG](diagrams/clarifytrial-detailed-workflow.svg) · [Mermaid](diagrams/clarifytrial-detailed-workflow.mmd)
 
 ## 1. 결정된 구조
 
@@ -40,12 +39,27 @@ ClarifyTrial은 **고정 에이전트 3개와 필요할 때만 부르는 검토 
 
 ## 2. 전체 구조
 
+### 2.1 에이전트 구성
+
 ![ClarifyTrial v5 에이전트 구조](diagrams/clarifytrial-workflow.png)
 
 [수정 가능한 Mermaid 원본](diagrams/clarifytrial-performance-agent-architecture.mmd)
 
 진행 관리는 현재 상태에 따라 판정, 다음 확인, 선택 검토 또는 종료를 고른다. 새로
 얻은 정보와 검토 결과는 진행 관리로 돌아가 필요한 부분만 다시 처리한다.
+
+### 2.2 환자 한 사례의 상세 실행 흐름
+
+![ClarifyTrial v5 상세 실행 흐름](diagrams/clarifytrial-detailed-workflow.png)
+
+[수정 가능한 Mermaid 원본](diagrams/clarifytrial-detailed-workflow.mmd) ·
+[SVG](diagrams/clarifytrial-detailed-workflow.svg)
+
+연한 남색 상자와 마름모는 에이전트, 회색 상자는 공통 자료·코드·도구, 진한 남색
+상자는 결과다. 그림에 두 번 나오는 진행 관리는 같은 에이전트가 주기의 시작과 판정
+뒤에 다시 실행되는 모습이다.
+평가 중 기록 조회, 환자 질문 또는 공식 확인을 선택하면 사례에 미리 정한 합성 사실을
+반환하므로 시스템이 원하는 답을 새로 만들 수 없다.
 
 ## 3. 에이전트 사이의 전달 규칙
 
