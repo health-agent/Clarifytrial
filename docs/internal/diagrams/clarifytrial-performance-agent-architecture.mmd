@@ -4,9 +4,9 @@ config:
   theme: base
   flowchart:
     curve: basis
-    nodeSpacing: 58
+    nodeSpacing: 56
     rankSpacing: 72
-    wrappingWidth: 280
+    wrappingWidth: 260
   themeVariables:
     background: '#ffffff'
     primaryTextColor: '#18324a'
@@ -17,33 +17,49 @@ config:
 flowchart LR
     S[["공통 자료<br/>시험 조건 · 환자 상태 · 공통 RAG"]]
     A1["에이전트 1 · 진행 관리<br/>다음 단계 결정"]
-    A2["에이전트 2 · 검색·판정<br/>후보 검색 · 조건 판단"]
-    C["코드 처리<br/>규칙 검사 · 두 판단 집계"]
-    A3["에이전트 3 · 다음 확인<br/>부족 정보 · 확인 경로"]
-    E["정보 획득<br/>기록 · 환자 · 공식 확인"]
-    A4["에이전트 4 · 선택 검토<br/>중요 결론 · 근거 충돌"]
+
+    subgraph W[" "]
+        direction TB
+        subgraph W3[" "]
+            direction LR
+            A3["에이전트 3 · 다음 확인<br/>부족 정보 · 확인 경로"]
+            E["정보 획득<br/>기록 · 환자 · 공식 확인"]
+            A3 --> E
+        end
+        A4["에이전트 4 · 선택 검토<br/>중요 결론 · 근거 충돌"]
+        subgraph W2[" "]
+            direction LR
+            A2["에이전트 2 · 검색·판정<br/>후보 검색 · 조건 판단"]
+            C["코드 처리<br/>규칙 검사 · 두 판단 집계"]
+            A2 --> C
+        end
+    end
+
     O["결과<br/>후보 · 현재 확인 · 근거 · 남은 정보"]
 
     S --> A1
     S -.-> A2
     A1 -->|판정 요청| A2
-    A2 --> C
     C -->|판정 결과| A1
     A1 -->|정보 부족| A3
-    A3 --> E
     E -->|새 정보| A1
     A1 -->|검토 필요| A4
     A4 -->|검토 결과| A1
     A1 -->|완료| O
 
+    classDef lead fill:#edf4ff,stroke:#365f91,stroke-width:2.8px,color:#18324a;
     classDef agent fill:#edf4ff,stroke:#365f91,stroke-width:2px,color:#18324a;
     classDef optional fill:#edf4ff,stroke:#365f91,stroke-width:2px,stroke-dasharray:6 4,color:#18324a;
     classDef shared fill:#f7f9fc,stroke:#8a98a8,stroke-width:1.5px,color:#304457;
     classDef output fill:#365f91,stroke:#365f91,stroke-width:2px,color:#ffffff;
 
-    class A1,A2,A3 agent;
+    class A1 lead;
+    class A2,A3 agent;
     class A4 optional;
     class S,C,E shared;
     class O output;
+    style W fill:none,stroke:none;
+    style W2 fill:none,stroke:none;
+    style W3 fill:none,stroke:none;
 
     linkStyle default stroke:#73869a,stroke-width:1.5px;
