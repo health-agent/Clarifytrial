@@ -25,9 +25,10 @@ ClarifyTrial은 환자 정보가 아직 완전하지 않은 단계에서 임상�
 
 ## 에이전트 구조
 
-![ClarifyTrial v5 에이전트 구조](docs/internal/diagrams/clarifytrial-workflow.svg)
+![ClarifyTrial v5 에이전트 구조](docs/internal/diagrams/clarifytrial-workflow.png)
 
-[수정 가능한 Mermaid 원본](docs/internal/diagrams/clarifytrial-performance-agent-architecture.mmd)
+[수정 가능한 Mermaid 원본](docs/internal/diagrams/clarifytrial-performance-agent-architecture.mmd) ·
+[SVG](docs/internal/diagrams/clarifytrial-workflow.svg)
 
 ### 에이전트 구성
 

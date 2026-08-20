@@ -6,6 +6,7 @@
 - 연구 기준: [CLARIFYTRIAL_RESEARCH_PLAN_V5.md](CLARIFYTRIAL_RESEARCH_PLAN_V5.md)
 - 근거문헌과 공개 코드: [CLARIFYTRIAL_AGENT_SOURCE_INDEX.md](CLARIFYTRIAL_AGENT_SOURCE_INDEX.md)
 - RAG와 평가 구현: [CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md](CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)
+- PNG: [diagrams/clarifytrial-workflow.png](diagrams/clarifytrial-workflow.png)
 - SVG: [diagrams/clarifytrial-workflow.svg](diagrams/clarifytrial-workflow.svg)
 - Mermaid 원본: [diagrams/clarifytrial-performance-agent-architecture.mmd](diagrams/clarifytrial-performance-agent-architecture.mmd)
 
@@ -39,7 +40,7 @@ ClarifyTrial은 **고정 에이전트 3개와 필요할 때만 부르는 검토 
 
 ## 2. 전체 구조
 
-![ClarifyTrial v5 에이전트 구조](diagrams/clarifytrial-workflow.svg)
+![ClarifyTrial v5 에이전트 구조](diagrams/clarifytrial-workflow.png)
 
 [수정 가능한 Mermaid 원본](diagrams/clarifytrial-performance-agent-architecture.mmd)
 
