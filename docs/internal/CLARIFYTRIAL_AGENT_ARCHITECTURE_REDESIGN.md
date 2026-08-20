@@ -6,7 +6,7 @@
 - 연구 기준: [CLARIFYTRIAL_RESEARCH_PLAN_V5.md](CLARIFYTRIAL_RESEARCH_PLAN_V5.md)
 - 근거문헌과 공개 코드: [CLARIFYTRIAL_AGENT_SOURCE_INDEX.md](CLARIFYTRIAL_AGENT_SOURCE_INDEX.md)
 - RAG와 평가 구현: [CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md](CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)
-- 완성 그림: [diagrams/clarifytrial-workflow.svg](diagrams/clarifytrial-workflow.svg)
+- SVG: [diagrams/clarifytrial-workflow.svg](diagrams/clarifytrial-workflow.svg)
 - Mermaid 원본: [diagrams/clarifytrial-performance-agent-architecture.mmd](diagrams/clarifytrial-performance-agent-architecture.mmd)
 
 ## 1. 결정된 구조
@@ -37,15 +37,14 @@ ClarifyTrial은 **고정 에이전트 3개와 필요할 때만 부르는 검토 
 서식은 에이전트가 아니다. 여러 에이전트가 함께 사용하는 자료·코드·도구다. 임상시험
 조건을 미리 정리하는 작업도 환자 대화 밖에서 실행하는 준비 작업으로 분리한다.
 
-## 2. 전체 흐름
+## 2. 실행 순서
 
-![ClarifyTrial 임상시험 사전 선별 흐름](diagrams/clarifytrial-workflow.svg)
+![ClarifyTrial v5 에이전트 실행 순서](diagrams/clarifytrial-workflow.svg)
 
 [수정 가능한 Mermaid 원본](diagrams/clarifytrial-performance-agent-architecture.mmd)
 
-그림의 한 상자가 모델 호출 한 번을 뜻하지는 않는다. 한 번의 진행 주기에는 진행
-관리 1회, 검색·판정 1개 이상의 묶음, 필요시 다음 확인 1회와 선택적 검토 1회가
-들어간다. 후보와 조건을 몇 묶음으로 나누는지에 따라 실제 호출 수가 달라진다.
+그림은 호출 순서를 보여준다. 검색·판정은 후보와 조건을 나눈 묶음마다 실행되므로,
+화살표 하나가 API 호출 한 번을 뜻하지는 않는다.
 
 ## 3. 에이전트 사이의 전달 규칙
 

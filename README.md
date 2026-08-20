@@ -23,9 +23,9 @@ ClarifyTrial은 환자 정보가 아직 완전하지 않은 단계에서 임상�
 저장소에는 합성 환자 사례만 둔다. 과거 Solar 합성 데모 수치와 84% 결과는 v5의
 성능이나 기준선에 포함하지 않는다.
 
-## 실제 멀티에이전트 워크플로우
+## 에이전트 실행 순서
 
-![ClarifyTrial v5 실제 멀티에이전트 흐름](docs/internal/diagrams/clarifytrial-workflow.svg)
+![ClarifyTrial v5 에이전트 실행 순서](docs/internal/diagrams/clarifytrial-workflow.svg)
 
 [수정 가능한 Mermaid 원본](docs/internal/diagrams/clarifytrial-performance-agent-architecture.mmd)
 

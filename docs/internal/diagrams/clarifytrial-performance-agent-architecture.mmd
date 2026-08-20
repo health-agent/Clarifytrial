@@ -1,94 +1,69 @@
-flowchart TD
-    subgraph PREP[사전 준비 · 에이전트로 세지 않음]
-        T0[버전이 확인된 임상시험 원문]
-        T1[조건·수치·기간·논리와 원문 위치 정리]
-        TI[(시험 검색 색인과 조건 저장소)]
-        T0 --> T1 --> TI
+---
+title: ClarifyTrial v5 에이전트 실행 순서
+config:
+  theme: base
+  sequence:
+    mirrorActors: false
+    diagramMarginX: 40
+    diagramMarginY: 20
+    actorMargin: 44
+    messageMargin: 28
+    noteMargin: 10
+  themeVariables:
+    background: '#ffffff'
+    primaryColor: '#eaf2ff'
+    primaryBorderColor: '#3b82f6'
+    primaryTextColor: '#17324d'
+    secondaryColor: '#eef7f5'
+    tertiaryColor: '#f3e8ff'
+    lineColor: '#57728a'
+    actorBkg: '#eaf2ff'
+    actorBorder: '#3b82f6'
+    actorTextColor: '#17324d'
+    actorLineColor: '#9db0c0'
+    signalColor: '#43627c'
+    signalTextColor: '#17324d'
+    labelBoxBkgColor: '#f6f8fa'
+    labelBoxBorderColor: '#ccd8e2'
+    labelTextColor: '#17324d'
+    loopTextColor: '#17324d'
+    noteBkgColor: '#fff7e6'
+    noteBorderColor: '#d69e2e'
+    noteTextColor: '#4a3413'
+    fontFamily: 'Pretendard, Noto Sans KR, Malgun Gothic, sans-serif'
+---
+sequenceDiagram
+    participant S as 자료·도구<br/>시험 조건·환자 상태·RAG
+    participant A1 as 에이전트 1<br/>진행 관리
+    participant A2 as 에이전트 2<br/>검색·판정
+    participant C as 코드<br/>규칙 검사·결과 집계
+    participant A3 as 에이전트 3<br/>다음 확인
+    participant A4 as 에이전트 4<br/>선택 검토
+    participant O as 결과
+
+    S->>A1: 시험 조건·환자 상태 전달
+
+    loop 종료 조건을 만날 때까지
+        A1->>A2: 재검색·조건 재판정
+        A2->>S: 후보·원문 조회
+        S-->>A2: 후보·원문 반환
+        A2->>C: 조건별 판단·근거 전달
+        C-->>A1: 두 판단 반환
+
+        alt 정보가 부족함
+            A1->>A3: 미해결 조건·가능한 경로 전달
+            A3->>S: 기록·환자·공식 확인 중 선택
+            S-->>A1: 새 정보 반환<br/>출처·날짜 포함
+        else 검토가 필요함
+            A1->>A4: 결론·근거·규칙 검사 결과 전달
+            alt 관련 조건 재판정
+                A4-->>A2: 재판정 요청
+            else 추가 확인
+                A4-->>A3: 확인할 사실 전달
+            else 문제 없음·사람 검토
+                A4-->>A1: 검토 결과 전달
+            end
+        else 종료
+            A1->>O: 후보 유지·현재 확인·근거·남은 정보
+        end
     end
-
-    subgraph STATE[공유 상태와 코드 · 모든 에이전트가 함께 사용]
-        P0[현재까지 확보한 합성 환자 기록]
-        PS[(출처·사건 날짜가 붙은 환자 상태표)]
-        LOG[(현재 후보·미해결 조건·실행 기록)]
-        RULE[날짜·수치·단위·논리 검사]
-        REDUCE[조건 결과를 두 판단으로 집계]
-        P0 --> PS
-    end
-
-    subgraph A1[에이전트 1 · 진행 관리]
-        C0[환자별 맥락을 읽고 다음 실행을 정함]
-        C1{현재 결과에 필요한 다음 단계}
-        C0 --> C1
-    end
-
-    subgraph A2[에이전트 2 · 검색·판정]
-        M0[검색 조건이 바뀌면 후보를 다시 검색]
-        M1[후보 안에서 관련 조건을 정렬]
-        M2[조건별 임상 상태와 자료 충분성을 함께 판단]
-        M3[환자 근거·시험 원문·부족 사실 ID 반환]
-        M0 --> M1 --> M2 --> M3
-    end
-
-    subgraph A3[에이전트 3 · 다음 확인]
-        N0[결과를 바꿀 수 있는 부족 사실 선택]
-        N1[기록 조회·환자 질문·공식 확인·보류 중 선택]
-        N2[확인할 사실 ID와 질문·요청문 반환]
-        N0 --> N1 --> N2
-    end
-
-    subgraph ENV[통제된 정보 획득 도구 · 에이전트가 아님]
-        E1[합성 EHR 기록 조회]
-        E2[숨긴 사실 카드에서 환자 답변]
-        E3[미리 정한 공식 확인 결과]
-        E4[새 사실에 출처와 사건 날짜를 붙임]
-        E1 --> E4
-        E2 --> E4
-        E3 --> E4
-    end
-
-    subgraph A4[에이전트 4 · 선택적 근거 검토]
-        R0[중요한 제거·확정 또는 근거 충돌만 독립 검사]
-        R1{검토 결과}
-        R0 --> R1
-    end
-
-    subgraph OUT[종료 결과]
-        O0[후보 유지와 현재 확인을 따로 표시]
-        O1[환자 근거·시험 원문·남은 정보·다음 단계]
-        O2[의료 면책 문구]
-        O0 --> O1 --> O2
-    end
-
-    TI --> M0
-    PS --> C0
-    LOG --> C0
-    C1 -->|초기 판단 또는 검색 조건 변경| M0
-    C1 -->|특정 조건의 근거만 변경| M1
-    M3 --> RULE --> REDUCE --> LOG
-    LOG --> C0
-
-    C1 -->|정보가 부족함| N0
-    N2 -->|기존 기록| E1
-    N2 -->|환자 질문| E2
-    N2 -->|공식 확인| E3
-    N2 -->|보류| O0
-    E4 --> PS
-
-    C1 -->|검토 조건에 걸림| R0
-    R1 -->|승인| O0
-    R1 -->|관련 조건 재판정| M1
-    R1 -->|추가 확인| N0
-    R1 -->|사람 검토| O0
-    C1 -->|결론 완료·환자 중단·행동 없음| O0
-
-    classDef agent fill:#E8F0FF,stroke:#2563EB,color:#153B5B,stroke-width:2px;
-    classDef optional fill:#F3E8FF,stroke:#7C3AED,color:#3B1D67,stroke-width:2px;
-    classDef data fill:#ECFDF5,stroke:#0F766E,color:#164E48,stroke-width:2px;
-    classDef tool fill:#FFF7E6,stroke:#B7791F,color:#5F370E,stroke-width:2px;
-    classDef output fill:#F5F3FF,stroke:#6D4BC3,color:#33205A,stroke-width:2px;
-
-    class C0,C1,M0,M1,M2,M3,N0,N1,N2 agent;
-    class R0,R1 optional;
-    class T0,T1,TI,P0,PS,LOG data;
-    class RULE,REDUCE,E1,E2,E3,E4 tool;
-    class O0,O1,O2 output;
