@@ -1,69 +1,49 @@
 ---
-title: ClarifyTrial v5 에이전트 실행 순서
+title: ClarifyTrial v5 에이전트 구조
 config:
   theme: base
-  sequence:
-    mirrorActors: false
-    diagramMarginX: 40
-    diagramMarginY: 20
-    actorMargin: 44
-    messageMargin: 28
-    noteMargin: 10
+  flowchart:
+    curve: basis
+    nodeSpacing: 58
+    rankSpacing: 72
+    wrappingWidth: 280
   themeVariables:
     background: '#ffffff'
-    primaryColor: '#eaf2ff'
-    primaryBorderColor: '#3b82f6'
-    primaryTextColor: '#17324d'
-    secondaryColor: '#eef7f5'
-    tertiaryColor: '#f3e8ff'
-    lineColor: '#57728a'
-    actorBkg: '#eaf2ff'
-    actorBorder: '#3b82f6'
-    actorTextColor: '#17324d'
-    actorLineColor: '#9db0c0'
-    signalColor: '#43627c'
-    signalTextColor: '#17324d'
-    labelBoxBkgColor: '#f6f8fa'
-    labelBoxBorderColor: '#ccd8e2'
-    labelTextColor: '#17324d'
-    loopTextColor: '#17324d'
-    noteBkgColor: '#fff7e6'
-    noteBorderColor: '#d69e2e'
-    noteTextColor: '#4a3413'
+    primaryTextColor: '#18324a'
+    lineColor: '#73869a'
+    edgeLabelBackground: '#ffffff'
     fontFamily: 'Pretendard, Noto Sans KR, Malgun Gothic, sans-serif'
 ---
-sequenceDiagram
-    participant S as 자료·도구<br/>시험 조건·환자 상태·RAG
-    participant A1 as 에이전트 1<br/>진행 관리
-    participant A2 as 에이전트 2<br/>검색·판정
-    participant C as 코드<br/>규칙 검사·결과 집계
-    participant A3 as 에이전트 3<br/>다음 확인
-    participant A4 as 에이전트 4<br/>선택 검토
-    participant O as 결과
+flowchart LR
+    S[["공통 자료<br/>시험 조건 · 환자 상태 · 공통 RAG"]]
+    A1["에이전트 1 · 진행 관리<br/>다음 단계 결정"]
+    A2["에이전트 2 · 검색·판정<br/>후보 검색 · 조건 판단"]
+    C["코드 처리<br/>규칙 검사 · 두 판단 집계"]
+    A3["에이전트 3 · 다음 확인<br/>부족 정보 · 확인 경로"]
+    E["정보 획득<br/>기록 · 환자 · 공식 확인"]
+    A4["에이전트 4 · 선택 검토<br/>중요 결론 · 근거 충돌"]
+    O["결과<br/>후보 · 현재 확인 · 근거 · 남은 정보"]
 
-    S->>A1: 시험 조건·환자 상태 전달
+    S --> A1
+    S -.-> A2
+    A1 -->|판정 요청| A2
+    A2 --> C
+    C -->|판정 결과| A1
+    A1 -->|정보 부족| A3
+    A3 --> E
+    E -->|새 정보| A1
+    A1 -->|검토 필요| A4
+    A4 -->|검토 결과| A1
+    A1 -->|완료| O
 
-    loop 종료 조건을 만날 때까지
-        A1->>A2: 재검색·조건 재판정
-        A2->>S: 후보·원문 조회
-        S-->>A2: 후보·원문 반환
-        A2->>C: 조건별 판단·근거 전달
-        C-->>A1: 두 판단 반환
+    classDef agent fill:#edf4ff,stroke:#365f91,stroke-width:2px,color:#18324a;
+    classDef optional fill:#edf4ff,stroke:#365f91,stroke-width:2px,stroke-dasharray:6 4,color:#18324a;
+    classDef shared fill:#f7f9fc,stroke:#8a98a8,stroke-width:1.5px,color:#304457;
+    classDef output fill:#365f91,stroke:#365f91,stroke-width:2px,color:#ffffff;
 
-        alt 정보가 부족함
-            A1->>A3: 미해결 조건·가능한 경로 전달
-            A3->>S: 기록·환자·공식 확인 중 선택
-            S-->>A1: 새 정보 반환<br/>출처·날짜 포함
-        else 검토가 필요함
-            A1->>A4: 결론·근거·규칙 검사 결과 전달
-            alt 관련 조건 재판정
-                A4-->>A2: 재판정 요청
-            else 추가 확인
-                A4-->>A3: 확인할 사실 전달
-            else 문제 없음·사람 검토
-                A4-->>A1: 검토 결과 전달
-            end
-        else 종료
-            A1->>O: 후보 유지·현재 확인·근거·남은 정보
-        end
-    end
+    class A1,A2,A3 agent;
+    class A4 optional;
+    class S,C,E shared;
+    class O output;
+
+    linkStyle default stroke:#73869a,stroke-width:1.5px;

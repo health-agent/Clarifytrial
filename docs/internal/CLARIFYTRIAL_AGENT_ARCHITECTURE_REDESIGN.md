@@ -37,14 +37,14 @@ ClarifyTrial은 **고정 에이전트 3개와 필요할 때만 부르는 검토 
 서식은 에이전트가 아니다. 여러 에이전트가 함께 사용하는 자료·코드·도구다. 임상시험
 조건을 미리 정리하는 작업도 환자 대화 밖에서 실행하는 준비 작업으로 분리한다.
 
-## 2. 실행 순서
+## 2. 전체 구조
 
-![ClarifyTrial v5 에이전트 실행 순서](diagrams/clarifytrial-workflow.svg)
+![ClarifyTrial v5 에이전트 구조](diagrams/clarifytrial-workflow.svg)
 
 [수정 가능한 Mermaid 원본](diagrams/clarifytrial-performance-agent-architecture.mmd)
 
-그림은 호출 순서를 보여준다. 검색·판정은 후보와 조건을 나눈 묶음마다 실행되므로,
-화살표 하나가 API 호출 한 번을 뜻하지는 않는다.
+진행 관리는 현재 상태에 따라 판정, 다음 확인, 선택 검토 또는 종료를 고른다. 새로
+얻은 정보와 검토 결과는 진행 관리로 돌아가 필요한 부분만 다시 처리한다.
 
 ## 3. 에이전트 사이의 전달 규칙
 
