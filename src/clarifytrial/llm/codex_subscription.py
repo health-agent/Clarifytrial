@@ -162,7 +162,6 @@ class CodexModelUsage(ModelUsage):
     requested_model_id: str | None = None
     requested_effort: str | None = None
     rerouted_from_model: str | None = None
-    total_tokens: int | None = None
     sdk_version: str | None = None
     runtime_name: str | None = None
     runtime_version: str | None = None

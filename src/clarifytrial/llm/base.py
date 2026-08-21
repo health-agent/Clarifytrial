@@ -27,6 +27,7 @@ class ModelUsage:
     cache_creation_input_tokens: int | None = None
     cache_read_input_tokens: int | None = None
     thinking_tokens: int | None = None
+    total_tokens: int | None = None
     latency_ms: int | None = None
     finish_reason: str | None = None
     request_id: str | None = None

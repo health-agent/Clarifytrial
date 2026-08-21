@@ -24,6 +24,7 @@
 | [trialgpt_strong_reviewer_web_v1.md](trialgpt_strong_reviewer_web_v1.md) | 일반 의학 개념 검색을 허용해 같은 결과를 재검토 | `ArchitectureReviewerResponse` |
 | [trialgpt_strong_reviewer_no_web_v2.md](trialgpt_strong_reviewer_no_web_v2.md) | 최초 판단이 경계 사례로 표시한 정보 부족만 집중 재검토 | `ArchitectureReviewerResponse` |
 | [trialgpt_strong_reviewer_web_v2.md](trialgpt_strong_reviewer_web_v2.md) | 같은 경계 사례에서 일반 의학 검색을 실제 사용해 재검토 | `ArchitectureReviewerResponse` |
+| [interactive_question_selector.md](interactive_question_selector.md) | 여러 후보 임상시험 중 현재 판정을 가장 많이 진전시킬 확인 항목 하나를 선택 | `AgentAction` |
 
 ## 같은 모델을 사용할 때의 기록 분리
 

@@ -42,6 +42,7 @@ from .environment import (
 from .evaluation import DecisionGold, score_decision
 from .experiment_tracking import ExperimentStage
 from .llm import AnthropicStructuredModel, ScriptedStructuredModel
+from .interactive import run_interactive_pilot
 from .pilots import (
     ArchitectureExperimentPaused,
     StrongReviewExperimentIncomplete,
@@ -582,6 +583,18 @@ def _parser() -> argparse.ArgumentParser:
     retrieval.add_argument("--medcpt-weight", type=float, default=1.0)
     retrieval.add_argument("--batch-size", type=int, default=16)
     retrieval.add_argument("--device", default="cuda")
+
+    interactive = commands.add_parser(
+        "run-interactive-pilot",
+        help="run the 12-patient question and reassessment pilot",
+    )
+    interactive.add_argument("--output", required=True, type=Path)
+    interactive.add_argument("--with-subscription-model", action="store_true")
+    interactive.add_argument("--confirm-subscription-run", action="store_true")
+    interactive.add_argument(
+        "--case-concurrency", type=int, choices=(1, 2, 3), default=3
+    )
+    interactive.add_argument("--timeout-seconds", type=float, default=180.0)
     return parser
 
 
@@ -750,6 +763,28 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"@{row['depth']}: weighted_recall={row['weighted_recall']:.6f} "
                 f"binary_recall={row['binary_recall']:.6f} "
                 f"ndcg={row['ndcg']:.6f} precision={row['precision']:.6f}"
+            )
+        return 0
+    if args.command == "run-interactive-pilot":
+        if args.with_subscription_model and not args.confirm_subscription_run:
+            parser.error(
+                "--with-subscription-model requires --confirm-subscription-run"
+            )
+        summary_path = run_interactive_pilot(
+            args.output,
+            include_subscription_model=args.with_subscription_model,
+            case_concurrency=args.case_concurrency,
+            timeout_seconds=args.timeout_seconds,
+            progress=print,
+        )
+        summary = _read_json(summary_path)
+        print(f"summary: {summary_path}")
+        for row in summary["summaries"]:
+            print(
+                f"{row['policy_id']}: "
+                f"trial_recovery={row['mean_trial_status_recovery']:.3f} "
+                f"necessary_recall={row['mean_necessary_fact_recall']:.3f} "
+                f"actions={row['total_actions']}"
             )
         return 0
     raise AssertionError(f"unhandled command: {args.command}")

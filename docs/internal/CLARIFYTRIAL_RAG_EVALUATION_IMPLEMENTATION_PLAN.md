@@ -297,7 +297,7 @@ InteractiveCase
   fixed_candidate_trial_ids[5]
   full_patient_state
   initially_visible_fact_ids
-  hidden_fact_ids[3]
+  hidden_fact_ids[5]
   fact_to_criterion_links
   acceptable_actions_by_fact
   reveal_results_by_fact
@@ -651,7 +651,8 @@ JSONL 입력·출력 변환기만 연결한다. 모델 제공자 HTTP 처리는 
 
 ### 7단계: 대화와 행동
 
-- 기본 환자 12명, 고정 후보 5개, 숨은 사실 3개의 합성 답변 환경
+- 기본 환자 12명, 고정 후보 5개, 확인 후보 5개와 행동 한도 3회의 합성 답변 환경
+- 사례당 32개 정보 공개 조합을 전수 계산한 최소 충분 사실과 정보별 실제 민감도
 - 전체 정보 결과와 여러 최소 충분 사실 묶음 계산
 - 질문 없음, 모두 확인, 무작위, 영향 범위, 영향 대비 비용 기준선
 - 사실 ID와 확인 경로를 먼저 고르고 자연어 질문은 뒤에 생성

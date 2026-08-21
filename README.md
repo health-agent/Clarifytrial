@@ -21,8 +21,8 @@ ClarifyTrial은 환자 정보가 아직 완전하지 않은 단계에서 임상�
 | 역할별 에이전트·상태 흐름·공통 평가기 | 첫 구현 완료 |
 | Claude API와 TrialGPT 조건 주석 연결 | 20명 개발·33명 평가 실행 완료 |
 | GPT 구독형 단일·멀티에이전트 구조 비교 | Sol medium 개발 완료, 두 정적 검토 방식 기각 |
-| v5 대화형 자료 | 12명 작동 확인·30명 벤치마크 구성 확정, 구현 전 |
-| v5 성능 | 미측정 |
+| v5 대화형 자료 | 12명 코드·Sol 작동 확인 완료, 30명 주 벤치마크 작성 전 |
+| v5 성능 | 12명 반복 구조에서 작동 확인, 주 성능은 아직 미측정 |
 
 저장소에는 합성 환자 사례만 둔다. 과거 Solar 합성 데모 수치와 84% 결과는 v5의
 성능이나 기준선에 포함하지 않는다.
@@ -40,6 +40,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 .\.venv\Scripts\python.exe -m pytest -q
 .\.venv\Scripts\clarifytrial.exe run-example --case examples\stale_lab --output runs\stale_lab
+.\.venv\Scripts\clarifytrial.exe run-interactive-pilot --output runs\interactive-pilot
 ```
 
 마지막 명령은 오래된 혈액검사만 있는 상태에서 후보를 유지하고, 최근 공식 결과를
@@ -264,8 +265,8 @@ TrialGPT 조건 판단은 서로 다른 실행으로 유지한다.
 | 7 | 단일 모델과 공개 연구 구조를 옮긴 비교 시스템 | Sol 개발 구조 비교 완료, 정적 `M2` 기각, 다른 비교군 미구현 |
 | 8 | TrialGPT 후보 검색과 TREC 연결 | 전체 실행과 논문 수치 대조 완료, 결합 검색 채택 |
 | 9 | 강한 단일 판단과 검색 유무를 나눈 선택 검토 | 개발 20조합 실행 완료, 두 검토 기각 |
-| 10 | 고정 후보 5개와 숨은 사실 3개의 v5 대화 비교 | 12명 구성 확정, 구현 전 |
-| 11 | 같은 후보 RAG에서 TrialGPT식 흐름과 ClarifyTrial 비교 | 대화형 작동 확인 뒤 실행 |
+| 10 | 고정 후보 5개와 확인 후보 5개 중 3개를 고르는 v5 대화 비교 | 12명 구현·Sol 실행 완료, 주 자료 작성 전 |
+| 11 | 같은 후보 RAG에서 TrialGPT식 흐름과 ClarifyTrial 비교 | 공개 조건으로 30명 자료를 고정한 뒤 실행 |
 
 구현 세부는
 [RAG·평가 구현계획](docs/internal/CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)을
