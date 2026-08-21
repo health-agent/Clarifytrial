@@ -16,6 +16,7 @@ from ..mechanical_checks import evaluate_criterion
 from .contracts import (
     FactSensitivity,
     InteractiveCase,
+    InteractivePolicyView,
     InteractiveSnapshot,
     MinimalQuestionGold,
     SensitivityProfile,
@@ -28,19 +29,23 @@ def evaluate_interactive_case(
 ) -> InteractiveSnapshot:
     """Evaluate every fixed candidate using only visible structured evidence."""
 
+    return evaluate_policy_view(case.public_policy_view(), patient_state)
+
+
+def evaluate_policy_view(
+    view: InteractivePolicyView,
+    patient_state: PatientState,
+) -> InteractiveSnapshot:
+    """Evaluate public trial rules without access to a case's actual answers."""
+
     request_by_criterion: dict[str, list[str]] = {}
-    for hidden in case.hidden_facts:
-        for trial in case.trials:
-            for criterion in trial.criteria:
-                constraint = criterion.numeric_constraint
-                if constraint is not None and constraint.concept == hidden.answer.evidence.concept:
-                    request_by_criterion.setdefault(criterion.criterion_id, []).append(
-                        hidden.request.fact_id
-                    )
+    for public in view.available_information:
+        for criterion_id in public.related_criterion_ids:
+            request_by_criterion.setdefault(criterion_id, []).append(public.fact_id)
 
     decisions = []
     visible_ids = {item.evidence_id for item in patient_state.facts}
-    for trial in case.trials:
+    for trial in view.trials:
         assessments = []
         for criterion in trial.criteria:
             result = evaluate_criterion(criterion, patient_state)

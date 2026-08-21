@@ -7,6 +7,11 @@ from clarifytrial.contracts import AgentAction, NextAction
 from clarifytrial.interactive import (
     AuthoredOrderPolicy,
     ClarifyTrialRulePolicy,
+    ExactDecisionTreePolicy,
+    ExactPolicyObjective,
+    WidestImpactPolicy,
+    build_binary_scenarios,
+    build_uniform_binary_scenarios,
     exact_fact_sensitivity,
     ModelQuestionPolicy,
     NoQuestionPolicy,
@@ -15,6 +20,8 @@ from clarifytrial.interactive import (
     run_interactive_policy,
     summarize_interactive_runs,
 )
+from clarifytrial.interactive.contracts import InteractiveCase
+from clarifytrial.interactive.oracle import evaluate_interactive_case
 from clarifytrial.interactive.pilot import run_interactive_pilot
 from clarifytrial.llm.base import ModelCall, ModelUsage
 
@@ -93,6 +100,145 @@ def test_dynamic_rule_recovers_oracle_and_authored_order_does_not() -> None:
     assert len(dynamic.action_history) == 3
 
 
+def test_exact_tree_uses_all_binary_scenarios_without_actual_answer_marker() -> None:
+    case = build_interactive_pilot_cases()[0]
+    distribution = build_uniform_binary_scenarios(case)
+    policy = ExactDecisionTreePolicy(
+        case.public_policy_view(),
+        case.initial_patient_state(),
+        distribution,
+        ExactPolicyObjective.EXPECTED,
+    )
+
+    run = run_interactive_policy(case, policy)
+
+    assert len(distribution.scenarios) == 32
+    assert sum(item.probability for item in distribution.scenarios) == 1
+    serialized = json.dumps(distribution.model_dump(mode="json"), ensure_ascii=False)
+    assert all(
+        item.answer.evidence.statement not in serialized for item in case.hidden_facts
+    )
+    assert all(
+        item.answer.evidence.evidence_id not in serialized
+        for item in case.hidden_facts
+    )
+    assert all(
+        item.answer.evidence.source_location not in serialized
+        for item in case.hidden_facts
+    )
+    assert run.metrics.trial_status_recovery == 1
+    assert run.metrics.unnecessary_action_count == 0
+    assert policy.choices[0].evaluated_states == 131
+    assert policy.choices[0].value.average_trial_status_recovery == 0.8
+
+
+def test_exact_tree_can_beat_public_coverage_when_answers_are_imbalanced() -> None:
+    source = build_interactive_pilot_cases()[0]
+    payload = source.model_dump(mode="json")
+    payload["trials"] = payload["trials"][2:]
+    payload["action_budget"] = 1
+    case = InteractiveCase.model_validate(payload)
+    probabilities = {
+        f"{case.case_id}-hba1c": 0.01,
+        f"{case.case_id}-egfr": 0.01,
+    }
+    distribution = build_binary_scenarios(case, probabilities)
+    view = case.public_policy_view()
+    snapshot = evaluate_interactive_case(case, case.initial_patient_state())
+
+    exact = ExactDecisionTreePolicy(
+        view,
+        case.initial_patient_state(),
+        distribution,
+        ExactPolicyObjective.EXPECTED,
+    )
+    exact_action = exact.select(view, snapshot, frozenset())
+    coverage_action = WidestImpactPolicy().select(view, snapshot, frozenset())
+
+    assert exact_action.target_fact_id == f"{case.case_id}-injection"
+    assert coverage_action.target_fact_id == f"{case.case_id}-bmi"
+    assert exact.choices[0].value.average_trial_status_recovery > 0
+
+
+def test_worst_case_tree_protects_the_minimum_before_average_recovery() -> None:
+    source = build_interactive_pilot_cases()[0]
+    injection_trial = source.trials[2]
+    first_joint = source.trials[3]
+    second_joint_id = f"{source.case_id}-second-joint"
+    second_joint = first_joint.model_copy(
+        update={
+            "trial_id": second_joint_id,
+            "criteria": [
+                first_joint.criteria[0].model_copy(
+                    update={
+                        "criterion_id": f"{second_joint_id}-c1",
+                        "trial_id": second_joint_id,
+                    }
+                ),
+                source.trials[4].criteria[1].model_copy(
+                    update={
+                        "criterion_id": f"{second_joint_id}-c2",
+                        "trial_id": second_joint_id,
+                    }
+                ),
+            ],
+        }
+    )
+    kept_codes = {"injection", "hba1c", "bmi", "stable_med"}
+    hidden = [
+        item
+        for item in source.hidden_facts
+        if item.request.fact_id.rsplit("-", 1)[-1] in kept_codes
+    ]
+    kept_evidence_ids = {
+        *source.initial_visible_evidence_ids,
+        *(item.answer.evidence.evidence_id for item in hidden),
+    }
+    case = InteractiveCase(
+        case_id=source.case_id,
+        disease_group=source.disease_group,
+        full_patient_state=source.full_patient_state.model_copy(
+            update={
+                "facts": [
+                    item
+                    for item in source.full_patient_state.facts
+                    if item.evidence_id in kept_evidence_ids
+                ]
+            }
+        ),
+        initial_visible_evidence_ids=source.initial_visible_evidence_ids,
+        trials=[injection_trial, first_joint, second_joint],
+        hidden_facts=hidden,
+        action_budget=1,
+    )
+    distribution = build_binary_scenarios(
+        case, {f"{case.case_id}-hba1c": 0.01}
+    )
+    view = case.public_policy_view()
+    snapshot = evaluate_interactive_case(case, case.initial_patient_state())
+
+    expected = ExactDecisionTreePolicy(
+        view,
+        case.initial_patient_state(),
+        distribution,
+        ExactPolicyObjective.EXPECTED,
+    )
+    robust = ExactDecisionTreePolicy(
+        view,
+        case.initial_patient_state(),
+        distribution,
+        ExactPolicyObjective.WORST_CASE,
+    )
+
+    expected_action = expected.select(view, snapshot, frozenset())
+    robust_action = robust.select(view, snapshot, frozenset())
+
+    assert expected_action.target_fact_id == f"{case.case_id}-hba1c"
+    assert robust_action.target_fact_id == f"{case.case_id}-injection"
+    assert expected.choices[0].value.average_trial_status_recovery > 0.6
+    assert robust.choices[0].value.worst_case_trial_status_recovery == 1 / 3
+
+
 class _PublicOnlyModel:
     def __init__(self) -> None:
         self.payloads: list[dict[str, Any]] = []
@@ -165,6 +311,6 @@ def test_pilot_writer_keeps_plan_runs_and_summary_separate(tmp_path) -> None:
     assert plan["case_count"] == 12
     assert plan["hidden_facts_per_case"] == 5
     assert "연구용 시제품" in plan["medical_disclaimer"]
-    assert summary["run_count"] == 72
+    assert summary["run_count"] == 96
     assert "임상시험 참가 가능성을 확정" in summary["medical_disclaimer"]
-    assert len(rows) == 72
+    assert len(rows) == 96

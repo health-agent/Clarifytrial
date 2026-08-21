@@ -9,7 +9,8 @@ from pathlib import Path
 from typing import Any
 
 from ..llm import CodexSubscriptionModelPool, CodexSubscriptionStructuredModel
-from .contracts import InteractivePolicyRun
+from .contracts import ExactPolicyObjective, InteractivePolicyRun
+from .exact_policy import ExactDecisionTreePolicy, build_uniform_binary_scenarios
 from .pilot_cases import build_interactive_pilot_cases
 from .policies import (
     AuthoredOrderPolicy,
@@ -82,6 +83,19 @@ def run_interactive_pilot(
         if progress is not None:
             progress(f"completed {runs[-1].policy_id}: {len(cases)} cases")
 
+    for objective in ExactPolicyObjective:
+        for case in cases:
+            view = case.public_policy_view()
+            policy = ExactDecisionTreePolicy(
+                view,
+                case.initial_patient_state(),
+                build_uniform_binary_scenarios(case),
+                objective,
+            )
+            runs.append(run_interactive_policy(case, policy))
+        if progress is not None:
+            progress(f"completed {runs[-1].policy_id}: {len(cases)} cases")
+
     if include_subscription_model:
         with CodexSubscriptionModelPool(
             size=case_concurrency,
@@ -119,7 +133,7 @@ def run_interactive_pilot(
     _write_json(
         destination / "plan.json",
         {
-            "protocol_id": "interactive-pilot-v1",
+            "protocol_id": "interactive-pilot-v3-exact-tree",
             "case_count": len(cases),
             "disease_groups": sorted({item.disease_group for item in cases}),
             "candidate_trials_per_case": 5,
@@ -139,7 +153,7 @@ def run_interactive_pilot(
     _write_json(
         summary_path,
         {
-            "protocol_id": "interactive-pilot-v1",
+            "protocol_id": "interactive-pilot-v3-exact-tree",
             "case_count": len(cases),
             "run_count": len(runs),
             "summaries": [item.model_dump(mode="json") for item in summaries],

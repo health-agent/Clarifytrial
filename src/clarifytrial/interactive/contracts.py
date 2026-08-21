@@ -7,11 +7,14 @@ executed action.
 
 from __future__ import annotations
 
+from enum import StrEnum
+
 from pydantic import Field, model_validator
 
 from ..contracts import (
     ConfirmationStatus,
     ContractModel,
+    EvidenceFact,
     NextAction,
     PatientState,
     TrialCriterion,
@@ -69,6 +72,75 @@ class InteractivePolicyView(ContractModel):
     trials: list[InteractiveTrial] = Field(min_length=1)
     available_information: list[InteractivePublicFact] = Field(min_length=1)
     action_budget: int = Field(ge=0)
+
+
+class ScenarioFactAnswer(ContractModel):
+    """One possible answer value used only by the planning model."""
+
+    fact_id: str = Field(min_length=1)
+    evidence: EvidenceFact
+
+
+class PatientScenario(ContractModel):
+    """One possible complete hidden state and its planning probability."""
+
+    scenario_id: str = Field(min_length=1)
+    probability: float = Field(gt=0, le=1)
+    answers: list[ScenarioFactAnswer] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def answers_are_unique(self) -> "PatientScenario":
+        fact_ids = [item.fact_id for item in self.answers]
+        if len(fact_ids) != len(set(fact_ids)):
+            raise ValueError("scenario answers must not repeat fact_id")
+        return self
+
+
+class ScenarioDistribution(ContractModel):
+    """Answer possibilities known to the planner without identifying reality."""
+
+    case_id: str = Field(min_length=1)
+    scenarios: list[PatientScenario] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def distribution_is_complete(self) -> "ScenarioDistribution":
+        scenario_ids = [item.scenario_id for item in self.scenarios]
+        if len(scenario_ids) != len(set(scenario_ids)):
+            raise ValueError("scenarios must not repeat scenario_id")
+        fact_sets = [{item.fact_id for item in row.answers} for row in self.scenarios]
+        if any(item != fact_sets[0] for item in fact_sets[1:]):
+            raise ValueError("every scenario must define the same facts")
+        if abs(sum(item.probability for item in self.scenarios) - 1.0) > 1e-9:
+            raise ValueError("scenario probabilities must sum to one")
+        return self
+
+
+class ExactPolicyObjective(StrEnum):
+    """How outcomes from the complete question tree are combined."""
+
+    EXPECTED = "expected"
+    WORST_CASE = "worst_case"
+
+
+class ExactPolicyValue(ContractModel):
+    """Result of an exact question tree under its declared objective."""
+
+    objective: ExactPolicyObjective
+    unsafe_trial_decisions: float = Field(ge=0)
+    average_trial_status_recovery: float = Field(ge=0, le=1)
+    worst_case_trial_status_recovery: float = Field(ge=0, le=1)
+    action_count: float = Field(ge=0)
+    route_cost: float = Field(ge=0)
+
+
+class ExactPolicyChoice(ContractModel):
+    """The first action of an exhaustively evaluated question tree."""
+
+    target_fact_id: str | None = None
+    value: ExactPolicyValue
+    evaluated_states: int = Field(ge=1)
+    belief_scenario_count: int = Field(ge=1)
+    remaining_action_budget: int = Field(ge=0)
 
 
 class InteractiveCase(ContractModel):
