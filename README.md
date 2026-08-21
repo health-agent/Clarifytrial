@@ -23,6 +23,7 @@ ClarifyTrial은 환자 정보가 아직 완전하지 않은 단계에서 임상�
 | GPT 구독형 단일·멀티에이전트 구조 비교 | Sol medium 개발 완료, 두 정적 검토 방식 기각 |
 | v5 대화형 자료 | 공개 시험 15개·구조화 조건 80개·합성 환자 30명·마스크 60회 구현 및 실행 완료 |
 | 질문 선택 결과 | 단순 동적 규칙 채택, 평균/최악 우선 전수 계산은 채택 기준 미달로 비교용 보존 |
+| 환자 맞춤 부담 | 기존 자료·새 검사와 시간·이동·비용·절차 부담을 나누는 상세 설계 완료, 구현 전 |
 | v5 성능 | 구조화 입력의 질문 정책만 측정. 자연어 전체 실행과 임상 성능은 아직 미측정 |
 
 저장소에는 합성 환자 사례만 둔다. 과거 Solar 합성 데모 수치와 84% 결과는 v5의
@@ -220,6 +221,7 @@ PyTorch를 사용했다.
 | MediQ | 현재 정보로 답할지 먼저 판단한 뒤 부족할 때 질문 | [논문](https://proceedings.neurips.cc/paper_files/paper/2024/file/32b80425554e081204e5988ab1c97e9a-Paper-Conference.pdf), [코드](https://github.com/stellalisy/mediQ) |
 | DQueST | 여러 남은 시험에 공통으로 필요한 질문을 우선 | [논문](https://academic.oup.com/jamia/article/26/11/1333/5544734), [코드](https://github.com/stormliucong/dquest-flask) |
 | Fink 계열 | 검사·질문의 비용과 여러 시험에 미치는 범위를 함께 고려 | [논문](https://www.cs.cmu.edu/~eugene/research/full/trial-selection.pdf) |
+| 환자 선호 연구 | 시간·이동·절차 부담과 치료 경험의 중요성이 환자마다 달라짐 | [다질환 선호 실험](https://pmc.ncbi.nlm.nih.gov/articles/PMC9756590/), [장기 시험 참여자 경험](https://pmc.ncbi.nlm.nih.gov/articles/PMC10432794/) |
 | TrialGPT | 공통 검색 구조와 전문가가 검토한 조건별 평가자료 | [논문](https://www.nature.com/articles/s41467-024-53081-z), [코드](https://github.com/ncbi-nlp/TrialGPT), [주석 자료](https://huggingface.co/datasets/ncbi/TrialGPT-Criterion-Annotations) |
 
 위 기능은 이미 선행연구에 존재한다. ClarifyTrial v5는 같은 환자 사실에서도
@@ -278,6 +280,7 @@ TrialGPT 조건 판단은 서로 다른 실행으로 유지한다.
 | 9 | 강한 단일 판단과 검색 유무를 나눈 선택 검토 | 개발 20조합 실행 완료, 두 검토 기각 |
 | 10 | 고정 후보 5개와 확인 후보 5개 중 3개를 고르는 v5 대화 비교 | 12명 작동 확인, 공개 조건 30명·마스크 60회와 값 77,792조합 검사 완료 |
 | 11 | 같은 후보 RAG에서 TrialGPT식 흐름과 ClarifyTrial 비교 | 공개 원문·환자 문장 구조화 평가 뒤 실행 |
+| 12 | 기존 자료·새 검사와 환자별 추가 부담을 반영한 다음 행동 비교 | 자료형·360회 짝 평가·채택 기준 설계 완료, 구현 전 |
 
 구현 세부는
 [RAG·평가 구현계획](docs/internal/CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)을
