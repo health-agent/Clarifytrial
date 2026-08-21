@@ -772,19 +772,39 @@ AcquisitionOption
 ```text
 PatientBurdenProfile
   profile_id
-  time_urgency_0_to_3
-  fatigue_or_mobility_limit_0_to_3
-  travel_constraint_0_to_3
-  cost_sensitivity_0_to_3
-  procedure_aversion_0_to_3
-  treatment_change_aversion_0_to_3
+  input_status
+  time_urgency_0_to_3_or_unknown
+  fatigue_or_mobility_limit_0_to_3_or_unknown
+  travel_constraint_0_to_3_or_unknown
+  cost_sensitivity_0_to_3_or_unknown
+  procedure_aversion_0_to_3_or_unknown
+  treatment_change_aversion_0_to_3_or_unknown
   preference_mode
   stated_limits
+  defaulted_fields
 ```
 
 `preference_mode`은 `fastest`, `least_extra_burden`, `balanced` 중 하나다. 실제
 환자에게는 질환이나 나이로 값을 추측하지 않고 환자가 밝힌 선호만 사용한다. 합성
 평가에서는 실행 전에 고정한 값만 사용한다.
+
+환자 입력은 선택 사항이다. 소득이나 경제력을 직접 추정하지 않고 `추가 비용이
+걱정되는 정도`처럼 행동 선택에 필요한 부담만 묻는다. 입력을 건너뛰거나 일부만
+답하면 다음 기본 규칙을 사용한다.
+
+| 항목 | 입력이 없을 때 |
+|---|---|
+| 입력 상태 | `absent` 또는 `partial`로 기록 |
+| 선택 방식 | `balanced` |
+| 시간·이동·비용·절차 부담 | 0으로 채우지 않고 `unknown` 유지 |
+| 명시한 한도 | `unknown`. 환자가 한도가 없다고 직접 답한 경우에만 빈 목록 사용 |
+| 새 비침습 검사 | 자동 실행 금지, 환자·의료진 확인 필요 |
+| 침습 절차·치료 변경 | 자동 실행 금지, 의료진 승인과 환자 선택 필요 |
+| 결과 화면 | 사용한 기본값과 미확인 항목 표시, 언제든 수정 가능 |
+
+시스템이 확인할 수 있는 시험 모집 기한, 자료 존재 여부와 이미 예정된 진료 일정은
+환자 선호와 별도로 입력한다. 환자 입력이 없다고 해서 후보 시험을 줄이거나 참가
+조건을 바꾸지 않는다.
 
 ### 13.3 선택 규칙
 
@@ -808,6 +828,9 @@ PatientBurdenProfile
 영향과 부담을 합친 비공개 총점 하나를 만들지 않는다. 어떤 행동이 다른 행동보다
 후보 해결은 적고 모든 부담은 큰 경우에만 명확히 열등한 행동으로 제거한다. 남은
 선택은 환자의 `preference_mode`에 따른 공개된 순서 규칙으로 결정한다.
+비교에 필요한 부담값이 한쪽이라도 `unknown`이면 낮은 값으로 간주하거나 임의의
+중간값으로 바꾸지 않는다. 앞선 규칙만으로 선택이 끝나지 않으면 두 경로를 대안으로
+함께 남기고 `부담 확인 뒤 선택`으로 보낸다.
 
 ### 13.4 구현 순서
 
@@ -888,3 +911,134 @@ PatientBurdenProfile
 부담이 줄어도 후보 회복을 크게 잃으면 채택하지 않는다. 반대로 회복이 조금 높아도
 사람 승인과 환자 한도를 어기면 채택하지 않는다. 합성 부담 값에서만 이득이 나면
 임상 성능이나 실제 환자 선호 개선으로 표현하지 않고 다음 사람 검토 전 단계로 남긴다.
+
+### 13.9 환자용 결과 안내
+
+환자 화면은 내부 코드보다 뜻을 먼저 보여 준다.
+
+```text
+현재 결과
+  지금 확인된 후보
+  후보로 남아 있지만 추가 확인이 필요한 시험
+  현재 자료에서 제외되는 시험
+
+다음 확인
+  확인할 정보
+  추천한 확인 방법
+  기존 자료 확인인지 새 검사인지
+  이 정보를 확인하는 이유와 영향을 받는 후보 수
+
+예상되는 추가 부담
+  기다리는 시간
+  추가 방문
+  비용 범위 또는 비용 미확인
+  신체·심리 부담과 의료 위험
+  기존 치료 변경 여부
+
+적용한 환자 설정
+  환자가 입력한 항목
+  입력이 없어 기본값을 사용한 항목
+  설정을 바꾸는 방법
+
+선택과 대안
+  지금 진행 가능한 행동
+  다른 낮은 부담 경로
+  환자·의료진 선택이 필요한 행동
+
+확인 뒤 예상 변화
+  조건을 충족할 때
+  조건을 충족하지 않을 때
+  정보를 얻지 못했을 때
+
+의료 면책 안내
+```
+
+환자 화면에는 `retain`, `not_confirmed` 같은 내부 라벨을 그대로 쓰지 않는다.
+경제 상황과 부담 입력은 임상시험 참가 조건을 바꾸지 않으며 확인 방법과 순서에만
+사용됐다고 표시한다. 가격을 확인하지 못했으면 정확한 금액처럼 보이는 숫자를 만들지
+않고 `비용 미확인`으로 보여 준다.
+
+새 검사나 큰 부담이 필요한 경우에는 다음처럼 안내한다.
+
+> 이 정보는 후보 시험 3개의 조건 확인에 도움이 될 수 있습니다. 현재 기록에는
+> 결과가 없어 새 혈액검사가 필요할 수 있습니다. 별도 방문과 비용이 생길 수 있으며
+> 시스템이 검사를 자동으로 신청하지 않습니다. 기존 외부 기록을 먼저 요청하거나,
+> 환자와 의료진이 새 검사 여부를 함께 결정할 수 있습니다.
+
+### 13.10 연구자·의료진용 상세 출력
+
+```text
+GuidanceOutput
+  case_id
+  generated_at
+  burden_policy_version
+  patient_input_status
+  preference_mode
+  defaulted_fields
+  trial_groups
+    confirmed_trial_ids
+    pending_trial_ids
+    removed_trial_ids
+  selected_option
+    fact_id
+    option_id
+    action
+    acquisition_mode
+    affected_trial_ids
+    related_criterion_ids
+    existing_or_new
+    expected_delay_hours
+    burden_fields
+    requires_patient_choice
+    requires_clinician_authorization
+    action_status
+    selection_reason
+  decision_trace
+    considered_option_ids
+    removed_option_ids_and_reasons
+    applied_ordering_rule
+    first_decisive_difference
+    unresolved_unknown_fields
+  alternatives
+    option_id
+    difference_from_selected
+    not_selected_reason
+  outcome_preview
+    if_satisfies
+    if_violates
+    if_unavailable
+  evidence_refs
+  stop_reason
+  patient_message
+  medical_disclaimer
+```
+
+상세 기록에는 선택 당시 실제로 공개된 정보만 저장한다. 숨은 합성 답, 전체정보
+정답과 사후 민감도는 실행 기록이 아니라 별도 평가 결과에만 둔다. 선택하지 않은
+경로도 `사용 불가`, `환자 한도 초과`, `새 검사보다 기존 자료 우선`, `영향이 더
+작음`, `사람 승인 필요` 중 이유를 남긴다.
+
+`action_status`는 `recommended`, `awaiting_patient_choice`,
+`awaiting_clinician_authorization`, `deferred` 중 하나다. 검사나 치료가 실제로
+이뤄졌다는 뜻은 행동 결과가 별도 입력된 뒤에만 기록한다. `decision_trace`는 다음
+과정을 그대로 남긴다.
+
+1. 현재 후보 판단과 미확인 사실 계산
+2. 사실마다 가능한 확인 경로 나열
+3. 사용할 수 없는 경로, 환자가 직접 밝힌 한도 위반과 명확히 열등한 경로 제거
+4. 기존 자료 우선과 선택 방식에 따른 순서 적용
+5. 미확인 부담 때문에 하나를 고를 수 없으면 대안을 함께 유지
+6. 사람 승인이 필요한지 확인하고 최종 안내 상태 결정
+
+### 13.11 안내 포맷 검사
+
+- 환자 입력이 전혀 없어도 결과 생성 성공
+- 일부 입력만 있어도 답하지 않은 항목을 0으로 채우지 않음
+- 기본값 사용 항목과 `선호 미확인` 표시
+- 경제·부담 입력을 후보 제거와 조건 판정에 사용하지 않음
+- 기존 자료와 새 검사를 화면에서 분명히 구분
+- 사람 승인이 필요한 행동을 `실행 완료`처럼 표현하지 않음
+- 선택 이유, 다른 경로와 확인 뒤 가능한 변화 표시
+- 선택 과정의 입력 경로, 제거 이유, 결정에 쓰인 첫 차이와 남은 미확인 값 기록
+- 환자용 쉬운 안내와 상세 기록의 사실 ID·시험 ID가 일치
+- 모든 임상 출력에 면책 문구 포함
