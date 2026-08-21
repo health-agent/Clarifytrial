@@ -11,6 +11,19 @@
 | [matcher_judge.md](matcher_judge.md) | 환자 사실과 한 시험의 관련 조건 묶음을 연결해 조건 상태와 자료 충분성을 판단 | `CriterionAssessmentBatch` |
 | [next_evidence.md](next_evidence.md) | 부족한 사실 하나와 확인 경로 하나를 선택 | `AgentAction` |
 | [selective_reviewer.md](selective_reviewer.md) | 표시된 중요 결론을 원문으로 독립 검사 | `ReviewDecision` |
+| [trialgpt_criterion_judge.md](trialgpt_criterion_judge.md) | TrialGPT 예비실행에서 한 환자-시험 조합의 선정 또는 제외 조건을 묶어 판정 | `TrialGPTPredictionBatch` |
+| [trialgpt_criterion_judge_faithful.md](trialgpt_criterion_judge_faithful.md) | 공식 TrialGPT의 조건 판단 순서와 기록 부재 처리 원칙을 재현 | 요청에 지정된 구조화 자료형 |
+| [trialgpt_criterion_judge_calibrated.md](trialgpt_criterion_judge_calibrated.md) | 실제 정보 부족과 기록 부재 추론을 네 단계 기준으로 구분 | 요청에 지정된 구조화 자료형 |
+| [trialgpt_criterion_judge_balanced.md](trialgpt_criterion_judge_balanced.md) | 제외 조건의 기록 부재와 선정 조건의 미확인을 비대칭으로 처리하고 수치·기간 예외를 보존 | 요청에 지정된 구조화 자료형 |
+| [trialgpt_criterion_reviewer.md](trialgpt_criterion_reviewer.md) | 최초 정보 부족 판정만 기존 근거로 제한 재검토 | 요청에 지정된 구조화 자료형 |
+| [trialgpt_architecture_single.md](trialgpt_architecture_single.md) | Sol 구조 비교의 강한 단일 판단 | `ArchitectureSingleResponse` |
+| [trialgpt_architecture_matcher_judge_v2.md](trialgpt_architecture_matcher_judge_v2.md) | Sol 구조 비교에서 근거와 조건 상태 판단 | `ArchitectureMatcherResponse` |
+| [trialgpt_architecture_reviewer_v2.md](trialgpt_architecture_reviewer_v2.md) | 최초 정보 부족 조건만 다시 판단 | `ArchitectureReviewerResponse` |
+| [trialgpt_strong_single_v1.md](trialgpt_strong_single_v1.md) | 선정·제외를 나누어 가장 강한 규칙으로 한 번 판단 | `ArchitectureMatcherResponse` |
+| [trialgpt_strong_reviewer_no_web_v1.md](trialgpt_strong_reviewer_no_web_v1.md) | 강한 단일 판단의 정보 부족 결과만 같은 자료로 재검토 | `ArchitectureReviewerResponse` |
+| [trialgpt_strong_reviewer_web_v1.md](trialgpt_strong_reviewer_web_v1.md) | 일반 의학 개념 검색을 허용해 같은 결과를 재검토 | `ArchitectureReviewerResponse` |
+| [trialgpt_strong_reviewer_no_web_v2.md](trialgpt_strong_reviewer_no_web_v2.md) | 최초 판단이 경계 사례로 표시한 정보 부족만 집중 재검토 | `ArchitectureReviewerResponse` |
+| [trialgpt_strong_reviewer_web_v2.md](trialgpt_strong_reviewer_web_v2.md) | 같은 경계 사례에서 일반 의학 검색을 실제 사용해 재검토 | `ArchitectureReviewerResponse` |
 
 ## 같은 모델을 사용할 때의 기록 분리
 

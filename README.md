@@ -16,18 +16,20 @@ ClarifyTrial은 환자 정보가 아직 완전하지 않은 단계에서 임상�
 |---|---|
 | 연구 질문과 실험 원칙 | 확정 |
 | 에이전트 워크플로우와 근거문헌 | 설계 완료 |
-| 공통 RAG와 평가 구현계획 | 설계 완료 |
-| 공통 자료형·작은 BM25·합성 답변 환경 | 첫 구현 완료 |
+| TrialGPT 검색을 최소 기준으로 한 후보 RAG | TREC 2021·2022 재현 완료, 결합 검색 채택 |
+| 공통 자료형·조건별 환자 문장 BM25·합성 답변 환경 | 첫 구현 완료 |
 | 역할별 에이전트·상태 흐름·공통 평가기 | 첫 구현 완료 |
-| 외부 모델과 공개 평가자료 연결 | 구현 전 |
+| Claude API와 TrialGPT 조건 주석 연결 | 20명 개발·33명 평가 실행 완료 |
+| GPT 구독형 단일·멀티에이전트 구조 비교 | Sol medium 개발 완료, 두 정적 검토 방식 기각 |
+| v5 대화형 자료 | 12명 작동 확인·30명 벤치마크 구성 확정, 구현 전 |
 | v5 성능 | 미측정 |
 
 저장소에는 합성 환자 사례만 둔다. 과거 Solar 합성 데모 수치와 84% 결과는 v5의
 성능이나 기준선에 포함하지 않는다.
 
-현재 코드는 구조와 자료 분리를 확인하는 첫 구현이다. 외부 모델을 호출하지 않는
-합성 사례로 전체 흐름을 재현할 수 있다. 실제 모델 성능, 후보 검색 성능 또는 의료
-현장 성능을 보여 주는 결과는 아니다.
+현재 코드는 외부 모델 없이 합성 흐름을 재현할 수 있고, Claude API와 ChatGPT
+구독으로 TrialGPT 조건 자료를 실행할 수 있다. TrialGPT 실험은 v5 에이전트 성능이나
+의료 현장 성능을 보여 주는 결과가 아니다.
 
 ## 로컬 실행
 
@@ -44,6 +46,86 @@ py -3.12 -m venv .venv
 받은 뒤 현재 조건 확인을 끝내는 합성 사례를 실행한다. 결과는 `result.json`, 역할별
 호출과 상태 변화는 `trace.jsonl`에 저장된다. 이 실행에는 API 키가 필요하지 않다.
 
+### TrialGPT와 Claude 조건 실험
+
+공개 주석을 로컬 캐시에 받은 뒤 Claude Sonnet 5로 실행한다. API 키 파일은 저장소
+밖에 둔다. `development`는 20명 조정용, `heldout`은 이들과 겹치지 않는 33명
+평가용이다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe prepare-trialgpt --cache .research-cache\trialgpt
+.\.venv\Scripts\clarifytrial.exe run-trialgpt-experiment `
+  --raw-jsonl .research-cache\trialgpt\criterion_annotations.jsonl `
+  --sigir-corpus <TrialGPT 저장소>\dataset\sigir\corpus.jsonl `
+  --output runs\trialgpt-balanced-heldout `
+  --api-key-env-file <로컬 키 파일> `
+  --api-key-name API_KEY `
+  --variant balanced `
+  --split heldout `
+  --confirm-live-api
+```
+
+2026-08-20 미관측 환자 평가는 33명, 64개 환자-시험 조합, 654개 조건을 사용했다.
+선정·제외 비대칭 지시문은 79.1%, 기존 지시문은 52.0%, 공개 TrialGPT 고정 출력은
+88.8%였다. 비대칭 방식은 제외 조건의 과도한 정보 부족을 줄였지만 전문가가 정보
+부족으로 둔 조건의 회수도 83.2%에서 74.8%로 낮췄다. 자세한 내용은
+[검증 결과](docs/internal/CLARIFYTRIAL_VALIDATION_RESULTS.md)에 있다.
+
+### GPT-5.6 Sol 구조 비교
+
+ChatGPT 구독 연결은 공식 Codex Python SDK를 사용한다. 각 호출은 빈 임시
+작업공간과 새 대화에서 실행하며 웹·셸·파일 도구를 차단한다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-trialgpt-architecture `
+  --raw-jsonl .research-cache\trialgpt\criterion_annotations.jsonl `
+  --sigir-corpus <TrialGPT 저장소>\dataset\sigir\corpus.jsonl `
+  --output runs\trialgpt-architecture-dev `
+  --stage dev `
+  --case-concurrency 3 `
+  --confirm-subscription-run
+```
+
+개발 20조합에서 `S1` 68.7%, `M1` 65.9%, `M2` 65.4%였다. `M2`는 131개
+정보 부족 조건을 다시 봤지만 라벨 변경이 없었고 토큰만 늘어 정적 조건 판단에서는
+기각했다. 전체 멀티에이전트 흐름은 추가 정보와 다음 행동 정답이 있는 v5 합성
+자료에서 따로 평가한다.
+
+이후 선정·제외 규칙을 보강하고 두 조건 종류를 나눈 `S1-R`은 75.8%였다. 그 실제
+출력의 경계 사례만 다시 본 검색 없는 검토도 75.8%, 일반 의학 검색 12회를 사용한
+검토는 74.9%였다. 검색 없는 검토는 정답 1개와 오답 1개를 맞바꿨고, 인터넷 검토는
+정답을 추가하지 못한 채 맞던 답 2개를 틀려 두 방식 모두 기각했다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-trialgpt-strong-review `
+  --raw-jsonl .research-cache\trialgpt\criterion_annotations.jsonl `
+  --sigir-corpus <TrialGPT 저장소>\dataset\sigir\corpus.jsonl `
+  --output runs\trialgpt-strong-review-focused-dev20 `
+  --stage development `
+  --case-concurrency 3 `
+  --confirm-subscription-run
+```
+
+### TrialGPT 후보 검색 재현
+
+후보 검색에는 별도 선택 의존성이 필요하다. GPU용 PyTorch는 사용하는 그래픽카드와
+CUDA에 맞는 공식 설치 명령을 따른다. 이번 Windows RTX 5060 실행은 CUDA 13.0용
+PyTorch를 사용했다.
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e ".[dev,retrieval]"
+.\.venv\Scripts\clarifytrial.exe run-trialgpt-retrieval `
+  --dataset <TrialGPT 저장소>\dataset `
+  --cache .research-cache\trialgpt-retrieval `
+  --output runs\trialgpt-retrieval\trec-2021-hybrid `
+  --corpus trec_2021 `
+  --device cuda
+```
+
+같은 명령의 `--corpus`와 출력 경로를 `trec_2022`로 바꾸면 고정 설정 평가를
+실행한다. 결합 검색의 가중 Recall@500은 TREC 2021 83.59%, TREC 2022
+81.55%였으며 TrialGPT 공개 Source Data와의 최대 차이는 0.1%p보다 작았다.
+
 ### 코드 위치
 
 | 위치 | 내용 |
@@ -54,8 +136,10 @@ py -3.12 -m venv .venv
 | `src/clarifytrial/mechanical_checks.py` | 구조화된 수치·날짜·출처·확인 상태를 검사하는 규칙 |
 | `src/clarifytrial/workflow/` | 행동 한도와 재판정 순서를 관리하는 상태 흐름 |
 | `src/clarifytrial/environment/` | 공개 질문 목록과 숨은 합성 답변을 분리한 실행 환경 |
-| `src/clarifytrial/retrieval/` | 원문 위치를 보존하는 작은 BM25 검색기 |
+| `src/clarifytrial/retrieval/` | 환자 문장 안내와 TrialGPT식 BM25·MedCPT 후보 검색 |
 | `src/clarifytrial/evaluation.py` | 조건, 두 결과와 다음 행동을 따로 채점하는 공통 평가기 |
+| `src/clarifytrial/datasets/` | TrialGPT 원본 검사와 환자 단위 개발·평가 분리 |
+| `src/clarifytrial/pilots/` | 조건 묶음 실행, 비용·오류 지표와 지시문 비교 |
 | `prompts/` | 에이전트별 역할, 입력, 허용 도구와 출력 형식 |
 | `examples/stale_lab/` | 시스템 입력, 숨은 답변과 평가 정답을 나눈 합성 사례 |
 
@@ -63,7 +147,7 @@ py -3.12 -m venv .venv
 
 아래 그림은 공개자료 검색까지 연결한 목표 구조다. 현재 첫 구현은 후보 시험 한 건과
 관련 조건을 입력으로 받아, 네 에이전트의 호출과 추가 정보 반영·재판정 흐름을
-실행한다. BM25 검색기는 구현했지만 이 실행 흐름에는 아직 연결하지 않았다.
+실행한다. 재현한 후보 검색은 아직 이 전체 실행 흐름에 연결하지 않았다.
 
 ### 에이전트 전체 구성
 
@@ -132,19 +216,27 @@ py -3.12 -m venv .venv
 
 ## RAG와 모델
 
-첫 RAG는 두 가지 검색을 담당한다.
+후보 시험 RAG는 TrialGPT 공개 구조를 최소 기준으로 삼는다.
 
-1. 환자에게 관련 있는 임상시험 찾기
-2. 후보 시험에서 판단에 필요한 조건 원문 찾기
+1. 환자 기록에서 검색어 생성
+2. BM25 글자 검색과 MedCPT 의미 검색
+3. 두 검색 순위 결합
+4. 후보 시험의 조건 원문과 위치 반환
+
+작은 BM25는 이미 정해진 조건과 관련 있는 환자 기록 문장을 표시하는 기능이다.
+후보 시험 검색은 별도로 TrialGPT식 BM25·MedCPT 결합을 TREC 2021·2022에서
+재현했다. 결합 검색의 가중 Recall@500은 각각 83.59%, 81.55%였고 앞으로 모든
+구조에 공통으로 제공한다. 조건 판단에서는 전체 환자 기록과 전체 시험 조건도 함께
+제공한다.
 
 환자 기록 확인은 통제된 기록 조회 기능으로 처리한다. 합성 환자의 숨은 정보와
 평가 정답은 검색 색인에서 분리한다.
 
-주 비교의 기본 모델은 Claude Sonnet 5 `medium` 설정이다. 모든 비교 구조에 같은
-모델을 사용한다. Claude Opus 4.8은 대표 사례의 성능 상한 확인, Solar Pro 4는
-저비용 작동 확인에 사용한다. 모델 교체는 공통 호출 계약으로 처리한다. 현재 첫
-구현에는 외부 제공자 어댑터를 연결하지 않았으며, 합성 응답 모델로 상태 흐름만
-검사한다.
+개발 구조 비교는 ChatGPT 구독으로 연결한 GPT-5.6 Sol `medium`을 단일 구조와
+멀티에이전트 구조에 똑같이 사용했다. Claude Sonnet 5는 제공자 민감도 확인,
+Solar Pro 4는 저비용 작동 확인에 사용한다. 현재 구현에는 Claude 구조화
+출력과 공식 Codex Python SDK 기반 ChatGPT 구독 연결이 들어 있다. 합성 상태 흐름과
+TrialGPT 조건 판단은 서로 다른 실행으로 유지한다.
 
 ## 평가
 
@@ -164,13 +256,16 @@ py -3.12 -m venv .venv
 | 순서 | 작업 | 현재 상태 |
 |---:|---|---|
 | 1 | 시험·조건·환자 사실·두 판단·다음 행동의 공통 자료형 | 첫 구현 완료 |
-| 2 | 작은 조건 저장소와 BM25 검색 | 첫 구현 완료 |
+| 2 | 작은 조건 저장소와 환자 문장 BM25 안내 | 첫 구현 완료 |
 | 3 | 숨은 합성 환자 상태와 행동 결과를 가진 통제 환경 | 첫 사례 완료 |
 | 4 | 조건 판단, 두 결과와 다음 행동을 따로 채점하는 평가기 | 첫 구현 완료 |
 | 5 | 수치·기간·출처 검사와 네 에이전트를 잇는 전체 상태 흐름 | 합성 실행 완료 |
-| 6 | 외부 모델 어댑터와 3~5개 합성 사례 | 다음 작업 |
-| 7 | 단일 모델과 공개 연구 구조를 옮긴 비교 시스템 | 구현 전 |
-| 8 | TrialGPT·TREC와 공식 코드 연결 | 구현 전 |
+| 6 | 외부 모델 어댑터와 합성 사례 실행 | Claude·GPT 구독 어댑터 완료, 대화형 자료 확장 전 |
+| 7 | 단일 모델과 공개 연구 구조를 옮긴 비교 시스템 | Sol 개발 구조 비교 완료, 정적 `M2` 기각, 다른 비교군 미구현 |
+| 8 | TrialGPT 후보 검색과 TREC 연결 | 전체 실행과 논문 수치 대조 완료, 결합 검색 채택 |
+| 9 | 강한 단일 판단과 검색 유무를 나눈 선택 검토 | 개발 20조합 실행 완료, 두 검토 기각 |
+| 10 | 고정 후보 5개와 숨은 사실 3개의 v5 대화 비교 | 12명 구성 확정, 구현 전 |
+| 11 | 같은 후보 RAG에서 TrialGPT식 흐름과 ClarifyTrial 비교 | 대화형 작동 확인 뒤 실행 |
 
 구현 세부는
 [RAG·평가 구현계획](docs/internal/CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)을
@@ -184,6 +279,7 @@ py -3.12 -m venv .venv
 | [에이전트 워크플로우](docs/internal/CLARIFYTRIAL_AGENT_ARCHITECTURE_REDESIGN.md) | 확정한 전체 구조와 단계별 역할 |
 | [근거문헌 색인](docs/internal/CLARIFYTRIAL_AGENT_SOURCE_INDEX.md) | 원 논문, 공개 코드와 재현 범위 |
 | [RAG·평가 구현계획](docs/internal/CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md) | 자료 확보, 검색, 모델 교체와 공통 평가 |
+| [검증 결과](docs/internal/CLARIFYTRIAL_VALIDATION_RESULTS.md) | 실행 범위, 실제 결과, 비용과 채택·기각 결정 |
 | [현행 연구계획 v5](docs/internal/CLARIFYTRIAL_RESEARCH_PLAN_V5.md) | 연구 질문, 가설과 실험 원칙 |
 | [데이터셋 정리](docs/internal/CLARIFYTRIAL_DATASETS.md) | 공개 자료의 라벨과 새 합성 자료 계획 |
 | [연구 지식 정리](docs/internal/RESEARCH_KNOWLEDGE_BASE.md) | 선행연구와 평가 지식 |

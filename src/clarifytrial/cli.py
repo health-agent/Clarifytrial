@@ -22,6 +22,16 @@ from .contracts import (
     PatientState,
     TrialDecision,
 )
+from .datasets import (
+    fetch_trialgpt_dataset,
+    group_patient_trial_pairs,
+    load_sigir_trial_metadata,
+    load_trialgpt_rows,
+    select_full_trialgpt_pairs,
+    select_pilot_pairs,
+    split_trialgpt_pairs_by_patient,
+    summarize_trialgpt_rows,
+)
 from .environment import (
     HiddenFactAnswer,
     HiddenPatientEnvironment,
@@ -30,7 +40,16 @@ from .environment import (
     SyntheticInformationTools,
 )
 from .evaluation import DecisionGold, score_decision
-from .llm import ScriptedStructuredModel
+from .experiment_tracking import ExperimentStage
+from .llm import AnthropicStructuredModel, ScriptedStructuredModel
+from .pilots import (
+    ArchitectureExperimentPaused,
+    StrongReviewExperimentIncomplete,
+    run_subscription_architecture_stage,
+    run_subscription_strong_review_stage,
+    run_trialgpt_pilot,
+)
+from .retrieval import TrialGPTRetrievalConfig, run_trialgpt_retrieval
 from .settings import EpisodeSettings
 from .trace import TraceRecorder
 from .workflow import EpisodeAgents, EpisodeCase, EpisodeResult, EpisodeRunner
@@ -41,6 +60,21 @@ _DISCLAIMER_FALLBACK = (
     "확정할 수 없습니다. 자격을 판단할 때는 의료 전문가와 해당 임상시험 연구진이 "
     "최신 공식 계획서와 전체 환자 기록을 다시 확인해야 합니다."
 )
+
+_TRIALGPT_VARIANTS: dict[str, tuple[str, str | None]] = {
+    "current": ("prompts/trialgpt_criterion_judge.md", None),
+    "current-review": (
+        "prompts/trialgpt_criterion_judge.md",
+        "prompts/trialgpt_criterion_reviewer.md",
+    ),
+    "faithful": ("prompts/trialgpt_criterion_judge_faithful.md", None),
+    "calibrated": ("prompts/trialgpt_criterion_judge_calibrated.md", None),
+    "balanced": ("prompts/trialgpt_criterion_judge_balanced.md", None),
+    "calibrated-review": (
+        "prompts/trialgpt_criterion_judge_calibrated.md",
+        "prompts/trialgpt_criterion_reviewer.md",
+    ),
+}
 
 
 def _read_json(path: Path) -> Any:
@@ -70,6 +104,24 @@ def _read_disclaimer() -> str:
             if lines:
                 return " ".join(lines)
     return _DISCLAIMER_FALLBACK
+
+
+def _read_env_value(path: Path, name: str) -> str:
+    """Read one named value without copying the credential into project files."""
+
+    with path.open(encoding="utf-8-sig") as stream:
+        for line in stream:
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#") or "=" not in stripped:
+                continue
+            key, value = stripped.split("=", 1)
+            if key.strip() != name:
+                continue
+            resolved = value.strip().strip('"').strip("'")
+            if not resolved:
+                break
+            return resolved
+    raise ValueError(f"credential file does not define a non-empty {name}")
 
 
 class _StaleLabScript:
@@ -273,6 +325,123 @@ def export_schemas(output_dir: str | Path) -> list[Path]:
     return paths
 
 
+def prepare_trialgpt(cache_dir: str | Path, *, force: bool = False) -> dict[str, Any]:
+    """Download and validate the public criterion annotations."""
+
+    raw_path, metadata_path = fetch_trialgpt_dataset(cache_dir, force=force)
+    rows = load_trialgpt_rows(raw_path)
+    return {
+        "raw_jsonl": str(raw_path),
+        "source_metadata": str(metadata_path),
+        "statistics": summarize_trialgpt_rows(rows),
+    }
+
+
+def run_live_trialgpt_pilot(
+    *,
+    raw_jsonl: Path,
+    sigir_corpus: Path,
+    output_dir: Path,
+    api_key_env_file: Path,
+    api_key_name: str,
+    limit: int,
+    seed: int,
+    model_id: str,
+    max_output_tokens: int,
+    timeout_seconds: float,
+) -> Path:
+    """Run a bounded Sonnet pilot on the pinned, stratified TrialGPT pairs."""
+
+    if not 1 <= limit <= 20:
+        raise ValueError("limit must be between 1 and 20")
+    rows = load_trialgpt_rows(raw_jsonl)
+    metadata = load_sigir_trial_metadata(sigir_corpus)
+    pairs = group_patient_trial_pairs(rows, metadata)
+    selected = select_pilot_pairs(pairs, seed=seed)[:limit]
+    if any(pair.metadata is None for pair in selected):
+        raise ValueError("selected TrialGPT pair is missing SIGIR trial metadata")
+
+    model = AnthropicStructuredModel(
+        api_key=_read_env_value(api_key_env_file, api_key_name),
+        model_id=model_id,
+        max_output_tokens=max_output_tokens,
+        timeout_seconds=timeout_seconds,
+    )
+    run_trialgpt_pilot(
+        selected,
+        model,
+        output_dir,
+        configured_model_id=model_id,
+        effort="medium",
+        selection_seed=seed,
+    )
+    return output_dir / "summary.json"
+
+
+def run_live_trialgpt_experiment(
+    *,
+    raw_jsonl: Path,
+    sigir_corpus: Path,
+    output_dir: Path,
+    api_key_env_file: Path,
+    api_key_name: str,
+    variant: str,
+    split_name: str,
+    seed: int,
+    limit: int | None,
+    model_id: str,
+    max_output_tokens: int,
+    timeout_seconds: float,
+) -> Path:
+    """Run one declared prompt policy on a patient-separated data partition."""
+
+    if variant not in _TRIALGPT_VARIANTS:
+        raise ValueError(f"unknown TrialGPT experiment variant: {variant}")
+    if limit is not None and limit <= 0:
+        raise ValueError("limit must be positive when supplied")
+
+    rows = load_trialgpt_rows(raw_jsonl)
+    metadata = load_sigir_trial_metadata(sigir_corpus)
+    pairs = group_patient_trial_pairs(rows, metadata)
+    patient_split = split_trialgpt_pairs_by_patient(pairs, seed=seed)
+    if split_name == "development":
+        selected = list(patient_split.development_pairs)
+    elif split_name == "heldout":
+        selected = list(patient_split.held_out_pairs)
+    elif split_name == "overlap":
+        selected = list(patient_split.overlap_patient_pairs)
+    elif split_name == "all":
+        selected = select_full_trialgpt_pairs(pairs)
+    else:
+        raise ValueError(f"unknown TrialGPT experiment split: {split_name}")
+    if limit is not None:
+        selected = selected[:limit]
+    if not selected:
+        raise ValueError("selected TrialGPT experiment partition is empty")
+    if any(pair.metadata is None for pair in selected):
+        raise ValueError("selected TrialGPT pair is missing SIGIR trial metadata")
+
+    prompt_id, review_prompt_id = _TRIALGPT_VARIANTS[variant]
+    model = AnthropicStructuredModel(
+        api_key=_read_env_value(api_key_env_file, api_key_name),
+        model_id=model_id,
+        max_output_tokens=max_output_tokens,
+        timeout_seconds=timeout_seconds,
+    )
+    run_trialgpt_pilot(
+        selected,
+        model,
+        output_dir,
+        configured_model_id=model_id,
+        effort="medium",
+        selection_seed=seed,
+        variant=variant,
+        prompt_id=prompt_id,
+        review_prompt_id=review_prompt_id,
+    )
+    return output_dir / "summary.json"
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="clarifytrial",
@@ -292,11 +461,133 @@ def _parser() -> argparse.ArgumentParser:
         help="export the JSON contracts used by the workflow",
     )
     schemas.add_argument("--output", required=True, type=Path)
+
+    prepare = commands.add_parser(
+        "prepare-trialgpt",
+        help="download and validate the public TrialGPT criterion annotations",
+    )
+    prepare.add_argument(
+        "--cache",
+        type=Path,
+        default=Path(".research-cache") / "trialgpt",
+    )
+    prepare.add_argument("--force", action="store_true")
+
+    pilot = commands.add_parser(
+        "run-trialgpt-pilot",
+        help="run a bounded live Sonnet cost pilot on TrialGPT pairs",
+    )
+    pilot.add_argument("--raw-jsonl", required=True, type=Path)
+    pilot.add_argument("--sigir-corpus", required=True, type=Path)
+    pilot.add_argument("--output", required=True, type=Path)
+    pilot.add_argument("--api-key-env-file", required=True, type=Path)
+    pilot.add_argument("--api-key-name", default="API_KEY")
+    pilot.add_argument("--limit", type=int, default=20)
+    pilot.add_argument("--seed", type=int, default=20_260_820)
+    pilot.add_argument("--model", default="claude-sonnet-5")
+    pilot.add_argument("--max-output-tokens", type=int, default=8_192)
+    pilot.add_argument("--timeout-seconds", type=float, default=120)
+    pilot.add_argument("--confirm-live-api", action="store_true")
+
+    experiment = commands.add_parser(
+        "run-trialgpt-experiment",
+        help="compare one declared TrialGPT prompt policy on a fixed data split",
+    )
+    experiment.add_argument("--raw-jsonl", required=True, type=Path)
+    experiment.add_argument("--sigir-corpus", required=True, type=Path)
+    experiment.add_argument("--output", required=True, type=Path)
+    experiment.add_argument("--api-key-env-file", required=True, type=Path)
+    experiment.add_argument("--api-key-name", default="API_KEY")
+    experiment.add_argument(
+        "--variant",
+        choices=sorted(_TRIALGPT_VARIANTS),
+        required=True,
+    )
+    experiment.add_argument(
+        "--split",
+        dest="split_name",
+        choices=("development", "heldout", "overlap", "all"),
+        default="development",
+    )
+    experiment.add_argument("--seed", type=int, default=20_260_820)
+    experiment.add_argument("--limit", type=int)
+    experiment.add_argument("--model", default="claude-sonnet-5")
+    experiment.add_argument("--max-output-tokens", type=int, default=8_192)
+    experiment.add_argument("--timeout-seconds", type=float, default=120)
+    experiment.add_argument("--confirm-live-api", action="store_true")
+
+    architecture = commands.add_parser(
+        "run-trialgpt-architecture",
+        help="compare S1, M1, and M2 with ChatGPT subscription Sol medium",
+    )
+    architecture.add_argument("--raw-jsonl", required=True, type=Path)
+    architecture.add_argument("--sigir-corpus", required=True, type=Path)
+    architecture.add_argument("--output", required=True, type=Path)
+    architecture.add_argument(
+        "--stage",
+        choices=("smoke", "dev", "main", "overlap"),
+        required=True,
+    )
+    architecture.add_argument("--experiment-id")
+    architecture.add_argument("--split-seed", type=int, default=20_260_820)
+    architecture.add_argument("--order-seed", type=int, default=20_260_821)
+    architecture.add_argument("--retrieval-top-k", type=int, default=5)
+    architecture.add_argument("--pause-at-percent", type=float, default=80.0)
+    architecture.add_argument("--timeout-seconds", type=float, default=180.0)
+    architecture.add_argument(
+        "--case-concurrency",
+        type=int,
+        choices=(1, 2, 3),
+        default=3,
+        help="number of patient-trial cases to run concurrently (max 3)",
+    )
+    architecture.add_argument("--confirm-subscription-run", action="store_true")
+
+    strong_review = commands.add_parser(
+        "run-trialgpt-strong-review",
+        help="compare strong single judgment with no-web and web review",
+    )
+    strong_review.add_argument("--raw-jsonl", required=True, type=Path)
+    strong_review.add_argument("--sigir-corpus", required=True, type=Path)
+    strong_review.add_argument("--output", required=True, type=Path)
+    strong_review.add_argument(
+        "--stage",
+        choices=("development", "heldout", "overlap"),
+        default="development",
+    )
+    strong_review.add_argument("--limit", type=int)
+    strong_review.add_argument("--retrieval-top-k", type=int, default=5)
+    strong_review.add_argument("--timeout-seconds", type=float, default=240.0)
+    strong_review.add_argument(
+        "--case-concurrency", type=int, choices=(1, 2, 3), default=3
+    )
+    strong_review.add_argument("--confirm-subscription-run", action="store_true")
+
+    retrieval = commands.add_parser(
+        "run-trialgpt-retrieval",
+        help="reproduce TrialGPT BM25 and MedCPT candidate retrieval",
+    )
+    retrieval.add_argument("--dataset", required=True, type=Path)
+    retrieval.add_argument("--cache", required=True, type=Path)
+    retrieval.add_argument("--output", required=True, type=Path)
+    retrieval.add_argument(
+        "--corpus",
+        choices=("trec_2021", "trec_2022"),
+        required=True,
+    )
+    retrieval.add_argument("--query-type", default="gpt-4-turbo")
+    retrieval.add_argument("--fusion-k", type=int, default=20)
+    retrieval.add_argument("--search-depth", type=int, default=2_000)
+    retrieval.add_argument("--bm25-weight", type=float, default=1.0)
+    retrieval.add_argument("--medcpt-weight", type=float, default=1.0)
+    retrieval.add_argument("--batch-size", type=int, default=16)
+    retrieval.add_argument("--device", default="cuda")
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    args = _parser().parse_args(argv)
+    parser = _parser()
+    args = parser.parse_args(argv)
     if args.command == "run-example":
         result_path = run_example(args.case, args.output)
         print(f"result: {result_path}")
@@ -305,5 +596,160 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "export-schemas":
         for path in export_schemas(args.output):
             print(path)
+        return 0
+    if args.command == "prepare-trialgpt":
+        prepared = prepare_trialgpt(args.cache, force=args.force)
+        print(f"raw: {prepared['raw_jsonl']}")
+        print(f"metadata: {prepared['source_metadata']}")
+        print(json.dumps(prepared["statistics"], ensure_ascii=False))
+        return 0
+    if args.command == "run-trialgpt-pilot":
+        if not args.confirm_live_api:
+            parser.error("run-trialgpt-pilot requires --confirm-live-api")
+        summary_path = run_live_trialgpt_pilot(
+            raw_jsonl=args.raw_jsonl,
+            sigir_corpus=args.sigir_corpus,
+            output_dir=args.output,
+            api_key_env_file=args.api_key_env_file,
+            api_key_name=args.api_key_name,
+            limit=args.limit,
+            seed=args.seed,
+            model_id=args.model,
+            max_output_tokens=args.max_output_tokens,
+            timeout_seconds=args.timeout_seconds,
+        )
+        summary = _read_json(summary_path)
+        print(f"summary: {summary_path}")
+        print(f"calls: {summary['completed_calls']}/{summary['expected_calls']}")
+        print(f"cost_usd: {summary['usage']['total_cost_usd']:.6f}")
+        return 0 if summary["failed_calls"] == 0 else 2
+    if args.command == "run-trialgpt-experiment":
+        if not args.confirm_live_api:
+            parser.error("run-trialgpt-experiment requires --confirm-live-api")
+        summary_path = run_live_trialgpt_experiment(
+            raw_jsonl=args.raw_jsonl,
+            sigir_corpus=args.sigir_corpus,
+            output_dir=args.output,
+            api_key_env_file=args.api_key_env_file,
+            api_key_name=args.api_key_name,
+            variant=args.variant,
+            split_name=args.split_name,
+            seed=args.seed,
+            limit=args.limit,
+            model_id=args.model,
+            max_output_tokens=args.max_output_tokens,
+            timeout_seconds=args.timeout_seconds,
+        )
+        summary = _read_json(summary_path)
+        print(f"summary: {summary_path}")
+        print(f"variant: {summary['variant']}")
+        print(f"calls: {summary['completed_calls']}/{summary['expected_calls']}")
+        print(f"accuracy: {summary['sonnet_vs_expert']['label_accuracy']:.6f}")
+        print(f"cost_usd: {summary['usage']['total_cost_usd']:.6f}")
+        return 0 if summary["failed_calls"] == 0 else 2
+    if args.command == "run-trialgpt-architecture":
+        if not args.confirm_subscription_run:
+            parser.error(
+                "run-trialgpt-architecture requires --confirm-subscription-run"
+            )
+        experiment_id = args.experiment_id or (
+            f"trialgpt-architecture-sol-medium-{args.stage}"
+        )
+        try:
+            benchmark_path = run_subscription_architecture_stage(
+                raw_jsonl=args.raw_jsonl,
+                sigir_corpus=args.sigir_corpus,
+                output_dir=args.output,
+                stage=ExperimentStage(args.stage),
+                experiment_id=experiment_id,
+                split_seed=args.split_seed,
+                order_seed=args.order_seed,
+                retrieval_top_k=args.retrieval_top_k,
+                pause_threshold_percent=args.pause_at_percent,
+                timeout_seconds=args.timeout_seconds,
+                case_concurrency=args.case_concurrency,
+                progress=print,
+            )
+        except ArchitectureExperimentPaused as exc:
+            print(f"paused: {exc}")
+            print(f"resume with the same output and experiment id: {args.output}")
+            return 3
+        benchmark = _read_json(benchmark_path)
+        status = _read_json(args.output / "run-status.json")
+        print(f"benchmark: {benchmark_path}")
+        for arm in ("S1", "M1", "M2"):
+            metrics = benchmark["arm_metrics"][arm]
+            print(
+                f"{arm}: criterion_accuracy={metrics['criterion_accuracy']:.6f} "
+                f"trial_status_accuracy={metrics['trial_status_accuracy']:.6f}"
+            )
+        usage = status["usage_summary"]["totals"]
+        print(
+            "tokens: "
+            f"input={usage['input_tokens']} output={usage['output_tokens']} "
+            f"reasoning={usage['reasoning_tokens']} total={usage['total_tokens']}"
+        )
+        return 0 if status["failed_arms"] == 0 else 2
+    if args.command == "run-trialgpt-strong-review":
+        if not args.confirm_subscription_run:
+            parser.error(
+                "run-trialgpt-strong-review requires --confirm-subscription-run"
+            )
+        try:
+            benchmark_path = run_subscription_strong_review_stage(
+                raw_jsonl=args.raw_jsonl,
+                sigir_corpus=args.sigir_corpus,
+                output_dir=args.output,
+                stage=args.stage,
+                limit=args.limit,
+                retrieval_top_k=args.retrieval_top_k,
+                timeout_seconds=args.timeout_seconds,
+                case_concurrency=args.case_concurrency,
+                progress=print,
+            )
+        except StrongReviewExperimentIncomplete as exc:
+            print(f"incomplete: {exc}")
+            print(f"resume with the same output: {args.output}")
+            return 3
+        benchmark = _read_json(benchmark_path)
+        print(f"benchmark: {benchmark_path}")
+        for arm in ("S1-R", "S1-RV", "S1-RW"):
+            metrics = benchmark["arm_metrics"][arm]
+            print(
+                f"{arm}: criterion_accuracy={metrics['criterion_accuracy']:.6f} "
+                f"trial_status_accuracy={metrics['trial_status_accuracy']:.6f} "
+                f"tokens={metrics['system_total_tokens']}"
+            )
+        print(
+            f"executed_total_tokens={benchmark['executed_total_tokens']} "
+            f"web_search_actions={benchmark['web_search_actions']}"
+        )
+        return 0
+    if args.command == "run-trialgpt-retrieval":
+        config = TrialGPTRetrievalConfig(
+            corpus_name=args.corpus,
+            query_type=args.query_type,
+            fusion_k=args.fusion_k,
+            search_depth=args.search_depth,
+            bm25_weight=args.bm25_weight,
+            medcpt_weight=args.medcpt_weight,
+            batch_size=args.batch_size,
+            device=args.device,
+        )
+        summary_path = run_trialgpt_retrieval(
+            args.dataset,
+            args.cache,
+            args.output,
+            config,
+            progress=print,
+        )
+        summary = _read_json(summary_path)
+        print(f"summary: {summary_path}")
+        for row in summary["metric_rows"]:
+            print(
+                f"@{row['depth']}: weighted_recall={row['weighted_recall']:.6f} "
+                f"binary_recall={row['binary_recall']:.6f} "
+                f"ndcg={row['ndcg']:.6f} precision={row['precision']:.6f}"
+            )
         return 0
     raise AssertionError(f"unhandled command: {args.command}")

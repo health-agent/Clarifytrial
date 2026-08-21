@@ -3,7 +3,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from clarifytrial.cli import export_schemas, main, run_example
+import pytest
+
+from clarifytrial.cli import _read_env_value, export_schemas, main, run_example
 from clarifytrial.workflow import EpisodeRunner
 
 
@@ -120,3 +122,54 @@ def test_export_schemas_writes_parseable_key_contracts(tmp_path: Path) -> None:
         "decision-gold.schema.json",
     }
     assert all(_read_json(path)["type"] == "object" for path in paths)
+
+
+def test_live_trialgpt_command_requires_explicit_confirmation(tmp_path: Path) -> None:
+    with pytest.raises(SystemExit) as captured:
+        main(
+            [
+                "run-trialgpt-pilot",
+                "--raw-jsonl",
+                str(tmp_path / "rows.jsonl"),
+                "--sigir-corpus",
+                str(tmp_path / "corpus.jsonl"),
+                "--output",
+                str(tmp_path / "run"),
+                "--api-key-env-file",
+                str(tmp_path / "key.env"),
+            ]
+        )
+
+    assert captured.value.code == 2
+
+
+def test_live_trialgpt_experiment_requires_explicit_confirmation(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(SystemExit) as captured:
+        main(
+            [
+                "run-trialgpt-experiment",
+                "--raw-jsonl",
+                str(tmp_path / "rows.jsonl"),
+                "--sigir-corpus",
+                str(tmp_path / "corpus.jsonl"),
+                "--output",
+                str(tmp_path / "run"),
+                "--api-key-env-file",
+                str(tmp_path / "key.env"),
+                "--variant",
+                "calibrated",
+            ]
+        )
+
+    assert captured.value.code == 2
+
+
+def test_env_value_reader_supports_existing_key_file_without_copying_it(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "key.env"
+    source.write_text("# local only\nAPI_KEY='secret-value'\n", encoding="utf-8")
+
+    assert _read_env_value(source, "API_KEY") == "secret-value"
