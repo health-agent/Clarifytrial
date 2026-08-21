@@ -50,6 +50,19 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\clarifytrial.exe run-public-burden-benchmark --source-cache .research-cache\clinicaltrials-v5 --output runs\patient-burden-v1 --action-budget 3
 ```
 
+새 자연어 고정 평가에 사용할 공개 시험과 독립 검토표는 다음 명령으로 준비한다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe prepare-natural-evaluation-sources `
+  --config configs\natural_evaluation_source_selection_v1.json `
+  --cache .research-cache\clinicaltrials-natural-evaluation-v1 `
+  --review-output data\natural_evaluation_v1\criterion_review.json
+```
+
+이 명령은 모델을 호출하지 않는다. 본 시험 15건과 예비 15건의 공식 원문을 고정하고,
+두 사람이 따로 작성할 CSV를 만든다. 자동으로 찾은 문구는 정답이 아니며 작성 방법은
+[검토 안내](data/natural_evaluation_v1/README.md)에 있다.
+
 `run-example` 명령은 오래된 혈액검사만 있는 상태에서 후보를 유지하고, 최근 공식 결과를
 받은 뒤 현재 조건 확인을 끝내는 합성 사례를 실행한다. 결과는 `result.json`, 역할별
 호출과 상태 변화는 `trace.jsonl`에 저장된다. 이 실행에는 API 키가 필요하지 않다.
@@ -190,6 +203,8 @@ PyTorch를 사용했다.
 | `src/clarifytrial/interactive/burden_policy.py` | 기존 자료 우선, 환자 한도와 공개 순서 선택 규칙 |
 | `src/clarifytrial/interactive/burden_benchmark.py` | 360개 상황 실행, 부담·회복 지표와 채택 기준 계산 |
 | `configs/interactive_public_benchmark_v1.json` | 공개 시험 15건·조건 80개·합성 환자 30명의 고정 자료 |
+| `configs/natural_evaluation_source_selection_v1.json` | 새 자연어 평가 시험을 결과와 무관하게 고르는 고정 규칙 |
+| `data/natural_evaluation_v1/` | 새 본 시험 15건의 조건 원문 272줄과 두 사람의 독립 검토표. 현재는 검토 전 초안 |
 | `src/clarifytrial/pilots/` | 조건 묶음 실행, 비용·오류 지표와 지시문 비교 |
 | `prompts/` | 에이전트별 역할, 입력, 허용 도구와 출력 형식 |
 | `examples/stale_lab/` | 시스템 입력, 숨은 답변과 평가 정답을 나눈 합성 사례 |

@@ -1,0 +1,49 @@
+{
+  "protocol_id": "clarifytrial-natural-evaluation-sources-v1",
+  "selection_seed": "clarifytrial-natural-evaluation-v1-frozen-before-model-results",
+  "source": "ClinicalTrials.gov API v2",
+  "page_size": 100,
+  "sort": "LastUpdatePostDate:desc",
+  "allowed_overall_statuses": ["RECRUITING", "NOT_YET_RECRUITING"],
+  "allowed_study_types": ["INTERVENTIONAL"],
+  "minimum_objective_lines": 4,
+  "maximum_objective_lines": 25,
+  "groups": [
+    {
+      "group_id": "type_2_diabetes",
+      "label": "제2형 당뇨병",
+      "query_condition": "type 2 diabetes",
+      "accepted_condition_terms": [
+        "type 2 diabetes",
+        "type ii diabetes",
+        "diabetes mellitus type 2"
+      ],
+      "target_count": 5,
+      "reserve_count": 5
+    },
+    {
+      "group_id": "breast_cancer",
+      "label": "유방암",
+      "query_condition": "breast cancer",
+      "accepted_condition_terms": [
+        "breast cancer",
+        "breast carcinoma",
+        "breast neoplasm"
+      ],
+      "target_count": 5,
+      "reserve_count": 5
+    },
+    {
+      "group_id": "major_depressive_disorder",
+      "label": "주요우울장애",
+      "query_condition": "major depressive disorder",
+      "accepted_condition_terms": [
+        "major depressive disorder",
+        "major depression",
+        "unipolar depression"
+      ],
+      "target_count": 5,
+      "reserve_count": 5
+    }
+  ]
+}

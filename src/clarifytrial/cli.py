@@ -24,11 +24,13 @@ from .contracts import (
     TrialDecision,
 )
 from .datasets import (
+    compare_natural_evaluation_reviews,
     fetch_clinicaltrials_v5_sources,
     fetch_trialgpt_dataset,
     group_patient_trial_pairs,
     load_sigir_trial_metadata,
     load_trialgpt_rows,
+    prepare_natural_evaluation_sources,
     select_full_trialgpt_pairs,
     select_pilot_pairs,
     split_trialgpt_pairs_by_patient,
@@ -622,6 +624,66 @@ def _parser() -> argparse.ArgumentParser:
     )
     prepare_public.add_argument("--force", action="store_true")
 
+    prepare_natural_evaluation = commands.add_parser(
+        "prepare-natural-evaluation-sources",
+        help=(
+            "select and freeze new ClinicalTrials.gov studies for two-person "
+            "natural-input evaluation review"
+        ),
+    )
+    prepare_natural_evaluation.add_argument(
+        "--config",
+        type=Path,
+        default=Path("configs") / "natural_evaluation_source_selection_v1.json",
+    )
+    prepare_natural_evaluation.add_argument(
+        "--cache",
+        type=Path,
+        default=Path(".research-cache") / "clinicaltrials-natural-evaluation-v1",
+    )
+    prepare_natural_evaluation.add_argument(
+        "--review-output",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "criterion_review.json",
+    )
+    prepare_natural_evaluation.add_argument("--force", action="store_true")
+    prepare_natural_evaluation.add_argument(
+        "--overwrite-review-output",
+        action="store_true",
+        help="replace blank review files; never use after human review has begun",
+    )
+
+    compare_natural_reviews = commands.add_parser(
+        "compare-natural-evaluation-reviews",
+        help="compare two independent criterion review sheets without resolving them",
+    )
+    compare_natural_reviews.add_argument(
+        "--source",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "criterion_review.json",
+    )
+    compare_natural_reviews.add_argument(
+        "--reviewer-1",
+        type=Path,
+        default=Path("data") / "natural_evaluation_v1" / "reviewer_1.csv",
+    )
+    compare_natural_reviews.add_argument(
+        "--reviewer-2",
+        type=Path,
+        default=Path("data") / "natural_evaluation_v1" / "reviewer_2.csv",
+    )
+    compare_natural_reviews.add_argument(
+        "--output",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "review_comparison.json",
+    )
+
     pilot = commands.add_parser(
         "run-trialgpt-pilot",
         help="run a bounded live Sonnet cost pilot on TrialGPT pairs",
@@ -897,6 +959,44 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(
             f"studies: {metadata['study_count']} "
             f"data_timestamp={metadata['data_timestamp']}"
+        )
+        return 0
+    if args.command == "prepare-natural-evaluation-sources":
+        prepared = prepare_natural_evaluation_sources(
+            args.config,
+            args.cache,
+            args.review_output,
+            force=args.force,
+            overwrite_review=args.overwrite_review_output,
+        )
+        print(f"metadata: {prepared['metadata_path']}")
+        print(f"review: {prepared['review_output_path']}")
+        print(f"reviewer_1: {prepared['reviewer_1_path']}")
+        print(f"reviewer_2: {prepared['reviewer_2_path']}")
+        print(
+            "studies: "
+            f"primary={prepared['primary_study_count']} "
+            f"reserve={prepared['reserve_study_count']} "
+            "objective_candidates="
+            f"{prepared['primary_objective_candidate_count']} "
+            "review_rows="
+            f"{prepared['primary_review_candidate_count']}"
+        )
+        print(f"source_audit_passed: {prepared['audit']['passed']}")
+        return 0
+    if args.command == "compare-natural-evaluation-reviews":
+        comparison = compare_natural_evaluation_reviews(
+            args.source,
+            args.reviewer_1,
+            args.reviewer_2,
+            args.output,
+        )
+        print(f"comparison: {args.output}")
+        print(
+            f"status={comparison['status']} "
+            f"agreed={comparison['agreement_count']} "
+            f"disagreed={comparison['disagreement_count']} "
+            f"incomplete={comparison['incomplete_count']}"
         )
         return 0
     if args.command == "run-trialgpt-pilot":
