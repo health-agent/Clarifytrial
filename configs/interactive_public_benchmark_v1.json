@@ -1,0 +1,272 @@
+{
+  "protocol_id": "interactive-public-criteria-v1",
+  "source": "ClinicalTrials.gov API v2",
+  "data_timestamp": "2026-08-20T09:00:05",
+  "processed_date": "2026-08-21",
+  "scope": "공개 원문의 객관적으로 계산 가능한 일부 조건만 구조화한 연구자 파생자료",
+  "groups": [
+    {
+      "group_id": "type_2_diabetes",
+      "label": "2형 당뇨병",
+      "masks": [
+        {"mask_id": "A", "visible_facts": ["age", "metformin_daily_mg"]},
+        {"mask_id": "B", "visible_facts": ["hba1c", "uses_insulin"]}
+      ],
+      "profiles": [
+        {"profile_id": "t2d-01", "split": "development", "values": {"hba1c": 7.2, "bmi": 26.0, "stable_medication_days": 60, "egfr": 65, "uses_insulin": 0, "age": 35, "metformin_daily_mg": 1000}},
+        {"profile_id": "t2d-02", "split": "development", "values": {"hba1c": 8.2, "bmi": 31.0, "stable_medication_days": 90, "egfr": 90, "uses_insulin": 0, "age": 68, "metformin_daily_mg": 1500}},
+        {"profile_id": "t2d-03", "split": "development", "values": {"hba1c": 9.5, "bmi": 36.0, "stable_medication_days": 120, "egfr": 50, "uses_insulin": 1, "age": 68, "metformin_daily_mg": 2000}},
+        {"profile_id": "t2d-04", "split": "heldout", "values": {"hba1c": 6.5, "bmi": 24.0, "stable_medication_days": 21, "egfr": 90, "uses_insulin": 0, "age": 35, "metformin_daily_mg": 750}},
+        {"profile_id": "t2d-05", "split": "heldout", "values": {"hba1c": 7.2, "bmi": 28.0, "stable_medication_days": 75, "egfr": 65, "uses_insulin": 0, "age": 35, "metformin_daily_mg": 1500}},
+        {"profile_id": "t2d-06", "split": "heldout", "values": {"hba1c": 8.2, "bmi": 28.0, "stable_medication_days": 90, "egfr": 50, "uses_insulin": 1, "age": 68, "metformin_daily_mg": 1500}},
+        {"profile_id": "t2d-07", "split": "heldout", "values": {"hba1c": 9.5, "bmi": 41.0, "stable_medication_days": 90, "egfr": 35, "uses_insulin": 0, "age": 74, "metformin_daily_mg": 1500}},
+        {"profile_id": "t2d-08", "split": "heldout", "values": {"hba1c": 10.8, "bmi": 36.0, "stable_medication_days": 75, "egfr": 50, "uses_insulin": 1, "age": 68, "metformin_daily_mg": 1000}},
+        {"profile_id": "t2d-09", "split": "heldout", "values": {"hba1c": 11.5, "bmi": 31.0, "stable_medication_days": 120, "egfr": 90, "uses_insulin": 0, "age": 35, "metformin_daily_mg": 2000}},
+        {"profile_id": "t2d-10", "split": "heldout", "values": {"hba1c": 9.5, "bmi": 28.0, "stable_medication_days": 90, "egfr": 50, "uses_insulin": 1, "age": 17, "metformin_daily_mg": 1500}}
+      ],
+      "facts": [
+        {"code": "hba1c", "description": "최근 공식 HbA1c 검사 결과", "unit": "%", "route": "REQUEST_VERIFICATION", "values": [6.5, 7.2, 8.2, 9.5, 10.8, 11.5]},
+        {"code": "bmi", "description": "최근 기록에 있는 BMI", "unit": "kg/m2", "route": "LOOKUP_RECORD", "values": [24.0, 26.0, 28.0, 31.0, 36.0, 41.0]},
+        {"code": "stable_medication_days", "description": "현재 당뇨병 약 용량을 바꾸지 않은 기간", "unit": "days", "route": "LOOKUP_RECORD", "values": [21, 60, 75, 90, 120]},
+        {"code": "egfr", "description": "최근 공식 eGFR 검사 결과", "unit": "mL/min/1.73m2", "route": "REQUEST_VERIFICATION", "values": [35, 50, 65, 90]},
+        {"code": "uses_insulin", "description": "현재 인슐린을 사용하는지", "unit": "bool", "route": "LOOKUP_RECORD", "values": [0, 1]},
+        {"code": "age", "description": "현재 나이", "unit": "years", "route": "LOOKUP_RECORD", "values": [17, 35, 68, 74]},
+        {"code": "metformin_daily_mg", "description": "현재 하루 메트포르민 용량", "unit": "mg/day", "route": "LOOKUP_RECORD", "values": [0, 750, 1000, 1500, 2000]}
+      ],
+      "trials": [
+        {
+          "nct_id": "NCT07026968",
+          "title": "Prusogliptin with dapagliflozin and metformin in type 2 diabetes",
+          "criteria": [
+            {"id": "bmi-low", "kind": "inclusion", "source_statement": "Body Mass Index (BMI) ≥ 18.5 kg/m^2, and ≤40 kg/m^2", "fact": "bmi", "operator": "gte", "threshold": 18.5, "max_age_days": 30},
+            {"id": "bmi-high", "kind": "inclusion", "source_statement": "Body Mass Index (BMI) ≥ 18.5 kg/m^2, and ≤40 kg/m^2", "fact": "bmi", "operator": "lte", "threshold": 40, "max_age_days": 30},
+            {"id": "metformin-stable", "kind": "inclusion", "source_statement": "Stable metformin therapy for at least 10 weeks prior to screening at a dose ≥ 1500 mg per day", "fact": "stable_medication_days", "operator": "gte", "threshold": 70, "max_age_days": 30},
+            {"id": "metformin-dose", "kind": "inclusion", "source_statement": "Stable metformin therapy for at least 10 weeks prior to screening at a dose ≥ 1500 mg per day", "fact": "metformin_daily_mg", "operator": "gte", "threshold": 1500, "max_age_days": 30},
+            {"id": "hba1c-low", "kind": "inclusion", "source_statement": "During screening: 7.5% ≤ HbA1c ≤ 11.0% (local laboratory)", "fact": "hba1c", "operator": "gte", "threshold": 7.5, "max_age_days": 14},
+            {"id": "hba1c-high", "kind": "inclusion", "source_statement": "During screening: 7.5% ≤ HbA1c ≤ 11.0% (local laboratory)", "fact": "hba1c", "operator": "lte", "threshold": 11.0, "max_age_days": 14}
+          ]
+        },
+        {
+          "nct_id": "NCT06267391",
+          "title": "Endoscopic intestinal re-cellularization therapy in type II diabetes",
+          "criteria": [
+            {"id": "hba1c-low", "kind": "inclusion", "source_statement": "HbA1C of 7.5-10.5%, inclusive, determined by the central laboratory", "fact": "hba1c", "operator": "gte", "threshold": 7.5, "max_age_days": 14},
+            {"id": "hba1c-high", "kind": "inclusion", "source_statement": "HbA1C of 7.5-10.5%, inclusive, determined by the central laboratory", "fact": "hba1c", "operator": "lte", "threshold": 10.5, "max_age_days": 14},
+            {"id": "bmi-low", "kind": "inclusion", "source_statement": "BMI 27-40 kg/m2, inclusive", "fact": "bmi", "operator": "gte", "threshold": 27, "max_age_days": 30},
+            {"id": "medication-stable", "kind": "inclusion", "source_statement": "No changes in medication or dosing for at least 12 weeks prior to the baseline visit", "fact": "stable_medication_days", "operator": "gte", "threshold": 84, "max_age_days": 30},
+            {"id": "insulin", "kind": "exclusion", "source_statement": "Current use of insulin", "fact": "uses_insulin", "operator": "eq", "threshold": 1, "max_age_days": 30},
+            {"id": "egfr", "kind": "exclusion", "source_statement": "Estimated glomerular filtration rate (eGFR) ≤ 45 ml/min/1.73m2", "fact": "egfr", "operator": "lte", "threshold": 45, "max_age_days": 14}
+          ]
+        },
+        {
+          "nct_id": "NCT07527650",
+          "title": "HM15275 in subjects with type 2 diabetes mellitus",
+          "criteria": [
+            {"id": "hba1c-low", "kind": "inclusion", "source_statement": "HbA1c ≥7.0% and ≤10.0% at screening", "fact": "hba1c", "operator": "gte", "threshold": 7.0, "max_age_days": 14},
+            {"id": "hba1c-high", "kind": "inclusion", "source_statement": "HbA1c ≥7.0% and ≤10.0% at screening", "fact": "hba1c", "operator": "lte", "threshold": 10.0, "max_age_days": 14},
+            {"id": "metformin-stable", "kind": "inclusion", "source_statement": "Stable dose of metformin (≥1000 mg/day) for at least 3 months prior to screening", "fact": "stable_medication_days", "operator": "gte", "threshold": 90, "max_age_days": 30},
+            {"id": "metformin-dose", "kind": "inclusion", "source_statement": "Stable dose of metformin (≥1000 mg/day) for at least 3 months prior to screening", "fact": "metformin_daily_mg", "operator": "gte", "threshold": 1000, "max_age_days": 30},
+            {"id": "bmi", "kind": "inclusion", "source_statement": "BMI ≥25 kg/m² and ≤50 kg/m²", "fact": "bmi", "operator": "gte", "threshold": 25, "max_age_days": 30},
+            {"id": "egfr", "kind": "exclusion", "source_statement": "Renal impairment (eGFR <60 mL/min/1.73 m²)", "fact": "egfr", "operator": "lt", "threshold": 60, "max_age_days": 14}
+          ]
+        },
+        {
+          "nct_id": "NCT07146347",
+          "title": "Insulin GZR4 compared with insulin degludec",
+          "criteria": [
+            {"id": "age-low", "kind": "inclusion", "source_statement": "Age between 18 and 70 years, both inclusive", "fact": "age", "operator": "gte", "threshold": 18, "max_age_days": null},
+            {"id": "age-high", "kind": "inclusion", "source_statement": "Age between 18 and 70 years, both inclusive", "fact": "age", "operator": "lte", "threshold": 70, "max_age_days": null},
+            {"id": "bmi", "kind": "inclusion", "source_statement": "Body Mass Index (BMI) between 27.0 and 38.0 kg/m², both inclusive", "fact": "bmi", "operator": "gte", "threshold": 27, "max_age_days": 30},
+            {"id": "insulin", "kind": "inclusion", "source_statement": "Stable basal insulin regimen for at least 3 months", "fact": "uses_insulin", "operator": "eq", "threshold": 1, "max_age_days": 30},
+            {"id": "insulin-stable", "kind": "inclusion", "source_statement": "Stable basal insulin regimen for at least 3 months", "fact": "stable_medication_days", "operator": "gte", "threshold": 90, "max_age_days": 30},
+            {"id": "hba1c", "kind": "inclusion", "source_statement": "HbA1c <= 9.0%", "fact": "hba1c", "operator": "lte", "threshold": 9.0, "max_age_days": 14},
+            {"id": "egfr", "kind": "exclusion", "source_statement": "Estimated glomerular filtration rate (eGFR) < 60.0 mL/min/1.73m2", "fact": "egfr", "operator": "lt", "threshold": 60, "max_age_days": 14}
+          ]
+        },
+        {
+          "nct_id": "NCT05516576",
+          "title": "Endoscopic sutured gastroplasty in type 2 diabetes and class I obesity",
+          "criteria": [
+            {"id": "hba1c", "kind": "inclusion", "source_statement": "HbA1c < 9%", "fact": "hba1c", "operator": "lt", "threshold": 9.0, "max_age_days": 14},
+            {"id": "insulin", "kind": "exclusion", "source_statement": "Under non-insulin anti-diabetic treatment", "fact": "uses_insulin", "operator": "eq", "threshold": 1, "max_age_days": 30},
+            {"id": "medication-stable", "kind": "inclusion", "source_statement": "Anti-diabetic therapy stable during the last 3 months before inclusion", "fact": "stable_medication_days", "operator": "gte", "threshold": 90, "max_age_days": 30},
+            {"id": "bmi-low", "kind": "inclusion", "source_statement": "BMI between 30-34.9 kg/m²", "fact": "bmi", "operator": "gte", "threshold": 30, "max_age_days": 30},
+            {"id": "bmi-high", "kind": "inclusion", "source_statement": "BMI between 30-34.9 kg/m²", "fact": "bmi", "operator": "lte", "threshold": 34.9, "max_age_days": 30}
+          ]
+        }
+      ]
+    },
+    {
+      "group_id": "breast_cancer",
+      "label": "유방암",
+      "masks": [
+        {"mask_id": "A", "visible_facts": ["er_positive", "her2_positive"]},
+        {"mask_id": "B", "visible_facts": ["ecog", "prior_therapy_lines"]}
+      ],
+      "profiles": [
+        {"profile_id": "bc-01", "split": "development", "values": {"er_positive": 0, "her2_positive": 0, "ecog": 0, "anc": 2.0, "platelets": 150, "prior_therapy_lines": 0, "cdk46_therapy_months": 0}},
+        {"profile_id": "bc-02", "split": "development", "values": {"er_positive": 1, "her2_positive": 0, "ecog": 1, "anc": 1.5, "platelets": 100, "prior_therapy_lines": 1, "cdk46_therapy_months": 6}},
+        {"profile_id": "bc-03", "split": "development", "values": {"er_positive": 1, "her2_positive": 1, "ecog": 2, "anc": 1.3, "platelets": 80, "prior_therapy_lines": 2, "cdk46_therapy_months": 12}},
+        {"profile_id": "bc-04", "split": "heldout", "values": {"er_positive": 0, "her2_positive": 0, "ecog": 1, "anc": 1.5, "platelets": 100, "prior_therapy_lines": 0, "cdk46_therapy_months": 0}},
+        {"profile_id": "bc-05", "split": "heldout", "values": {"er_positive": 0, "her2_positive": 0, "ecog": 2, "anc": 1.3, "platelets": 80, "prior_therapy_lines": 1, "cdk46_therapy_months": 3}},
+        {"profile_id": "bc-06", "split": "heldout", "values": {"er_positive": 1, "her2_positive": 0, "ecog": 2, "anc": 2.0, "platelets": 150, "prior_therapy_lines": 1, "cdk46_therapy_months": 6}},
+        {"profile_id": "bc-07", "split": "heldout", "values": {"er_positive": 1, "her2_positive": 0, "ecog": 3, "anc": 1.0, "platelets": 60, "prior_therapy_lines": 2, "cdk46_therapy_months": 12}},
+        {"profile_id": "bc-08", "split": "heldout", "values": {"er_positive": 0, "her2_positive": 1, "ecog": 1, "anc": 2.0, "platelets": 150, "prior_therapy_lines": 1, "cdk46_therapy_months": 0}},
+        {"profile_id": "bc-09", "split": "heldout", "values": {"er_positive": 0, "her2_positive": 0, "ecog": 0, "anc": 1.0, "platelets": 100, "prior_therapy_lines": 3, "cdk46_therapy_months": 0}},
+        {"profile_id": "bc-10", "split": "heldout", "values": {"er_positive": 1, "her2_positive": 0, "ecog": 1, "anc": 1.3, "platelets": 80, "prior_therapy_lines": 0, "cdk46_therapy_months": 3}}
+      ],
+      "facts": [
+        {"code": "er_positive", "description": "공식 병리검사의 ER 양성 여부", "unit": "bool", "route": "REQUEST_VERIFICATION", "values": [0, 1]},
+        {"code": "her2_positive", "description": "공식 병리검사의 HER2 양성 여부", "unit": "bool", "route": "REQUEST_VERIFICATION", "values": [0, 1]},
+        {"code": "ecog", "description": "최근 진료의 ECOG 활동수준", "unit": "score", "route": "LOOKUP_RECORD", "values": [0, 1, 2, 3]},
+        {"code": "anc", "description": "최근 공식 절대호중구수", "unit": "10^9/L", "route": "REQUEST_VERIFICATION", "values": [1.0, 1.3, 1.5, 2.0]},
+        {"code": "platelets", "description": "최근 공식 혈소판 수", "unit": "10^9/L", "route": "REQUEST_VERIFICATION", "values": [60, 80, 100, 150]},
+        {"code": "prior_therapy_lines", "description": "진행성 유방암에 사용한 전신치료 차수", "unit": "count", "route": "LOOKUP_RECORD", "values": [0, 1, 2, 3]},
+        {"code": "cdk46_therapy_months", "description": "이전 CDK4/6 억제제 치료 기간", "unit": "months", "route": "LOOKUP_RECORD", "values": [0, 3, 6, 12]}
+      ],
+      "trials": [
+        {
+          "nct_id": "NCT07054242",
+          "title": "Sacituzumab tirumotecan with pembrolizumab for TNBC",
+          "criteria": [
+            {"id": "er", "kind": "exclusion", "source_statement": "IHC showing ER and PR <1%", "fact": "er_positive", "operator": "eq", "threshold": 1, "max_age_days": null},
+            {"id": "her2", "kind": "exclusion", "source_statement": "HER2-negative per ASCO-CAP guidelines", "fact": "her2_positive", "operator": "eq", "threshold": 1, "max_age_days": null},
+            {"id": "ecog", "kind": "inclusion", "source_statement": "ECOG performance status 0-1", "fact": "ecog", "operator": "lte", "threshold": 1, "max_age_days": 30},
+            {"id": "anc", "kind": "inclusion", "source_statement": "Absolute neutrophil count ≥1.5×10⁹/L", "fact": "anc", "operator": "gte", "threshold": 1.5, "max_age_days": 14},
+            {"id": "platelets", "kind": "inclusion", "source_statement": "Platelets ≥100×10⁹/L", "fact": "platelets", "operator": "gte", "threshold": 100, "max_age_days": 14},
+            {"id": "prior-therapy", "kind": "inclusion", "source_statement": "No prior anti-cancer therapy for current diagnosis", "fact": "prior_therapy_lines", "operator": "eq", "threshold": 0, "max_age_days": 90}
+          ]
+        },
+        {
+          "nct_id": "NCT03546686",
+          "title": "Peri-operative checkpoint inhibition and cryoablation in TNBC",
+          "criteria": [
+            {"id": "er", "kind": "exclusion", "source_statement": "ER, PR and HER2 negative; ER and PR staining present in ≤10%", "fact": "er_positive", "operator": "eq", "threshold": 1, "max_age_days": null},
+            {"id": "her2", "kind": "exclusion", "source_statement": "HER2-negative is defined as IHC 0-1+ or FISH <2.0", "fact": "her2_positive", "operator": "eq", "threshold": 1, "max_age_days": null},
+            {"id": "ecog", "kind": "inclusion", "source_statement": "ECOG performance status score of 0 or 1", "fact": "ecog", "operator": "lte", "threshold": 1, "max_age_days": 30},
+            {"id": "anc", "kind": "inclusion", "source_statement": "Absolute neutrophil count (ANC) ≥ 1500/μL", "fact": "anc", "operator": "gte", "threshold": 1.5, "max_age_days": 14},
+            {"id": "platelets", "kind": "inclusion", "source_statement": "Platelets ≥ 100 x 10^3/μL", "fact": "platelets", "operator": "gte", "threshold": 100, "max_age_days": 14}
+          ]
+        },
+        {
+          "nct_id": "NCT07467330",
+          "title": "Dalpiciclib combination for HR-positive HER2-negative breast cancer",
+          "criteria": [
+            {"id": "er", "kind": "inclusion", "source_statement": "ER-positive and/or PR-positive are defined as positively stained tumor cells ≥1%", "fact": "er_positive", "operator": "eq", "threshold": 1, "max_age_days": null},
+            {"id": "her2", "kind": "exclusion", "source_statement": "HER2 negative by IHC or ISH", "fact": "her2_positive", "operator": "eq", "threshold": 1, "max_age_days": null},
+            {"id": "ecog", "kind": "inclusion", "source_statement": "ECOG score 0-2", "fact": "ecog", "operator": "lte", "threshold": 2, "max_age_days": 30},
+            {"id": "anc", "kind": "inclusion", "source_statement": "Neutrophil count (ANC) ≥ 1.5 x 10^9/L", "fact": "anc", "operator": "gte", "threshold": 1.5, "max_age_days": 14},
+            {"id": "platelets", "kind": "inclusion", "source_statement": "Platelet count ≥ 100 x 10^9/L", "fact": "platelets", "operator": "gte", "threshold": 100, "max_age_days": 14}
+          ]
+        },
+        {
+          "nct_id": "NCT07227233",
+          "title": "CDK4/6 inhibitor rechallenge in HR-positive HER2-negative breast cancer",
+          "criteria": [
+            {"id": "er", "kind": "inclusion", "source_statement": "Hormone receptor positive advanced breast cancer", "fact": "er_positive", "operator": "eq", "threshold": 1, "max_age_days": null},
+            {"id": "her2", "kind": "exclusion", "source_statement": "HER2-negative advanced breast cancer", "fact": "her2_positive", "operator": "eq", "threshold": 1, "max_age_days": null},
+            {"id": "ecog", "kind": "inclusion", "source_statement": "ECOG performance status 0-2", "fact": "ecog", "operator": "lte", "threshold": 2, "max_age_days": 30},
+            {"id": "cdk-duration", "kind": "inclusion", "source_statement": "After a minimum of 6 months of 1 prior line of any CDK4/6 inhibitor therapy", "fact": "cdk46_therapy_months", "operator": "gte", "threshold": 6, "max_age_days": 90},
+            {"id": "prior-lines", "kind": "inclusion", "source_statement": "Zero to 1 prior line of chemotherapy or antibody-drug conjugates", "fact": "prior_therapy_lines", "operator": "lte", "threshold": 1, "max_age_days": 90},
+            {"id": "anc", "kind": "inclusion", "source_statement": "Absolute neutrophil count > 1,200/microliter", "fact": "anc", "operator": "gt", "threshold": 1.2, "max_age_days": 14},
+            {"id": "platelets", "kind": "inclusion", "source_statement": "Platelets > 75,000/microliter", "fact": "platelets", "operator": "gt", "threshold": 75, "max_age_days": 14}
+          ]
+        },
+        {
+          "nct_id": "NCT07441512",
+          "title": "Inavolisib with eribulin in pretreated advanced TNBC",
+          "criteria": [
+            {"id": "er", "kind": "exclusion", "source_statement": "Documented HR-negative tumor, defined as <1% ER and PgR staining", "fact": "er_positive", "operator": "eq", "threshold": 1, "max_age_days": null},
+            {"id": "her2", "kind": "exclusion", "source_statement": "Documented HER2-negative tumor", "fact": "her2_positive", "operator": "eq", "threshold": 1, "max_age_days": null},
+            {"id": "ecog", "kind": "inclusion", "source_statement": "ECOG performance status of 0 or 1", "fact": "ecog", "operator": "lte", "threshold": 1, "max_age_days": 30},
+            {"id": "anc", "kind": "inclusion", "source_statement": "Absolute neutrophil count ≥ 1500/μL", "fact": "anc", "operator": "gte", "threshold": 1.5, "max_age_days": 14},
+            {"id": "platelets", "kind": "inclusion", "source_statement": "Platelet count ≥ 100,000/μL", "fact": "platelets", "operator": "gte", "threshold": 100, "max_age_days": 14},
+            {"id": "prior-lines", "kind": "inclusion", "source_statement": "Progressed after at least one line of systemic therapy in advanced setting", "fact": "prior_therapy_lines", "operator": "gte", "threshold": 1, "max_age_days": 90}
+          ]
+        }
+      ]
+    },
+    {
+      "group_id": "major_depressive_disorder",
+      "label": "주요우울장애",
+      "masks": [
+        {"mask_id": "A", "visible_facts": ["episode_weeks", "can_taper_antidepressant"]},
+        {"mask_id": "B", "visible_facts": ["madrs", "stable_medication_days"]}
+      ],
+      "profiles": [
+        {"profile_id": "mdd-01", "split": "development", "values": {"madrs": 18, "antidepressant_failures": 1, "stable_medication_days": 28, "active_suicide_risk": 0, "active_substance_disorder": 0, "episode_weeks": 8, "can_taper_antidepressant": 1}},
+        {"profile_id": "mdd-02", "split": "development", "values": {"madrs": 24, "antidepressant_failures": 2, "stable_medication_days": 42, "active_suicide_risk": 0, "active_substance_disorder": 0, "episode_weeks": 24, "can_taper_antidepressant": 1}},
+        {"profile_id": "mdd-03", "split": "development", "values": {"madrs": 34, "antidepressant_failures": 3, "stable_medication_days": 60, "active_suicide_risk": 1, "active_substance_disorder": 0, "episode_weeks": 60, "can_taper_antidepressant": 0}},
+        {"profile_id": "mdd-04", "split": "development", "values": {"madrs": 20, "antidepressant_failures": 0, "stable_medication_days": 14, "active_suicide_risk": 0, "active_substance_disorder": 1, "episode_weeks": 4, "can_taper_antidepressant": 1}},
+        {"profile_id": "mdd-05", "split": "heldout", "values": {"madrs": 12, "antidepressant_failures": 0, "stable_medication_days": 0, "active_suicide_risk": 0, "active_substance_disorder": 0, "episode_weeks": 4, "can_taper_antidepressant": 1}},
+        {"profile_id": "mdd-06", "split": "heldout", "values": {"madrs": 20, "antidepressant_failures": 1, "stable_medication_days": 28, "active_suicide_risk": 0, "active_substance_disorder": 0, "episode_weeks": 8, "can_taper_antidepressant": 0}},
+        {"profile_id": "mdd-07", "split": "heldout", "values": {"madrs": 24, "antidepressant_failures": 2, "stable_medication_days": 42, "active_suicide_risk": 0, "active_substance_disorder": 0, "episode_weeks": 24, "can_taper_antidepressant": 1}},
+        {"profile_id": "mdd-08", "split": "heldout", "values": {"madrs": 28, "antidepressant_failures": 3, "stable_medication_days": 60, "active_suicide_risk": 0, "active_substance_disorder": 0, "episode_weeks": 60, "can_taper_antidepressant": 1}},
+        {"profile_id": "mdd-09", "split": "heldout", "values": {"madrs": 34, "antidepressant_failures": 4, "stable_medication_days": 42, "active_suicide_risk": 1, "active_substance_disorder": 0, "episode_weeks": 90, "can_taper_antidepressant": 0}},
+        {"profile_id": "mdd-10", "split": "heldout", "values": {"madrs": 28, "antidepressant_failures": 2, "stable_medication_days": 14, "active_suicide_risk": 0, "active_substance_disorder": 1, "episode_weeks": 24, "can_taper_antidepressant": 1}}
+      ],
+      "facts": [
+        {"code": "madrs", "description": "최근 공식 MADRS 평가 점수", "unit": "score", "route": "REQUEST_VERIFICATION", "values": [12, 18, 20, 24, 28, 34]},
+        {"code": "antidepressant_failures", "description": "현재 우울 삽화에서 충분히 사용했지만 효과가 없었던 항우울제 수", "unit": "count", "route": "LOOKUP_RECORD", "values": [0, 1, 2, 3, 4]},
+        {"code": "stable_medication_days", "description": "현재 정신과 약 용량을 바꾸지 않은 기간", "unit": "days", "route": "LOOKUP_RECORD", "values": [0, 14, 28, 42, 60]},
+        {"code": "active_suicide_risk", "description": "현재 적극적인 자살 위험이 공식 평가에서 확인되는지", "unit": "bool", "route": "REQUEST_VERIFICATION", "values": [0, 1]},
+        {"code": "active_substance_disorder", "description": "현재 또는 최근 물질사용장애가 공식 평가에서 확인되는지", "unit": "bool", "route": "REQUEST_VERIFICATION", "values": [0, 1]},
+        {"code": "episode_weeks", "description": "현재 주요우울 삽화가 이어진 기간", "unit": "weeks", "route": "LOOKUP_RECORD", "values": [4, 8, 24, 60, 90]},
+        {"code": "can_taper_antidepressant", "description": "시험 절차에 맞춰 항우울제를 감량할 의사가 있는지", "unit": "bool", "route": "ASK_PATIENT", "values": [0, 1]}
+      ],
+      "trials": [
+        {
+          "nct_id": "NCT05757791",
+          "title": "SGLT2 inhibitor in major depressive disorder",
+          "criteria": [
+            {"id": "madrs", "kind": "inclusion", "source_statement": "MADRS score of at least 20 at initial screen", "fact": "madrs", "operator": "gte", "threshold": 20, "max_age_days": 14},
+            {"id": "failures", "kind": "exclusion", "source_statement": "More than two failures of adequate anti-depressant trials in the current MDD episode", "fact": "antidepressant_failures", "operator": "gt", "threshold": 2, "max_age_days": 90},
+            {"id": "substance", "kind": "exclusion", "source_statement": "Substance use disorder active within the past 12 months", "fact": "active_substance_disorder", "operator": "eq", "threshold": 1, "max_age_days": 14}
+          ]
+        },
+        {
+          "nct_id": "NCT06633016",
+          "title": "ABX-002 adjunctive treatment for major depressive disorder",
+          "criteria": [
+            {"id": "episode-low", "kind": "inclusion", "source_statement": "Current major depressive episode duration of >6 weeks and ≤18 months", "fact": "episode_weeks", "operator": "gt", "threshold": 6, "max_age_days": 90},
+            {"id": "episode-high", "kind": "inclusion", "source_statement": "Current major depressive episode duration of >6 weeks and ≤18 months", "fact": "episode_weeks", "operator": "lte", "threshold": 78, "max_age_days": 90},
+            {"id": "stable-medication", "kind": "inclusion", "source_statement": "Dosage of the current antidepressant must have been stable for the past 4 weeks", "fact": "stable_medication_days", "operator": "gte", "threshold": 28, "max_age_days": 30},
+            {"id": "failures", "kind": "exclusion", "source_statement": "Failed more than 2 antidepressant treatments during the current depressive episode", "fact": "antidepressant_failures", "operator": "gt", "threshold": 2, "max_age_days": 90},
+            {"id": "suicide", "kind": "exclusion", "source_statement": "Is suicidal at Screening or Baseline", "fact": "active_suicide_risk", "operator": "eq", "threshold": 1, "max_age_days": 14},
+            {"id": "substance", "kind": "exclusion", "source_statement": "Prescription drug or illicit substance use within 1 year of Screening", "fact": "active_substance_disorder", "operator": "eq", "threshold": 1, "max_age_days": 14}
+          ]
+        },
+        {
+          "nct_id": "NCT06820723",
+          "title": "CYB003 in participants with depression and anxiety",
+          "criteria": [
+            {"id": "madrs", "kind": "inclusion", "source_statement": "Depression severity moderate to severe based on MADRS score ≥21", "fact": "madrs", "operator": "gte", "threshold": 21, "max_age_days": 14},
+            {"id": "stable-medication", "kind": "inclusion", "source_statement": "Stable dose of antidepressant medication in the last month prior to Screening", "fact": "stable_medication_days", "operator": "gte", "threshold": 30, "max_age_days": 30},
+            {"id": "failures", "kind": "exclusion", "source_statement": "Failure to respond to >2 antidepressant treatments", "fact": "antidepressant_failures", "operator": "gt", "threshold": 2, "max_age_days": 90},
+            {"id": "suicide", "kind": "exclusion", "source_statement": "Clinically significant risk of suicidality", "fact": "active_suicide_risk", "operator": "eq", "threshold": 1, "max_age_days": 14},
+            {"id": "substance", "kind": "exclusion", "source_statement": "History of substance use disorder within the 12 months", "fact": "active_substance_disorder", "operator": "eq", "threshold": 1, "max_age_days": 14}
+          ]
+        },
+        {
+          "nct_id": "NCT07041073",
+          "title": "EEG-based neurofeedback for major depressive disorder",
+          "criteria": [
+            {"id": "madrs", "kind": "inclusion", "source_statement": "Score at least 20 on the MADRS", "fact": "madrs", "operator": "gte", "threshold": 20, "max_age_days": 14},
+            {"id": "stable-medication", "kind": "inclusion", "source_statement": "Stable psychopharmacological treatment for at least 6 weeks", "fact": "stable_medication_days", "operator": "gte", "threshold": 42, "max_age_days": 30},
+            {"id": "suicide", "kind": "exclusion", "source_statement": "Active suicidal ideation at the time of screening", "fact": "active_suicide_risk", "operator": "eq", "threshold": 1, "max_age_days": 14},
+            {"id": "substance", "kind": "exclusion", "source_statement": "Active substance abuse or dependence", "fact": "active_substance_disorder", "operator": "eq", "threshold": 1, "max_age_days": 14}
+          ]
+        },
+        {
+          "nct_id": "NCT07503002",
+          "title": "Shortened LSD intervention for major depressive disorder",
+          "criteria": [
+            {"id": "madrs", "kind": "inclusion", "source_statement": "MADRS >= 28 at screening", "fact": "madrs", "operator": "gte", "threshold": 28, "max_age_days": 14},
+            {"id": "suicide", "kind": "exclusion", "source_statement": "Be judged by study team clinicians to be at low risk for suicidality", "fact": "active_suicide_risk", "operator": "eq", "threshold": 1, "max_age_days": 14},
+            {"id": "taper", "kind": "inclusion", "source_statement": "Patients taking antidepressant medications and unable to taper are excluded", "fact": "can_taper_antidepressant", "operator": "eq", "threshold": 1, "max_age_days": null}
+          ]
+        }
+      ]
+    }
+  ]
+}

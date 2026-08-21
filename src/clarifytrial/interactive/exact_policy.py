@@ -203,8 +203,10 @@ class _Value:
         return ExactPolicyValue(
             objective=objective,
             unsafe_trial_decisions=self.unsafe,
-            average_trial_status_recovery=self.average_recovery,
-            worst_case_trial_status_recovery=self.worst_recovery,
+            average_trial_status_recovery=min(1.0, max(0.0, self.average_recovery)),
+            worst_case_trial_status_recovery=min(
+                1.0, max(0.0, self.worst_recovery)
+            ),
             action_count=self.actions,
             route_cost=self.route_cost,
         )
@@ -521,14 +523,17 @@ class _ExactSolver:
 
     def _fact_outcome_key(self, fact_id: str, evidence: EvidenceFact) -> str:
         public = self.public_by_id[fact_id]
-        criterion = self.criterion_by_id[public.related_criterion_ids[0]]
-        result = evaluate_criterion(
-            criterion,
-            self.initial_state.model_copy(
-                update={"facts": [*self.initial_state.facts, evidence]}
-            ),
+        state = self.initial_state.model_copy(
+            update={"facts": [*self.initial_state.facts, evidence]}
         )
-        return f"{result.clinical_status.value}:{result.evidence_sufficiency.value}"
+        results = []
+        for criterion_id in sorted(public.related_criterion_ids):
+            result = evaluate_criterion(self.criterion_by_id[criterion_id], state)
+            results.append(
+                f"{criterion_id}:{result.clinical_status.value}:"
+                f"{result.evidence_sufficiency.value}"
+            )
+        return "|".join(results)
 
     def _state_from_observations(
         self,
@@ -566,15 +571,24 @@ class ExactDecisionTreePolicy:
         initial_state: PatientState,
         distribution: ScenarioDistribution,
         objective: ExactPolicyObjective,
+        planning_horizon: int | None = None,
     ) -> None:
+        if planning_horizon is not None and planning_horizon <= 0:
+            raise ValueError("planning_horizon must be positive")
         self._view = view
         self._objective = objective
+        self._planning_horizon = planning_horizon
         self._solver = _ExactSolver(view, initial_state, distribution, objective)
         self._choices: list[ExactPolicyChoice] = []
 
     @property
     def policy_id(self) -> str:
-        return f"exact_decision_tree_{self._objective.value}_v1"
+        horizon = (
+            ""
+            if self._planning_horizon is None
+            else f"_horizon_{self._planning_horizon}"
+        )
+        return f"exact_decision_tree_{self._objective.value}{horizon}_v1"
 
     @property
     def usage(self) -> Sequence[ModelUsage]:
@@ -592,10 +606,13 @@ class ExactDecisionTreePolicy:
     ) -> AgentAction:
         if view != self._view:
             raise ValueError("exact policy cannot be reused for another case")
+        remaining_budget = view.action_budget - len(revealed_fact_ids)
+        if self._planning_horizon is not None:
+            remaining_budget = min(remaining_budget, self._planning_horizon)
         choice = self._solver.solve(
             snapshot.patient_state,
             revealed_fact_ids,
-            view.action_budget - len(revealed_fact_ids),
+            remaining_budget,
         )
         self._choices.append(choice)
         if choice.target_fact_id is None:

@@ -23,6 +23,7 @@ from .contracts import (
     TrialDecision,
 )
 from .datasets import (
+    fetch_clinicaltrials_v5_sources,
     fetch_trialgpt_dataset,
     group_patient_trial_pairs,
     load_sigir_trial_metadata,
@@ -42,7 +43,12 @@ from .environment import (
 from .evaluation import DecisionGold, score_decision
 from .experiment_tracking import ExperimentStage
 from .llm import AnthropicStructuredModel, ScriptedStructuredModel
-from .interactive import run_interactive_pilot
+from .interactive import (
+    run_interactive_pilot,
+    run_interactive_stress,
+    run_public_grid_stress,
+    run_public_interactive_benchmark,
+)
 from .pilots import (
     ArchitectureExperimentPaused,
     StrongReviewExperimentIncomplete,
@@ -474,6 +480,17 @@ def _parser() -> argparse.ArgumentParser:
     )
     prepare.add_argument("--force", action="store_true")
 
+    prepare_public = commands.add_parser(
+        "prepare-clinicaltrials-v5",
+        help="download the 15 declared ClinicalTrials.gov source records",
+    )
+    prepare_public.add_argument(
+        "--cache",
+        type=Path,
+        default=Path(".research-cache") / "clinicaltrials-v5",
+    )
+    prepare_public.add_argument("--force", action="store_true")
+
     pilot = commands.add_parser(
         "run-trialgpt-pilot",
         help="run a bounded live Sonnet cost pilot on TrialGPT pairs",
@@ -595,6 +612,45 @@ def _parser() -> argparse.ArgumentParser:
         "--case-concurrency", type=int, choices=(1, 2, 3), default=3
     )
     interactive.add_argument("--timeout-seconds", type=float, default=180.0)
+
+    stress = commands.add_parser(
+        "run-interactive-stress",
+        help="compare clarification policies on many synthetic graph structures",
+    )
+    stress.add_argument("--output", required=True, type=Path)
+    stress.add_argument("--structures-per-topology", type=int, default=100)
+    stress.add_argument("--seed", type=int, default=20_260_821)
+
+    public_benchmark = commands.add_parser(
+        "run-public-interactive-benchmark",
+        help="run the 30-patient public-criterion synthetic benchmark",
+    )
+    public_benchmark.add_argument(
+        "--config",
+        type=Path,
+        default=Path("configs") / "interactive_public_benchmark_v1.json",
+    )
+    public_benchmark.add_argument("--source-cache", required=True, type=Path)
+    public_benchmark.add_argument("--output", required=True, type=Path)
+    public_benchmark.add_argument("--seed", type=int, default=20_260_821)
+    public_benchmark.add_argument(
+        "--action-budget", type=int, choices=(1, 2, 3), default=3
+    )
+
+    public_grid = commands.add_parser(
+        "run-public-grid-stress",
+        help="exhaust the declared public-criterion value grid",
+    )
+    public_grid.add_argument(
+        "--config",
+        type=Path,
+        default=Path("configs") / "interactive_public_benchmark_v1.json",
+    )
+    public_grid.add_argument("--source-cache", required=True, type=Path)
+    public_grid.add_argument("--output", required=True, type=Path)
+    public_grid.add_argument(
+        "--action-budget", type=int, choices=(1, 2, 3), default=3
+    )
     return parser
 
 
@@ -615,6 +671,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"raw: {prepared['raw_jsonl']}")
         print(f"metadata: {prepared['source_metadata']}")
         print(json.dumps(prepared["statistics"], ensure_ascii=False))
+        return 0
+    if args.command == "prepare-clinicaltrials-v5":
+        metadata = fetch_clinicaltrials_v5_sources(args.cache, force=args.force)
+        print(f"metadata: {args.cache / 'source_metadata.json'}")
+        print(
+            f"studies: {metadata['study_count']} "
+            f"data_timestamp={metadata['data_timestamp']}"
+        )
         return 0
     if args.command == "run-trialgpt-pilot":
         if not args.confirm_live_api:
@@ -785,6 +849,64 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"trial_recovery={row['mean_trial_status_recovery']:.3f} "
                 f"necessary_recall={row['mean_necessary_fact_recall']:.3f} "
                 f"actions={row['total_actions']}"
+            )
+        return 0
+    if args.command == "run-interactive-stress":
+        summary_path = run_interactive_stress(
+            args.output,
+            structures_per_topology=args.structures_per_topology,
+            seed=args.seed,
+            progress=print,
+        )
+        summary = _read_json(summary_path)
+        print(f"summary: {summary_path}")
+        for row in summary["policy_metrics"]:
+            print(
+                f"{row['evaluation_distribution']} {row['policy_id']}: "
+                f"recovery={row['expected_trial_recovery']:.3f} "
+                f"worst={row['worst_trial_recovery']:.3f} "
+                f"actions={row['expected_actions']:.3f}"
+            )
+        return 0
+    if args.command == "run-public-interactive-benchmark":
+        summary_path = run_public_interactive_benchmark(
+            args.config,
+            args.source_cache,
+            args.output,
+            seed=args.seed,
+            action_budget=args.action_budget,
+            progress=lambda message: print(message, flush=True),
+        )
+        summary = _read_json(summary_path)
+        print(f"summary: {summary_path}")
+        print(
+            "primary_gate_passed: "
+            f"{summary['paired_heldout']['primary_gate_passed']}"
+        )
+        for row in summary["policy_metrics"]:
+            print(
+                f"{row['split']} {row['policy_id']}: "
+                f"recovery={row['mean_trial_recovery']:.3f} "
+                f"actions={row['mean_actions']:.3f} "
+                f"route_cost={row['mean_route_cost']:.3f}"
+            )
+        return 0
+    if args.command == "run-public-grid-stress":
+        summary_path = run_public_grid_stress(
+            args.config,
+            args.source_cache,
+            args.output,
+            action_budget=args.action_budget,
+            progress=lambda message: print(message, flush=True),
+        )
+        summary = _read_json(summary_path)
+        print(f"summary: {summary_path}")
+        for row in summary["policy_metrics"]:
+            print(
+                f"{row['evaluation_distribution']} {row['policy_id']}: "
+                f"recovery={row['mean_trial_recovery']:.3f} "
+                f"actions={row['mean_actions']:.3f} "
+                f"route_cost={row['mean_route_cost']:.3f}"
             )
         return 0
     raise AssertionError(f"unhandled command: {args.command}")

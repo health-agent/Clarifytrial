@@ -5,16 +5,33 @@
 
 | 자료 | 계획한 용도 | 현재 상태 |
 |---|---|---|
-| ClinicalTrials.gov API v2 | 임상시험 원문과 모집 정보 | 연결 전 |
+| ClinicalTrials.gov API v2 | 임상시험 원문과 모집 정보 | 2026-08-21 공개 시험 15건 연결 |
 | TrialGPT Criterion Annotations | 조건별 판단과 근거 평가 | 2026-08-20 공개 원본 1,015행 연결 |
 | TREC Clinical Trials 2021·2022 | 후보 검색과 순위 평가 | 2026-08-21 TrialGPT 공개 검색 재현 완료 |
-| 새 ClarifyTrial v5 합성 자료 | 후보 유지, 현재 확정, 다음 행동과 재판정 평가 | 오래된 검사 예시 1건 구현, 확장 전 |
+| 새 ClarifyTrial v5 합성 자료 | 후보 유지, 현재 확정, 다음 행동과 재판정 평가 | 공개 조건 기반 합성 환자 30명·마스크 60회 구현 |
 
 환자 사례는 합성 자료만 사용한다. 실제 환자 기록, 개인식별정보, 자격 증명, API 키,
 비공개 임상시험 자료를 저장소에 추가하지 않는다.
 
 `examples/stale_lab`은 구조 검사를 위해 연구자가 작성한 가상 환자와 가상 시험이다.
 의료 전문가가 합의한 평가자료나 실제 환자 자료로 취급하지 않는다.
+
+## ClinicalTrials.gov API v2
+
+- 공식 자료: https://clinicaltrials.gov/data-api/api
+- 이용 조건: https://clinicaltrials.gov/about-site/terms-conditions
+- 표시 출처: ClinicalTrials.gov, U.S. National Library of Medicine
+- 받은 날짜: 2026-08-21
+- API 버전: 2.0.5
+- 원본 자료 시각: 2026-08-20T09:00:05
+- 로컬 위치: `.research-cache/clinicaltrials-v5`
+- 범위: 2형 당뇨병, 유방암, 주요우울장애 각 5건, 총 15건
+- 파생자료: `configs/interactive_public_benchmark_v1.json`
+
+원본 연구기록은 수정하지 않는다. 파생자료에는 원문의 객관적으로 계산 가능한 일부
+조건만 수치·기간 규칙으로 옮겼다. 원문 15건과 구조화 조건 80개의 식별자와 문구를
+실행 전에 대조한다. 로컬 원본과 실행 결과는 Git에 넣지 않으며, 파생자료는 연구자가
+작성한 것이므로 의료 전문가 합의 정답이나 ClinicalTrials.gov의 해석으로 표현하지 않는다.
 
 ## TrialGPT Criterion Annotations
 

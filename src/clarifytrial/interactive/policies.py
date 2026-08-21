@@ -3,13 +3,18 @@
 from __future__ import annotations
 
 import random
+from math import log2
 from collections.abc import Mapping, Sequence
 from typing import Protocol
 
 from ..contracts import AgentAction, NextAction
 from ..llm import ModelCall, StructuredModel
 from ..llm.base import ModelUsage
-from .contracts import InteractivePolicyView, InteractiveSnapshot
+from .contracts import (
+    InteractivePolicyView,
+    InteractiveSnapshot,
+    ScenarioDistribution,
+)
 
 
 _ROUTE_COST = {
@@ -178,6 +183,105 @@ class ImpactCostPolicy(_DeterministicPolicy):
             case,
             fact_id,
             "미해결 후보에 미치는 영향과 확인 비용을 함께 고려한다.",
+        )
+
+
+class OutcomeEntropyPolicy(_DeterministicPolicy):
+    """Choose the fact whose possible values have the largest entropy."""
+
+    policy_id = "outcome_entropy"
+
+    def __init__(
+        self,
+        view: InteractivePolicyView,
+        distribution: ScenarioDistribution,
+    ) -> None:
+        if view.case_id != distribution.case_id:
+            raise ValueError("view and scenario distribution must share case_id")
+        self._view = view
+        self._scenarios = tuple(distribution.scenarios)
+        self._answers = tuple(
+            {answer.fact_id: answer.evidence for answer in item.answers}
+            for item in self._scenarios
+        )
+        self._concept_by_fact = {
+            public.fact_id: next(
+                criterion.numeric_constraint.concept
+                for trial in view.trials
+                for criterion in trial.criteria
+                if criterion.criterion_id == public.related_criterion_ids[0]
+                and criterion.numeric_constraint is not None
+            )
+            for public in view.available_information
+        }
+
+    @staticmethod
+    def _outcome(evidence) -> tuple[object, ...]:
+        return (
+            evidence.value,
+            evidence.unit,
+            evidence.source_type.value,
+            evidence.verification_status.value,
+        )
+
+    def select(self, case, snapshot, revealed_fact_ids):
+        if case != self._view:
+            raise ValueError("entropy policy cannot be reused for another case")
+        observed = {}
+        for fact_id in revealed_fact_ids:
+            concept = self._concept_by_fact[fact_id]
+            evidence = next(
+                (
+                    item
+                    for item in reversed(snapshot.patient_state.facts)
+                    if item.concept == concept
+                ),
+                None,
+            )
+            if evidence is None:
+                raise ValueError("revealed fact is absent from the patient state")
+            observed[fact_id] = self._outcome(evidence)
+        possible = [
+            index
+            for index, answers in enumerate(self._answers)
+            if all(
+                self._outcome(answers[fact_id]) == outcome
+                for fact_id, outcome in observed.items()
+            )
+        ]
+        if not possible:
+            raise ValueError("observed answers are outside the planning scenarios")
+        counts = _current_related_counts(case, snapshot, revealed_fact_ids)
+        useful = {
+            fact_id
+            for fact_id, (trial_count, _, _) in counts.items()
+            if trial_count > 0
+        }
+        if not useful:
+            return self._none("현재 결정을 바꿀 수 있는 확인 항목이 없다.")
+        total = sum(self._scenarios[index].probability for index in possible)
+        entropy_by_fact = {}
+        for fact_id in useful:
+            outcome_probability: dict[tuple[object, ...], float] = {}
+            for index in possible:
+                outcome = self._outcome(self._answers[index][fact_id])
+                outcome_probability[outcome] = (
+                    outcome_probability.get(outcome, 0.0)
+                    + self._scenarios[index].probability
+                )
+            entropy_by_fact[fact_id] = -sum(
+                (probability / total) * log2(probability / total)
+                for probability in outcome_probability.values()
+                if probability > 0
+            )
+        fact_id = min(
+            useful,
+            key=lambda item: (-entropy_by_fact[item], counts[item][2], item),
+        )
+        return self._action(
+            case,
+            fact_id,
+            "가능한 답이 가장 고르게 나뉘는 정보를 먼저 확인한다.",
         )
 
 

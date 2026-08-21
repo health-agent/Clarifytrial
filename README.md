@@ -21,8 +21,9 @@ ClarifyTrial은 환자 정보가 아직 완전하지 않은 단계에서 임상�
 | 역할별 에이전트·상태 흐름·공통 평가기 | 첫 구현 완료 |
 | Claude API와 TrialGPT 조건 주석 연결 | 20명 개발·33명 평가 실행 완료 |
 | GPT 구독형 단일·멀티에이전트 구조 비교 | Sol medium 개발 완료, 두 정적 검토 방식 기각 |
-| v5 대화형 자료 | 12명 작동 확인·평균/최악 우선 전수 질문 나무 구현 완료, 30명 주 벤치마크 작성 전 |
-| v5 성능 | 12명 반복 구조에서 작동 확인, 주 성능은 아직 미측정 |
+| v5 대화형 자료 | 공개 시험 15개·구조화 조건 80개·합성 환자 30명·마스크 60회 구현 및 실행 완료 |
+| 질문 선택 결과 | 단순 동적 규칙 채택, 평균/최악 우선 전수 계산은 채택 기준 미달로 비교용 보존 |
+| v5 성능 | 구조화 입력의 질문 정책만 측정. 자연어 전체 실행과 임상 성능은 아직 미측정 |
 
 저장소에는 합성 환자 사례만 둔다. 과거 Solar 합성 데모 수치와 84% 결과는 v5의
 성능이나 기준선에 포함하지 않는다.
@@ -41,11 +42,18 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q
 .\.venv\Scripts\clarifytrial.exe run-example --case examples\stale_lab --output runs\stale_lab
 .\.venv\Scripts\clarifytrial.exe run-interactive-pilot --output runs\interactive-pilot
+.\.venv\Scripts\clarifytrial.exe prepare-clinicaltrials-v5 --cache .research-cache\clinicaltrials-v5
+.\.venv\Scripts\clarifytrial.exe run-public-interactive-benchmark --source-cache .research-cache\clinicaltrials-v5 --output runs\interactive-public --action-budget 3
+.\.venv\Scripts\clarifytrial.exe run-public-grid-stress --source-cache .research-cache\clinicaltrials-v5 --output runs\interactive-public-grid --action-budget 3
 ```
 
-마지막 명령은 오래된 혈액검사만 있는 상태에서 후보를 유지하고, 최근 공식 결과를
+`run-example` 명령은 오래된 혈액검사만 있는 상태에서 후보를 유지하고, 최근 공식 결과를
 받은 뒤 현재 조건 확인을 끝내는 합성 사례를 실행한다. 결과는 `result.json`, 역할별
 호출과 상태 변화는 `trace.jsonl`에 저장된다. 이 실행에는 API 키가 필요하지 않다.
+
+마지막 세 명령은 ClinicalTrials.gov 공개 원문 15건을 내려받고, 구조화 조건 80개와
+합성 환자 30명의 질문 순서를 비교한다. 환자 정보는 모두 가상이며 모델 호출도 없다.
+가능한 값 조합을 전부 계산하는 마지막 명령은 연구 검사용이라 약 10분 이상 걸릴 수 있다.
 
 ### TrialGPT와 Claude 조건 실험
 
@@ -139,16 +147,19 @@ PyTorch를 사용했다.
 | `src/clarifytrial/environment/` | 공개 질문 목록과 숨은 합성 답변을 분리한 실행 환경 |
 | `src/clarifytrial/retrieval/` | 환자 문장 안내와 TrialGPT식 BM25·MedCPT 후보 검색 |
 | `src/clarifytrial/evaluation.py` | 조건, 두 결과와 다음 행동을 따로 채점하는 공통 평가기 |
-| `src/clarifytrial/datasets/` | TrialGPT 원본 검사와 환자 단위 개발·평가 분리 |
+| `src/clarifytrial/datasets/` | TrialGPT 원본 검사·환자 분리와 ClinicalTrials.gov 공개 원문 수집 |
+| `src/clarifytrial/interactive/` | 숨은 답 분리, 질문 정책, 공개 조건 평가와 값 조합 검사 |
+| `configs/interactive_public_benchmark_v1.json` | 공개 시험 15건·조건 80개·합성 환자 30명의 고정 자료 |
 | `src/clarifytrial/pilots/` | 조건 묶음 실행, 비용·오류 지표와 지시문 비교 |
 | `prompts/` | 에이전트별 역할, 입력, 허용 도구와 출력 형식 |
 | `examples/stale_lab/` | 시스템 입력, 숨은 답변과 평가 정답을 나눈 합성 사례 |
 
 ## 에이전트 구조
 
-아래 그림은 공개자료 검색까지 연결한 목표 구조다. 현재 첫 구현은 후보 시험 한 건과
-관련 조건을 입력으로 받아, 네 에이전트의 호출과 추가 정보 반영·재판정 흐름을
-실행한다. 재현한 후보 검색은 아직 이 전체 실행 흐름에 연결하지 않았다.
+아래 그림은 공개자료 검색까지 연결한 목표 구조다. 일반 실행기는 후보 시험 한 건과
+관련 조건을 입력으로 받아 네 에이전트의 호출과 추가 정보 반영·재판정 흐름을
+실행한다. 별도 대화형 평가기는 공개 시험 15건과 합성 환자 30명의 질문 정책까지
+검사했다. 재현한 후보 검색과 자연어 조건 구조화는 아직 한 실행으로 연결하지 않았다.
 
 ### 에이전트 전체 구성
 
@@ -261,12 +272,12 @@ TrialGPT 조건 판단은 서로 다른 실행으로 유지한다.
 | 3 | 숨은 합성 환자 상태와 행동 결과를 가진 통제 환경 | 첫 사례 완료 |
 | 4 | 조건 판단, 두 결과와 다음 행동을 따로 채점하는 평가기 | 첫 구현 완료 |
 | 5 | 수치·기간·출처 검사와 네 에이전트를 잇는 전체 상태 흐름 | 합성 실행 완료 |
-| 6 | 외부 모델 어댑터와 합성 사례 실행 | Claude·GPT 구독 어댑터 완료, 대화형 자료 확장 전 |
+| 6 | 외부 모델 어댑터와 합성 사례 실행 | Claude·GPT 구독 어댑터 완료, 공개 조건 질문 정책은 모델 없이 평가 완료 |
 | 7 | 단일 모델과 공개 연구 구조를 옮긴 비교 시스템 | Sol 개발 구조 비교 완료, 정적 `M2` 기각, 다른 비교군 미구현 |
 | 8 | TrialGPT 후보 검색과 TREC 연결 | 전체 실행과 논문 수치 대조 완료, 결합 검색 채택 |
 | 9 | 강한 단일 판단과 검색 유무를 나눈 선택 검토 | 개발 20조합 실행 완료, 두 검토 기각 |
-| 10 | 고정 후보 5개와 확인 후보 5개 중 3개를 고르는 v5 대화 비교 | 12명 구현·Sol 실행 완료, 주 자료 작성 전 |
-| 11 | 같은 후보 RAG에서 TrialGPT식 흐름과 ClarifyTrial 비교 | 공개 조건으로 30명 자료를 고정한 뒤 실행 |
+| 10 | 고정 후보 5개와 확인 후보 5개 중 3개를 고르는 v5 대화 비교 | 12명 작동 확인, 공개 조건 30명·마스크 60회와 값 77,792조합 검사 완료 |
+| 11 | 같은 후보 RAG에서 TrialGPT식 흐름과 ClarifyTrial 비교 | 공개 원문·환자 문장 구조화 평가 뒤 실행 |
 
 구현 세부는
 [RAG·평가 구현계획](docs/internal/CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)을

@@ -1,5 +1,9 @@
 """Public evaluation dataset adapters."""
 
+from .clinicaltrials_gov import (
+    CLARIFYTRIAL_V5_NCT_IDS,
+    fetch_clinicaltrials_v5_sources,
+)
 from .trialgpt import (
     TrialGPTCriterionRow,
     TrialGPTPair,
@@ -16,11 +20,13 @@ from .trialgpt import (
 )
 
 __all__ = [
+    "CLARIFYTRIAL_V5_NCT_IDS",
     "TrialGPTCriterionRow",
     "TrialGPTPair",
     "TrialGPTPatientSplit",
     "TrialGPTTrialMetadata",
     "fetch_trialgpt_dataset",
+    "fetch_clinicaltrials_v5_sources",
     "group_patient_trial_pairs",
     "load_sigir_trial_metadata",
     "load_trialgpt_rows",
