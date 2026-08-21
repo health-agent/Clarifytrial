@@ -20,6 +20,7 @@ from .contracts import (
     EvidenceSourceType,
     NextAction,
     PatientState,
+    RecommendationViews,
     TrialDecision,
 )
 from .datasets import (
@@ -63,7 +64,14 @@ from .pilots import (
 from .retrieval import TrialGPTRetrievalConfig, run_trialgpt_retrieval
 from .settings import EpisodeSettings
 from .trace import TraceRecorder
-from .workflow import EpisodeAgents, EpisodeCase, EpisodeResult, EpisodeRunner
+from .workflow import (
+    EpisodeAgents,
+    EpisodeCase,
+    EpisodeResult,
+    EpisodeRunner,
+    PatientScreeningCase,
+    PatientScreeningResult,
+)
 
 
 _DISCLAIMER_FALLBACK = (
@@ -330,6 +338,9 @@ def export_schemas(output_dir: str | Path) -> list[Path]:
         ("acquisition-option.schema.json", AcquisitionOption),
         ("patient-burden-profile.schema.json", PatientBurdenProfile),
         ("guidance-output.schema.json", GuidanceOutput),
+        ("recommendation-views.schema.json", RecommendationViews),
+        ("patient-screening-case.schema.json", PatientScreeningCase),
+        ("patient-screening-result.schema.json", PatientScreeningResult),
     )
     paths: list[Path] = []
     for name, model in models:

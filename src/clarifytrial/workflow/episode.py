@@ -25,7 +25,6 @@ from ..contracts import (
     NextAction,
     NextEvidenceRequest,
     PatientState,
-    ReviewFlag,
     TrialCriterion,
     TrialDecision,
 )
@@ -35,9 +34,9 @@ from ..environment import (
     SyntheticInformationTools,
     ToolExecutionResult,
 )
-from ..mechanical_checks import MechanicalCriterionResult, evaluate_criterion
 from ..settings import EpisodeSettings
 from ..trace import TraceRecorder
+from .trial_assessment import TrialAssessmentProtocolError, assess_trial_criteria
 
 
 class WorkflowProtocolError(RuntimeError):
@@ -175,6 +174,11 @@ class EpisodeRunner:
                     self._settings.max_selective_reviews - len(reviews)
                 ),
                 "allowed_routes": [route.value for route in allowed_routes],
+                "required_target_ids": (
+                    sorted(dirty_ids)
+                    if allowed_routes == [CoordinatorRoute.MATCHER_JUDGE]
+                    else []
+                ),
             }
             route_result = self._agents.coordinator.run(
                 coordinator_payload,
@@ -199,77 +203,20 @@ class EpisodeRunner:
 
             if selected_route is CoordinatorRoute.MATCHER_JUDGE:
                 target_ids = sorted(dirty_ids)
-                mechanical_by_id: dict[str, MechanicalCriterionResult] = {
-                    criterion_id: evaluate_criterion(
-                        criteria_by_id[criterion_id], patient_state
+                try:
+                    batch = assess_trial_criteria(
+                        case_id=case.case_id,
+                        trial_id=case.trial_id,
+                        criteria=[criteria_by_id[item] for item in target_ids],
+                        patient_state=patient_state,
+                        evidence_requests=case.evidence_requests,
+                        matcher_judge=self._agents.matcher_judge,
+                        trace=recorder,
+                        cycle=cycle,
                     )
-                    for criterion_id in target_ids
-                }
-                recorder.record(
-                    cycle=cycle,
-                    actor="mechanical_checks",
-                    event="criterion_checks_completed",
-                    input_refs=[*target_ids, *self._evidence_ids(patient_state)],
-                    output={
-                        criterion_id: result.model_dump(mode="json")
-                        for criterion_id, result in mechanical_by_id.items()
-                    },
-                )
-                match_payload = {
-                    "case_id": case.case_id,
-                    "trial_id": case.trial_id,
-                    "as_of": patient_state.as_of.isoformat(),
-                    "criteria": [
-                        criteria_by_id[criterion_id].model_dump(mode="json")
-                        for criterion_id in target_ids
-                    ],
-                    "patient_facts": [
-                        fact.model_dump(mode="json") for fact in patient_state.facts
-                    ],
-                    "evidence_requests": [
-                        request.model_dump(mode="json")
-                        for request in case.evidence_requests
-                        if set(request.related_criterion_ids) & set(target_ids)
-                    ],
-                    "mechanical_checks": {
-                        criterion_id: result.model_dump(mode="json")
-                        for criterion_id, result in mechanical_by_id.items()
-                    },
-                }
-                batch = self._agents.matcher_judge.run(
-                    match_payload,
-                    trace=recorder,
-                    cycle=cycle,
-                    input_refs=[*target_ids, *self._evidence_ids(patient_state)],
-                ).output
-                returned_ids = {
-                    assessment.criterion_id for assessment in batch.assessments
-                }
-                if returned_ids != set(target_ids):
-                    raise WorkflowProtocolError(
-                        "matcher_judge must return exactly the requested criteria"
-                    )
-                for assessment in batch.assessments:
-                    mechanical = mechanical_by_id[assessment.criterion_id]
-                    if mechanical.configured and (
-                        assessment.clinical_status is not mechanical.clinical_status
-                        or assessment.evidence_sufficiency
-                        is not mechanical.evidence_sufficiency
-                    ):
-                        flags = list(assessment.review_flags)
-                        if ReviewFlag.CODE_MODEL_MISMATCH not in flags:
-                            flags.append(ReviewFlag.CODE_MODEL_MISMATCH)
-                        assessment = assessment.model_copy(
-                            update={"review_flags": flags}
-                        )
-                    unknown_missing = set(assessment.missing_information_ids) - set(
-                        request_by_id
-                    )
-                    if unknown_missing:
-                        raise WorkflowProtocolError(
-                            "matcher_judge invented missing-information identifiers: "
-                            + ", ".join(sorted(unknown_missing))
-                        )
+                except TrialAssessmentProtocolError as error:
+                    raise WorkflowProtocolError(str(error)) from error
+                for assessment in batch:
                     assessments[assessment.criterion_id] = assessment
 
                 dirty_ids.clear()

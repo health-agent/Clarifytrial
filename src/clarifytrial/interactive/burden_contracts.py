@@ -12,7 +12,7 @@ from typing import Any
 
 from pydantic import Field, model_validator
 
-from ..contracts import ContractModel, NextAction
+from ..contracts import ContractModel, NextAction, RecommendationViews
 
 
 class AcquisitionMode(StrEnum):
@@ -149,6 +149,21 @@ class AcquisitionOption(ContractModel):
 
     @model_validator(mode="after")
     def safety_fields_match_mode(self) -> "AcquisitionOption":
+        expected_action = {
+            AcquisitionMode.INTERNAL_RECORD: NextAction.LOOKUP_RECORD,
+            AcquisitionMode.OUTSIDE_RECORD: NextAction.LOOKUP_RECORD,
+            AcquisitionMode.PATIENT_REPORT: NextAction.ASK_PATIENT,
+            AcquisitionMode.EXISTING_OFFICIAL_RESULT: NextAction.REQUEST_VERIFICATION,
+            AcquisitionMode.NEW_NONINVASIVE_TEST: NextAction.REQUEST_VERIFICATION,
+            AcquisitionMode.NEW_INVASIVE_OR_TREATMENT_CHANGE: (
+                NextAction.REQUEST_VERIFICATION
+            ),
+            AcquisitionMode.CLINICIAN_JUDGMENT: NextAction.REQUEST_VERIFICATION,
+        }[self.acquisition_mode]
+        if self.action is not expected_action:
+            raise ValueError(
+                f"{self.acquisition_mode.value} requires action={expected_action.value}"
+            )
         new_modes = {
             AcquisitionMode.NEW_NONINVASIVE_TEST,
             AcquisitionMode.NEW_INVASIVE_OR_TREATMENT_CHANGE,
@@ -216,8 +231,10 @@ class OutcomePreview(ContractModel):
 class PatientGuidance(ContractModel):
     fact_id: str | None = None
     affected_trial_ids: list[str] = Field(default_factory=list)
+    recommendation_views: RecommendationViews
     current_result: list[str]
     next_information: str
+    request_message: str | None = None
     recommended_route: str
     existing_or_new: str
     reason: str
@@ -259,6 +276,7 @@ class GuidanceOutput(ContractModel):
     preference_mode: PreferenceMode
     defaulted_fields: list[str]
     trial_groups: TrialGroups
+    recommendation_views: RecommendationViews
     selected_option: DetailedSelectedOption | None = None
     alternatives: list[DetailedAlternative]
     outcome_preview: OutcomePreview | None = None

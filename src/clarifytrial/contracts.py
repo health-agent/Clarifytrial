@@ -275,6 +275,59 @@ class NextEvidenceRequest(ContractModel):
         return value
 
 
+class MissingInformationSummary(ContractModel):
+    """One unresolved fact shown in a patient-readable trial summary."""
+
+    fact_id: str = Field(min_length=1)
+    description: str = Field(min_length=1)
+    confirmation_methods: list[str] = Field(min_length=1)
+
+
+class TrialRecommendationSummary(ContractModel):
+    """One trial in either recommendation view."""
+
+    trial_id: str = Field(min_length=1)
+    status_label: str = Field(min_length=1)
+    explanation: str = Field(min_length=1)
+    missing_information: list[MissingInformationSummary] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def missing_fact_ids_are_unique(self) -> Self:
+        _require_unique(
+            [item.fact_id for item in self.missing_information],
+            "missing_information.fact_id",
+        )
+        return self
+
+
+class RecommendationList(ContractModel):
+    """A recommendation list with its inclusion rule stated in plain language."""
+
+    title: str = Field(min_length=1)
+    explanation: str = Field(min_length=1)
+    trials: list[TrialRecommendationSummary] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def trial_ids_are_unique(self) -> Self:
+        _require_unique([item.trial_id for item in self.trials], "trials.trial_id")
+        return self
+
+
+class RecommendationViews(ContractModel):
+    """The strict current-evidence list and the broader review list."""
+
+    current_evidence: RecommendationList
+    broader_review: RecommendationList
+
+    @model_validator(mode="after")
+    def current_list_is_contained_in_broader_list(self) -> Self:
+        current = {item.trial_id for item in self.current_evidence.trials}
+        broader = {item.trial_id for item in self.broader_review.trials}
+        if not current.issubset(broader):
+            raise ValueError("broader_review must contain every current_evidence trial")
+        return self
+
+
 class AgentAction(ContractModel):
     """One executable next action selected from the public action set."""
 

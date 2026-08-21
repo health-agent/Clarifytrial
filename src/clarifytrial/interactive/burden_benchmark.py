@@ -10,6 +10,7 @@ from statistics import mean
 from typing import Any
 
 from ..contracts import CandidateStatus, ConfirmationStatus
+from ..reporting import build_recommendation_views
 from .burden_contracts import (
     AcquisitionDecision,
     AcquisitionMode,
@@ -230,6 +231,7 @@ def build_guidance_output(
     """Build patient-facing and detailed outputs from the same selected IDs."""
 
     groups = trial_groups(snapshot)
+    recommendation_views = build_recommendation_views(snapshot.decisions)
     selected = decision.selected_option
     impacts = current_fact_impacts(view, snapshot, revealed_fact_ids)
     if selected is None:
@@ -292,8 +294,10 @@ def build_guidance_output(
     patient_message = PatientGuidance(
         fact_id=selected.fact_id if selected else None,
         affected_trial_ids=affected_trial_ids,
+        recommendation_views=recommendation_views,
         current_result=current_result,
         next_information=fact_description,
+        request_message=None,
         recommended_route=(
             _MODE_LABELS[selected.acquisition_mode]
             if selected
@@ -362,6 +366,7 @@ def build_guidance_output(
         preference_mode=profile.preference_mode,
         defaulted_fields=profile.defaulted_fields,
         trial_groups=groups,
+        recommendation_views=recommendation_views,
         selected_option=detailed_selected,
         alternatives=detailed_alternatives,
         outcome_preview=preview,

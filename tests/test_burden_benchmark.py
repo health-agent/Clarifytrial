@@ -209,6 +209,7 @@ def test_guidance_uses_the_same_fact_and_trial_ids_in_both_views() -> None:
     )
     assert "not_confirmed" not in patient_json
     assert '"retain"' not in patient_json
+    assert "REQUEST_VERIFICATION" not in patient_json
 
     absent_profile = build_patient_burden_profile("absent")
     absent_decision = select_acquisition_option(
