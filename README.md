@@ -23,8 +23,8 @@ ClarifyTrial은 환자 정보가 아직 완전하지 않은 단계에서 임상�
 | GPT 구독형 단일·멀티에이전트 구조 비교 | Sol medium 개발 완료, 두 정적 검토 방식 기각 |
 | v5 대화형 자료 | 공개 시험 15개·구조화 조건 80개·합성 환자 30명·마스크 60회 구현 및 실행 완료 |
 | 질문 선택 결과 | 단순 동적 규칙 채택, 평균/최악 우선 전수 계산은 채택 기준 미달로 비교용 보존 |
-| 환자 맞춤 부담과 안내 | 기존 자료·새 검사 구분, 선택 입력의 기본 규칙과 환자용·상세 결과 형식 설계 완료, 구현 전 |
-| v5 성능 | 구조화 입력의 질문 정책만 측정. 자연어 전체 실행과 임상 성능은 아직 미측정 |
+| 환자 맞춤 부담과 안내 | 자료형·선택 규칙·두 결과 형식 구현, 360개 상황·1,800개 정책 실행 완료 |
+| v5 성능 | 구조화 입력의 질문 정책·합성 부담 정책만 측정. 자연어 전체 실행과 임상 성능은 미측정 |
 
 저장소에는 합성 환자 사례만 둔다. 과거 Solar 합성 데모 수치와 84% 결과는 v5의
 성능이나 기준선에 포함하지 않는다.
@@ -46,15 +46,22 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\clarifytrial.exe prepare-clinicaltrials-v5 --cache .research-cache\clinicaltrials-v5
 .\.venv\Scripts\clarifytrial.exe run-public-interactive-benchmark --source-cache .research-cache\clinicaltrials-v5 --output runs\interactive-public --action-budget 3
 .\.venv\Scripts\clarifytrial.exe run-public-grid-stress --source-cache .research-cache\clinicaltrials-v5 --output runs\interactive-public-grid --action-budget 3
+.\.venv\Scripts\clarifytrial.exe run-public-burden-benchmark --source-cache .research-cache\clinicaltrials-v5 --output runs\patient-burden-v1 --action-budget 3
 ```
 
 `run-example` 명령은 오래된 혈액검사만 있는 상태에서 후보를 유지하고, 최근 공식 결과를
 받은 뒤 현재 조건 확인을 끝내는 합성 사례를 실행한다. 결과는 `result.json`, 역할별
 호출과 상태 변화는 `trace.jsonl`에 저장된다. 이 실행에는 API 키가 필요하지 않다.
 
-마지막 세 명령은 ClinicalTrials.gov 공개 원문 15건을 내려받고, 구조화 조건 80개와
+마지막 네 명령은 ClinicalTrials.gov 공개 원문 15건을 내려받고, 구조화 조건 80개와
 합성 환자 30명의 질문 순서를 비교한다. 환자 정보는 모두 가상이며 모델 호출도 없다.
-가능한 값 조합을 전부 계산하는 마지막 명령은 연구 검사용이라 약 10분 이상 걸릴 수 있다.
+가능한 값 조합을 전부 계산하는 `run-public-grid-stress`는 연구 검사용이라 약 10분
+이상 걸릴 수 있다.
+
+`run-public-burden-benchmark`는 환자 30명, 마스크 2개, 환자 부담 상황 3개와 자료
+가용성 2개를 조합한 360개 상황에 다섯 선택 방식을 적용한다. 결과는 1,800개 정책
+실행이며 합성 부담값을 사용한 구조 검사다. 실제 검사 비용이나 환자 선호 개선을
+측정한 결과가 아니다.
 
 ### TrialGPT와 Claude 조건 실험
 
@@ -150,6 +157,9 @@ PyTorch를 사용했다.
 | `src/clarifytrial/evaluation.py` | 조건, 두 결과와 다음 행동을 따로 채점하는 공통 평가기 |
 | `src/clarifytrial/datasets/` | TrialGPT 원본 검사·환자 분리와 ClinicalTrials.gov 공개 원문 수집 |
 | `src/clarifytrial/interactive/` | 숨은 답 분리, 질문 정책, 공개 조건 평가와 값 조합 검사 |
+| `src/clarifytrial/interactive/burden_contracts.py` | 확인 경로, 선택 입력, 승인 상태와 두 안내 형식 |
+| `src/clarifytrial/interactive/burden_policy.py` | 기존 자료 우선, 환자 한도와 공개 순서 선택 규칙 |
+| `src/clarifytrial/interactive/burden_benchmark.py` | 360개 상황 실행, 부담·회복 지표와 채택 기준 계산 |
 | `configs/interactive_public_benchmark_v1.json` | 공개 시험 15건·조건 80개·합성 환자 30명의 고정 자료 |
 | `src/clarifytrial/pilots/` | 조건 묶음 실행, 비용·오류 지표와 지시문 비교 |
 | `prompts/` | 에이전트별 역할, 입력, 허용 도구와 출력 형식 |
@@ -280,7 +290,7 @@ TrialGPT 조건 판단은 서로 다른 실행으로 유지한다.
 | 9 | 강한 단일 판단과 검색 유무를 나눈 선택 검토 | 개발 20조합 실행 완료, 두 검토 기각 |
 | 10 | 고정 후보 5개와 확인 후보 5개 중 3개를 고르는 v5 대화 비교 | 12명 작동 확인, 공개 조건 30명·마스크 60회와 값 77,792조합 검사 완료 |
 | 11 | 같은 후보 RAG에서 TrialGPT식 흐름과 ClarifyTrial 비교 | 공개 원문·환자 문장 구조화 평가 뒤 실행 |
-| 12 | 기존 자료·새 검사와 환자별 추가 부담을 반영한 다음 행동 비교 | 선택 입력의 기본 규칙·두 결과 형식·360회 짝 평가 설계 완료, 구현 전 |
+| 12 | 기존 자료·새 검사와 환자별 추가 부담을 반영한 다음 행동 비교 | 구현 완료, 360개 상황·1,800개 정책 실행과 채택 기준 검사 완료 |
 
 구현 세부는
 [RAG·평가 구현계획](docs/internal/CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)을

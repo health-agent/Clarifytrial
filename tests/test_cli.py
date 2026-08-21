@@ -120,6 +120,9 @@ def test_export_schemas_writes_parseable_key_contracts(tmp_path: Path) -> None:
         "public-fact-request.schema.json",
         "hidden-fact-answer.schema.json",
         "decision-gold.schema.json",
+        "acquisition-option.schema.json",
+        "patient-burden-profile.schema.json",
+        "guidance-output.schema.json",
     }
     assert all(_read_json(path)["type"] == "object" for path in paths)
 

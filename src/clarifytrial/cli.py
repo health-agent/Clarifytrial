@@ -44,8 +44,12 @@ from .evaluation import DecisionGold, score_decision
 from .experiment_tracking import ExperimentStage
 from .llm import AnthropicStructuredModel, ScriptedStructuredModel
 from .interactive import (
+    AcquisitionOption,
+    GuidanceOutput,
+    PatientBurdenProfile,
     run_interactive_pilot,
     run_interactive_stress,
+    run_public_burden_benchmark,
     run_public_grid_stress,
     run_public_interactive_benchmark,
 )
@@ -323,6 +327,9 @@ def export_schemas(output_dir: str | Path) -> list[Path]:
         ("public-fact-request.schema.json", PublicFactRequest),
         ("hidden-fact-answer.schema.json", HiddenFactAnswer),
         ("decision-gold.schema.json", DecisionGold),
+        ("acquisition-option.schema.json", AcquisitionOption),
+        ("patient-burden-profile.schema.json", PatientBurdenProfile),
+        ("guidance-output.schema.json", GuidanceOutput),
     )
     paths: list[Path] = []
     for name, model in models:
@@ -651,6 +658,21 @@ def _parser() -> argparse.ArgumentParser:
     public_grid.add_argument(
         "--action-budget", type=int, choices=(1, 2, 3), default=3
     )
+
+    burden = commands.add_parser(
+        "run-public-burden-benchmark",
+        help="compare patient-specific acquisition burden on 360 settings",
+    )
+    burden.add_argument(
+        "--config",
+        type=Path,
+        default=Path("configs") / "interactive_public_benchmark_v1.json",
+    )
+    burden.add_argument("--source-cache", required=True, type=Path)
+    burden.add_argument("--output", required=True, type=Path)
+    burden.add_argument(
+        "--action-budget", type=int, choices=(3,), default=3
+    )
     return parser
 
 
@@ -908,5 +930,30 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"actions={row['mean_actions']:.3f} "
                 f"route_cost={row['mean_route_cost']:.3f}"
             )
+        return 0
+    if args.command == "run-public-burden-benchmark":
+        summary_path = run_public_burden_benchmark(
+            args.config,
+            args.source_cache,
+            args.output,
+            action_budget=args.action_budget,
+            progress=lambda message: print(message, flush=True),
+        )
+        summary = _read_json(summary_path)
+        comparison = summary["adoption_comparison"]
+        print(f"summary: {summary_path}")
+        print(f"patient_settings: {summary['patient_setting_count']}")
+        print(f"policy_runs: {summary['policy_run_count']}")
+        print(f"adoption_gate_passed: {comparison['adoption_gate_passed']}")
+        print(
+            "heldout: "
+            f"adaptive_full_recovery={comparison['heldout']['candidate_recovery']:.3f} "
+            f"baseline_full_recovery={comparison['heldout']['baseline_recovery']:.3f} "
+            f"adaptive_feasible_recovery="
+            f"{comparison['heldout']['candidate_burden_feasible_recovery']:.3f} "
+            f"baseline_feasible_recovery="
+            f"{comparison['heldout']['baseline_burden_feasible_recovery']:.3f} "
+            f"burden_reduction={comparison['heldout']['constrained_burden_reduction']:.3f}"
+        )
         return 0
     raise AssertionError(f"unhandled command: {args.command}")
