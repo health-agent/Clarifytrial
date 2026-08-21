@@ -22,6 +22,7 @@ from .contracts import (
     PatientState,
     TrialCriterion,
 )
+from .measurements import units_equivalent
 
 
 class MechanicalIssueCode(str, Enum):
@@ -112,10 +113,11 @@ def evaluate_criterion(
 ) -> MechanicalCriterionResult:
     """Evaluate one structured numeric criterion against visible patient facts.
 
-    A fact is eligible only when its concept and unit exactly match the
-    configured constraint.  If several facts match, the newest fact satisfying
-    the evidence requirement is preferred; otherwise the newest matching fact
-    provides a provisional clinical direction.
+    A fact is eligible only when its concept matches and its unit has the same
+    meaning after notation-only normalization.  No numeric unit conversion is
+    performed.  If several facts match, the newest fact satisfying the evidence
+    requirement is preferred; otherwise the newest matching fact provides a
+    provisional clinical direction.
     """
 
     constraint = criterion.numeric_constraint
@@ -138,7 +140,11 @@ def evaluate_criterion(
             issue_codes=[MechanicalIssueCode.NO_MATCHING_EVIDENCE],
         )
 
-    unit_matches = [fact for fact in concept_matches if fact.unit == constraint.unit]
+    unit_matches = [
+        fact
+        for fact in concept_matches
+        if fact.unit is not None and units_equivalent(fact.unit, constraint.unit)
+    ]
     if not unit_matches:
         return MechanicalCriterionResult(
             configured=True,

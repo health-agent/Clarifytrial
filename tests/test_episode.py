@@ -274,11 +274,11 @@ def test_selective_reviewer_is_called_once_for_a_structural_defect() -> None:
                         "criterion_id": "criterion-platelets",
                         "criterion_source_location": "protocol#inclusion-4",
                         "clinical_status": "supports",
-                        "evidence_sufficiency": "sufficient",
+                        "evidence_sufficiency": "insufficient",
                         "evidence_ids": ["old-platelets"],
                         "missing_information_ids": [],
-                        "rationale": "The supplied fact supports the threshold.",
-                        "review_flags": [],
+                        "rationale": "The old result supports the threshold.",
+                        "review_flags": ["unsupported_rationale"],
                     }
                 ]
             },
@@ -304,12 +304,67 @@ def test_selective_reviewer_is_called_once_for_a_structural_defect() -> None:
         ),
     ).run(case, _tools())
 
-    assert result.stop_reason is EpisodeStopReason.CONFIRMED
+    assert result.stop_reason is EpisodeStopReason.NO_PENDING_INFORMATION
     assert len(result.review_history) == 1
     review_flags = result.decision_history[0].criterion_assessments[0].review_flags
-    assert [flag.value for flag in review_flags] == ["code_model_mismatch"]
+    assert [flag.value for flag in review_flags] == ["unsupported_rationale"]
     assert not result.final_decision.review_required
     assert model.call_count["selective_reviewer"] == 1
+
+
+def test_numeric_code_result_replaces_a_conflicting_model_answer() -> None:
+    case = _case(with_request=False)
+
+    def coordinate(payload: Mapping[str, Any]) -> Mapping[str, Any]:
+        return {
+            "route": payload["allowed_routes"][0],
+            "target_ids": payload.get("dirty_criterion_ids", []),
+            "reason_code": "permitted_state_transition",
+            "reason": "Select the permitted next state.",
+        }
+
+    model = ScriptedStructuredModel(
+        {
+            "coordinator": coordinate,
+            "matcher_judge": lambda _: {
+                "assessments": [
+                    {
+                        "criterion_id": "criterion-platelets",
+                        "criterion_source_location": "protocol#inclusion-4",
+                        "clinical_status": "violates",
+                        "evidence_sufficiency": "sufficient",
+                        "evidence_ids": [],
+                        "missing_information_ids": [],
+                        "rationale": "Return a deliberately conflicting answer.",
+                        "review_flags": [],
+                    }
+                ]
+            },
+            "next_evidence": lambda _: pytest.fail("next evidence was not expected"),
+            "selective_reviewer": lambda _: pytest.fail("review was not expected"),
+        }
+    )
+    trace = TraceRecorder("mechanical-authority")
+
+    result = EpisodeRunner(
+        _agents(model),
+        EpisodeSettings(
+            max_external_actions=0,
+            max_selective_reviews=1,
+            max_cycles=3,
+        ),
+    ).run(case, _tools(), trace=trace)
+
+    assessment = result.final_decision.criterion_assessments[0]
+    assert assessment.clinical_status.value == "supports"
+    assert assessment.evidence_sufficiency.value == "insufficient"
+    assert assessment.evidence_ids == ["old-platelets"]
+    assert result.final_decision.candidate_status.value == "retain"
+    assert result.final_decision.confirmation_status.value == "not_confirmed"
+    assert result.review_history == []
+    assert any(
+        item.event == "model_assessments_replaced" for item in trace.events
+    )
 
 
 def test_coordinator_cannot_skip_the_required_initial_match() -> None:

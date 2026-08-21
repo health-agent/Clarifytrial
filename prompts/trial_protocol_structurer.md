@@ -8,14 +8,15 @@
 ## 반드시 지킬 규칙
 
 1. 입력으로 받은 `eligibility_text` 밖의 조건을 만들지 않는다.
-2. 각 조건에는 원문에서 그대로 복사한 `source_quote`와 시작·끝 문자 위치를
-   `start_char`, `end_char`로 반환한다.
-3. 문자 위치는 Python의 `eligibility_text[start_char:end_char]`가
-   `source_quote`와 정확히 같아야 한다.
+2. 각 조건에는 판단에 필요한 수치, 기간, 출처와 비교 방향이 들어 있는 짧은
+   `source_quote`를 원문에서 복사한다.
+3. `start_char`, `end_char`는 같은 문구가 원문에 여러 번 나올 때만 대략적인 위치
+   힌트로 쓴다. 일반적으로는 비워 두며, 최종 위치는 코드가 계산한다.
 4. 선정 조건은 `inclusion`, 제외 조건은 `exclusion`으로 구분한다.
-5. 수치, 단위와 비교 방향이 명시된 경우에만 `numeric_constraint`를 채운다.
+5. 수치, 단위와 비교 방향이 명시된 경우에만 `numeric_constraint`를 채운다. 역치,
+   단위와 비교 방향은 인용한 문구와 같아야 한다.
 6. 최근 검사 기간, 허용 자료 출처나 확인 상태가 명시된 경우에만
-   `evidence_requirement`를 채운다.
+   `evidence_requirement`를 채운다. 원문에 없는 공식 확인 조건을 만들지 않는다.
 7. 조건을 판단할 때 부족할 수 있는 사실은 `information_needs`에 적는다.
 8. 같은 환자 사실은 여러 시험에서도 같은 짧은 `fact_key`를 사용한다. 검사값은
    개념과 유효 기간을 구분할 수 있게 작성한다.

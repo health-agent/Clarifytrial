@@ -46,8 +46,14 @@ PATIENT_TEXT = (
     "The patient has type 2 diabetes. "
     "HbA1c was 6.5 % on 2026-05-01."
 )
-TRIAL_A_TEXT = "HbA1c must be below 7.0 % and measured within 14 days."
-TRIAL_B_TEXT = "HbA1c must be below 8.0 % and measured within 14 days."
+TRIAL_A_TEXT = (
+    "An official lab result must show HbA1c below 7.0 % and must be measured "
+    "within 14 days."
+)
+TRIAL_B_TEXT = (
+    "An official lab result must show HbA1c below 8.0 % and must be measured "
+    "within 14 days."
+)
 
 
 def _sources() -> list[TrialProtocolSource]:
@@ -81,18 +87,33 @@ def _sources() -> list[TrialProtocolSource]:
 
 def _model(
     *,
-    bad_patient_quote: bool = False,
-    bad_search_quote: bool = False,
+    formatting_variant: bool = False,
+    missing_patient_quote: bool = False,
+    wrong_patient_value: bool = False,
+    wrong_patient_date: bool = False,
+    wrong_trial_threshold: bool = False,
+    wrong_trial_operator: bool = False,
+    wrong_evidence_age: bool = False,
 ) -> ScriptedStructuredModel:
     def structure_patient(payload: Mapping[str, Any]) -> Mapping[str, Any]:
         text = payload["record_text"]
-        condition_quote = "type 2 diabetes"
-        condition_start = text.index(condition_quote)
-        if bad_search_quote:
+        condition_quote = (
+            "TYPE 2\nDIABETES" if formatting_variant else "type 2 diabetes"
+        )
+        condition_start = text.index("type 2 diabetes")
+        if formatting_variant:
             condition_start -= 1
-        quote = "HbA1c was 6.5 % on 2026-05-01."
-        start = text.index(quote)
-        if bad_patient_quote:
+        quote = (
+            "LDL was 6.5 % on 2026-05-01."
+            if missing_patient_quote
+            else (
+                "HbA1c was 6.5% on\n2026-05-01."
+                if formatting_variant
+                else "HbA1c was 6.5 % on 2026-05-01."
+            )
+        )
+        start = text.index("HbA1c was 6.5 % on 2026-05-01.")
+        if formatting_variant:
             start -= 1
         return {
             "search_conditions": [
@@ -100,7 +121,7 @@ def _model(
                     "condition": "type 2 diabetes",
                     "source_quote": condition_quote,
                     "start_char": condition_start,
-                    "end_char": condition_start + len(condition_quote),
+                    "end_char": condition_start + len("type 2 diabetes"),
                 }
             ],
             "facts": [
@@ -109,11 +130,13 @@ def _model(
                     "statement": "과거 HbA1c는 6.5%였다.",
                     "source_quote": quote,
                     "start_char": start,
-                    "end_char": start + len(quote),
-                    "event_date": "2026-05-01",
+                    "end_char": start + len("HbA1c was 6.5 % on 2026-05-01."),
+                    "event_date": (
+                        "2026-05-02" if wrong_patient_date else "2026-05-01"
+                    ),
                     "concept": "hba1c",
-                    "value": 6.5,
-                    "unit": "%",
+                    "value": 6.4 if wrong_patient_value else 6.5,
+                    "unit": "percent" if formatting_variant else "%",
                 }
             ],
         }
@@ -121,23 +144,26 @@ def _model(
     def structure_trial(payload: Mapping[str, Any]) -> Mapping[str, Any]:
         text = payload["eligibility_text"]
         threshold = 7.0 if payload["trial_id"].endswith("A") else 8.0
+        structured_threshold = 9.0 if wrong_trial_threshold else threshold
         return {
             "criteria": [
                 {
                     "kind": "inclusion",
                     "statement": f"HbA1c가 {threshold:g}% 미만이어야 한다.",
-                    "source_quote": text,
-                    "start_char": 0,
-                    "end_char": len(text),
+                    "source_quote": (
+                        text.replace(" ", "\n") if formatting_variant else text
+                    ),
+                    "start_char": None,
+                    "end_char": None,
                     "required": True,
                     "numeric_constraint": {
                         "concept": "hba1c",
-                        "operator": "lt",
-                        "threshold": threshold,
-                        "unit": "%",
+                        "operator": "gte" if wrong_trial_operator else "lt",
+                        "threshold": structured_threshold,
+                        "unit": "percent" if formatting_variant else "%",
                     },
                     "evidence_requirement": {
-                        "max_age_days": 14,
+                        "max_age_days": 30 if wrong_evidence_age else 14,
                         "allowed_source_types": ["official_verification"],
                         "allowed_verification_statuses": ["verified"],
                     },
@@ -320,9 +346,9 @@ def test_natural_sources_run_through_search_structure_and_rejudgment() -> None:
     ]
     actors = {item.actor for item in trace.events}
     assert {
-        "patient_record_quote_checks",
+        "patient_record_source_checks",
         "candidate_trial_search",
-        "trial_protocol_quote_checks",
+        "trial_protocol_source_checks",
         "information_planning_rules",
     }.issubset(actors)
     assert model.call_count == {
@@ -337,14 +363,45 @@ def test_natural_sources_run_through_search_structure_and_rejudgment() -> None:
     assert result.usage.by_role["trial_protocol_structurer"].call_count == 2
 
 
-def test_patient_fact_with_wrong_source_offsets_is_rejected() -> None:
-    with pytest.raises(ValueError, match="quote and character offsets"):
-        _pipeline(_model(bad_patient_quote=True)).prepare(_request())
+def test_formatting_differences_and_wrong_offset_hints_are_accepted() -> None:
+    prepared = _pipeline(_model(formatting_variant=True)).prepare(_request())
+
+    evidence = prepared.patient_state.facts[0]
+    assert evidence.value == 6.5
+    assert evidence.unit == "percent"
+    assert evidence.statement == "HbA1c was 6.5 % on 2026-05-01."
+    source_quote = "HbA1c was 6.5 % on 2026-05-01."
+    expected_start = PATIENT_TEXT.index(source_quote)
+    assert evidence.source_location.endswith(
+        f"#chars={expected_start}-{expected_start + len(source_quote)}"
+    )
+    assert prepared.screening_case.trials[0].criteria[0].statement in {
+        TRIAL_A_TEXT,
+        TRIAL_B_TEXT,
+    }
 
 
-def test_search_condition_with_wrong_source_offsets_is_rejected() -> None:
-    with pytest.raises(ValueError, match="quote and character offsets"):
-        _pipeline(_model(bad_search_quote=True)).prepare(_request())
+def test_source_quote_that_does_not_exist_is_rejected() -> None:
+    with pytest.raises(ValueError, match="quoted source text was not found"):
+        _pipeline(_model(missing_patient_quote=True)).prepare(_request())
+
+
+@pytest.mark.parametrize(
+    ("model", "message"),
+    [
+        (_model(wrong_patient_value=True), "patient value 6.4"),
+        (_model(wrong_patient_date=True), "event date"),
+        (_model(wrong_trial_threshold=True), "criterion threshold 9"),
+        (_model(wrong_trial_operator=True), "criterion operator 'gte'"),
+        (_model(wrong_evidence_age=True), "evidence age 30 days"),
+    ],
+)
+def test_decision_changing_structured_values_need_source_support(
+    model: ScriptedStructuredModel,
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        _pipeline(model).prepare(_request())
 
 
 def test_trialgpt_runtime_search_can_serve_one_patient_query(tmp_path: Path) -> None:

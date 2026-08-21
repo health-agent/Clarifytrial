@@ -184,6 +184,24 @@ def test_equivalent_free_text_or_other_unit_is_not_inferred() -> None:
     assert result.issue_codes == [MechanicalIssueCode.UNIT_MISMATCH]
 
 
+def test_equivalent_unit_notation_is_used_without_value_conversion() -> None:
+    result = evaluate_criterion(
+        _criterion(unit="10^9/L"),
+        _state(
+            _fact(
+                evidence_id="equivalent-unit-notation",
+                value=126,
+                unit="× 10⁹ / litre",
+                event_date=date(2026, 8, 18),
+            )
+        ),
+    )
+
+    assert result.clinical_status is ClinicalStatus.SUPPORTS
+    assert result.evidence_sufficiency is EvidenceSufficiency.SUFFICIENT
+    assert result.issue_codes == []
+
+
 def test_disallowed_source_and_verification_are_reported_separately() -> None:
     result = evaluate_criterion(
         _criterion(),

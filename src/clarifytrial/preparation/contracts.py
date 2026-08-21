@@ -38,13 +38,13 @@ class RawPatientRecord(ContractModel):
 
 
 class PatientFactDraft(ContractModel):
-    """A model-proposed fact that must point to an exact source substring."""
+    """A model-proposed fact with a source quote and optional location hint."""
 
     fact_key: str = Field(min_length=1)
     statement: str = Field(min_length=1)
     source_quote: str = Field(min_length=1)
-    start_char: int = Field(ge=0)
-    end_char: int = Field(gt=0)
+    start_char: int | None = Field(default=None, ge=0)
+    end_char: int | None = Field(default=None, gt=0)
     event_date: date | None = None
     concept: str | None = Field(default=None, min_length=1)
     value: float | None = Field(default=None, allow_inf_nan=False)
@@ -52,7 +52,13 @@ class PatientFactDraft(ContractModel):
 
     @model_validator(mode="after")
     def offsets_and_structured_value_are_complete(self) -> "PatientFactDraft":
-        if self.end_char <= self.start_char:
+        if (self.start_char is None) != (self.end_char is None):
+            raise ValueError("start_char and end_char must be provided together")
+        if (
+            self.start_char is not None
+            and self.end_char is not None
+            and self.end_char <= self.start_char
+        ):
             raise ValueError("end_char must be greater than start_char")
         provided = (
             self.concept is not None,
@@ -65,16 +71,22 @@ class PatientFactDraft(ContractModel):
 
 
 class SearchConditionDraft(ContractModel):
-    """A normalized search condition anchored to an exact patient-record span."""
+    """A normalized search condition anchored to patient-record source text."""
 
     condition: str = Field(min_length=1)
     source_quote: str = Field(min_length=1)
-    start_char: int = Field(ge=0)
-    end_char: int = Field(gt=0)
+    start_char: int | None = Field(default=None, ge=0)
+    end_char: int | None = Field(default=None, gt=0)
 
     @model_validator(mode="after")
     def offsets_are_ordered(self) -> "SearchConditionDraft":
-        if self.end_char <= self.start_char:
+        if (self.start_char is None) != (self.end_char is None):
+            raise ValueError("start_char and end_char must be provided together")
+        if (
+            self.start_char is not None
+            and self.end_char is not None
+            and self.end_char <= self.start_char
+        ):
             raise ValueError("end_char must be greater than start_char")
         return self
 
@@ -133,13 +145,13 @@ class InformationNeedDraft(ContractModel):
 
 
 class TrialCriterionDraft(ContractModel):
-    """A criterion proposed from an exact quoted part of a trial source."""
+    """A criterion proposed from a quoted part of a trial source."""
 
     kind: CriterionKind
     statement: str = Field(min_length=1)
     source_quote: str = Field(min_length=1)
-    start_char: int = Field(ge=0)
-    end_char: int = Field(gt=0)
+    start_char: int | None = Field(default=None, ge=0)
+    end_char: int | None = Field(default=None, gt=0)
     required: bool = True
     numeric_constraint: NumericConstraint | None = None
     evidence_requirement: EvidenceRequirement | None = None
@@ -147,7 +159,13 @@ class TrialCriterionDraft(ContractModel):
 
     @model_validator(mode="after")
     def offsets_are_ordered(self) -> "TrialCriterionDraft":
-        if self.end_char <= self.start_char:
+        if (self.start_char is None) != (self.end_char is None):
+            raise ValueError("start_char and end_char must be provided together")
+        if (
+            self.start_char is not None
+            and self.end_char is not None
+            and self.end_char <= self.start_char
+        ):
             raise ValueError("end_char must be greater than start_char")
         return self
 

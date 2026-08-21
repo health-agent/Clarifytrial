@@ -15,10 +15,14 @@ from .contracts import (
     TrialProtocolDraft,
     TrialProtocolSource,
 )
+from .source_validation import (
+    resolve_source_span,
+    validate_trial_criterion_source,
+)
 
 
 class TrialProtocolStructurerAgent(StructuredAgent[TrialProtocolDraft]):
-    """Extract criteria only from exact quoted spans in a supplied protocol."""
+    """Extract criteria only from grounded parts of a supplied protocol."""
 
     agent_name = "trial_protocol_structurer"
     prompt_id = "prompts/trial_protocol_structurer.md"
@@ -89,7 +93,7 @@ def structure_trial_protocol(
     known_needs: dict[str, DeclaredInformationNeed] | None = None,
     trace: TraceRecorder,
 ) -> PreparedTrial:
-    """Verify source spans and assign criterion IDs outside the language model."""
+    """Ground criteria, check decision fields, and assign criterion IDs in code."""
 
     draft = agent.run(
         {
@@ -116,27 +120,37 @@ def structure_trial_protocol(
     ).output
     criteria = []
     needs: list[PreparedInformationNeed] = []
+    source_matches = []
     for index, item in enumerate(draft.criteria, start=1):
-        if item.end_char > len(source.eligibility_text):
-            raise ValueError("criterion quote ends outside the supplied protocol")
-        if source.eligibility_text[item.start_char : item.end_char] != item.source_quote:
-            raise ValueError(
-                "criterion quote and character offsets do not match the supplied protocol"
-            )
+        match = resolve_source_span(
+            source.eligibility_text,
+            item.source_quote,
+            approximate_start_char=item.start_char,
+            approximate_end_char=item.end_char,
+        )
+        validate_trial_criterion_source(item, match.source_text)
         criterion_id = f"{source.trial_id}:{item.kind.value}:{index:03d}"
         criteria.append(
             TrialCriterion(
                 criterion_id=criterion_id,
                 trial_id=source.trial_id,
                 kind=item.kind,
-                statement=item.statement,
+                statement=match.source_text.strip(),
                 source_location=(
-                    f"{source.source_location}#chars={item.start_char}-{item.end_char}"
+                    f"{source.source_location}#chars={match.start_char}-{match.end_char}"
                 ),
                 required=item.required,
                 numeric_constraint=item.numeric_constraint,
                 evidence_requirement=item.evidence_requirement,
             )
+        )
+        source_matches.append(
+            {
+                "criterion_id": criterion_id,
+                "start_char": match.start_char,
+                "end_char": match.end_char,
+                "match_method": match.match_method,
+            }
         )
         for need in item.information_needs:
             declared = (known_needs or {}).get(need.fact_key)
@@ -156,12 +170,13 @@ def structure_trial_protocol(
             )
     trace.record(
         cycle=0,
-        actor="trial_protocol_quote_checks",
+        actor="trial_protocol_source_checks",
         event="trial_protocol_structured",
         input_refs=[source.trial_id],
         output={
             "criterion_ids": [item.criterion_id for item in criteria],
             "information_need_count": len(needs),
+            "source_matches": source_matches,
         },
     )
     return PreparedTrial(

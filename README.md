@@ -172,6 +172,7 @@ PyTorch를 사용했다.
 | `src/clarifytrial/agents/` | 진행 관리, 검색·판정, 다음 확인, 선택 검토의 분리된 호출 경계 |
 | `src/clarifytrial/decision_rules.py` | 조건 결과를 후보 유지와 현재 확인으로 집계하는 규칙 |
 | `src/clarifytrial/mechanical_checks.py` | 구조화된 수치·날짜·출처·확인 상태를 검사하는 규칙 |
+| `src/clarifytrial/measurements.py` | 단위 변환 없이 `%`·`percent` 같은 표기 차이만 정리하는 규칙 |
 | `src/clarifytrial/workflow/episode.py` | 시험 한 건의 에이전트 호출과 재판정 상태 흐름 |
 | `src/clarifytrial/workflow/trial_assessment.py` | 단일·여러 시험 실행기가 함께 쓰는 수치 검사, 조건 판단 호출과 식별자 검사 |
 | `src/clarifytrial/workflow/patient_screening.py` | 여러 시험의 판단·확인·재판정 단계를 순서대로 호출하는 실행기 |
@@ -181,7 +182,7 @@ PyTorch를 사용했다.
 | `src/clarifytrial/reporting/recommendations.py` | 현재 확인 목록과 추가 확인 후보를 포함한 목록을 판단 결과에서 만드는 규칙 |
 | `src/clarifytrial/environment/` | 공개 질문 목록과 숨은 합성 답변을 분리한 실행 환경 |
 | `src/clarifytrial/retrieval/` | 환자 문장 안내와 TrialGPT식 BM25·MedCPT 후보 검색 |
-| `src/clarifytrial/preparation/` | 자연어 환자 기록과 후보 시험 원문을 인용 위치가 있는 구조화 입력으로 바꾸는 연결 |
+| `src/clarifytrial/preparation/` | 자연어 원문의 근거 문구를 찾고 수치·날짜·조건을 확인해 구조화 입력으로 바꾸는 연결 |
 | `src/clarifytrial/evaluation.py` | 조건, 두 결과와 다음 행동을 따로 채점하는 공통 평가기 |
 | `src/clarifytrial/datasets/` | TrialGPT 원본 검사·환자 분리와 ClinicalTrials.gov 공개 원문 수집 |
 | `src/clarifytrial/interactive/` | 숨은 답 분리, 질문 정책, 공개 조건 평가와 값 조합 검사 |
@@ -208,7 +209,8 @@ PyTorch를 사용했다.
 `PatientScreeningRunner`의 입력과 출력은 Pydantic 자료형이며 `export-schemas`
 명령으로 JSON Schema를 만들 수 있다. 각 단계의 입력 ID, 출력, 선택 규칙과 모델
 사용량은 실행 기록에 남는다. 환자 부담 입력은 확인 순서만 바꾸며 참가 조건 판정은
-바꾸지 않는다.
+바꾸지 않는다. 코드로 계산할 수 있는 숫자 조건에서는 모델이 반대로 답해도 코드
+결과를 적용한다. 숫자가 없는 복합 조건과 부정·예외 해석은 아직 모델 판단 영역이다.
 
 ## 에이전트 구조
 
@@ -245,7 +247,10 @@ PyTorch를 사용했다.
 같은 기본 모델을 쓰더라도 역할별 지시문, 대화 기록, 도구와 출력 형식을 분리한다.
 이 반복 흐름에 들어가기 전에 환자 기록 정리와 시험 조건 정리 모델을 각각 부른다.
 두 준비 호출은 원문을 공통 자료형으로 옮길 뿐 다음 행동이나 종료 시점을 결정하지
-않으며, 원문 인용과 문자 위치가 맞지 않으면 코드가 결과를 거부한다.
+않는다. 띄어쓰기·줄바꿈·대소문자 차이는 무시하고 근거 문구의 위치는 코드가 찾는다.
+대신 판단을 바꾸는 수치·단위·날짜·비교 방향·검사 유효기간이 원문과 다르면 결과를
+거부한다. 환자 상태표와 시험 조건표에는 모델이 다시 쓴 문장 대신 코드가 찾은 실제
+원문을 저장한다.
 
 ### 공통 자료와 도구
 
@@ -254,7 +259,7 @@ PyTorch를 사용했다.
 | 시험 조건 준비 | 조건, 수치, 기간, 논리와 원문 위치를 미리 정리 | TrialMatchAI, EXACT |
 | 환자 상태표 | 여러 기록을 날짜와 출처가 붙은 한 상태표로 정리 | PRomop |
 | 후보 검색 | 명확한 규칙 필터와 글자·의미 검색을 함께 사용 | TrialMatchAI |
-| 기계적 검사 | 날짜, 수치, 단위, 부정과 논리를 코드로 확인 | TrialMatchAI, EXACT |
+| 기계적 검사 | 구조화된 수치·단위·날짜·출처를 코드로 확인 | TrialMatchAI, EXACT |
 | 두 판단 집계 | 조건 결과에서 후보 유지와 현재 확인을 따로 계산 | ClarifyTrial v5 |
 | 정보 획득 환경 | 기록 조회, 환자 답변과 공식 확인 결과를 시스템 밖에서 제공 | MediQ, ClarifyTrial v5 |
 | 결과 보고 | 양쪽 원문 근거, 남은 정보, 다음 단계와 의료 면책 문구를 표시 | ClarifyTrial v5 |

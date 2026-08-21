@@ -7,6 +7,7 @@ from collections.abc import Sequence
 from ..agents import MatcherJudgeAgent
 from ..contracts import (
     CriterionAssessment,
+    EvidenceSufficiency,
     NextEvidenceRequest,
     PatientState,
     ReviewFlag,
@@ -34,7 +35,7 @@ def assess_trial_criteria(
     """Check structured values, call the matcher, and validate every identifier.
 
     This function is intentionally complete: both workflow runners use the
-    same numeric checks, model payload, identifier checks, and mismatch flag.
+    same numeric checks, model payload, identifier checks, and code authority.
     """
 
     if not criteria:
@@ -96,17 +97,9 @@ def assess_trial_criteria(
         )
     request_ids = {item.fact_id for item in evidence_requests}
     validated = []
+    mechanical_corrections = []
     for assessment in response.assessments:
         mechanical = mechanical_by_id[assessment.criterion_id]
-        if mechanical.configured and (
-            assessment.clinical_status is not mechanical.clinical_status
-            or assessment.evidence_sufficiency
-            is not mechanical.evidence_sufficiency
-        ):
-            flags = list(assessment.review_flags)
-            if ReviewFlag.CODE_MODEL_MISMATCH not in flags:
-                flags.append(ReviewFlag.CODE_MODEL_MISMATCH)
-            assessment = assessment.model_copy(update={"review_flags": flags})
         unknown_missing = set(assessment.missing_information_ids) - request_ids
         if unknown_missing:
             raise TrialAssessmentProtocolError(
@@ -119,5 +112,74 @@ def assess_trial_criteria(
                 "matcher_judge invented patient-evidence identifiers: "
                 + ", ".join(sorted(unknown_evidence))
             )
+        if mechanical.configured:
+            related_missing_ids = sorted(
+                request.fact_id
+                for request in relevant_requests
+                if assessment.criterion_id in request.related_criterion_ids
+            )
+            corrected_missing_ids = (
+                []
+                if mechanical.evidence_sufficiency is EvidenceSufficiency.SUFFICIENT
+                else related_missing_ids
+            )
+            corrected_flags = [
+                item
+                for item in assessment.review_flags
+                if item is not ReviewFlag.CODE_MODEL_MISMATCH
+            ]
+            differs = (
+                assessment.clinical_status is not mechanical.clinical_status
+                or assessment.evidence_sufficiency
+                is not mechanical.evidence_sufficiency
+                or assessment.evidence_ids != mechanical.evidence_ids
+                or assessment.missing_information_ids != corrected_missing_ids
+            )
+            if differs:
+                mechanical_corrections.append(
+                    {
+                        "criterion_id": assessment.criterion_id,
+                        "model": {
+                            "clinical_status": assessment.clinical_status.value,
+                            "evidence_sufficiency": (
+                                assessment.evidence_sufficiency.value
+                            ),
+                            "evidence_ids": assessment.evidence_ids,
+                            "missing_information_ids": (
+                                assessment.missing_information_ids
+                            ),
+                        },
+                        "applied": {
+                            "clinical_status": mechanical.clinical_status.value,
+                            "evidence_sufficiency": (
+                                mechanical.evidence_sufficiency.value
+                            ),
+                            "evidence_ids": mechanical.evidence_ids,
+                            "missing_information_ids": corrected_missing_ids,
+                        },
+                    }
+                )
+            assessment = assessment.model_copy(
+                update={
+                    "clinical_status": mechanical.clinical_status,
+                    "evidence_sufficiency": mechanical.evidence_sufficiency,
+                    "evidence_ids": mechanical.evidence_ids,
+                    "missing_information_ids": corrected_missing_ids,
+                    "rationale": (
+                        "구조화된 수치·단위·날짜·출처 검사의 코드 결과를 적용했다."
+                    ),
+                    "review_flags": corrected_flags,
+                }
+            )
         validated.append(assessment)
+    if mechanical_corrections:
+        trace.record(
+            cycle=cycle,
+            actor="mechanical_checks",
+            event="model_assessments_replaced",
+            input_refs=[
+                str(item["criterion_id"]) for item in mechanical_corrections
+            ],
+            output={"corrections": mechanical_corrections},
+        )
     return validated
