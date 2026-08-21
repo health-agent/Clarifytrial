@@ -61,6 +61,7 @@ def _fact(
     unit: str = "10^9/L",
     source_type: EvidenceSourceType = EvidenceSourceType.OFFICIAL_VERIFICATION,
     verification_status: VerificationStatus = VerificationStatus.VERIFIED,
+    concept: str = "platelet_count",
 ) -> EvidenceFact:
     return EvidenceFact(
         evidence_id=evidence_id,
@@ -70,7 +71,7 @@ def _fact(
         event_date=event_date,
         recorded_date=event_date,
         verification_status=verification_status,
-        concept="platelet_count",
+        concept=concept,
         value=value,
         unit=unit,
     )
@@ -119,6 +120,24 @@ def test_recent_official_qualifying_value_supports_and_confirms() -> None:
     assert result.clinical_status is ClinicalStatus.SUPPORTS
     assert result.evidence_sufficiency is EvidenceSufficiency.SUFFICIENT
     assert result.issue_codes == []
+
+
+def test_concept_label_formatting_does_not_hide_matching_evidence() -> None:
+    result = evaluate_criterion(
+        _criterion(),
+        _state(
+            _fact(
+                evidence_id="recent-platelets",
+                value=126,
+                event_date=date(2026, 8, 18),
+                concept="Platelet Count",
+            )
+        ),
+    )
+
+    assert result.clinical_status is ClinicalStatus.SUPPORTS
+    assert result.evidence_sufficiency is EvidenceSufficiency.SUFFICIENT
+    assert result.evidence_ids == ["recent-platelets"]
 
 
 def test_recent_numeric_threshold_failure_violates_with_sufficient_evidence() -> None:

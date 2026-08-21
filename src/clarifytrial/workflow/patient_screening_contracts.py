@@ -62,6 +62,8 @@ class ScreeningTrial(ContractModel):
             raise ValueError("criteria must not repeat criterion_id")
         if any(item.trial_id != self.trial_id for item in self.criteria):
             raise ValueError("every criterion must belong to trial_id")
+        if not any(item.required for item in self.criteria):
+            raise ValueError("at least one criterion must be required")
         return self
 
 

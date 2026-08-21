@@ -7,6 +7,7 @@ from math import log2
 from collections.abc import Mapping, Sequence
 from typing import Protocol
 
+from ..concepts import concepts_equivalent
 from ..contracts import AgentAction, NextAction
 from ..llm import ModelCall, StructuredModel
 from ..llm.base import ModelUsage
@@ -234,7 +235,7 @@ class OutcomeEntropyPolicy(_DeterministicPolicy):
                 (
                     item
                     for item in reversed(snapshot.patient_state.facts)
-                    if item.concept == concept
+                    if concepts_equivalent(item.concept, concept)
                 ),
                 None,
             )

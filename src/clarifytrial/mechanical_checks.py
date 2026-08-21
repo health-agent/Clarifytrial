@@ -11,6 +11,7 @@ from enum import Enum
 
 from pydantic import Field
 
+from .concepts import concepts_equivalent
 from .contracts import (
     ClinicalStatus,
     ComparisonOperator,
@@ -130,7 +131,9 @@ def evaluate_criterion(
         )
 
     concept_matches = [
-        fact for fact in patient_state.facts if fact.concept == constraint.concept
+        fact
+        for fact in patient_state.facts
+        if concepts_equivalent(fact.concept, constraint.concept)
     ]
     if not concept_matches:
         return MechanicalCriterionResult(

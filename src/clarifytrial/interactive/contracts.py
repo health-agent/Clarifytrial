@@ -11,6 +11,7 @@ from enum import StrEnum
 
 from pydantic import Field, model_validator
 
+from ..concepts import concepts_equivalent, normalized_concept
 from ..contracts import (
     ConfirmationStatus,
     ContractModel,
@@ -37,6 +38,8 @@ class InteractiveTrial(ContractModel):
             raise ValueError("criteria must not repeat criterion_id")
         if any(item.trial_id != self.trial_id for item in self.criteria):
             raise ValueError("every criterion must belong to trial_id")
+        if not any(item.required for item in self.criteria):
+            raise ValueError("at least one criterion must be required")
         return self
 
 
@@ -186,7 +189,7 @@ class InteractiveCase(ContractModel):
             raise ValueError("hidden facts must not repeat fact_id")
         hidden_evidence_ids: set[str] = set()
         used_concepts = {
-            criterion.numeric_constraint.concept
+            normalized_concept(criterion.numeric_constraint.concept)
             for trial in self.trials
             for criterion in trial.criteria
             if criterion.numeric_constraint is not None
@@ -201,7 +204,10 @@ class InteractiveCase(ContractModel):
             if answer.evidence_id in hidden_evidence_ids:
                 raise ValueError("hidden answers must not repeat evidence_id")
             hidden_evidence_ids.add(answer.evidence_id)
-            if answer.concept not in used_concepts:
+            if (
+                answer.concept is None
+                or normalized_concept(answer.concept) not in used_concepts
+            ):
                 raise ValueError("every hidden fact must affect a trial criterion")
             if not item.request.description.strip():
                 raise ValueError("hidden facts need a public description")
@@ -234,7 +240,10 @@ class InteractiveCase(ContractModel):
                 for trial in self.trials
                 for criterion in trial.criteria
                 if criterion.numeric_constraint is not None
-                and criterion.numeric_constraint.concept == concept
+                and concepts_equivalent(
+                    criterion.numeric_constraint.concept,
+                    concept,
+                )
             ]
             facts.append(
                 InteractivePublicFact(

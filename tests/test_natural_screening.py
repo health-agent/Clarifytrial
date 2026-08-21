@@ -88,6 +88,7 @@ def _sources() -> list[TrialProtocolSource]:
 def _model(
     *,
     formatting_variant: bool = False,
+    wrong_search_condition: bool = False,
     missing_patient_quote: bool = False,
     wrong_patient_value: bool = False,
     wrong_patient_date: bool = False,
@@ -118,7 +119,11 @@ def _model(
         return {
             "search_conditions": [
                 {
-                    "condition": "type 2 diabetes",
+                    "condition": (
+                        "major depressive disorder"
+                        if wrong_search_condition
+                        else "type 2 diabetes"
+                    ),
                     "source_quote": condition_quote,
                     "start_char": condition_start,
                     "end_char": condition_start + len("type 2 diabetes"),
@@ -155,7 +160,6 @@ def _model(
                     ),
                     "start_char": None,
                     "end_char": None,
-                    "required": True,
                     "numeric_constraint": {
                         "concept": "hba1c",
                         "operator": "gte" if wrong_trial_operator else "lt",
@@ -298,7 +302,7 @@ def _tool_factory(prepared):
         event_date=date(2026, 8, 20),
         recorded_date=date(2026, 8, 21),
         verification_status=VerificationStatus.VERIFIED,
-        concept="hba1c",
+        concept="HbA1c",
         value=6.4,
         unit="%",
     )
@@ -379,6 +383,16 @@ def test_formatting_differences_and_wrong_offset_hints_are_accepted() -> None:
         TRIAL_A_TEXT,
         TRIAL_B_TEXT,
     }
+
+
+def test_candidate_search_uses_patient_source_text_not_model_relabeling() -> None:
+    prepared = _pipeline(_model(wrong_search_condition=True)).prepare(_request())
+
+    assert prepared.search_conditions == ["type 2 diabetes"]
+    assert [item.source.trial_id for item in prepared.candidate_hits] == [
+        "NCT-SYNTH-A",
+        "NCT-SYNTH-B",
+    ]
 
 
 def test_source_quote_that_does_not_exist_is_rejected() -> None:

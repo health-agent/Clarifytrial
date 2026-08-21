@@ -139,7 +139,10 @@ def structure_trial_protocol(
                 source_location=(
                     f"{source.source_location}#chars={match.start_char}-{match.end_char}"
                 ),
-                required=item.required,
+                # Every eligibility item extracted from prose is a condition to
+                # evaluate. Optional grouping is only accepted in manually
+                # authored structured inputs, where the grouping is explicit.
+                required=True,
                 numeric_constraint=item.numeric_constraint,
                 evidence_requirement=item.evidence_requirement,
             )

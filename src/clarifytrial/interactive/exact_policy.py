@@ -7,6 +7,7 @@ from itertools import product
 from collections.abc import Mapping
 from typing import Sequence
 
+from ..concepts import concepts_equivalent
 from ..contracts import (
     AgentAction,
     CandidateStatus,
@@ -486,7 +487,7 @@ class _ExactSolver:
                 (
                     item
                     for item in reversed(tuple(evidence_by_id.values()))
-                    if item.concept == constraint.concept
+                    if concepts_equivalent(item.concept, constraint.concept)
                 ),
                 None,
             )

@@ -51,11 +51,15 @@ def structure_patient_record(
             approximate_start_char=item.start_char,
             approximate_end_char=item.end_char,
         )
-        search_conditions.append(item.condition)
+        # Candidate retrieval uses the text that actually appears in the
+        # record. The model label is retained only in the trace and cannot
+        # silently replace the patient's documented condition.
+        search_conditions.append(match.source_text.strip())
         source_matches.append(
             {
                 "item_type": "search_condition",
                 "item_key": item.condition,
+                "retrieval_text": match.source_text.strip(),
                 "start_char": match.start_char,
                 "end_char": match.end_char,
                 "match_method": match.match_method,

@@ -152,7 +152,6 @@ class TrialCriterionDraft(ContractModel):
     source_quote: str = Field(min_length=1)
     start_char: int | None = Field(default=None, ge=0)
     end_char: int | None = Field(default=None, gt=0)
-    required: bool = True
     numeric_constraint: NumericConstraint | None = None
     evidence_requirement: EvidenceRequirement | None = None
     information_needs: list[InformationNeedDraft] = Field(default_factory=list)
