@@ -126,8 +126,30 @@ def test_export_schemas_writes_parseable_key_contracts(tmp_path: Path) -> None:
         "recommendation-views.schema.json",
         "patient-screening-case.schema.json",
         "patient-screening-result.schema.json",
+        "natural-screening-request.schema.json",
+        "natural-screening-result.schema.json",
     }
     assert all(_read_json(path)["type"] == "object" for path in paths)
+
+
+def test_natural_screening_command_requires_explicit_model_confirmation(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(SystemExit) as captured:
+        main(
+            [
+                "run-natural-screening",
+                "--request",
+                str(tmp_path / "request.json"),
+                "--trial-sources",
+                str(tmp_path / "trials.json"),
+                "--hidden-answers",
+                str(tmp_path / "answers.json"),
+                "--output",
+                str(tmp_path / "run"),
+            ]
+        )
+    assert captured.value.code == 2
 
 
 def test_live_trialgpt_command_requires_explicit_confirmation(tmp_path: Path) -> None:

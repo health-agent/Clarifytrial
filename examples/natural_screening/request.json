@@ -1,0 +1,31 @@
+{
+  "case_id": "synthetic-natural-diabetes",
+  "patient_record": {
+    "patient_id": "SYNTHETIC-NATURAL-001",
+    "source_id": "synthetic-note-001",
+    "text": "The patient has type 2 diabetes. HbA1c was 6.5 % on 2026-05-01.",
+    "recorded_at": "2026-08-21T00:00:00Z",
+    "as_of": "2026-08-21T00:00:00Z",
+    "source_type": "medical_record",
+    "verification_status": "reported"
+  },
+  "candidate_count": 2,
+  "acquisition_paths": [
+    {
+      "fact_key": "recent_hba1c",
+      "fact_description": "최근 14일 안의 공식 HbA1c 결과",
+      "path_key": "existing-official-result",
+      "action": "REQUEST_VERIFICATION",
+      "acquisition_mode": "existing_official_result",
+      "available_now": true,
+      "expected_delay_hours": 2,
+      "visit_required": false,
+      "direct_cost_band": "none",
+      "physical_burden_0_to_3": 0,
+      "emotional_burden_0_to_3": 0,
+      "medical_risk_0_to_3": 0,
+      "treatment_disruption_0_to_3": 0,
+      "source_note": "합성 환경에서 이미 받은 공식 결과를 확인"
+    }
+  ]
+}

@@ -24,6 +24,7 @@ ClarifyTrial은 환자 정보가 아직 완전하지 않은 단계에서 임상�
 | v5 대화형 자료 | 공개 시험 15개·구조화 조건 80개·합성 환자 30명·마스크 60회 구현 및 실행 완료 |
 | 질문 선택 결과 | 단순 동적 규칙 채택, 평균/최악 우선 전수 계산은 채택 기준 미달로 비교용 보존 |
 | 환자 맞춤 부담과 안내 | 여러 시험의 에이전트 흐름에 연결, 두 추천 목록과 승인 대기 출력 구현. 360개 상황·1,800개 정책 실행 완료 |
+| 자연어 입력 연결 | 환자 기록 정리 → 후보 검색 → 시험 조건 정리 → 질문·재판정의 한 명령 구현, 합성 연결 검사 완료 |
 | v5 성능 | 구조화 입력의 질문 정책·합성 부담 정책만 측정. 자연어 전체 실행과 임상 성능은 미측정 |
 
 저장소에는 합성 환자 사례만 둔다. 과거 Solar 합성 데모 수치와 84% 결과는 v5의
@@ -52,6 +53,26 @@ py -3.12 -m venv .venv
 `run-example` 명령은 오래된 혈액검사만 있는 상태에서 후보를 유지하고, 최근 공식 결과를
 받은 뒤 현재 조건 확인을 끝내는 합성 사례를 실행한다. 결과는 `result.json`, 역할별
 호출과 상태 변화는 `trace.jsonl`에 저장된다. 이 실행에는 API 키가 필요하지 않다.
+
+자연어 환자 기록부터 실행하는 합성 예제는
+[examples/natural_screening](examples/natural_screening)에 있다. 이 명령은 기록과
+시험 조건을 구조화할 때 실제 모델을 호출하므로 `--confirm-model-run`을 명시해야
+한다. 숨은 합성 검사 결과는 모델 입력과 다른 파일에 둔다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-natural-screening `
+  --request examples\natural_screening\request.json `
+  --candidate-search local-bm25 `
+  --trial-sources examples\natural_screening\trial_sources.json `
+  --hidden-answers examples\natural_screening\hidden_answers.json `
+  --output runs\natural-screening `
+  --provider codex-subscription `
+  --confirm-model-run
+```
+
+위 `local-bm25`는 작은 연결 검사다. 연구 실행에서는 TREC 말뭉치와 재현 캐시를
+지정해 `--candidate-search trialgpt`를 사용한다. `result.json`에는 전체 모델
+호출·토큰과 역할별 합계가 함께 저장된다.
 
 마지막 네 명령은 ClinicalTrials.gov 공개 원문 15건을 내려받고, 구조화 조건 80개와
 합성 환자 30명의 질문 순서를 비교한다. 환자 정보는 모두 가상이며 모델 호출도 없다.
@@ -160,6 +181,7 @@ PyTorch를 사용했다.
 | `src/clarifytrial/reporting/recommendations.py` | 현재 확인 목록과 추가 확인 후보를 포함한 목록을 판단 결과에서 만드는 규칙 |
 | `src/clarifytrial/environment/` | 공개 질문 목록과 숨은 합성 답변을 분리한 실행 환경 |
 | `src/clarifytrial/retrieval/` | 환자 문장 안내와 TrialGPT식 BM25·MedCPT 후보 검색 |
+| `src/clarifytrial/preparation/` | 자연어 환자 기록과 후보 시험 원문을 인용 위치가 있는 구조화 입력으로 바꾸는 연결 |
 | `src/clarifytrial/evaluation.py` | 조건, 두 결과와 다음 행동을 따로 채점하는 공통 평가기 |
 | `src/clarifytrial/datasets/` | TrialGPT 원본 검사·환자 분리와 ClinicalTrials.gov 공개 원문 수집 |
 | `src/clarifytrial/interactive/` | 숨은 답 분리, 질문 정책, 공개 조건 평가와 값 조합 검사 |
@@ -170,6 +192,7 @@ PyTorch를 사용했다.
 | `src/clarifytrial/pilots/` | 조건 묶음 실행, 비용·오류 지표와 지시문 비교 |
 | `prompts/` | 에이전트별 역할, 입력, 허용 도구와 출력 형식 |
 | `examples/stale_lab/` | 시스템 입력, 숨은 답변과 평가 정답을 나눈 합성 사례 |
+| `examples/natural_screening/` | 자연어 기록부터 두 시험 재판정까지 잇는 합성 입력 예제 |
 
 ### 연결된 환자 단위 실행에서 맡은 일
 
@@ -192,7 +215,8 @@ PyTorch를 사용했다.
 아래 그림은 공개자료 검색까지 포함한 목표 구조다. 시험 한 건의 세부 상태 흐름과,
 여러 후보 시험을 함께 보고 다음 확인 순서를 고르는 환자 단위 실행기를 모두 구현했다.
 대화형 평가기는 공개 시험 15건과 합성 환자 30명의 질문 정책까지 검사했다. 재현한
-후보 검색과 자연어 조건 구조화는 아직 환자 단위 실행과 한 명령으로 연결하지 않았다.
+후보 검색과 자연어 조건 구조화도 환자 단위 실행과 한 명령으로 연결했다. 다만 외부
+모델이 자연어 원문을 얼마나 정확히 구조화하는지는 아직 측정하지 않았다.
 
 ### 에이전트 전체 구성
 
@@ -219,6 +243,9 @@ PyTorch를 사용했다.
 
 고정 에이전트는 세 개다. 선택적 검토까지 실행되는 사례에서만 네 개가 작동한다.
 같은 기본 모델을 쓰더라도 역할별 지시문, 대화 기록, 도구와 출력 형식을 분리한다.
+이 반복 흐름에 들어가기 전에 환자 기록 정리와 시험 조건 정리 모델을 각각 부른다.
+두 준비 호출은 원문을 공통 자료형으로 옮길 뿐 다음 행동이나 종료 시점을 결정하지
+않으며, 원문 인용과 문자 위치가 맞지 않으면 코드가 결과를 거부한다.
 
 ### 공통 자료와 도구
 
@@ -311,9 +338,10 @@ TrialGPT 조건 판단은 서로 다른 실행으로 유지한다.
 | 8 | TrialGPT 후보 검색과 TREC 연결 | 전체 실행과 논문 수치 대조 완료, 결합 검색 채택 |
 | 9 | 강한 단일 판단과 검색 유무를 나눈 선택 검토 | 개발 20조합 실행 완료, 두 검토 기각 |
 | 10 | 고정 후보 5개와 확인 후보 5개 중 3개를 고르는 v5 대화 비교 | 12명 작동 확인, 공개 조건 30명·마스크 60회와 값 77,792조합 검사 완료 |
-| 11 | 같은 후보 RAG에서 TrialGPT식 흐름과 ClarifyTrial 비교 | 공개 원문·환자 문장 구조화 평가 뒤 실행 |
+| 11 | 같은 후보 RAG에서 TrialGPT식 흐름과 ClarifyTrial 비교 | 한 명령 연결 완료, 공개 원문 구조화 정확도 평가와 본 비교는 아직 전 |
 | 12 | 기존 자료·새 검사와 환자별 추가 부담을 반영한 다음 행동 비교 | 구현 완료, 360개 상황·1,800개 정책 실행과 채택 기준 검사 완료 |
 | 13 | 환자 부담 규칙과 두 추천 목록을 여러 시험 에이전트 흐름에 연결 | 합성 통합 실행과 식별자·승인 경계 검사 완료 |
+| 14 | 자연어 기록·시험 원문에서 전체 흐름 실행 | 합성 스크립트 연결 검사 완료, 외부 모델 소표본 평가는 아직 전 |
 
 구현 세부는
 [RAG·평가 구현계획](docs/internal/CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)을

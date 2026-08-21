@@ -15,7 +15,9 @@ config:
     fontFamily: 'Pretendard, Noto Sans KR, Malgun Gothic, sans-serif'
 ---
 flowchart LR
-    S[["공통 자료<br/>시험 조건 · 환자 상태 · 공통 RAG"]]
+    I[["입력 원문<br/>환자 기록 · 임상시험 말뭉치"]]
+    B["시작 준비 호출<br/>환자 기록 정리 · 시험 조건 정리"]
+    S[["공통 자료와 도구<br/>시험 조건 · 환자 상태 · 후보 검색"]]
     A1["에이전트 1 · 진행 관리<br/>다음 단계 결정"]
 
     subgraph W[" "]
@@ -37,6 +39,8 @@ flowchart LR
 
     O["결과<br/>후보 · 현재 확인 · 근거 · 남은 정보"]
 
+    I --> B
+    B --> S
     S --> A1
     S -.-> A2
     A1 -->|판정 요청| A2
@@ -56,7 +60,8 @@ flowchart LR
     class A1 lead;
     class A2,A3 agent;
     class A4 optional;
-    class S,C,E shared;
+    class I,S,C,E shared;
+    class B agent;
     class O output;
     style W fill:none,stroke:none;
     style W2 fill:none,stroke:none;

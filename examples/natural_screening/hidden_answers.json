@@ -1,0 +1,18 @@
+[
+  {
+    "fact_key": "recent_hba1c",
+    "access_path": "REQUEST_VERIFICATION",
+    "evidence": {
+      "evidence_id": "synthetic-recent-hba1c",
+      "statement": "최근 공식 HbA1c는 6.4%였다.",
+      "source_type": "official_verification",
+      "source_location": "synthetic-lab#hba1c",
+      "event_date": "2026-08-20",
+      "recorded_date": "2026-08-21",
+      "verification_status": "verified",
+      "concept": "hba1c",
+      "value": 6.4,
+      "unit": "%"
+    }
+  }
+]

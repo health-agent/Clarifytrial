@@ -219,6 +219,28 @@ def reciprocal_rank_fusion(
     bm25_weight: float = 1.0,
     medcpt_weight: float = 1.0,
 ) -> list[str]:
+    return [
+        trial_id
+        for trial_id, _ in reciprocal_rank_fusion_with_scores(
+            bm25_rankings,
+            medcpt_rankings,
+            fusion_k=fusion_k,
+            bm25_weight=bm25_weight,
+            medcpt_weight=medcpt_weight,
+        )
+    ]
+
+
+def reciprocal_rank_fusion_with_scores(
+    bm25_rankings: Sequence[Sequence[str]],
+    medcpt_rankings: Sequence[Sequence[str]],
+    *,
+    fusion_k: int,
+    bm25_weight: float = 1.0,
+    medcpt_weight: float = 1.0,
+) -> list[tuple[str, float]]:
+    """Return the public rank-fusion order together with inspectable scores."""
+
     if fusion_k < 1:
         raise ValueError("fusion_k must be positive")
     if len(bm25_rankings) != len(medcpt_rankings):
@@ -238,7 +260,10 @@ def reciprocal_rank_fusion(
                 scores[trial_id] = scores.get(trial_id, 0.0) + (
                     medcpt_weight * condition_weight / (rank + fusion_k)
                 )
-    return [trial_id for trial_id, _ in sorted(scores.items(), key=lambda item: -item[1])]
+    # Preserve the original TrialGPT reproduction's stable insertion-order
+    # tie handling. Adding a secondary trial-ID sort would subtly change the
+    # reproduced ranking when scores are equal.
+    return sorted(scores.items(), key=lambda item: -item[1])
 
 
 def evaluate_rankings(
@@ -489,6 +514,159 @@ def _load_query_encoder(config: TrialGPTRetrievalConfig) -> tuple[Any, Any, Any]
     model.eval()
     tokenizer = AutoTokenizer.from_pretrained(config.query_model_id)
     return torch, model, tokenizer
+
+
+class TrialGPTRuntimeHit(BaseModel):
+    """One candidate returned by the reusable TrialGPT search index."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    rank: int = Field(ge=1)
+    score: float
+    entry: TrialGPTCorpusEntry
+
+
+class TrialGPTRuntimeSearch:
+    """Reuse the reproduced BM25 and MedCPT index for individual patients."""
+
+    def __init__(
+        self,
+        corpus_path: str | Path,
+        cache_dir: str | Path,
+        config: TrialGPTRetrievalConfig,
+        *,
+        progress: Callable[[str], None] | None = None,
+    ) -> None:
+        self.corpus_path = Path(corpus_path)
+        self.config = config
+        self._entries = {item.trial_id: item for item in iter_corpus(self.corpus_path)}
+        manifest = inspect_corpus(self.corpus_path)
+        if manifest.rows == 0:
+            raise ValueError("trial corpus must contain at least one document")
+        if len(self._entries) != manifest.rows:
+            raise ValueError("trial corpus IDs are not unique")
+        self._depth = min(config.search_depth, manifest.rows)
+        cache = Path(cache_dir) / config.corpus_name
+
+        self._bm25 = None
+        self._bm25_ids: tuple[str, ...] = manifest.ids
+        self._word_tokenize = None
+        if config.bm25_weight > 0:
+            self._bm25, self._bm25_ids = build_bm25(
+                self.corpus_path,
+                cache / "bm25-tokenized.pkl",
+            )
+            self._word_tokenize, _ = _optional_bm25_imports()
+
+        self._dense_index = None
+        self._dense_ids: tuple[str, ...] = manifest.ids
+        self._torch = self._query_model = self._query_tokenizer = None
+        if config.medcpt_weight > 0:
+            embedding_path = cache / "medcpt-article.npy"
+            ids_path = cache / "medcpt-trial-ids.json"
+            state_path = cache / "medcpt-build-state.json"
+            build_medcpt_embeddings(
+                self.corpus_path,
+                embedding_path,
+                ids_path,
+                state_path,
+                model_id=config.article_model_id,
+                device=config.device,
+                batch_size=config.batch_size,
+                max_length=config.article_max_length,
+                progress=progress,
+            )
+            faiss, np, _, _, _ = _optional_dense_imports()
+            self._dense_ids = tuple(_read_json(ids_path))
+            embeddings = np.load(embedding_path)
+            if embeddings.shape != (manifest.rows, 768):
+                raise ValueError(
+                    f"unexpected MedCPT embedding shape: {embeddings.shape!r}"
+                )
+            self._dense_index = faiss.IndexFlatIP(768)
+            self._dense_index.add(embeddings)
+            (
+                self._torch,
+                self._query_model,
+                self._query_tokenizer,
+            ) = _load_query_encoder(config)
+
+    def search(
+        self,
+        search_conditions: Sequence[str],
+        *,
+        top_k: int,
+    ) -> list[TrialGPTRuntimeHit]:
+        """Search one patient's stated conditions without using any gold labels."""
+
+        if top_k < 1:
+            raise ValueError("top_k must be at least one")
+        conditions = [item.strip() for item in search_conditions if item.strip()]
+        if not conditions:
+            raise ValueError("at least one non-empty search condition is required")
+
+        if self._bm25 is not None and self._word_tokenize is not None:
+            bm25_rankings = [
+                self._bm25.get_top_n(
+                    _tokenizer(self._word_tokenize, condition),
+                    self._bm25_ids,
+                    n=self._depth,
+                )
+                for condition in conditions
+            ]
+        else:
+            bm25_rankings = [[] for _ in conditions]
+
+        dense_ready = all(
+            item is not None
+            for item in (
+                self._dense_index,
+                self._torch,
+                self._query_model,
+                self._query_tokenizer,
+            )
+        )
+        if dense_ready:
+            encoded = self._query_tokenizer(
+                conditions,
+                truncation=True,
+                padding=True,
+                return_tensors="pt",
+                max_length=self.config.query_max_length,
+            ).to(self.config.device)
+            with self._torch.inference_mode():
+                query_embeddings = (
+                    self._query_model(**encoded)
+                    .last_hidden_state[:, 0, :]
+                    .detach()
+                    .cpu()
+                    .numpy()
+                )
+            _, indices = self._dense_index.search(
+                query_embeddings,
+                k=self._depth,
+            )
+            medcpt_rankings = [
+                [self._dense_ids[index] for index in row] for row in indices
+            ]
+        else:
+            medcpt_rankings = [[] for _ in conditions]
+
+        fused = reciprocal_rank_fusion_with_scores(
+            bm25_rankings,
+            medcpt_rankings,
+            fusion_k=self.config.fusion_k,
+            bm25_weight=self.config.bm25_weight,
+            medcpt_weight=self.config.medcpt_weight,
+        )
+        return [
+            TrialGPTRuntimeHit(
+                rank=rank,
+                score=score,
+                entry=self._entries[trial_id],
+            )
+            for rank, (trial_id, score) in enumerate(fused[:top_k], start=1)
+        ]
 
 
 def run_trialgpt_retrieval(

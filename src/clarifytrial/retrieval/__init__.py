@@ -7,8 +7,11 @@ from .trialgpt import (
     RetrievalMetricRow,
     TrialGPTRetrievalConfig,
     TrialGPTRetrievalSummary,
+    TrialGPTRuntimeHit,
+    TrialGPTRuntimeSearch,
     evaluate_rankings,
     reciprocal_rank_fusion,
+    reciprocal_rank_fusion_with_scores,
     run_trialgpt_retrieval,
 )
 
@@ -20,7 +23,10 @@ __all__ = [
     "SearchHit",
     "TrialGPTRetrievalConfig",
     "TrialGPTRetrievalSummary",
+    "TrialGPTRuntimeHit",
+    "TrialGPTRuntimeSearch",
     "evaluate_rankings",
     "reciprocal_rank_fusion",
+    "reciprocal_rank_fusion_with_scores",
     "run_trialgpt_retrieval",
 ]

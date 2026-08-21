@@ -43,7 +43,12 @@ from .environment import (
 )
 from .evaluation import DecisionGold, score_decision
 from .experiment_tracking import ExperimentStage
-from .llm import AnthropicStructuredModel, ScriptedStructuredModel
+from .llm import (
+    AnthropicStructuredModel,
+    CodexSubscriptionStructuredModel,
+    ScriptedStructuredModel,
+    StructuredModel,
+)
 from .interactive import (
     AcquisitionOption,
     GuidanceOutput,
@@ -61,7 +66,24 @@ from .pilots import (
     run_subscription_strong_review_stage,
     run_trialgpt_pilot,
 )
-from .retrieval import TrialGPTRetrievalConfig, run_trialgpt_retrieval
+from .retrieval import (
+    TrialGPTRetrievalConfig,
+    TrialGPTRuntimeSearch,
+    run_trialgpt_retrieval,
+)
+from .preparation import (
+    CandidateSearch,
+    InMemoryCandidateSearch,
+    NaturalHiddenFactAnswer,
+    NaturalScreeningPipeline,
+    NaturalScreeningRequest,
+    NaturalScreeningResult,
+    TrialGPTCandidateSearch,
+    TrialProtocolSource,
+    build_synthetic_information_tools,
+)
+from .preparation.patient_record import PatientRecordStructurerAgent
+from .preparation.trial_protocol import TrialProtocolStructurerAgent
 from .settings import EpisodeSettings
 from .trace import TraceRecorder
 from .workflow import (
@@ -71,6 +93,7 @@ from .workflow import (
     EpisodeRunner,
     PatientScreeningCase,
     PatientScreeningResult,
+    PatientScreeningRunner,
 )
 
 
@@ -323,6 +346,54 @@ def run_example(case_dir: str | Path, output_dir: str | Path) -> Path:
     return result_path
 
 
+def run_natural_screening_from_files(
+    *,
+    request_path: str | Path,
+    hidden_answers_path: str | Path,
+    output_dir: str | Path,
+    model: StructuredModel,
+    candidate_search: CandidateSearch,
+    episode_settings: EpisodeSettings,
+) -> Path:
+    """Run the natural-text connection with a separate synthetic answer file."""
+
+    request = NaturalScreeningRequest.model_validate(_read_json(Path(request_path)))
+    answers_raw = _read_json(Path(hidden_answers_path))
+    if not isinstance(answers_raw, list):
+        raise ValueError("hidden answers file must contain a JSON list")
+    answers = [NaturalHiddenFactAnswer.model_validate(item) for item in answers_raw]
+    agents = EpisodeAgents(
+        coordinator=CoordinatorAgent(model),
+        matcher_judge=MatcherJudgeAgent(model),
+        next_evidence=NextEvidenceAgent(model),
+        selective_reviewer=SelectiveReviewerAgent(model),
+    )
+    pipeline = NaturalScreeningPipeline(
+        patient_structurer=PatientRecordStructurerAgent(model),
+        trial_structurer=TrialProtocolStructurerAgent(model),
+        candidate_search=candidate_search,
+        screening_runner=PatientScreeningRunner(agents, episode_settings),
+    )
+    trace = TraceRecorder(request.case_id)
+    result = pipeline.run(
+        request,
+        lambda prepared: build_synthetic_information_tools(prepared, answers),
+        trace=trace,
+    )
+    destination = Path(output_dir)
+    result_path = destination / "result.json"
+    _write_json(
+        result_path,
+        {
+            "run_mode": "natural_text_synthetic_information_environment",
+            "medical_disclaimer": _read_disclaimer(),
+            "result": result.model_dump(mode="json"),
+        },
+    )
+    trace.write_jsonl(destination / "trace.jsonl")
+    return result_path
+
+
 def export_schemas(output_dir: str | Path) -> list[Path]:
     """Write the public input, output, environment, and gold-label contracts."""
 
@@ -341,6 +412,8 @@ def export_schemas(output_dir: str | Path) -> list[Path]:
         ("recommendation-views.schema.json", RecommendationViews),
         ("patient-screening-case.schema.json", PatientScreeningCase),
         ("patient-screening-result.schema.json", PatientScreeningResult),
+        ("natural-screening-request.schema.json", NaturalScreeningRequest),
+        ("natural-screening-result.schema.json", NaturalScreeningResult),
     )
     paths: list[Path] = []
     for name, model in models:
@@ -480,6 +553,46 @@ def _parser() -> argparse.ArgumentParser:
     )
     run.add_argument("--case", required=True, type=Path)
     run.add_argument("--output", required=True, type=Path)
+
+    natural = commands.add_parser(
+        "run-natural-screening",
+        help=(
+            "search and structure natural text, then run the multi-trial workflow "
+            "with a separate synthetic answer file"
+        ),
+    )
+    natural.add_argument("--request", required=True, type=Path)
+    natural.add_argument(
+        "--candidate-search",
+        choices=("trialgpt", "local-bm25"),
+        default="trialgpt",
+    )
+    natural.add_argument("--trial-sources", type=Path)
+    natural.add_argument("--trialgpt-corpus", type=Path)
+    natural.add_argument("--trialgpt-cache", type=Path)
+    natural.add_argument(
+        "--trialgpt-corpus-name",
+        choices=("trec_2021", "trec_2022"),
+        default="trec_2022",
+    )
+    natural.add_argument("--retrieval-device", default="cuda")
+    natural.add_argument("--bm25-only", action="store_true")
+    natural.add_argument("--hidden-answers", required=True, type=Path)
+    natural.add_argument("--output", required=True, type=Path)
+    natural.add_argument(
+        "--provider",
+        choices=("codex-subscription", "anthropic"),
+        default="codex-subscription",
+    )
+    natural.add_argument("--api-key-env-file", type=Path)
+    natural.add_argument("--api-key-name", default="ANTHROPIC_API_KEY")
+    natural.add_argument("--model-id", default="claude-sonnet-5")
+    natural.add_argument("--max-output-tokens", type=int, default=8_192)
+    natural.add_argument("--timeout-seconds", type=float, default=180)
+    natural.add_argument("--max-external-actions", type=int, default=3)
+    natural.add_argument("--max-selective-reviews", type=int, default=1)
+    natural.add_argument("--max-cycles", type=int, default=12)
+    natural.add_argument("--confirm-model-run", action="store_true")
 
     schemas = commands.add_parser(
         "export-schemas",
@@ -692,6 +805,79 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "run-example":
         result_path = run_example(args.case, args.output)
+        print(f"result: {result_path}")
+        print(f"trace: {args.output / 'trace.jsonl'}")
+        return 0
+    if args.command == "run-natural-screening":
+        if not args.confirm_model_run:
+            parser.error(
+                "run-natural-screening requires --confirm-model-run because it "
+                "makes live model calls"
+            )
+        settings = EpisodeSettings(
+            max_external_actions=args.max_external_actions,
+            max_selective_reviews=args.max_selective_reviews,
+            max_cycles=args.max_cycles,
+        )
+        if args.candidate_search == "local-bm25":
+            if args.trial_sources is None:
+                parser.error("local-bm25 requires --trial-sources")
+            source_rows = _read_json(args.trial_sources)
+            if not isinstance(source_rows, list):
+                parser.error("--trial-sources must contain a JSON list")
+            candidate_search: CandidateSearch = InMemoryCandidateSearch(
+                [TrialProtocolSource.model_validate(item) for item in source_rows]
+            )
+        else:
+            if args.trialgpt_corpus is None or args.trialgpt_cache is None:
+                parser.error(
+                    "trialgpt candidate search requires --trialgpt-corpus and "
+                    "--trialgpt-cache"
+                )
+            runtime_search = TrialGPTRuntimeSearch(
+                args.trialgpt_corpus,
+                args.trialgpt_cache,
+                TrialGPTRetrievalConfig(
+                    corpus_name=args.trialgpt_corpus_name,
+                    bm25_weight=1,
+                    medcpt_weight=0 if args.bm25_only else 1,
+                    device=args.retrieval_device,
+                ),
+                progress=print,
+            )
+            candidate_search = TrialGPTCandidateSearch(runtime_search)
+        if args.provider == "codex-subscription":
+            with CodexSubscriptionStructuredModel(
+                timeout_seconds=args.timeout_seconds,
+            ) as model:
+                result_path = run_natural_screening_from_files(
+                    request_path=args.request,
+                    hidden_answers_path=args.hidden_answers,
+                    output_dir=args.output,
+                    model=model,
+                    candidate_search=candidate_search,
+                    episode_settings=settings,
+                )
+        else:
+            if args.api_key_env_file is None:
+                parser.error("anthropic provider requires --api-key-env-file")
+            model = AnthropicStructuredModel(
+                api_key=_read_env_value(
+                    args.api_key_env_file,
+                    args.api_key_name,
+                ),
+                model_id=args.model_id,
+                max_output_tokens=args.max_output_tokens,
+                timeout_seconds=args.timeout_seconds,
+            )
+            result_path = run_natural_screening_from_files(
+                request_path=args.request,
+                hidden_answers_path=args.hidden_answers,
+                output_dir=args.output,
+                model=model,
+                candidate_search=candidate_search,
+                episode_settings=settings,
+            )
         print(f"result: {result_path}")
         print(f"trace: {args.output / 'trace.jsonl'}")
         return 0

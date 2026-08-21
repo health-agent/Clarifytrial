@@ -1,0 +1,32 @@
+[
+  {
+    "trial_id": "NCT-SYNTH-A",
+    "title": "Type 2 diabetes glucose study",
+    "conditions": [
+      "type 2 diabetes"
+    ],
+    "summary": "A synthetic diabetes candidate.",
+    "eligibility_text": "HbA1c must be below 7.0 % and measured within 14 days.",
+    "source_location": "synthetic-protocol:A"
+  },
+  {
+    "trial_id": "NCT-SYNTH-B",
+    "title": "Type 2 diabetes monitoring study",
+    "conditions": [
+      "type 2 diabetes"
+    ],
+    "summary": "Another synthetic diabetes candidate.",
+    "eligibility_text": "HbA1c must be below 8.0 % and measured within 14 days.",
+    "source_location": "synthetic-protocol:B"
+  },
+  {
+    "trial_id": "NCT-SYNTH-C",
+    "title": "Major depression study",
+    "conditions": [
+      "major depressive disorder"
+    ],
+    "summary": "An unrelated synthetic candidate.",
+    "eligibility_text": "Current major depressive disorder is required.",
+    "source_location": "synthetic-protocol:C"
+  }
+]
