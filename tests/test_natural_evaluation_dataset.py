@@ -11,6 +11,7 @@ from clarifytrial.datasets import (
     CLARIFYTRIAL_V5_NCT_IDS,
     audit_natural_evaluation_review,
     compare_natural_evaluation_reviews,
+    materialize_natural_evaluation_reserve_sources,
     objective_criterion_candidates,
     prepare_natural_evaluation_sources,
 )
@@ -317,6 +318,37 @@ def test_selection_is_deterministic_and_excludes_invalid_studies(
             first_review,
             force=True,
             fetch_json=fetch_json,
+        )
+
+    reserve_source_path = tmp_path / "first" / "reserve_review.json"
+    reserve_result = materialize_natural_evaluation_reserve_sources(
+        first_review,
+        tmp_path / "first-cache",
+        config,
+        reserve_source_path,
+        group_ids=["type_2_diabetes"],
+    )
+    assert reserve_result["reserve_study_count"] == 1
+    assert reserve_result["review_candidate_count"] == 5
+    reserve_source = json.loads(reserve_source_path.read_text(encoding="utf-8"))
+    assert reserve_source["source_section"] == "reserve_trials"
+    assert reserve_source["group_ids"] == ["type_2_diabetes"]
+    assert reserve_source["trials"] == []
+    assert reserve_source["reserve_trials"][0]["selection_role"] == "reserve"
+    assert len(reserve_source["reserve_trials"][0]["criterion_candidates"]) == 5
+    for reviewer_id in ("reviewer_1", "reviewer_2"):
+        sheet_path = tmp_path / "first" / f"reserve_review_{reviewer_id}.csv"
+        assert sheet_path.exists()
+        with sheet_path.open("r", encoding="utf-8-sig", newline="") as handle:
+            reserve_rows = list(csv.DictReader(handle))
+        assert len(reserve_rows) == 5
+        assert {item["reviewer_id"] for item in reserve_rows} == {reviewer_id}
+    with pytest.raises(FileExistsError, match="already exists"):
+        materialize_natural_evaluation_reserve_sources(
+            first_review,
+            tmp_path / "first-cache",
+            config,
+            reserve_source_path,
         )
 
     reviewer_1 = tmp_path / "first" / "reviewer_1.csv"

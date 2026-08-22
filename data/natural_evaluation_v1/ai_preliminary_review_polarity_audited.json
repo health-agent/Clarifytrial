@@ -1,7 +1,7 @@
 {
   "status": "preliminary_tiered_ai_review",
   "authority": "AI-generated research draft; not physician gold and not independent two-person consensus",
-  "source_sha256": "a8f391941d66e90084350c1505646978b2004ccfe1c652243b73cdacf62f9e94",
+  "source_sha256": "93c0ddaf85e377449cc03b437c6671b62421c83beb25fd65f56ea9ed4a2b43b7",
   "base_model": "gpt-5.6-sol",
   "base_effort": "max",
   "resolution_model": "gpt-5.6-sol",

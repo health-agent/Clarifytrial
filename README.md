@@ -25,6 +25,7 @@ ClarifyTrial은 환자 정보가 아직 완전하지 않은 단계에서 임상�
 | 질문 선택 결과 | 단순 동적 규칙 채택, 평균/최악 우선 전수 계산은 채택 기준 미달로 비교용 보존 |
 | 환자 맞춤 부담과 안내 | 여러 시험의 에이전트 흐름에 연결, 두 추천 목록과 승인 대기 출력 구현. 360개 상황·1,800개 정책 실행 완료 |
 | 자연어 입력 연결 | 한 명령 구현과 합성 검사 완료. Sol `medium` 한 사례에서 질문·공식 결과 확인·두 시험 재판정까지 성공 |
+| 새 자연어 평가 예비자료 | 공개 시험 15건·조건 92개·합성 환자 30명·근거 상태 짝 60회 제작·재계산 완료. 사람 독립 검토는 미완료 |
 | v5 성능 | 구조화 입력의 질문 정책·합성 부담 정책만 측정. 자연어 외부 모델은 한 사례 연결만 확인했고 정확도·임상 성능은 미측정 |
 
 저장소에는 합성 환자 사례만 둔다. 과거 Solar 합성 데모 수치와 84% 결과는 v5의
@@ -62,6 +63,19 @@ py -3.12 -m venv .venv
 이 명령은 모델을 호출하지 않는다. 본 시험 15건과 예비 15건의 공식 원문을 고정하고,
 두 사람이 따로 작성할 CSV를 만든다. 자동으로 찾은 문구는 정답이 아니며 작성 방법은
 [검토 안내](data/natural_evaluation_v1/README.md)에 있다.
+
+현재 AI 검토 기반 예비 시험 구성과 합성 환자 짝 자료는 다음 명령으로 다시 검사한다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe audit-natural-evaluation-patient-pairs `
+  --trial-set data\natural_evaluation_v1\preliminary_trial_set.json `
+  --generation-config configs\natural_evaluation_patient_generation_v1.json `
+  --patient-pairs data\natural_evaluation_v1\preliminary_patient_pairs.json
+```
+
+검사는 환자 30명·60회에서 임상값과 후보 결과가 짝마다 같은지, 부족한 근거를 확인한
+뒤 충분한 근거 쪽 판단으로 돌아오는지 전부 다시 계산한다. 이 파일은 사람 독립 검토
+전의 예비자료이며 에이전트 성능 결과가 아니다.
 
 `run-example` 명령은 오래된 혈액검사만 있는 상태에서 후보를 유지하고, 최근 공식 결과를
 받은 뒤 현재 조건 확인을 끝내는 합성 사례를 실행한다. 결과는 `result.json`, 역할별
@@ -204,7 +218,8 @@ PyTorch를 사용했다.
 | `src/clarifytrial/interactive/burden_benchmark.py` | 360개 상황 실행, 부담·회복 지표와 채택 기준 계산 |
 | `configs/interactive_public_benchmark_v1.json` | 공개 시험 15건·조건 80개·합성 환자 30명의 고정 자료 |
 | `configs/natural_evaluation_source_selection_v1.json` | 새 자연어 평가 시험을 결과와 무관하게 고르는 고정 규칙 |
-| `data/natural_evaluation_v1/` | 새 본 시험 15건의 조건 원문 272줄, 독립 검토표와 AI 단독 예비 조건 62개 |
+| `configs/natural_evaluation_patient_generation_v1.json` | 새 합성 환자 30명의 확인 대상 사실과 개발·고정 평가 분할 |
+| `data/natural_evaluation_v1/` | 새 시험 15건·조건 92개와 합성 환자 30명·근거 상태 짝 60회의 AI 검토 기반 예비자료 |
 | `src/clarifytrial/pilots/` | 조건 묶음 실행, 비용·오류 지표와 지시문 비교 |
 | `prompts/` | 에이전트별 역할, 입력, 허용 도구와 출력 형식 |
 | `examples/stale_lab/` | 시스템 입력, 숨은 답변과 평가 정답을 나눈 합성 사례 |
@@ -364,7 +379,7 @@ TrialGPT 조건 판단은 서로 다른 실행으로 유지한다.
 | 12 | 기존 자료·새 검사와 환자별 추가 부담을 반영한 다음 행동 비교 | 구현 완료, 360개 상황·1,800개 정책 실행과 채택 기준 검사 완료 |
 | 13 | 환자 부담 규칙과 두 추천 목록을 여러 시험 에이전트 흐름에 연결 | 합성 통합 실행과 식별자·승인 경계 검사 완료 |
 | 14 | 자연어 기록·시험 원문에서 전체 흐름 실행 | 합성 검사와 Sol 한 사례 연결 완료. 새 시험 원문 272줄은 AI 예비 검토해 단순 조건 62개 확보 |
-| 15 | 새 시험·환자 평가자료 제작 | 조건이 부족한 시험 교체와 환자 30명·근거 상태 짝 60회 제작 전 |
+| 15 | 새 시험·환자 평가자료 제작 | 본 시험 6건 교체, 새 시험 15건·조건 92개와 환자 30명·근거 상태 짝 60회 제작·재계산 완료. 사람 검토 전 예비자료 |
 
 구현 세부는
 [RAG·평가 구현계획](docs/internal/CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)을

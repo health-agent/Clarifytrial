@@ -18,6 +18,7 @@ from ..llm import ModelCall, ModelUsage, StructuredModel
 from ..preparation.contracts import TrialCriterionDraft
 from ..preparation.source_matching import SourceValidationError
 from ..preparation.structured_value_validation import validate_trial_criterion_source
+from .integrity import portable_text_sha256
 from .natural_evaluation import load_natural_evaluation_selection_config
 
 
@@ -69,6 +70,7 @@ class AiObjectiveAnnotation(_ReviewModel):
 
 AiDecision = Literal["include", "exclude", "uncertain"]
 AiConfidence = Literal["high", "medium", "low"]
+NaturalEvaluationSourceSection = Literal["trials", "reserve_trials"]
 AiReasonCode = Literal[
     "objective_numeric",
     "objective_temporal",
@@ -135,6 +137,33 @@ def _trial_payload(trial: Mapping[str, Any]) -> dict[str, Any]:
             for candidate in trial["criterion_candidates"]
         ],
     }
+
+
+def _selected_source_trials(
+    payload: Mapping[str, Any],
+    *,
+    source_section: NaturalEvaluationSourceSection,
+    group_ids: Sequence[str] | None,
+) -> tuple[list[Mapping[str, Any]], list[str]]:
+    raw_trials = payload.get(source_section)
+    if not isinstance(raw_trials, list) or not raw_trials:
+        raise ValueError(f"source review has no trials in {source_section}")
+    available_groups = list(dict.fromkeys(str(row["group_id"]) for row in raw_trials))
+    selected_groups = list(group_ids or available_groups)
+    if not selected_groups:
+        raise ValueError("at least one disease group is required")
+    if len(selected_groups) != len(set(selected_groups)):
+        raise ValueError("disease groups must not repeat")
+    unknown = set(selected_groups) - set(available_groups)
+    if unknown:
+        raise ValueError(
+            "source review does not contain disease groups: "
+            + ", ".join(sorted(unknown))
+        )
+    selected = [
+        row for row in raw_trials if str(row["group_id"]) in selected_groups
+    ]
+    return selected, selected_groups
 
 
 def validate_ai_review_batch(
@@ -271,7 +300,7 @@ def _run_pass(
     completed_chunks: dict[str, dict[int, AiCriterionReviewBatch]] = {}
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
     prompt_path = Path(__file__).resolve().parents[3] / prompt_id
-    prompt_sha256 = hashlib.sha256(prompt_path.read_bytes()).hexdigest()
+    prompt_sha256 = portable_text_sha256(prompt_path)
 
     def checkpoint_hash(
         trial: Mapping[str, Any],
@@ -526,6 +555,8 @@ def run_natural_evaluation_ai_review(
     model: StructuredModel,
     model_id: str,
     effort: str,
+    source_section: NaturalEvaluationSourceSection = "trials",
+    group_ids: Sequence[str] | None = None,
     concurrency: int = 3,
     chunk_size: int = 6,
     progress: Callable[[str], None] = lambda _: None,
@@ -542,9 +573,11 @@ def run_natural_evaluation_ai_review(
     if review_output.exists() or gold_output.exists():
         raise FileExistsError("AI review outputs already exist")
     payload = json.loads(source.read_text(encoding="utf-8"))
-    trials = payload.get("trials")
-    if not isinstance(trials, list) or not trials:
-        raise ValueError("source review has no primary trials")
+    trials, selected_groups = _selected_source_trials(
+        payload,
+        source_section=source_section,
+        group_ids=group_ids,
+    )
 
     first, first_usage = _run_pass(
         trials=trials,
@@ -579,7 +612,7 @@ def run_natural_evaluation_ai_review(
     decision_counts = Counter(item["decision"] for item in review_rows)
     reason_counts = Counter(item["reason_code"] for item in review_rows)
     usage_rows = [*first_usage, *final_usage]
-    source_digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    source_digest = portable_text_sha256(source)
     review_document = {
         "status": "preliminary_single_ai_double_pass",
         "authority": (
@@ -588,6 +621,8 @@ def run_natural_evaluation_ai_review(
         ),
         "source_path": str(source_path),
         "source_sha256": source_digest,
+        "source_section": source_section,
+        "group_ids": selected_groups,
         "model": model_id,
         "effort": effort,
         "passes": 2,
@@ -604,6 +639,8 @@ def run_natural_evaluation_ai_review(
         "status": "preliminary_single_ai_reviewed_gold",
         "authority": review_document["authority"],
         "source_sha256": source_digest,
+        "source_section": source_section,
+        "group_ids": selected_groups,
         "model": model_id,
         "effort": effort,
         "criterion_count": len(gold_rows),
@@ -632,6 +669,8 @@ def run_natural_evaluation_max_resolution(
     model: StructuredModel,
     model_id: str,
     effort: str = "max",
+    source_section: NaturalEvaluationSourceSection | None = None,
+    group_ids: Sequence[str] | None = None,
     concurrency: int = 3,
     chunk_size: int = 3,
     selection_mode: Literal["uncertain_or_medium", "included"] = (
@@ -647,11 +686,22 @@ def run_natural_evaluation_max_resolution(
         raise FileExistsError("maximum-resolution outputs already exist")
     source_path = Path(source_path)
     source = json.loads(source_path.read_text(encoding="utf-8"))
-    trials = source.get("trials")
-    if not isinstance(trials, list) or not trials:
-        raise ValueError("source review has no primary trials")
     base_review_path = Path(base_review_path)
     base_document = json.loads(base_review_path.read_text(encoding="utf-8"))
+    base_section = str(base_document.get("source_section", "trials"))
+    resolved_section = source_section or base_section
+    if resolved_section != base_section:
+        raise ValueError("maximum review source section differs from the base review")
+    base_groups = base_document.get("group_ids")
+    resolved_groups = list(group_ids) if group_ids is not None else base_groups
+    if group_ids is not None and base_groups is not None:
+        if list(group_ids) != list(base_groups):
+            raise ValueError("maximum review disease groups differ from the base review")
+    trials, selected_groups = _selected_source_trials(
+        source,
+        source_section=resolved_section,
+        group_ids=resolved_groups,
+    )
     raw_by_id = {
         str(item["candidate_id"]): item for item in base_document.get("reviews", [])
     }
@@ -749,7 +799,7 @@ def run_natural_evaluation_max_resolution(
     remaining_uncertain = sum(
         item["decision"] == "uncertain" for item in review_rows
     )
-    source_digest = hashlib.sha256(source_path.read_bytes()).hexdigest()
+    source_digest = portable_text_sha256(source_path)
     base_usage = dict(base_document.get("usage", {}))
     max_usage = _sum_usage(max_usage_rows)
     review_document = {
@@ -759,9 +809,9 @@ def run_natural_evaluation_max_resolution(
             "two-person consensus"
         ),
         "source_sha256": source_digest,
-        "base_review_sha256": hashlib.sha256(
-            base_review_path.read_bytes()
-        ).hexdigest(),
+        "source_section": resolved_section,
+        "group_ids": selected_groups,
+        "base_review_sha256": portable_text_sha256(base_review_path),
         "base_review_status": base_document.get("status"),
         "base_model": (
             base_document.get("resolution_model")
@@ -814,6 +864,8 @@ def build_conservative_natural_ai_gold(
     tiered_review_path: str | Path,
     selection_config_path: str | Path,
     output_path: str | Path,
+    source_section: NaturalEvaluationSourceSection | None = None,
+    group_ids: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     """Keep only high-confidence, source-validated AI annotations.
 
@@ -829,11 +881,22 @@ def build_conservative_natural_ai_gold(
         raise FileExistsError("conservative AI gold output already exists")
 
     source = json.loads(source_path.read_text(encoding="utf-8"))
-    trials = source.get("trials")
-    if not isinstance(trials, list) or not trials:
-        raise ValueError("source review has no primary trials")
     review_document = json.loads(tiered_review_path.read_text(encoding="utf-8"))
-    source_digest = hashlib.sha256(source_path.read_bytes()).hexdigest()
+    review_section = str(review_document.get("source_section", "trials"))
+    resolved_section = source_section or review_section
+    if resolved_section != review_section:
+        raise ValueError("conservative gold source section differs from the review")
+    review_groups = review_document.get("group_ids")
+    resolved_groups = list(group_ids) if group_ids is not None else review_groups
+    if group_ids is not None and review_groups is not None:
+        if list(group_ids) != list(review_groups):
+            raise ValueError("conservative gold disease groups differ from the review")
+    trials, selected_groups = _selected_source_trials(
+        source,
+        source_section=resolved_section,
+        group_ids=resolved_groups,
+    )
+    source_digest = portable_text_sha256(source_path)
     if review_document.get("source_sha256") != source_digest:
         raise ValueError("tiered AI review does not match the frozen source")
 
@@ -985,9 +1048,9 @@ def build_conservative_natural_ai_gold(
             "independent two-person consensus"
         ),
         "source_sha256": source_digest,
-        "tiered_review_sha256": hashlib.sha256(
-            tiered_review_path.read_bytes()
-        ).hexdigest(),
+        "source_section": resolved_section,
+        "group_ids": selected_groups,
+        "tiered_review_sha256": portable_text_sha256(tiered_review_path),
         "selection_config": str(selection_config_path),
         "minimum_accepted_source_lines_per_trial": (
             config.minimum_objective_lines

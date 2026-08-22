@@ -43,6 +43,10 @@
 - 검토 초안: `data/natural_evaluation_v1/criterion_review.json`
 - AI 전체 검토: `data/natural_evaluation_v1/ai_preliminary_review_polarity_audited.json`
 - 단순 규칙 예비 정답: `data/natural_evaluation_v1/ai_preliminary_gold_conservative.json`
+- 예비 시험 검토 초안과 사람 검토표: `data/natural_evaluation_v1/reserve_criterion_review.json`,
+  `data/natural_evaluation_v1/reserve_reviewer_1.csv`, `reserve_reviewer_2.csv`
+- 교체 뒤 예비 시험 구성: `data/natural_evaluation_v1/preliminary_trial_set.json`
+- 새 합성 환자 짝: `data/natural_evaluation_v1/preliminary_patient_pairs.json`
 - 범위: 질환별 본 시험 5건과 예비 5건, 총 30건
 - 본 시험의 자동 탐지 문구: 제2형 당뇨병 47개, 유방암 61개, 주요우울장애 56개,
   총 164개
@@ -64,6 +68,13 @@ AI 단독 예비 검토는 272줄 가운데 단순 규칙으로 안전하게 옮
 62조건을 만들었다. 공개 원문의 글자 위치, 수치, 비교 방향과 단위를 다시 검사했지만
 사람 두 명의 독립 확인은 받지 않았다. 따라서 이 파일은 합성 환자 제작용 예비 자료이며
 의료 전문가 정답이나 ClinicalTrials.gov의 공식 해석이 아니다.
+
+조건이 부족한 본 시험을 교체하기 위해 이미 저장한 유방암·우울장애 예비 시험 10건의
+원문 231줄도 같은 방식으로 검토했다. 새 외부 자료를 받지 않았으며 원래 수집 시각과
+ClinicalTrials.gov 이용 조건을 그대로 따른다. 교체 뒤 구성은 15건·92조건이다.
+이 조건에서 만든 환자 30명·근거 상태 짝 60회는 모두 합성 자료다. 자료 상태에 따른
+출처 허용 규칙은 평가용 정책이며 각 임상시험이 특정 기록 출처를 요구한다고 해석하지
+않는다.
 
 ## TrialGPT Criterion Annotations
 

@@ -1,0 +1,53 @@
+{
+  "protocol_id": "clarifytrial-natural-patient-pairs-v1",
+  "profile_count_per_group": 10,
+  "as_of": "2026-08-21T12:00:00+00:00",
+  "fact_aliases": {
+    "age_years": "age",
+    "bmi": "body_mass_index",
+    "bmi_at_screening": "body_mass_index",
+    "able_to_speak_english": "english_speaking",
+    "hemoglobin_level": "hemoglobin"
+  },
+  "groups": [
+    {
+      "group_id": "type_2_diabetes",
+      "development_profile_count": 4,
+      "fixed_values": {},
+      "pivotal_values": {
+        "body_mass_index": 30.0,
+        "age": 55.0,
+        "english_speaking": 1.0,
+        "hba1c_at_screening": 8.5,
+        "sleep_disorder_diagnosis": 0.0
+      }
+    },
+    {
+      "group_id": "breast_cancer",
+      "development_profile_count": 3,
+      "fixed_values": {
+        "hemoglobin|g/L": 120.0,
+        "hemoglobin|g/dL": 12.0
+      },
+      "pivotal_values": {
+        "age": 50.0,
+        "absolute_neutrophil_count": 3.0,
+        "platelet_count": 150.0,
+        "prior_systemic_treatment_count": 1.0,
+        "albumin_adjusted_serum_calcium": 9.5
+      }
+    },
+    {
+      "group_id": "major_depressive_disorder",
+      "development_profile_count": 3,
+      "fixed_values": {},
+      "pivotal_values": {
+        "age": 40.0,
+        "body_mass_index": 25.0,
+        "isi_score": 12.0,
+        "dsm5_major_depressive_disorder": 1.0,
+        "ability_to_refrain_from_nicotine_during_dosing_session": 1.0
+      }
+    }
+  ]
+}

@@ -20,6 +20,7 @@ from .clinicaltrials_gov import (
     CLARIFYTRIAL_V5_NCT_IDS,
     TERMS_URL,
 )
+from .integrity import portable_text_sha256
 
 
 JsonFetcher = Callable[[str], Mapping[str, Any]]
@@ -659,6 +660,138 @@ def prepare_natural_evaluation_sources(
         ),
         "group_summaries": group_summaries,
         "audit": audit,
+    }
+
+
+def materialize_natural_evaluation_reserve_sources(
+    review_path: str | Path,
+    cache_dir: str | Path,
+    selection_config_path: str | Path,
+    output_path: str | Path,
+    *,
+    group_ids: Sequence[str] | None = None,
+) -> dict[str, Any]:
+    """Rebuild reserve review rows from the already frozen public records.
+
+    The original review draft intentionally keeps reserve studies as metadata
+    only.  This function creates a separate, derived review source when a
+    reserve study must be inspected.  It never changes the original review or
+    its human-review sheets.
+    """
+
+    source_path = Path(review_path)
+    destination = Path(output_path)
+    sheet_prefix = destination.stem.removesuffix("_criterion_review")
+    reviewer_1_path = destination.with_name(f"{sheet_prefix}_reviewer_1.csv")
+    reviewer_2_path = destination.with_name(f"{sheet_prefix}_reviewer_2.csv")
+    if any(path.exists() for path in (destination, reviewer_1_path, reviewer_2_path)):
+        raise FileExistsError("reserve review source or reviewer sheet already exists")
+
+    source = json.loads(source_path.read_text(encoding="utf-8"))
+    config = load_natural_evaluation_selection_config(selection_config_path)
+    if source.get("protocol_id") != config.protocol_id:
+        raise ValueError("review protocol_id differs from selection config")
+    reserves = source.get("reserve_trials")
+    if not isinstance(reserves, list):
+        raise ValueError("review must contain a reserve_trials list")
+
+    available_groups = list(dict.fromkeys(item.get("group_id") for item in reserves))
+    selected_groups = list(group_ids or available_groups)
+    if not selected_groups or any(
+        not isinstance(group_id, str) or not group_id for group_id in selected_groups
+    ):
+        raise ValueError("at least one valid disease group is required")
+    if len(selected_groups) != len(set(selected_groups)):
+        raise ValueError("disease groups must not be repeated")
+    unknown_groups = set(selected_groups) - set(available_groups)
+    if unknown_groups:
+        raise ValueError(
+            "unknown reserve disease groups: " + ", ".join(sorted(unknown_groups))
+        )
+
+    records_dir = Path(cache_dir) / "records"
+    materialized = []
+    for metadata in reserves:
+        if metadata.get("group_id") not in selected_groups:
+            continue
+        nct_id = str(metadata.get("nct_id", ""))
+        record_path = records_dir / f"{nct_id}.json"
+        if not record_path.exists():
+            raise ValueError(f"source record is missing for {nct_id}")
+        record = json.loads(record_path.read_text(encoding="utf-8"))
+        row = _study_row(
+            record,
+            group_id=str(metadata["group_id"]),
+            seed=config.selection_seed,
+        )
+        compared_fields = (
+            "group_id",
+            "nct_id",
+            "title",
+            "overall_status",
+            "conditions",
+            "objective_candidate_count",
+            "review_candidate_count",
+            "eligibility_sha256",
+            "study_url",
+        )
+        changed_fields = [
+            field for field in compared_fields if row.get(field) != metadata.get(field)
+        ]
+        if changed_fields:
+            raise ValueError(
+                f"frozen reserve metadata differs for {nct_id}: "
+                + ", ".join(changed_fields)
+            )
+        materialized.append(_review_trial(row, "reserve"))
+
+    expected_counts = {
+        group_id: sum(
+            item.get("group_id") == group_id for item in reserves
+        )
+        for group_id in selected_groups
+    }
+    actual_counts = {
+        group_id: sum(
+            item.get("group_id") == group_id for item in materialized
+        )
+        for group_id in selected_groups
+    }
+    if actual_counts != expected_counts:
+        raise ValueError("materialized reserve counts differ from the frozen review")
+
+    payload = {
+        "protocol_id": config.protocol_id,
+        "status": "derived_reserve_review_source",
+        "authority": (
+            "Deterministically reconstructed from the frozen ClinicalTrials.gov "
+            "records; no clinical labels have been assigned"
+        ),
+        "source": source.get("source"),
+        "data_timestamp": source.get("data_timestamp"),
+        "retrieved_at": source.get("retrieved_at"),
+        "attribution": source.get("attribution"),
+        "parent_source_path": str(review_path),
+        "parent_source_sha256": portable_text_sha256(source_path),
+        "source_section": "reserve_trials",
+        "group_ids": selected_groups,
+        "trials": [],
+        "reserve_trials": materialized,
+    }
+    _write_json(destination, payload)
+    reviewer_payload = {**payload, "trials": materialized}
+    _write_reviewer_csv(reviewer_payload, reviewer_1_path, "reviewer_1")
+    _write_reviewer_csv(reviewer_payload, reviewer_2_path, "reviewer_2")
+    return {
+        "output": str(destination),
+        "reviewer_1": str(reviewer_1_path),
+        "reviewer_2": str(reviewer_2_path),
+        "group_ids": selected_groups,
+        "reserve_study_count": len(materialized),
+        "review_candidate_count": sum(
+            len(item["criterion_candidates"]) for item in materialized
+        ),
+        "group_counts": actual_counts,
     }
 
 

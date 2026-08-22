@@ -24,12 +24,16 @@ from .contracts import (
     TrialDecision,
 )
 from .datasets import (
+    audit_natural_evaluation_patient_pairs,
+    build_natural_evaluation_trial_set,
+    build_natural_evaluation_patient_pairs,
     compare_natural_evaluation_reviews,
     fetch_clinicaltrials_v5_sources,
     fetch_trialgpt_dataset,
     group_patient_trial_pairs,
     load_sigir_trial_metadata,
     load_trialgpt_rows,
+    materialize_natural_evaluation_reserve_sources,
     prepare_natural_evaluation_sources,
     select_full_trialgpt_pairs,
     select_pilot_pairs,
@@ -662,6 +666,39 @@ def _parser() -> argparse.ArgumentParser:
         help="replace blank review files; never use after human review has begun",
     )
 
+    materialize_reserves = commands.add_parser(
+        "materialize-natural-evaluation-reserves",
+        help="rebuild reserve review rows from the already frozen source records",
+    )
+    materialize_reserves.add_argument(
+        "--source",
+        type=Path,
+        default=Path("data") / "natural_evaluation_v1" / "criterion_review.json",
+    )
+    materialize_reserves.add_argument(
+        "--cache",
+        type=Path,
+        default=Path(".research-cache") / "clinicaltrials-natural-evaluation-v1",
+    )
+    materialize_reserves.add_argument(
+        "--selection-config",
+        type=Path,
+        default=Path("configs") / "natural_evaluation_source_selection_v1.json",
+    )
+    materialize_reserves.add_argument(
+        "--output",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "reserve_criterion_review.json",
+    )
+    materialize_reserves.add_argument(
+        "--group",
+        dest="group_ids",
+        action="append",
+        help="repeat to materialize only selected disease groups",
+    )
+
     compare_natural_reviews = commands.add_parser(
         "compare-natural-evaluation-reviews",
         help="compare two independent criterion review sheets without resolving them",
@@ -723,6 +760,17 @@ def _parser() -> argparse.ArgumentParser:
     )
     ai_natural_review.add_argument("--model", default="gpt-5.6-sol")
     ai_natural_review.add_argument(
+        "--source-section",
+        choices=("trials", "reserve_trials"),
+        default="trials",
+    )
+    ai_natural_review.add_argument(
+        "--group",
+        dest="group_ids",
+        action="append",
+        help="repeat to review only selected disease groups",
+    )
+    ai_natural_review.add_argument(
         "--effort",
         choices=sorted(ALLOWED_CODEX_EFFORTS),
         default="max",
@@ -773,6 +821,17 @@ def _parser() -> argparse.ArgumentParser:
     )
     resolve_ai_natural_review.add_argument("--model", default="gpt-5.6-sol")
     resolve_ai_natural_review.add_argument(
+        "--source-section",
+        choices=("trials", "reserve_trials"),
+        default=None,
+    )
+    resolve_ai_natural_review.add_argument(
+        "--group",
+        dest="group_ids",
+        action="append",
+        help="repeat to match the base review disease groups",
+    )
+    resolve_ai_natural_review.add_argument(
         "--effort",
         choices=sorted(ALLOWED_CODEX_EFFORTS),
         default="max",
@@ -822,11 +881,115 @@ def _parser() -> argparse.ArgumentParser:
         / "natural_evaluation_source_selection_v1.json",
     )
     conservative_ai_gold.add_argument(
+        "--source-section",
+        choices=("trials", "reserve_trials"),
+        default=None,
+    )
+    conservative_ai_gold.add_argument(
+        "--group",
+        dest="group_ids",
+        action="append",
+        help="repeat to match the reviewed disease groups",
+    )
+    conservative_ai_gold.add_argument(
         "--output",
         type=Path,
         default=Path("data")
         / "natural_evaluation_v1"
         / "ai_preliminary_gold_conservative.json",
+    )
+
+    final_natural_trial_set = commands.add_parser(
+        "build-natural-evaluation-trial-set",
+        help="replace low-coverage primaries with qualifying frozen reserves",
+    )
+    final_natural_trial_set.add_argument(
+        "--primary-source",
+        type=Path,
+        default=Path("data") / "natural_evaluation_v1" / "criterion_review.json",
+    )
+    final_natural_trial_set.add_argument(
+        "--reserve-source",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "reserve_criterion_review.json",
+    )
+    final_natural_trial_set.add_argument(
+        "--primary-gold",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "ai_preliminary_gold_conservative.json",
+    )
+    final_natural_trial_set.add_argument(
+        "--reserve-gold",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "ai_preliminary_reserve_gold_conservative.json",
+    )
+    final_natural_trial_set.add_argument(
+        "--selection-config",
+        type=Path,
+        default=Path("configs") / "natural_evaluation_source_selection_v1.json",
+    )
+    final_natural_trial_set.add_argument(
+        "--output",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_trial_set.json",
+    )
+
+    natural_patient_pairs = commands.add_parser(
+        "build-natural-evaluation-patient-pairs",
+        help="generate paired synthetic patients from the frozen trial set",
+    )
+    natural_patient_pairs.add_argument(
+        "--trial-set",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_trial_set.json",
+    )
+    natural_patient_pairs.add_argument(
+        "--generation-config",
+        type=Path,
+        default=Path("configs")
+        / "natural_evaluation_patient_generation_v1.json",
+    )
+    natural_patient_pairs.add_argument(
+        "--output",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_patient_pairs.json",
+    )
+
+    audit_natural_pairs = commands.add_parser(
+        "audit-natural-evaluation-patient-pairs",
+        help="recompute every paired synthetic evaluation episode",
+    )
+    audit_natural_pairs.add_argument(
+        "--trial-set",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_trial_set.json",
+    )
+    audit_natural_pairs.add_argument(
+        "--generation-config",
+        type=Path,
+        default=Path("configs")
+        / "natural_evaluation_patient_generation_v1.json",
+    )
+    audit_natural_pairs.add_argument(
+        "--patient-pairs",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_patient_pairs.json",
     )
 
     pilot = commands.add_parser(
@@ -1129,6 +1292,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         print(f"source_audit_passed: {prepared['audit']['passed']}")
         return 0
+    if args.command == "materialize-natural-evaluation-reserves":
+        result = materialize_natural_evaluation_reserve_sources(
+            review_path=args.source,
+            cache_dir=args.cache,
+            selection_config_path=args.selection_config,
+            output_path=args.output,
+            group_ids=args.group_ids,
+        )
+        print(f"reserve_review_source: {result['output']}")
+        print(f"reserve_reviewer_1: {result['reviewer_1']}")
+        print(f"reserve_reviewer_2: {result['reviewer_2']}")
+        print(
+            f"studies={result['reserve_study_count']} "
+            f"review_rows={result['review_candidate_count']}"
+        )
+        return 0
     if args.command == "compare-natural-evaluation-reviews":
         comparison = compare_natural_evaluation_reviews(
             args.source,
@@ -1166,6 +1345,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 model=model,
                 model_id=args.model,
                 effort=args.effort,
+                source_section=args.source_section,
+                group_ids=args.group_ids,
                 concurrency=args.concurrency,
                 chunk_size=args.chunk_size,
                 progress=print,
@@ -1209,6 +1390,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 model=model,
                 model_id=args.model,
                 effort=args.effort,
+                source_section=args.source_section,
+                group_ids=args.group_ids,
                 concurrency=args.concurrency,
                 chunk_size=args.chunk_size,
                 selection_mode=args.selection_mode,
@@ -1236,6 +1419,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             tiered_review_path=args.tiered_review,
             selection_config_path=args.selection_config,
             output_path=args.output,
+            source_section=args.source_section,
+            group_ids=args.group_ids,
         )
         print(f"conservative_preliminary_gold: {result['output']}")
         print(
@@ -1248,6 +1433,54 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(
             "low_coverage_trials="
             + ",".join(result["low_coverage_trial_ids"])
+        )
+        return 0
+    if args.command == "build-natural-evaluation-trial-set":
+        result = build_natural_evaluation_trial_set(
+            primary_source_path=args.primary_source,
+            reserve_source_path=args.reserve_source,
+            primary_gold_path=args.primary_gold,
+            reserve_gold_path=args.reserve_gold,
+            selection_config_path=args.selection_config,
+            output_path=args.output,
+        )
+        print(f"preliminary_trial_set: {result['output']}")
+        print(
+            f"trials={result['trial_count']} "
+            f"criteria={result['criterion_count']} "
+            f"replacements={result['replacement_count']}"
+        )
+        return 0
+    if args.command == "build-natural-evaluation-patient-pairs":
+        result = build_natural_evaluation_patient_pairs(
+            trial_set_path=args.trial_set,
+            generation_config_path=args.generation_config,
+            output_path=args.output,
+        )
+        print(f"preliminary_patient_pairs: {result['output']}")
+        print(
+            f"patients={result['patient_count']} "
+            f"episodes={result['episode_count']} "
+            f"development={result['development_patient_count']} "
+            f"heldout={result['heldout_patient_count']} "
+            "changed_confirmations="
+            f"{result['paired_confirmation_change_count']}"
+        )
+        return 0
+    if args.command == "audit-natural-evaluation-patient-pairs":
+        result = audit_natural_evaluation_patient_pairs(
+            trial_set_path=args.trial_set,
+            generation_config_path=args.generation_config,
+            patient_pairs_path=args.patient_pairs,
+        )
+        print(
+            f"passed={result['passed']} "
+            f"patients={result['patient_count']} "
+            f"episodes={result['episode_count']} "
+            "candidate_mismatches="
+            f"{result['candidate_status_mismatch_count']} "
+            "recovery_mismatches="
+            f"{result['verification_recovery_mismatch_count']}"
         )
         return 0
     if args.command == "run-trialgpt-pilot":

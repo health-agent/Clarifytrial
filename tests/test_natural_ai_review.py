@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-import hashlib
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -14,6 +14,7 @@ from clarifytrial.datasets.natural_ai_review import (
     run_natural_evaluation_max_resolution,
     validate_ai_review_batch,
 )
+from clarifytrial.datasets.integrity import portable_text_sha256
 from clarifytrial.llm import ScriptedStructuredModel
 
 
@@ -107,6 +108,21 @@ def _heading_review(decision: str) -> dict:
     }
 
 
+def _reviews_for_trial(trial: dict, heading_decision: str) -> list[dict]:
+    templates = [
+        _numeric_review(),
+        _heading_review(heading_decision),
+        _categorical_review(),
+    ]
+    for template, candidate in zip(
+        templates,
+        trial["criterion_candidates"],
+        strict=True,
+    ):
+        template["candidate_id"] = candidate["candidate_id"]
+    return templates
+
+
 def test_two_pass_ai_review_writes_preliminary_outputs_and_reuses_checkpoints(
     tmp_path: Path,
 ) -> None:
@@ -174,6 +190,56 @@ def test_two_pass_ai_review_writes_preliminary_outputs_and_reuses_checkpoints(
         concurrency=1,
     )
     assert reused["criterion_count"] == 2
+
+
+def test_ai_review_can_select_reserve_trials_and_disease_groups(
+    tmp_path: Path,
+) -> None:
+    reserve = deepcopy(_trial())
+    reserve["group_id"] = "breast_cancer"
+    reserve["nct_id"] = "NCT90000002"
+    for index, candidate in enumerate(reserve["criterion_candidates"], start=1):
+        candidate["candidate_id"] = f"NCT90000002:candidate:{index:03d}"
+    source = tmp_path / "source.json"
+    source.write_text(
+        json.dumps(
+            {
+                "trials": [_trial()],
+                "reserve_trials": [reserve],
+            }
+        ),
+        encoding="utf-8",
+    )
+    model = ScriptedStructuredModel(
+        {
+            "natural_criterion_ai_review": lambda _: {
+                "reviews": _reviews_for_trial(reserve, "uncertain")
+            },
+            "natural_criterion_ai_audit": lambda _: {
+                "reviews": _reviews_for_trial(reserve, "exclude")
+            },
+        }
+    )
+    review_path = tmp_path / "review.json"
+
+    result = run_natural_evaluation_ai_review(
+        source_path=source,
+        review_output_path=review_path,
+        gold_output_path=tmp_path / "gold.json",
+        checkpoint_dir=tmp_path / "checkpoints",
+        model=model,
+        model_id="scripted-local",
+        effort="max",
+        source_section="reserve_trials",
+        group_ids=["breast_cancer"],
+        concurrency=1,
+    )
+
+    review = json.loads(review_path.read_text(encoding="utf-8"))
+    assert result["source_line_count"] == 3
+    assert review["source_section"] == "reserve_trials"
+    assert review["group_ids"] == ["breast_cancer"]
+    assert {row["nct_id"] for row in review["reviews"]} == {"NCT90000002"}
 
 
 def test_numeric_value_not_supported_by_source_is_downgraded() -> None:
@@ -395,9 +461,7 @@ def test_conservative_gold_keeps_high_confidence_and_reports_low_coverage(
     review_path.write_text(
         json.dumps(
             {
-                "source_sha256": hashlib.sha256(
-                    source.read_bytes()
-                ).hexdigest(),
+                "source_sha256": portable_text_sha256(source),
                 "reviews": rows,
             }
         ),
@@ -524,9 +588,7 @@ def test_committed_conservative_ai_gold_is_source_bound_and_representable() -> N
     source = json.loads(source_path.read_text(encoding="utf-8"))
     gold = json.loads(gold_path.read_text(encoding="utf-8"))
 
-    assert gold["source_sha256"] == hashlib.sha256(
-        source_path.read_bytes()
-    ).hexdigest()
+    assert gold["source_sha256"] == portable_text_sha256(source_path)
     assert gold["criterion_count"] >= 60
     criteria = gold["criteria"]
     assert len({row["criterion_id"] for row in criteria}) == len(criteria)
