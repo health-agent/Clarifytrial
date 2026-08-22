@@ -31,6 +31,7 @@ from ..interactive.contracts import (
     InteractiveSnapshot,
     InteractiveTrial,
 )
+from ..reporting import build_ineligible_boundary_differences
 from ..settings import EpisodeSettings
 from .patient_screening_contracts import (
     PatientScreeningActionRecord,
@@ -277,6 +278,15 @@ def build_screening_result(
         decision_history=history,
         action_history=actions,
         review_history=reviews,
+        ineligible_boundary_differences=build_ineligible_boundary_differences(
+            patient_state=patient_state,
+            decisions=list(decisions.values()),
+            criteria_by_id={
+                criterion.criterion_id: criterion
+                for trial in case.trials
+                for criterion in trial.criteria
+            },
+        ),
         planned_action=planned_action,
         guidance=guidance,
         cycles=cycles,

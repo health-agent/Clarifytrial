@@ -100,6 +100,14 @@ class ComparisonOperator(str, Enum):
     EQ = "eq"
 
 
+class BoundaryPosition(str, Enum):
+    """Where the current value lies relative to one criterion threshold."""
+
+    BELOW = "below"
+    EQUAL = "equal"
+    ABOVE = "above"
+
+
 class ReviewFlag(str, Enum):
     """Structured defects that may require an independent evidence review."""
 
@@ -409,3 +417,29 @@ class TrialDecision(ContractModel):
         if not self.review_required and self.review_reasons:
             raise ValueError("review reasons require review_required=true")
         return self
+
+
+class CriterionBoundaryDifference(ContractModel):
+    """Arithmetic difference for one decisive numeric or temporal criterion."""
+
+    trial_id: str = Field(min_length=1)
+    criterion_id: str = Field(min_length=1)
+    criterion_kind: CriterionKind
+    criterion_statement: str = Field(min_length=1)
+    criterion_source_location: str = Field(min_length=1)
+    evidence_id: str = Field(min_length=1)
+    current_value: float = Field(allow_inf_nan=False)
+    threshold: float = Field(allow_inf_nan=False)
+    unit: str = Field(min_length=1)
+    operator: ComparisonOperator
+    position: BoundaryPosition
+    difference_from_threshold: float = Field(allow_inf_nan=False)
+    absolute_difference: float = Field(ge=0, allow_inf_nan=False)
+    explanation: str = Field(min_length=1)
+    comparison_limit: str = Field(
+        default=(
+            "이 차이는 같은 조건 안에서만 해석합니다. 단위와 의미가 다른 조건끼리 "
+            "가까운 정도를 비교하지 않습니다."
+        ),
+        min_length=1,
+    )

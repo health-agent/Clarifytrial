@@ -102,6 +102,7 @@ from .preparation import (
 from .preparation.patient_record import PatientRecordStructurerAgent
 from .preparation.trial_protocol import TrialProtocolStructurerAgent
 from .settings import EpisodeSettings
+from .terminal_ui import run_natural_text_demo
 from .trace import TraceRecorder
 from .workflow import (
     EpisodeAgents,
@@ -1125,6 +1126,62 @@ def _parser() -> argparse.ArgumentParser:
         action="store_true",
         help="also evaluate every question budget from zero through five",
     )
+    natural_policy.add_argument(
+        "--include-fully-missing",
+        action="store_true",
+        help="also remove all five pivotal values from the initial patient input",
+    )
+
+    text_demo = commands.add_parser(
+        "run-text-demo",
+        help="show one synthetic question and re-assessment process in the terminal",
+    )
+    text_demo.add_argument(
+        "--trial-set",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_trial_set.json",
+    )
+    text_demo.add_argument(
+        "--generation-config",
+        type=Path,
+        default=Path("configs") / "natural_evaluation_patient_generation_v2.json",
+    )
+    text_demo.add_argument(
+        "--patient-pairs",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v2"
+        / "preliminary_patient_pairs.json",
+    )
+    text_demo.add_argument(
+        "--records",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v2"
+        / "preliminary_natural_records.json",
+    )
+    text_demo.add_argument(
+        "--patient-id",
+        default="natural-breast_cancer-11",
+    )
+    text_demo.add_argument(
+        "--input-state",
+        choices=("partly-known", "fully-missing"),
+        default="fully-missing",
+    )
+    text_demo.add_argument("--action-budget", type=int, default=3)
+    text_demo.add_argument(
+        "--output",
+        type=Path,
+        default=Path("runs") / "text-ui-demo.json",
+    )
+    text_demo.add_argument(
+        "--auto",
+        action="store_true",
+        help="show every step without waiting for Enter",
+    )
 
     pilot = commands.add_parser(
         "run-trialgpt-pilot",
@@ -1684,11 +1741,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             action_budgets=range(6) if args.budget_sweep else None,
             splits=args.split,
             patient_ids=args.patient_id,
+            include_fully_missing=args.include_fully_missing,
         )
         print(
             f"patients={result['patient_count']} runs={result['run_count']} "
             f"output={result['output']}"
         )
+        return 0
+    if args.command == "run-text-demo":
+        run_natural_text_demo(
+            trial_set_path=args.trial_set,
+            generation_config_path=args.generation_config,
+            patient_pairs_path=args.patient_pairs,
+            records_path=args.records,
+            destination=args.output,
+            patient_id=args.patient_id,
+            action_budget=args.action_budget,
+            input_state=args.input_state,
+            auto_advance=args.auto,
+        )
+        print(f"\n상세 실행 기록: {args.output}")
         return 0
     if args.command == "run-trialgpt-pilot":
         if not args.confirm_live_api:

@@ -181,6 +181,11 @@ TrialGPT의 공개 답은 전문가 정답과 88.8% 일치했다. 이 부분에�
 확인 횟수는 고정 순서 4.53회, 현재 방식 3.63회였다. 연구진이 만든 환자와 AI가 먼저
 검토한 시험 조건으로 얻은 초기 결과다. 적용 범위는 이 합성 평가자료 안으로 제한한다.
 
+핵심 값 다섯 개를 처음 입력에서 완전히 지운 조건도 같은 30명에게 실행했다. 질문
+세 번 뒤 현재 방식은 88.7%, 고정 순서는 75.3%였다. 현재 방식은 같은 질문 수에서
+필요했던 정보는 모두 골랐고, 총 88번 확인 가운데 실행 뒤 보니 결과를 더 바꾸지 않은
+확인은 9번이었다. 이 필요 여부는 정해 둔 합성 답을 실행 뒤에만 사용해 계산했다.
+
 ### 환자 부담에 맞는 확인 방법 선택
 
 개발에 사용하지 않은 합성 환자 20명에서 부담 조건을 바꾼 상황 240개를 만들었다.
@@ -202,6 +207,8 @@ TrialGPT의 공개 답은 전문가 정답과 88.8% 일치했다. 이 부분에�
 정해진 형식의 JSON 입력, 관련 시험 검색, 조건 판단, 부족한 정보의 확인 순서, 환자
 부담에 맞는 확인 방법, 새 정보가 들어온 뒤 다시 판단하는 흐름까지 구현했다. 자유롭게
 작성된 기록을 JSON으로 바꾸는 선택 기능도 합성 사례 한 건에서 끝까지 작동시켰다.
+숫자·기간 조건으로 참가 조건 불충족이 확인되면 현재 값이 기준보다 얼마나 높거나
+낮은지도 같은 조건 안에서만 표시한다.
 
 아직 다음 내용은 확인하지 않았다.
 
@@ -230,16 +237,21 @@ py -3.12 -m venv .venv
   --output runs\stale_lab
 ```
 
-현재 질문 순서를 대표 합성 환자 한 명에서 다시 확인하려면 다음 명령을 실행한다.
-`heldout`은 개발에 사용하지 않은 평가용 환자만 고르는 옵션이다. 외부 모델과 인터넷
-검색은 사용하지 않는다.
+질문과 답변 뒤 판정이 바뀌는 과정을 화면에서 보려면 다음 명령을 실행한다. 환자와
+답변은 모두 합성 자료이며 외부 모델과 인터넷 검색은 사용하지 않는다. `--auto`를
+빼면 각 합성 답변을 보기 전에 Enter를 기다린다.
 
 ```powershell
-.\.venv\Scripts\clarifytrial.exe run-json-question-policy-evaluation `
-  --split heldout `
+.\.venv\Scripts\clarifytrial.exe run-text-demo `
   --patient-id natural-breast_cancer-11 `
-  --output runs\report-demo.json
+  --input-state fully-missing `
+  --action-budget 3 `
+  --auto `
+  --output runs\text-ui-demo.json
 ```
+
+30명의 질문 순서를 한꺼번에 다시 계산하는 명령은
+[쉬운 실험 안내](docs/internal/CLARIFYTRIAL_V5_DEVELOPED_EXPERIMENT_GUIDE.md)에 있다.
 
 자유 형식 기록을 JSON으로 정리하는 선택 연결 기능의 합성 예제는
 [examples/natural_screening](examples/natural_screening)에 있다. 이 실행은 실제
@@ -270,7 +282,7 @@ py -3.12 -m venv .venv
 | `src/clarifytrial/retrieval/` | 관련 시험 검색과 조건 판단에 필요한 환자 문장 표시 |
 | `src/clarifytrial/interactive/` | 평가용으로 숨긴 답, 질문 순서와 환자 부담 규칙 |
 | `src/clarifytrial/workflow/` | 여러 시험을 판단하고 새 정보 뒤 다시 판단하는 전체 흐름 |
-| `src/clarifytrial/reporting/` | 현재 확인 목록과 추가 확인 후보 목록 |
+| `src/clarifytrial/reporting/` | 현재 확인 목록, 추가 확인 후보와 탈락 기준의 숫자·기간 차이 |
 | `src/clarifytrial/datasets/` | 공개자료 준비, 합성 환자와 자연어 평가자료 |
 | `tests/` | 조건 판단, 자료 분리, 질문 순서, 승인 규칙과 전체 흐름 검사 |
 

@@ -11,6 +11,7 @@ from ..agents import ReviewDecision
 from ..contracts import (
     AgentAction,
     ContractModel,
+    CriterionBoundaryDifference,
     NextEvidenceRequest,
     PatientState,
     TrialCriterion,
@@ -153,6 +154,9 @@ class PatientScreeningResult(ContractModel):
     decision_history: list[PatientScreeningSnapshot]
     action_history: list[PatientScreeningActionRecord]
     review_history: list[ReviewDecision]
+    ineligible_boundary_differences: list[CriterionBoundaryDifference] = Field(
+        default_factory=list
+    )
     planned_action: AgentAction | None = None
     guidance: GuidanceOutput
     cycles: int = Field(ge=1)

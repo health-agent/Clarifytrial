@@ -12,6 +12,7 @@ import json
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
 from datetime import date, datetime
+from itertools import combinations
 from math import comb
 from pathlib import Path
 from typing import Any, Literal
@@ -128,7 +129,7 @@ def _requests(
                 description=f"{descriptions[fact_code]} 확인",
                 related_criterion_ids=related,
                 acceptable_actions=actions,
-                reason="현재 값은 보이지만 참가 조건을 확정할 근거가 부족하다.",
+                reason="참가 조건을 확인할 자료가 아직 충분하지 않다.",
             )
         )
     return result
@@ -198,6 +199,183 @@ def _replace_fact_code(
         if item.concept is None or item.concept.rsplit(":", 1)[-1] != fact_code
     ]
     return state.model_copy(update={"facts": [*kept, *answers]})
+
+
+def _without_fact_codes(
+    state: PatientState, fact_codes: Sequence[str]
+) -> PatientState:
+    """Return the same patient state with the named structured facts removed."""
+
+    removed = set(fact_codes)
+    return state.model_copy(
+        update={
+            "facts": [
+                item
+                for item in state.facts
+                if item.concept is None
+                or item.concept.rsplit(":", 1)[-1] not in removed
+            ]
+        }
+    )
+
+
+def _decisions_for_state(
+    *,
+    state: PatientState,
+    remaining_codes: Sequence[str],
+    patient_id: str,
+    descriptions: Mapping[str, str],
+    criteria_by_trial: Mapping[str, Sequence[Any]],
+) -> list[dict[str, Any]]:
+    return _decisions(
+        patient_state=state,
+        criteria_by_trial=criteria_by_trial,
+        requests=_requests(
+            patient_id=patient_id,
+            pivotal_codes=remaining_codes,
+            descriptions=descriptions,
+            criteria_by_trial=criteria_by_trial,
+        ),
+    )
+
+
+def _question_selection_reference(
+    *,
+    initial_state: PatientState,
+    pivotal_codes: Sequence[str],
+    answers: Mapping[str, Sequence[EvidenceFact]],
+    patient_id: str,
+    descriptions: Mapping[str, str],
+    criteria_by_trial: Mapping[str, Sequence[Any]],
+    target: Sequence[Mapping[str, Any]],
+    action_budget: int,
+) -> dict[str, Any]:
+    """Find the smallest best question sets under the same action budget.
+
+    This reference is calculated only after the hidden synthetic answers are
+    available for scoring.  It is never passed to the question policy.
+    """
+
+    max_questions = min(action_budget, len(pivotal_codes))
+    scored_sets: list[tuple[frozenset[str], int]] = []
+    for count in range(max_questions + 1):
+        for chosen_tuple in combinations(pivotal_codes, count):
+            chosen = frozenset(chosen_tuple)
+            state = initial_state
+            for fact_code in chosen_tuple:
+                state = _replace_fact_code(state, fact_code, answers[fact_code])
+            remaining = [item for item in pivotal_codes if item not in chosen]
+            decisions = _decisions_for_state(
+                state=state,
+                remaining_codes=remaining,
+                patient_id=patient_id,
+                descriptions=descriptions,
+                criteria_by_trial=criteria_by_trial,
+            )
+            score = _decision_metrics(decisions, target)["exact_trial_status_count"]
+            scored_sets.append((chosen, score))
+
+    best_score = max(score for _, score in scored_sets)
+    best_sets = [chosen for chosen, score in scored_sets if score == best_score]
+    smallest_size = min(len(chosen) for chosen in best_sets)
+    minimal_best_sets = [
+        chosen for chosen in best_sets if len(chosen) == smallest_size
+    ]
+    ordered_sets = sorted(
+        (sorted(chosen) for chosen in minimal_best_sets),
+        key=lambda chosen: (len(chosen), chosen),
+    )
+    return {
+        "best_trial_status_recovery_within_budget": (
+            best_score / len(target)
+        ),
+        "smallest_best_question_count": min(map(len, ordered_sets)),
+        "smallest_best_question_sets": ordered_sets,
+    }
+
+
+def _question_selection_metrics(
+    *,
+    selected_fact_codes: Sequence[str],
+    final_trial_status_recovery: float,
+    reference: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Score selected questions against all equally good minimal choices."""
+
+    selected = set(selected_fact_codes)
+    acceptable = [set(items) for items in reference["smallest_best_question_sets"]]
+    scored_choices = [
+        (
+            len(selected & needed) / len(needed) if needed else 1.0,
+            len(selected - needed),
+        )
+        for needed in acceptable
+    ]
+    selected_recall, selected_extras = max(
+        scored_choices,
+        key=lambda item: (item[0], -item[1]),
+    )
+    best_recovery = float(reference["best_trial_status_recovery_within_budget"])
+    return {
+        "needed_fact_recall": selected_recall,
+        "unnecessary_action_count": selected_extras,
+        "best_trial_status_recovery_within_budget": best_recovery,
+        "trial_status_recovery_gap_from_best": max(
+            0.0,
+            best_recovery - final_trial_status_recovery,
+        ),
+        "smallest_best_question_count": reference[
+            "smallest_best_question_count"
+        ],
+        "smallest_best_question_sets": reference[
+            "smallest_best_question_sets"
+        ],
+    }
+
+
+def _decision_changes(
+    before: Sequence[Mapping[str, Any]],
+    after: Sequence[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    before_by_trial = {str(item["trial_id"]): item for item in before}
+    changes = []
+    for current in after:
+        trial_id = str(current["trial_id"])
+        previous = before_by_trial[trial_id]
+        old_status = (
+            previous["candidate_status"],
+            previous["confirmation_status"],
+        )
+        new_status = (
+            current["candidate_status"],
+            current["confirmation_status"],
+        )
+        if old_status != new_status:
+            changes.append(
+                {
+                    "trial_id": trial_id,
+                    "before_candidate_status": old_status[0],
+                    "before_confirmation_status": old_status[1],
+                    "after_candidate_status": new_status[0],
+                    "after_confirmation_status": new_status[1],
+                }
+            )
+    return changes
+
+
+def _selection_reason(policy: PolicyName) -> str:
+    return {
+        "no_questions": "질문하지 않는 비교 조건이다.",
+        "fixed_source_order": "임상시험 기준이 저장된 순서대로 확인한다.",
+        "clarifytrial_rule_v1": "현재 미정인 시험과 가장 많이 연결된 정보를 고른다.",
+        "clarifytrial_rule_v2_resolve_first": (
+            "한 번의 확인으로 판정을 끝낼 수 있는 시험을 먼저 찾는다."
+        ),
+        "clarifytrial_exact_coverage_v3": (
+            "남은 질문 횟수 안에서 가장 많은 시험 판정을 끝낼 수 있는 "
+            "질문 묶음을 계산해 고른다."
+        ),
+    }[policy]
 
 
 def _fixed_order(
@@ -386,6 +564,7 @@ def _run_policy(
     criteria_by_trial: Mapping[str, Sequence[Any]],
     normalized_rows: Sequence[Mapping[str, Any]],
     action_budget: int,
+    question_reference: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     patient_id = str(pair["patient_id"])
     descriptions = {
@@ -411,19 +590,34 @@ def _run_policy(
     )
 
     def decide() -> list[dict[str, Any]]:
-        return _decisions(
-            patient_state=state,
+        return _decisions_for_state(
+            state=state,
+            remaining_codes=remaining,
+            patient_id=patient_id,
+            descriptions=descriptions,
             criteria_by_trial=criteria_by_trial,
-            requests=_requests(
-                patient_id=patient_id,
-                pivotal_codes=remaining,
-                descriptions=descriptions,
-                criteria_by_trial=criteria_by_trial,
-            ),
         )
 
+    if question_reference is None:
+        question_reference = _question_selection_reference(
+            initial_state=initial_state,
+            pivotal_codes=pivotal,
+            answers=answers,
+            patient_id=patient_id,
+            descriptions=descriptions,
+            criteria_by_trial=criteria_by_trial,
+            target=target,
+            action_budget=action_budget,
+        )
     current = decide()
-    trajectory = [{"step": 0, "selected_fact_code": None, **_decision_metrics(current, target)}]
+    trajectory = [
+        {
+            "step": 0,
+            "selected_fact_code": None,
+            "decisions": current,
+            **_decision_metrics(current, target),
+        }
+    ]
     if policy != "no_questions":
         for step in range(1, action_budget + 1):
             if all(
@@ -457,6 +651,18 @@ def _run_policy(
                 )
             if fact_code is None:
                 break
+            previous = current
+            route, acceptable_actions = _fact_route(fact_code)
+            related_trial_ids = sorted(
+                trial_id
+                for trial_id, criteria in criteria_by_trial.items()
+                if any(
+                    criterion.numeric_constraint is not None
+                    and criterion.numeric_constraint.concept.rsplit(":", 1)[-1]
+                    == fact_code
+                    for criterion in criteria
+                )
+            )
             state = _replace_fact_code(state, fact_code, answers[fact_code])
             remaining.remove(fact_code)
             revealed.append(fact_code)
@@ -465,11 +671,33 @@ def _run_policy(
                 {
                     "step": step,
                     "selected_fact_code": fact_code,
+                    "fact_description": descriptions[fact_code],
+                    "question": f"확인 항목: {descriptions[fact_code]}",
+                    "selected_action": route.value,
+                    "acceptable_actions": [
+                        item.value for item in acceptable_actions
+                    ],
+                    "selection_reason": _selection_reason(policy),
+                    "related_trial_ids": related_trial_ids,
+                    "synthetic_answer_evidence": [
+                        item.model_dump(mode="json") for item in answers[fact_code]
+                    ],
+                    "decision_changes": _decision_changes(previous, current),
+                    "decisions": current,
                     **_decision_metrics(current, target),
                 }
             )
+    final_metrics = _decision_metrics(current, target)
+    initial_pivotal_codes = {
+        item.concept.rsplit(":", 1)[-1]
+        for item in initial_state.facts
+        if item.concept is not None
+        and item.concept.rsplit(":", 1)[-1] in pivotal
+    }
     return {
         "policy_id": policy,
+        "initial_fact_count": len(initial_state.facts),
+        "initial_pivotal_fact_count": len(initial_pivotal_codes),
         "selected_fact_codes": revealed,
         "action_count": len(revealed),
         "available_missing_fact_count": len(pivotal),
@@ -478,7 +706,12 @@ def _run_policy(
         "trajectory": trajectory,
         "final_decisions": current,
         "target_decisions": target,
-        "final_metrics": _decision_metrics(current, target),
+        "final_metrics": final_metrics,
+        "question_selection_metrics": _question_selection_metrics(
+            selected_fact_codes=revealed,
+            final_trial_status_recovery=final_metrics["trial_status_recovery"],
+            reference=question_reference,
+        ),
         "unresolved_to_resolved": (
             trajectory[-1]["resolved_trial_count"]
             - trajectory[0]["resolved_trial_count"]
@@ -511,6 +744,28 @@ def _summaries(runs: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
                 "mean_action_count": sum(item["action_count"] for item in rows) / len(rows),
                 "mean_available_missing_fact_recall": sum(
                     item["available_missing_fact_recall"] for item in rows
+                ) / len(rows),
+                "mean_needed_fact_recall": sum(
+                    item["question_selection_metrics"]["needed_fact_recall"]
+                    for item in rows
+                ) / len(rows),
+                "mean_unnecessary_action_count": sum(
+                    item["question_selection_metrics"][
+                        "unnecessary_action_count"
+                    ]
+                    for item in rows
+                ) / len(rows),
+                "mean_best_trial_status_recovery_within_budget": sum(
+                    item["question_selection_metrics"][
+                        "best_trial_status_recovery_within_budget"
+                    ]
+                    for item in rows
+                ) / len(rows),
+                "mean_trial_status_recovery_gap_from_best": sum(
+                    item["question_selection_metrics"][
+                        "trial_status_recovery_gap_from_best"
+                    ]
+                    for item in rows
                 ) / len(rows),
                 "mean_unresolved_to_resolved": sum(
                     item["unresolved_to_resolved"] for item in rows
@@ -631,6 +886,7 @@ def run_natural_policy_evaluation(
     action_budgets: Sequence[int] | None = None,
     splits: Sequence[str] | None = None,
     patient_ids: Sequence[str] | None = None,
+    include_fully_missing: bool = False,
 ) -> dict[str, Any]:
     if action_budget < 0:
         raise ValueError("action_budget must not be negative")
@@ -704,6 +960,10 @@ def run_natural_policy_evaluation(
                 str(pair["patient_id"]), episode, config.as_of
             )
         }
+        if include_fully_missing:
+            states["fully_missing"] = _without_fact_codes(
+                states["gold_structured"], pair["pivotal_fact_codes"]
+            )
         if episode_id in structure_results:
             states["model_extracted"] = _extracted_state(
                 patient_id=str(pair["patient_id"]),
@@ -714,6 +974,27 @@ def run_natural_policy_evaluation(
             )
         for budget in budgets:
             for input_state, state in states.items():
+                descriptions = {
+                    item["fact_code"]: item["description"]
+                    for item in pair["clinical_values"]
+                }
+                answer_map: dict[str, list[EvidenceFact]] = defaultdict(list)
+                for answer_row in episode["verification_answers"]:
+                    answer = EvidenceFact.model_validate(answer_row)
+                    assert answer.concept is not None
+                    answer_map[answer.concept.rsplit(":", 1)[-1]].append(answer)
+                question_reference = _question_selection_reference(
+                    initial_state=state,
+                    pivotal_codes=pair["pivotal_fact_codes"],
+                    answers=answer_map,
+                    patient_id=str(pair["patient_id"]),
+                    descriptions=descriptions,
+                    criteria_by_trial=criteria_by_trial,
+                    target=pair["sufficient_evidence_episode"][
+                        "expected_trial_decisions"
+                    ],
+                    action_budget=budget,
+                )
                 for policy in policies:
                     result = _run_policy(
                         policy=policy,
@@ -722,6 +1003,7 @@ def run_natural_policy_evaluation(
                         criteria_by_trial=criteria_by_trial,
                         normalized_rows=normalized_rows,
                         action_budget=budget,
+                        question_reference=question_reference,
                     )
                     runs.append(
                         {
@@ -745,6 +1027,13 @@ def run_natural_policy_evaluation(
             "All policies share the same initial record interpretation and hidden "
             "verified answers. Only question permission and question order change."
         ),
+        "question_metric_rule": (
+            "After each run, every question subset allowed by the same action budget "
+            "is scored with hidden synthetic answers. Needed-fact recall and "
+            "unnecessary actions compare the selected questions with all smallest "
+            "question sets that achieve the best result within that budget. This "
+            "reference is not visible to the policy."
+        ),
         "input_mode": (
             "standardized_json_and_natural_record_extraction"
             if structure_result_paths
@@ -753,6 +1042,7 @@ def run_natural_policy_evaluation(
         "filters": {
             "splits": sorted(selected_splits),
             "patient_ids": sorted(selected_patient_ids),
+            "include_fully_missing": include_fully_missing,
         },
         "input_sha256": {
             "trial_set": portable_text_sha256(trial_set_path),

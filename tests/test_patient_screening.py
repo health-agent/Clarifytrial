@@ -299,6 +299,15 @@ def test_patient_workflow_connects_agents_burden_rules_and_two_output_views() ->
     assert "추가 확인 후보를 참가 가능으로 확정한 것은 아닙니다" in (
         views.broader_review.explanation
     )
+    assert len(result.ineligible_boundary_differences) == 1
+    boundary = result.ineligible_boundary_differences[0]
+    assert boundary.trial_id == "TRIAL-C"
+    assert boundary.current_value == 0
+    assert boundary.threshold == 1
+    assert boundary.difference_from_threshold == -1
+    assert boundary.absolute_difference == 1
+    assert boundary.position.value == "below"
+    assert "기준보다 1 score 낮습니다" in boundary.explanation
     assert any(item.actor == "information_planning_rules" for item in trace.events)
     assert model.call_count == {
         "coordinator": 5,
