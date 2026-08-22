@@ -16,6 +16,7 @@ from .contracts import (
     InteractiveSnapshot,
     ScenarioDistribution,
 )
+from .coverage_policy import choose_exact_coverage_fact
 
 
 _ROUTE_COST = {
@@ -311,6 +312,27 @@ class ClarifyTrialRulePolicy(_DeterministicPolicy):
             case,
             fact_id,
             "먼저 더 많은 후보와 조건을 해결하고, 동률이면 확인 부담이 낮은 경로를 고른다.",
+        )
+
+
+class ClarifyTrialExactCoveragePolicy(_DeterministicPolicy):
+    """Plan across the remaining budget without predicting hidden answers."""
+
+    policy_id = "clarifytrial_exact_coverage_v3"
+
+    def select(self, case, snapshot, revealed_fact_ids):
+        fact_id = choose_exact_coverage_fact(
+            view=case,
+            snapshot=snapshot,
+            revealed_fact_ids=revealed_fact_ids,
+            remaining_budget=case.action_budget - len(revealed_fact_ids),
+        )
+        if fact_id is None:
+            return self._none("현재 판단을 더 해결할 수 있는 확인 항목이 없다.")
+        return self._action(
+            case,
+            fact_id,
+            "남은 확인 횟수 안에서 가장 많은 시험의 판단을 끝낼 수 있는 정보를 고른다.",
         )
 
 

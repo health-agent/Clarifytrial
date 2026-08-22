@@ -56,7 +56,9 @@ def group_acquisition_options(
     }
 
 
-def build_policy_view(case: PatientScreeningCase) -> InteractivePolicyView:
+def build_policy_view(
+    case: PatientScreeningCase, action_budget: int = 0
+) -> InteractivePolicyView:
     """Adapt visible workflow input to the tested multi-trial policy contract."""
 
     return InteractivePolicyView(
@@ -75,7 +77,7 @@ def build_policy_view(case: PatientScreeningCase) -> InteractivePolicyView:
             )
             for item in case.evidence_requests
         ],
-        action_budget=0,
+        action_budget=action_budget,
     )
 
 

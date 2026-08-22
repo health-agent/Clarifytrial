@@ -22,11 +22,11 @@ ClarifyTrial은 환자 정보가 아직 완전하지 않은 단계에서 임상�
 | Claude API와 TrialGPT 조건 주석 연결 | 20명 개발·33명 평가 실행 완료 |
 | GPT 구독형 단일·멀티에이전트 구조 비교 | Sol medium 개발 완료, 두 정적 검토 방식 기각 |
 | v5 대화형 자료 | 공개 시험 15개·구조화 조건 80개·합성 환자 30명·마스크 60회 구현 및 실행 완료 |
-| 질문 선택 결과 | 단순 동적 규칙 채택, 평균/최악 우선 전수 계산은 채택 기준 미달로 비교용 보존 |
+| 질문 선택 결과 | 남은 횟수 안에서 가장 많은 시험을 끝내는 사실 조합을 정확히 계산하는 v3 채택 |
 | 환자 맞춤 부담과 안내 | 여러 시험의 에이전트 흐름에 연결, 두 추천 목록과 승인 대기 출력 구현. 360개 상황·1,800개 정책 실행 완료 |
 | 자연어 입력 연결 | 한 명령 구현과 합성 검사 완료. Sol `medium` 한 사례에서 질문·공식 결과 확인·두 시험 재판정까지 성공 |
-| 새 자연어 평가 예비자료 | 공개 시험 15건·조건 92개·합성 환자 30명·근거 상태 짝 60회 제작·재계산 완료. 사람 독립 검토는 미완료 |
-| v5 성능 | 구조화 입력의 질문 정책·합성 부담 정책만 측정. 자연어 외부 모델은 한 사례 연결만 확인했고 정확도·임상 성능은 미측정 |
+| 새 자연어 평가 예비자료 | 공개 시험 15건·조건 92개, 개발 환자 30명과 새 평가 환자 30명 제작. 사람 독립 검토는 미완료 |
+| v5 합성 예비평가 | 새 환자 30명에서 질문 3회 뒤 시험 상태 회복: 질문 없음 42%, 고정 순서 75%, v3 89%. 임상 성능은 미측정 |
 
 저장소에는 합성 환자 사례만 둔다. 과거 Solar 합성 데모 수치와 84% 결과는 v5의
 성능이나 기준선에 포함하지 않는다.
@@ -110,6 +110,41 @@ py -3.12 -m venv .venv
 가용성 2개를 조합한 360개 상황에 다섯 선택 방식을 적용한다. 결과는 1,800개 정책
 실행이며 합성 부담값을 사용한 구조 검사다. 실제 검사 비용이나 환자 선호 개선을
 측정한 결과가 아니다.
+
+### 새 자연어 기록과 질문 정책 예비평가
+
+다음 명령은 합성 기록의 값·근거 상태를 검사하고, Sol로 기록을 읽은 뒤 질문 없음·
+고정 순서·ClarifyTrial을 질문 0~5회에서 비교한다. 구독 호출 명령은 명시적인 확인
+옵션이 필요하다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe audit-natural-evaluation-records `
+  --patient-pairs data\natural_evaluation_v2\preliminary_patient_pairs.json `
+  --records data\natural_evaluation_v2\preliminary_natural_records.json
+
+.\.venv\Scripts\clarifytrial.exe run-natural-record-structure-evaluation `
+  --records data\natural_evaluation_v2\preliminary_natural_records.json `
+  --split heldout `
+  --evidence-state insufficient `
+  --output runs\natural-record-structure-independent-heldout-v2.json `
+  --model gpt-5.6-sol `
+  --effort medium `
+  --concurrency 3 `
+  --confirm-subscription-run
+
+.\.venv\Scripts\clarifytrial.exe run-natural-question-policy-evaluation `
+  --generation-config configs\natural_evaluation_patient_generation_v2.json `
+  --patient-pairs data\natural_evaluation_v2\preliminary_patient_pairs.json `
+  --records data\natural_evaluation_v2\preliminary_natural_records.json `
+  --structure-result runs\natural-record-structure-independent-heldout-v2.json `
+  --output runs\natural-question-policy-independent-heldout-v2.json `
+  --budget-sweep
+```
+
+새 평가 환자 30명의 기록 해석은 값·단위·자료 출처·확인 상태 100%, 허용 밖 항목
+0건이었다. 질문 3회 뒤 시험 상태 회복은 질문 없음 42%, 고정 순서 75%, 최종 v3
+89%였다. 문장은 정해진 틀로 만든 합성 기록이고 시험 조건도 AI 예비 검토 상태이므로
+실제 진료기록 정확도나 임상 성능으로 해석하지 않는다.
 
 ### TrialGPT와 Claude 조건 실험
 
@@ -375,11 +410,12 @@ TrialGPT 조건 판단은 서로 다른 실행으로 유지한다.
 | 8 | TrialGPT 후보 검색과 TREC 연결 | 전체 실행과 논문 수치 대조 완료, 결합 검색 채택 |
 | 9 | 강한 단일 판단과 검색 유무를 나눈 선택 검토 | 개발 20조합 실행 완료, 두 검토 기각 |
 | 10 | 고정 후보 5개와 확인 후보 5개 중 3개를 고르는 v5 대화 비교 | 12명 작동 확인, 공개 조건 30명·마스크 60회와 값 77,792조합 검사 완료 |
-| 11 | 같은 후보 RAG에서 TrialGPT식 흐름과 ClarifyTrial 비교 | 한 명령 연결 완료, 공개 원문 구조화 정확도 평가와 본 비교는 아직 전 |
+| 11 | 같은 후보에서 질문 없음·고정 순서·ClarifyTrial 비교 | 합성 자연어 기록과 새 환자 30명 비교 완료. 사람 검토 조건 평가는 전 |
 | 12 | 기존 자료·새 검사와 환자별 추가 부담을 반영한 다음 행동 비교 | 구현 완료, 360개 상황·1,800개 정책 실행과 채택 기준 검사 완료 |
 | 13 | 환자 부담 규칙과 두 추천 목록을 여러 시험 에이전트 흐름에 연결 | 합성 통합 실행과 식별자·승인 경계 검사 완료 |
-| 14 | 자연어 기록·시험 원문에서 전체 흐름 실행 | 합성 검사와 Sol 한 사례 연결 완료. 새 시험 원문 272줄은 AI 예비 검토해 단순 조건 62개 확보 |
-| 15 | 새 시험·환자 평가자료 제작 | 본 시험 6건 교체, 새 시험 15건·조건 92개와 환자 30명·근거 상태 짝 60회 제작·재계산 완료. 사람 검토 전 예비자료 |
+| 14 | 자연어 기록·시험 원문에서 전체 흐름 실행 | 합성 자연어 기록 90회 해석 완료. 새 시험 원문 272줄은 AI 예비 검토해 단순 조건 62개 확보 |
+| 15 | 새 시험·환자 평가자료 제작 | 본 시험 6건 교체, 새 시험 15건·조건 92개와 개발 30명·새 평가 30명 제작. 사람 검토 전 예비자료 |
+| 16 | 남은 질문 횟수를 함께 보는 최종 정책 | 가능한 사실 조합 전수 계산 v3 구현·일반 실행 연결·질문 0~5회 평가 완료 |
 
 구현 세부는
 [RAG·평가 구현계획](docs/internal/CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)을

@@ -7,6 +7,7 @@ from clarifytrial.contracts import AgentAction, NextAction
 from clarifytrial.interactive import (
     AuthoredOrderPolicy,
     ClarifyTrialRulePolicy,
+    ClarifyTrialExactCoveragePolicy,
     ExactDecisionTreePolicy,
     ExactPolicyObjective,
     WidestImpactPolicy,
@@ -98,6 +99,17 @@ def test_dynamic_rule_recovers_oracle_and_authored_order_does_not() -> None:
     assert dynamic.metrics.unnecessary_action_count == 0
     assert dynamic.metrics.realized_impact_capture == 1
     assert len(dynamic.action_history) == 3
+
+
+def test_exact_coverage_policy_uses_the_remaining_budget_without_hidden_answers() -> None:
+    case = build_interactive_pilot_cases()[0]
+
+    result = run_interactive_policy(case, ClarifyTrialExactCoveragePolicy())
+
+    assert result.metrics.trial_status_recovery == 1
+    assert result.metrics.unnecessary_action_count == 0
+    assert result.metrics.premature_confirmations == 0
+    assert len(result.action_history) == 3
 
 
 def test_exact_tree_uses_all_binary_scenarios_without_actual_answer_marker() -> None:

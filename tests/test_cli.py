@@ -171,6 +171,23 @@ def test_live_trialgpt_command_requires_explicit_confirmation(tmp_path: Path) ->
     assert captured.value.code == 2
 
 
+def test_natural_record_structure_command_requires_subscription_confirmation(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(SystemExit) as captured:
+        main(
+            [
+                "run-natural-record-structure-evaluation",
+                "--records",
+                str(tmp_path / "records.json"),
+                "--output",
+                str(tmp_path / "result.json"),
+            ]
+        )
+
+    assert captured.value.code == 2
+
+
 def test_live_trialgpt_experiment_requires_explicit_confirmation(
     tmp_path: Path,
 ) -> None:

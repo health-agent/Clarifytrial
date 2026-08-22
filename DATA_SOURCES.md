@@ -8,7 +8,7 @@
 | ClinicalTrials.gov API v2 | 임상시험 원문과 모집 정보 | 개발 15건과 자연어 평가 본 시험 15건·예비 15건 연결 |
 | TrialGPT Criterion Annotations | 조건별 판단과 근거 평가 | 2026-08-20 공개 원본 1,015행 연결 |
 | TREC Clinical Trials 2021·2022 | 후보 검색과 순위 평가 | 2026-08-21 TrialGPT 공개 검색 재현 완료 |
-| 새 ClarifyTrial v5 합성 자료 | 후보 유지, 현재 확정, 다음 행동과 재판정 평가 | 공개 조건 기반 합성 환자 30명·마스크 60회 구현 |
+| 새 ClarifyTrial v5 합성 자료 | 후보 유지, 현재 확정, 다음 행동과 재판정 평가 | 개발 30명과 새 평가 30명, 자연어 근거 상태 기록 구현 |
 
 환자 사례는 합성 자료만 사용한다. 실제 환자 기록, 개인식별정보, 자격 증명, API 키,
 비공개 임상시험 자료를 저장소에 추가하지 않는다.
@@ -47,6 +47,8 @@
   `data/natural_evaluation_v1/reserve_reviewer_1.csv`, `reserve_reviewer_2.csv`
 - 교체 뒤 예비 시험 구성: `data/natural_evaluation_v1/preliminary_trial_set.json`
 - 새 합성 환자 짝: `data/natural_evaluation_v1/preliminary_patient_pairs.json`
+- 개발용 합성 자연어 기록: `data/natural_evaluation_v1/preliminary_natural_records.json`
+- 질문 정책 확정 뒤 만든 새 합성 환자와 기록: `data/natural_evaluation_v2/`
 - 범위: 질환별 본 시험 5건과 예비 5건, 총 30건
 - 본 시험의 자동 탐지 문구: 제2형 당뇨병 47개, 유방암 61개, 주요우울장애 56개,
   총 164개
@@ -72,7 +74,8 @@ AI 단독 예비 검토는 272줄 가운데 단순 규칙으로 안전하게 옮
 조건이 부족한 본 시험을 교체하기 위해 이미 저장한 유방암·우울장애 예비 시험 10건의
 원문 231줄도 같은 방식으로 검토했다. 새 외부 자료를 받지 않았으며 원래 수집 시각과
 ClinicalTrials.gov 이용 조건을 그대로 따른다. 교체 뒤 구성은 15건·92조건이다.
-이 조건에서 만든 환자 30명·근거 상태 짝 60회는 모두 합성 자료다. 자료 상태에 따른
+이 조건에서 만든 첫 환자 30명·근거 상태 짝 60회와 질문 정책 확정 뒤 만든 새 환자
+30명의 기록은 모두 합성 자료다. 자료 상태에 따른
 출처 허용 규칙은 평가용 정책이며 각 임상시험이 특정 기록 출처를 요구한다고 해석하지
 않는다.
 

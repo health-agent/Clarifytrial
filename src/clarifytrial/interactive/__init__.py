@@ -57,6 +57,7 @@ from .burden_policy import (
 from .policies import (
     AuthoredOrderPolicy,
     ClarifyTrialRulePolicy,
+    ClarifyTrialExactCoveragePolicy,
     ImpactCostPolicy,
     ModelQuestionPolicy,
     NoQuestionPolicy,
@@ -80,6 +81,7 @@ __all__ = [
     "AuthoredOrderPolicy",
     "AvailabilityStructure",
     "ClarifyTrialRulePolicy",
+    "ClarifyTrialExactCoveragePolicy",
     "ExactDecisionTreePolicy",
     "ExactPolicyObjective",
     "ImpactCostPolicy",

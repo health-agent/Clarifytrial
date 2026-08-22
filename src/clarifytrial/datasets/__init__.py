@@ -19,7 +19,13 @@ from .natural_patient_pairs import (
     build_natural_evaluation_patient_pairs,
     load_natural_patient_generation_config,
 )
+from .natural_policy_evaluation import run_natural_policy_evaluation
+from .natural_records import (
+    audit_natural_evaluation_records,
+    build_natural_evaluation_records,
+)
 from .natural_review import compare_natural_evaluation_reviews
+from .natural_structure_evaluation import run_natural_record_structure_evaluation
 from .trialgpt import (
     TrialGPTCriterionRow,
     TrialGPTPair,
@@ -47,8 +53,10 @@ __all__ = [
     "compare_natural_evaluation_reviews",
     "build_natural_evaluation_trial_set",
     "build_natural_evaluation_patient_pairs",
+    "build_natural_evaluation_records",
     "audit_natural_evaluation_review",
     "audit_natural_evaluation_patient_pairs",
+    "audit_natural_evaluation_records",
     "fetch_clinicaltrials_v5_sources",
     "group_patient_trial_pairs",
     "load_sigir_trial_metadata",
@@ -60,6 +68,8 @@ __all__ = [
     "select_full_trialgpt_pairs",
     "objective_criterion_candidates",
     "prepare_natural_evaluation_sources",
+    "run_natural_policy_evaluation",
+    "run_natural_record_structure_evaluation",
     "split_trialgpt_pairs_by_patient",
     "summarize_trialgpt_rows",
 ]

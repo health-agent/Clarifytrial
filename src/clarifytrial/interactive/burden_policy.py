@@ -23,6 +23,7 @@ from .burden_contracts import (
     RemovedOption,
 )
 from .contracts import InteractivePolicyView, InteractiveSnapshot
+from .coverage_policy import choose_exact_coverage_fact
 
 
 _PROFILE_VALUE_FIELDS = (
@@ -454,8 +455,10 @@ def _dimension_value(
     option: AcquisitionOption,
     impact: tuple[int, int, tuple[str, ...], tuple[str, ...]],
     name: str,
+    preferred_fact_id: str | None = None,
 ) -> int | float | None:
     values: dict[str, int | float | None] = {
+        "exact_coverage_choice": int(option.fact_id == preferred_fact_id),
         "affected_trials": impact[0],
         "affected_criteria": impact[1],
         "legacy_route_cost": _LEGACY_ROUTE_COST[option.action],
@@ -474,7 +477,11 @@ def _dimension_value(
 def _ordering(
     policy_id: AcquisitionPolicyId, profile: PatientBurdenProfile
 ) -> list[tuple[str, str]]:
-    impact = [("affected_trials", "max"), ("affected_criteria", "max")]
+    impact = [
+        ("exact_coverage_choice", "max"),
+        ("affected_trials", "max"),
+        ("affected_criteria", "max"),
+    ]
     least = [
         ("new_test", "min"),
         ("medical_risk", "min"),
@@ -593,6 +600,16 @@ def select_acquisition_option(
             for item in sorted(dominated_ids)
         )
 
+    preferred_fact_id = None
+    if policy_id is AcquisitionPolicyId.PATIENT_ADAPTIVE and active:
+        preferred_fact_id = choose_exact_coverage_fact(
+            view=view,
+            snapshot=snapshot,
+            revealed_fact_ids=revealed_fact_ids,
+            remaining_budget=max(0, view.action_budget - len(revealed_fact_ids)),
+            allowed_fact_ids={item.fact_id for item in active},
+        )
+
     ordering = _ordering(policy_id, profile)
     trace_base = {
         "considered_option_ids": [item.option_id for item in considered],
@@ -612,7 +629,13 @@ def select_acquisition_option(
     unresolved_unknowns: list[str] = []
     for name, direction in ordering:
         values = [
-            _dimension_value(item, impacts[item.fact_id], name) for item in remaining
+            _dimension_value(
+                item,
+                impacts[item.fact_id],
+                name,
+                preferred_fact_id,
+            )
+            for item in remaining
         ]
         known = [value for value in values if value is not None]
         if not known:

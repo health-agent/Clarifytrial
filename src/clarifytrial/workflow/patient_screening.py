@@ -83,7 +83,7 @@ class PatientScreeningRunner:
         profile = build_patient_burden_profile(
             f"{case.case_id}:patient-input", case.patient_burden_input
         )
-        view = build_policy_view(case)
+        view = build_policy_view(case, self._settings.max_external_actions)
 
         patient_state = case.initial_patient_state
         assessments: dict[str, dict[str, CriterionAssessment]] = {

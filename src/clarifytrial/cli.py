@@ -24,7 +24,9 @@ from .contracts import (
     TrialDecision,
 )
 from .datasets import (
+    audit_natural_evaluation_records,
     audit_natural_evaluation_patient_pairs,
+    build_natural_evaluation_records,
     build_natural_evaluation_trial_set,
     build_natural_evaluation_patient_pairs,
     compare_natural_evaluation_reviews,
@@ -35,6 +37,8 @@ from .datasets import (
     load_trialgpt_rows,
     materialize_natural_evaluation_reserve_sources,
     prepare_natural_evaluation_sources,
+    run_natural_policy_evaluation,
+    run_natural_record_structure_evaluation,
     select_full_trialgpt_pairs,
     select_pilot_pairs,
     split_trialgpt_pairs_by_patient,
@@ -992,6 +996,117 @@ def _parser() -> argparse.ArgumentParser:
         / "preliminary_patient_pairs.json",
     )
 
+    natural_records = commands.add_parser(
+        "build-natural-evaluation-records",
+        help="render the paired facts as synthetic record entries and prose",
+    )
+    natural_records.add_argument(
+        "--patient-pairs",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_patient_pairs.json",
+    )
+    natural_records.add_argument(
+        "--output",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_natural_records.json",
+    )
+
+    audit_natural_records = commands.add_parser(
+        "audit-natural-evaluation-records",
+        help="verify that rendered records preserve every paired clinical value",
+    )
+    audit_natural_records.add_argument(
+        "--patient-pairs",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_patient_pairs.json",
+    )
+    audit_natural_records.add_argument(
+        "--records",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_natural_records.json",
+    )
+
+    structure_natural_records = commands.add_parser(
+        "run-natural-record-structure-evaluation",
+        help="measure whether Sol reads values and evidence state from synthetic records",
+    )
+    structure_natural_records.add_argument(
+        "--records",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_natural_records.json",
+    )
+    structure_natural_records.add_argument("--output", type=Path, required=True)
+    structure_natural_records.add_argument(
+        "--split", choices=("development", "heldout", "all"), default="all"
+    )
+    structure_natural_records.add_argument(
+        "--evidence-state",
+        choices=("sufficient", "insufficient", "all"),
+        default="all",
+    )
+    structure_natural_records.add_argument("--model", default="gpt-5.6-sol")
+    structure_natural_records.add_argument(
+        "--effort", choices=sorted(ALLOWED_CODEX_EFFORTS), default="medium"
+    )
+    structure_natural_records.add_argument(
+        "--concurrency", type=int, choices=(1, 2, 3), default=3
+    )
+    structure_natural_records.add_argument("--timeout-seconds", type=float, default=300)
+    structure_natural_records.add_argument(
+        "--confirm-subscription-run", action="store_true"
+    )
+
+    natural_policy = commands.add_parser(
+        "run-natural-question-policy-evaluation",
+        help="compare no questions, fixed order, and ClarifyTrial question order",
+    )
+    natural_policy.add_argument(
+        "--trial-set",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_trial_set.json",
+    )
+    natural_policy.add_argument(
+        "--generation-config",
+        type=Path,
+        default=Path("configs") / "natural_evaluation_patient_generation_v1.json",
+    )
+    natural_policy.add_argument(
+        "--patient-pairs",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_patient_pairs.json",
+    )
+    natural_policy.add_argument(
+        "--records",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_natural_records.json",
+    )
+    natural_policy.add_argument(
+        "--structure-result", type=Path, action="append", required=True
+    )
+    natural_policy.add_argument("--output", type=Path, required=True)
+    natural_policy.add_argument("--action-budget", type=int, default=3)
+    natural_policy.add_argument(
+        "--budget-sweep",
+        action="store_true",
+        help="also evaluate every question budget from zero through five",
+    )
+
     pilot = commands.add_parser(
         "run-trialgpt-pilot",
         help="run a bounded live Sonnet cost pilot on TrialGPT pairs",
@@ -1481,6 +1596,74 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"{result['candidate_status_mismatch_count']} "
             "recovery_mismatches="
             f"{result['verification_recovery_mismatch_count']}"
+        )
+        return 0
+    if args.command == "build-natural-evaluation-records":
+        result = build_natural_evaluation_records(
+            patient_pairs_path=args.patient_pairs,
+            destination=args.output,
+        )
+        print(f"natural_records: {result['output']}")
+        print(
+            f"records={result['record_count']} "
+            f"development={result['development_record_count']} "
+            f"heldout={result['heldout_record_count']}"
+        )
+        return 0
+    if args.command == "audit-natural-evaluation-records":
+        result = audit_natural_evaluation_records(
+            patient_pairs_path=args.patient_pairs,
+            records_path=args.records,
+        )
+        print(
+            f"passed={result['passed']} records={result['record_count']} "
+            f"pair_value_mismatches={result['pair_value_mismatch_count']}"
+        )
+        return 0
+    if args.command == "run-natural-record-structure-evaluation":
+        if not args.confirm_subscription_run:
+            parser.error(
+                "run-natural-record-structure-evaluation requires "
+                "--confirm-subscription-run"
+            )
+        with CodexSubscriptionModelPool(
+            size=args.concurrency,
+            worker_factory=lambda: CodexSubscriptionStructuredModel(
+                model_id=args.model,
+                effort=args.effort,
+                timeout_seconds=args.timeout_seconds,
+            ),
+        ) as model:
+            result = run_natural_record_structure_evaluation(
+                records_path=args.records,
+                destination=args.output,
+                model=model,
+                split=args.split,
+                evidence_state=args.evidence_state,
+                max_workers=args.concurrency,
+            )
+        print(
+            f"completed={result['completed_record_count']}/"
+            f"{result['requested_record_count']} "
+            f"critical_accuracy={result['critical_fully_correct_rate']:.4f} "
+            f"unknown={result['unknown_measurement_count']} "
+            f"tokens={result['token_usage']['total_tokens']}"
+        )
+        return 0 if result["failed_record_count"] == 0 else 2
+    if args.command == "run-natural-question-policy-evaluation":
+        result = run_natural_policy_evaluation(
+            trial_set_path=args.trial_set,
+            generation_config_path=args.generation_config,
+            patient_pairs_path=args.patient_pairs,
+            records_path=args.records,
+            structure_result_paths=args.structure_result,
+            destination=args.output,
+            action_budget=args.action_budget,
+            action_budgets=range(6) if args.budget_sweep else None,
+        )
+        print(
+            f"patients={result['patient_count']} runs={result['run_count']} "
+            f"output={result['output']}"
         )
         return 0
     if args.command == "run-trialgpt-pilot":
