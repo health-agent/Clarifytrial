@@ -2,7 +2,7 @@
   "status": "preliminary_ai_authored_synthetic_evaluation",
   "authority": "Deterministically generated synthetic patients from AI-reviewed public criteria; not physician gold and not independent two-person consensus",
   "medical_data_notice": "All patient records in this file are synthetic.",
-  "medical_disclaimer": "ClarifyTrial은 연구용 시제품입니다. 이 결과만으로 임상시험 참가 가능성을 확정할 수 없습니다. 자격을 판단할 때는 의료 전문가와 해당 임상시험 연구진이 최신 공식 계획서와 전체 환자 기록을 다시 확인해야 합니다.",
+  "medical_disclaimer": "학생 과제용 실험 결과입니다.",
   "trial_set_sha256": "0d7088331494ab24be75aeb0a8324d13960abd35eeb92cb41732b61df706e7d2",
   "generation_config_sha256": "b915167063b7fe57f05d4252d4bd7c71260004f4ce6e00d6e76a2ca4bb984928",
   "clinical_value_rule": "Each pair keeps every synthetic clinical value fixed and changes only whether five declared facts have confirmation-grade evidence",

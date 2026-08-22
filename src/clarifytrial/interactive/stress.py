@@ -698,7 +698,7 @@ def run_interactive_stress(
         "model_calls": 0,
         "scope": "질문 정책의 구조적 가치만 보는 합성 진단이며 임상 성능이 아니다.",
         "medical_disclaimer": (
-            "연구용 합성 구조 실험이다. 실제 임상시험 참가 가능성과 의료 결정을 제공하지 않는다."
+            "학생 과제용 실험 결과입니다."
         ),
     }
     _write_json(destination / "plan.json", plan)

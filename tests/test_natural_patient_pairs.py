@@ -94,7 +94,7 @@ def test_patient_pairs_keep_values_and_candidate_statuses_fixed(
     assert result["heldout_patient_count"] == 1
     payload = json.loads(output.read_text(encoding="utf-8"))
     assert payload["medical_data_notice"].startswith("All patient records")
-    assert payload["medical_disclaimer"].startswith("ClarifyTrial은 연구용")
+    assert payload["medical_disclaimer"] == "학생 과제용 실험 결과입니다."
     for pair in payload["pairs"]:
         assert pair["expected_pair_relation"]["same_clinical_values"] is True
         assert pair["expected_pair_relation"]["same_candidate_statuses"] is True

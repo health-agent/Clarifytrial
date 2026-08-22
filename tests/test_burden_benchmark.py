@@ -203,7 +203,7 @@ def test_guidance_uses_the_same_fact_and_trial_ids_in_both_views() -> None:
         guidance.patient_message.affected_trial_ids
         == guidance.selected_option.affected_trial_ids
     )
-    assert "연구용 시제품" in guidance.medical_disclaimer
+    assert guidance.medical_disclaimer == "학생 과제용 실험 결과입니다."
     patient_json = json.dumps(
         guidance.patient_message.model_dump(mode="json"), ensure_ascii=False
     )

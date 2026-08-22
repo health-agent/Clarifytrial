@@ -52,7 +52,7 @@ def test_text_demo_shows_questions_answers_and_decision_changes(tmp_path) -> Non
     assert "답변 뒤 바뀐 판정" in text
     assert "질문 선택 점검" in text
     assert "결과 개선에 필요하지 않았던 확인: 0개" in text
-    assert "연구용 시제품" in text
+    assert "학생 과제용 실험 결과입니다." in text
     assert len(prompts) == 3
     assert all("Enter" in item for item in prompts)
 

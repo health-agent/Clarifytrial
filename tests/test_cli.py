@@ -35,7 +35,7 @@ def test_stale_lab_cli_runs_real_episode_without_external_api(tmp_path: Path) ->
     payload = _read_json(output / "result.json")
     assert payload["run_mode"] == "scripted_local_dry_run"
     assert payload["external_api_calls"] == 0
-    assert "연구용 시제품" in payload["disclaimer"]
+    assert payload["disclaimer"] == "학생 과제용 실험 결과입니다."
     assert payload["episode"]["stop_reason"] == "confirmed"
     assert payload["episode"]["final_decision"]["candidate_status"] == "retain"
     assert payload["episode"]["final_decision"]["confirmation_status"] == (

@@ -116,9 +116,7 @@ from .workflow import (
 
 
 _DISCLAIMER_FALLBACK = (
-    "ClarifyTrial은 연구용 시제품입니다. 이 결과만으로 임상시험 참가 가능성을 "
-    "확정할 수 없습니다. 자격을 판단할 때는 의료 전문가와 해당 임상시험 연구진이 "
-    "최신 공식 계획서와 전체 환자 기록을 다시 확인해야 합니다."
+    "학생 과제용 실험 결과입니다."
 )
 
 _TRIALGPT_VARIANTS: dict[str, tuple[str, str | None]] = {

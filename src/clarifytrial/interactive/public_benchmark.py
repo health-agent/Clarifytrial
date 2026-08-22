@@ -720,8 +720,7 @@ def run_public_interactive_benchmark(
         "model_calls": 0,
         "scope": spec.scope,
         "medical_disclaimer": (
-            "공개 시험 조건과 합성 환자를 사용한 연구용 사전 검토 실험이다. "
-            "실제 참가 가능 여부는 시험 연구진과 의료진이 확인해야 한다."
+            "학생 과제용 실험 결과입니다."
         ),
     }
     _write_json(destination / "plan.json", plan)
