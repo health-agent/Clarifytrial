@@ -63,6 +63,8 @@ from .llm import (
     AnthropicStructuredModel,
     CodexSubscriptionModelPool,
     CodexSubscriptionStructuredModel,
+    DEFAULT_CODEX_EFFORT,
+    DEFAULT_CODEX_MODEL,
     ScriptedStructuredModel,
     StructuredModel,
 )
@@ -104,6 +106,7 @@ from .preparation.trial_protocol import TrialProtocolStructurerAgent
 from .settings import EpisodeSettings
 from .terminal_ui import run_natural_text_demo
 from .trace import TraceRecorder
+from .ui import build_integrated_ui_fixture, run_integrated_terminal_ui
 from .workflow import (
     EpisodeAgents,
     EpisodeCase,
@@ -609,6 +612,66 @@ def _parser() -> argparse.ArgumentParser:
     natural.add_argument("--max-selective-reviews", type=int, default=1)
     natural.add_argument("--max-cycles", type=int, default=12)
     natural.add_argument("--confirm-model-run", action="store_true")
+
+    full_ui = commands.add_parser(
+        "run-full-ui",
+        help=(
+            "show patient input, search across 15 public trials, role calls, "
+            "questions, reassessment, and final results in one terminal view"
+        ),
+    )
+    full_ui.add_argument(
+        "--trial-set",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_trial_set.json",
+    )
+    full_ui.add_argument(
+        "--patient-pairs",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v2"
+        / "preliminary_patient_pairs.json",
+    )
+    full_ui.add_argument(
+        "--generation-config",
+        type=Path,
+        default=Path("configs") / "natural_evaluation_patient_generation_v2.json",
+    )
+    full_ui.add_argument(
+        "--patient-id",
+        default="natural-type_2_diabetes-11",
+    )
+    full_ui.add_argument(
+        "--output",
+        type=Path,
+        default=Path("runs") / "full-ui",
+    )
+    full_ui.add_argument(
+        "--provider",
+        choices=("codex-subscription", "anthropic"),
+        default="codex-subscription",
+    )
+    full_ui.add_argument("--model")
+    full_ui.add_argument(
+        "--effort",
+        choices=sorted(ALLOWED_CODEX_EFFORTS),
+        default=DEFAULT_CODEX_EFFORT,
+    )
+    full_ui.add_argument("--api-key-env-file", type=Path)
+    full_ui.add_argument("--api-key-name", default="ANTHROPIC_API_KEY")
+    full_ui.add_argument("--max-output-tokens", type=int, default=8_192)
+    full_ui.add_argument("--timeout-seconds", type=float, default=300)
+    full_ui.add_argument("--max-external-actions", type=int, default=3)
+    full_ui.add_argument("--max-selective-reviews", type=int, default=1)
+    full_ui.add_argument("--max-cycles", type=int, default=12)
+    full_ui.add_argument(
+        "--auto",
+        action="store_true",
+        help="apply each prepared synthetic answer without waiting for Enter",
+    )
+    full_ui.add_argument("--confirm-model-run", action="store_true")
 
     schemas = commands.add_parser(
         "export-schemas",
@@ -1439,6 +1502,62 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
         print(f"result: {result_path}")
         print(f"trace: {args.output / 'trace.jsonl'}")
+        return 0
+    if args.command == "run-full-ui":
+        if not args.confirm_model_run:
+            parser.error(
+                "run-full-ui requires --confirm-model-run because it makes live "
+                "model calls"
+            )
+        fixture = build_integrated_ui_fixture(
+            trial_set_path=args.trial_set,
+            patient_pairs_path=args.patient_pairs,
+            generation_config_path=args.generation_config,
+            patient_id=args.patient_id,
+        )
+        settings = EpisodeSettings(
+            max_external_actions=args.max_external_actions,
+            max_selective_reviews=args.max_selective_reviews,
+            max_cycles=args.max_cycles,
+        )
+        if args.provider == "codex-subscription":
+            model_id = args.model or DEFAULT_CODEX_MODEL
+            with CodexSubscriptionStructuredModel(
+                model_id=model_id,
+                effort=args.effort,
+                timeout_seconds=args.timeout_seconds,
+            ) as model:
+                run_integrated_terminal_ui(
+                    fixture=fixture,
+                    model=model,
+                    model_label=f"{model_id} / {args.effort}",
+                    settings=settings,
+                    output_dir=args.output,
+                    medical_disclaimer=_read_disclaimer(),
+                    auto_advance=args.auto,
+                )
+        else:
+            if args.api_key_env_file is None:
+                parser.error("anthropic provider requires --api-key-env-file")
+            model_id = args.model or "claude-sonnet-5"
+            model = AnthropicStructuredModel(
+                api_key=_read_env_value(
+                    args.api_key_env_file,
+                    args.api_key_name,
+                ),
+                model_id=model_id,
+                max_output_tokens=args.max_output_tokens,
+                timeout_seconds=args.timeout_seconds,
+            )
+            run_integrated_terminal_ui(
+                fixture=fixture,
+                model=model,
+                model_label=model_id,
+                settings=settings,
+                output_dir=args.output,
+                medical_disclaimer=_read_disclaimer(),
+                auto_advance=args.auto,
+            )
         return 0
     if args.command == "export-schemas":
         for path in export_schemas(args.output):

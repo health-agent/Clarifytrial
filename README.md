@@ -210,6 +210,10 @@ TrialGPT의 답 이름을 그대로 흉내 내 점수만 높이는 조정은 하
 숫자·기간 조건으로 참가 조건 불충족이 확인되면 현재 값이 기준보다 얼마나 높거나
 낮은지도 같은 조건 안에서만 표시한다.
 
+이 흐름은 한 터미널 화면에서도 실행할 수 있다. 표준 JSON 환자 상태를 읽고 공개 시험
+15개에서 같은 질환의 후보 5개를 찾은 뒤, 역할별 판단·질문·합성 답변·재판정과 최종
+결과를 순서대로 보여 준다.
+
 아직 다음 내용은 확인하지 않았다.
 
 - 의사 또는 임상시험 담당자와의 일치도
@@ -230,16 +234,31 @@ Python 3.11 이상이 필요하다. 다음 명령은 외부 모델 없이 오래
 
 ```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\python.exe -m pip install -e ".[dev,codex-subscription]"
 .\.venv\Scripts\python.exe -m pytest -q
+```
+
+전체 경로를 한 화면에서 보려면 다음 명령을 실행한다. 기본 합성 환자 한 명의 표준
+JSON을 읽고, 시험 15개 검색, 후보 5개 조건 판단, 최대 세 번의 확인과 재판정, 최종
+결과와 역할별 호출량을 보여 준다. GPT-5.6 Sol `medium`을 실제로 호출한다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-full-ui --confirm-model-run
+```
+
+각 합성 답변을 적용하기 전에 Enter를 기다린다. 멈추지 않고 끝까지 보려면 `--auto`를
+추가한다. 다른 합성 환자는 `--patient-id`로 고를 수 있다.
+
+외부 모델 없이 작은 연결만 확인하려면 다음 명령을 사용한다.
+
+```powershell
 .\.venv\Scripts\clarifytrial.exe run-example `
   --case examples\stale_lab `
   --output runs\stale_lab
 ```
 
-질문과 답변 뒤 판정이 바뀌는 과정을 화면에서 보려면 다음 명령을 실행한다. 환자와
-답변은 모두 합성 자료이며 외부 모델과 인터넷 검색은 사용하지 않는다. `--auto`를
-빼면 각 합성 답변을 보기 전에 Enter를 기다린다.
+질문 순서 기능만 빠르게 보려면 다음 축소 명령을 실행한다. 환자 한 명과 미리 연결된
+시험 5개만 사용하며 검색과 역할별 모델 호출은 실행하지 않는다.
 
 ```powershell
 .\.venv\Scripts\clarifytrial.exe run-text-demo `
@@ -282,6 +301,7 @@ py -3.12 -m venv .venv
 | `src/clarifytrial/retrieval/` | 관련 시험 검색과 조건 판단에 필요한 환자 문장 표시 |
 | `src/clarifytrial/interactive/` | 평가용으로 숨긴 답, 질문 순서와 환자 부담 규칙 |
 | `src/clarifytrial/workflow/` | 여러 시험을 판단하고 새 정보 뒤 다시 판단하는 전체 흐름 |
+| `src/clarifytrial/ui/` | 15개 시험 검색부터 역할별 호출·질문·최종 결과까지 보여 주는 통합 터미널 화면 |
 | `src/clarifytrial/reporting/` | 현재 확인 목록, 추가 확인 후보와 탈락 기준의 숫자·기간 차이 |
 | `src/clarifytrial/datasets/` | 공개자료 준비, 합성 환자와 자연어 평가자료 |
 | `tests/` | 조건 판단, 자료 분리, 질문 순서, 승인 규칙과 전체 흐름 검사 |
