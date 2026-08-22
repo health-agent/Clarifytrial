@@ -26,6 +26,9 @@ from .prompts import PromptLoader, repository_prompt_loader
 
 DEFAULT_CODEX_MODEL = "gpt-5.6-sol"
 DEFAULT_CODEX_EFFORT = "medium"
+ALLOWED_CODEX_EFFORTS = frozenset(
+    {"none", "low", "medium", "high", "xhigh", "max"}
+)
 CODEX_SDK_REQUIREMENT = "openai-codex==0.147.0"
 
 _BASE_INSTRUCTIONS = """You are a structured inference engine.
@@ -420,6 +423,8 @@ class CodexSubscriptionStructuredModel:
     def __init__(
         self,
         *,
+        model_id: str = DEFAULT_CODEX_MODEL,
+        effort: str = DEFAULT_CODEX_EFFORT,
         prompt_loader: PromptLoader | None = None,
         timeout_seconds: float = 180,
         max_retries: int = 2,
@@ -437,6 +442,14 @@ class CodexSubscriptionStructuredModel:
             raise ValueError("max_retries must not be negative")
         if retry_delay_seconds < 0:
             raise ValueError("retry_delay_seconds must not be negative")
+        if not model_id.strip():
+            raise ValueError("model_id must not be empty")
+        if effort not in ALLOWED_CODEX_EFFORTS:
+            raise ValueError(
+                "effort must be one of " + ", ".join(sorted(ALLOWED_CODEX_EFFORTS))
+            )
+        self._model_id = model_id
+        self._effort = effort
         self._prompt_loader = prompt_loader or repository_prompt_loader()
         self._timeout_seconds = timeout_seconds
         self._max_retries = max_retries
@@ -515,8 +528,8 @@ class CodexSubscriptionStructuredModel:
                     "structured model request could not be prepared"
                 ) from None
             request = _RunRequest(
-                model=DEFAULT_CODEX_MODEL,
-                effort=DEFAULT_CODEX_EFFORT,
+                model=self._model_id,
+                effort=self._effort,
                 prompt=prompt,
                 payload_text=payload_text,
                 output_schema=cast(dict[str, Any], schema),
@@ -557,8 +570,8 @@ class CodexSubscriptionStructuredModel:
                 attempts=attempts,
                 thread_id=_safe_identifier(record.thread_id),
                 turn_id=_safe_identifier(record.turn_id),
-                requested_model_id=DEFAULT_CODEX_MODEL,
-                requested_effort=DEFAULT_CODEX_EFFORT,
+                requested_model_id=self._model_id,
+                requested_effort=self._effort,
                 rerouted_from_model=_safe_identifier(record.rerouted_from_model),
                 total_tokens=tokens.total_tokens,
                 sdk_version=metadata.sdk_version,

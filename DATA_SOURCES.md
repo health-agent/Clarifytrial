@@ -41,6 +41,8 @@
 - 로컬 위치: `.research-cache/clinicaltrials-natural-evaluation-v1`
 - 선정 규칙: `configs/natural_evaluation_source_selection_v1.json`
 - 검토 초안: `data/natural_evaluation_v1/criterion_review.json`
+- AI 전체 검토: `data/natural_evaluation_v1/ai_preliminary_review_polarity_audited.json`
+- 단순 규칙 예비 정답: `data/natural_evaluation_v1/ai_preliminary_gold_conservative.json`
 - 범위: 질환별 본 시험 5건과 예비 5건, 총 30건
 - 본 시험의 자동 탐지 문구: 제2형 당뇨병 47개, 유방암 61개, 주요우울장애 56개,
   총 164개
@@ -57,6 +59,11 @@
 272줄을 모두 제공한다. 원문 확인이 끝나기 전에는 어느 숫자도 정답 조건 수나 모델
 성능 분모로 사용하지 않는다. 전체 원본과 검색 응답은 Git에 넣지 않고, 저장소에는
 출처 위치가 있는 검토표만 둔다.
+
+AI 단독 예비 검토는 272줄 가운데 단순 규칙으로 안전하게 옮길 수 있는 59줄에서
+62조건을 만들었다. 공개 원문의 글자 위치, 수치, 비교 방향과 단위를 다시 검사했지만
+사람 두 명의 독립 확인은 받지 않았다. 따라서 이 파일은 합성 환자 제작용 예비 자료이며
+의료 전문가 정답이나 ClinicalTrials.gov의 공식 해석이 아니다.
 
 ## TrialGPT Criterion Annotations
 

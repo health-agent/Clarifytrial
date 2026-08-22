@@ -10,11 +10,37 @@
 | `criterion_review.json` | 코드가 읽는 원문 위치, 시험 정보와 검토 대기 상태 |
 | `reviewer_1.csv` | 첫 번째 검토자가 작성할 표 |
 | `reviewer_2.csv` | 두 번째 검토자가 작성할 표 |
+| `ai_preliminary_review_polarity_audited.json` | 채택된 줄의 조건 방향까지 `max`로 다시 확인한 전체 결과 |
+| `ai_preliminary_gold_conservative.json` | 복합 관계를 빼고 바로 계산할 수 있는 62조건 |
 
 두 CSV는 처음에는 내용이 같다. 검토자는 상대방 표를 보지 않고 자신의 파일만 작성한다.
 자동 규칙이 객관적 조건일 가능성이 있다고 표시한 문구는 164개다. 이 규칙이 빠뜨린
 조건까지 확인할 수 있도록 검토표에는 본 시험의 조건 원문 272줄을 모두 넣었다. 아직
-어느 행도 정답이 아니다.
+두 CSV의 어느 행도 사람 두 명이 합의한 정답은 아니다.
+
+## AI 예비 검토
+
+사람 검토 전에 GPT-5.6 Sol로 예비 검토를 진행했다. 마지막 전체 결과는 채택 123줄,
+제외 61줄, 보류 88줄이다. 높은 확신 조건 중에서도 한 원문에 여러 조건이 복잡하게
+묶인 줄은 단순 규칙 파일에서 제외했다. 한 조건만 있거나 같은 수치의 하한·상한이
+명확한 59줄에서 62조건을 남겼다.
+
+이 결과는 합성 환자 제작을 위한 AI 단독 초안이다. 의사 정답, 사람 두 명의 합의
+정답이나 ClinicalTrials.gov의 공식 해석이 아니다. 전체 실행 조건과 토큰은
+`docs/internal/CLARIFYTRIAL_VALIDATION_RESULTS.md` 23절에 기록했다.
+중간 두 단계의 상세 호출 기록과 초안은 Git에서 제외한 `runs`에 두고, 저장소에는
+마지막 전체 검토와 그 검토에서 뽑은 단순 규칙만 남긴다.
+
+보수적 파일은 다음 명령으로 원문 연결과 숫자를 다시 검사해 만들 수 있다. 기존 파일은
+자동으로 덮어쓰지 않는다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe build-natural-evaluation-conservative-gold `
+  --source data\natural_evaluation_v1\criterion_review.json `
+  --tiered-review data\natural_evaluation_v1\ai_preliminary_review_polarity_audited.json `
+  --selection-config configs\natural_evaluation_source_selection_v1.json `
+  --output data\natural_evaluation_v1\ai_preliminary_gold_conservative.json
+```
 
 ## 작성 방법
 

@@ -36,6 +36,11 @@ from .datasets import (
     split_trialgpt_pairs_by_patient,
     summarize_trialgpt_rows,
 )
+from .datasets.natural_ai_review import (
+    build_conservative_natural_ai_gold,
+    run_natural_evaluation_ai_review,
+    run_natural_evaluation_max_resolution,
+)
 from .environment import (
     HiddenFactAnswer,
     HiddenPatientEnvironment,
@@ -46,7 +51,9 @@ from .environment import (
 from .evaluation import DecisionGold, score_decision
 from .experiment_tracking import ExperimentStage
 from .llm import (
+    ALLOWED_CODEX_EFFORTS,
     AnthropicStructuredModel,
+    CodexSubscriptionModelPool,
     CodexSubscriptionStructuredModel,
     ScriptedStructuredModel,
     StructuredModel,
@@ -684,6 +691,144 @@ def _parser() -> argparse.ArgumentParser:
         / "review_comparison.json",
     )
 
+    ai_natural_review = commands.add_parser(
+        "run-natural-evaluation-ai-review",
+        help="make a two-pass preliminary AI review of the frozen source lines",
+    )
+    ai_natural_review.add_argument(
+        "--source",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "criterion_review.json",
+    )
+    ai_natural_review.add_argument(
+        "--review-output",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "ai_preliminary_review.json",
+    )
+    ai_natural_review.add_argument(
+        "--gold-output",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "ai_preliminary_gold.json",
+    )
+    ai_natural_review.add_argument(
+        "--checkpoint-dir",
+        type=Path,
+        default=Path("runs") / "natural-evaluation-ai-review",
+    )
+    ai_natural_review.add_argument("--model", default="gpt-5.6-sol")
+    ai_natural_review.add_argument(
+        "--effort",
+        choices=sorted(ALLOWED_CODEX_EFFORTS),
+        default="max",
+    )
+    ai_natural_review.add_argument(
+        "--concurrency", type=int, choices=(1, 2, 3), default=3
+    )
+    ai_natural_review.add_argument("--chunk-size", type=int, default=6)
+    ai_natural_review.add_argument("--timeout-seconds", type=float, default=600)
+    ai_natural_review.add_argument("--confirm-subscription-run", action="store_true")
+
+    resolve_ai_natural_review = commands.add_parser(
+        "resolve-natural-evaluation-ai-review",
+        help="use maximum reasoning on a selected preliminary review subset",
+    )
+    resolve_ai_natural_review.add_argument(
+        "--source",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "criterion_review.json",
+    )
+    resolve_ai_natural_review.add_argument(
+        "--base-review",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "ai_preliminary_review.json",
+    )
+    resolve_ai_natural_review.add_argument(
+        "--review-output",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "ai_preliminary_review_max.json",
+    )
+    resolve_ai_natural_review.add_argument(
+        "--gold-output",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "ai_preliminary_gold_max.json",
+    )
+    resolve_ai_natural_review.add_argument(
+        "--checkpoint-dir",
+        type=Path,
+        default=Path("runs") / "natural-evaluation-ai-review-max-resolution",
+    )
+    resolve_ai_natural_review.add_argument("--model", default="gpt-5.6-sol")
+    resolve_ai_natural_review.add_argument(
+        "--effort",
+        choices=sorted(ALLOWED_CODEX_EFFORTS),
+        default="max",
+    )
+    resolve_ai_natural_review.add_argument(
+        "--concurrency", type=int, choices=(1, 2, 3), default=3
+    )
+    resolve_ai_natural_review.add_argument("--chunk-size", type=int, default=3)
+    resolve_ai_natural_review.add_argument(
+        "--selection-mode",
+        choices=("uncertain_or_medium", "included"),
+        default="uncertain_or_medium",
+        help="which source lines receive the maximum-effort audit",
+    )
+    resolve_ai_natural_review.add_argument(
+        "--timeout-seconds", type=float, default=600
+    )
+    resolve_ai_natural_review.add_argument(
+        "--max-retries", type=int, choices=(0, 1), default=1
+    )
+    resolve_ai_natural_review.add_argument(
+        "--confirm-subscription-run", action="store_true"
+    )
+
+    conservative_ai_gold = commands.add_parser(
+        "build-natural-evaluation-conservative-gold",
+        help="keep only high-confidence, source-validated AI criterion labels",
+    )
+    conservative_ai_gold.add_argument(
+        "--source",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "criterion_review.json",
+    )
+    conservative_ai_gold.add_argument(
+        "--tiered-review",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "ai_preliminary_review_polarity_audited.json",
+    )
+    conservative_ai_gold.add_argument(
+        "--selection-config",
+        type=Path,
+        default=Path("configs")
+        / "natural_evaluation_source_selection_v1.json",
+    )
+    conservative_ai_gold.add_argument(
+        "--output",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "ai_preliminary_gold_conservative.json",
+    )
+
     pilot = commands.add_parser(
         "run-trialgpt-pilot",
         help="run a bounded live Sonnet cost pilot on TrialGPT pairs",
@@ -997,6 +1142,112 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"agreed={comparison['agreement_count']} "
             f"disagreed={comparison['disagreement_count']} "
             f"incomplete={comparison['incomplete_count']}"
+        )
+        return 0
+    if args.command == "run-natural-evaluation-ai-review":
+        if not args.confirm_subscription_run:
+            parser.error(
+                "run-natural-evaluation-ai-review requires "
+                "--confirm-subscription-run"
+            )
+        with CodexSubscriptionModelPool(
+            size=args.concurrency,
+            worker_factory=lambda: CodexSubscriptionStructuredModel(
+                model_id=args.model,
+                effort=args.effort,
+                timeout_seconds=args.timeout_seconds,
+            ),
+        ) as model:
+            result = run_natural_evaluation_ai_review(
+                source_path=args.source,
+                review_output_path=args.review_output,
+                gold_output_path=args.gold_output,
+                checkpoint_dir=args.checkpoint_dir,
+                model=model,
+                model_id=args.model,
+                effort=args.effort,
+                concurrency=args.concurrency,
+                chunk_size=args.chunk_size,
+                progress=print,
+            )
+        print(f"review: {result['review_output']}")
+        print(f"preliminary_gold: {result['gold_output']}")
+        print(
+            f"source_lines={result['source_line_count']} "
+            f"criteria={result['criterion_count']} "
+            f"audit_changes={result['changed_after_audit_count']}"
+        )
+        print(
+            "tokens: "
+            f"input={result['usage']['input_tokens']} "
+            f"output={result['usage']['output_tokens']} "
+            f"reasoning={result['usage']['thinking_tokens']} "
+            f"total={result['usage']['total_tokens']}"
+        )
+        return 0
+    if args.command == "resolve-natural-evaluation-ai-review":
+        if not args.confirm_subscription_run:
+            parser.error(
+                "resolve-natural-evaluation-ai-review requires "
+                "--confirm-subscription-run"
+            )
+        with CodexSubscriptionModelPool(
+            size=args.concurrency,
+            worker_factory=lambda: CodexSubscriptionStructuredModel(
+                model_id=args.model,
+                effort=args.effort,
+                timeout_seconds=args.timeout_seconds,
+                max_retries=args.max_retries,
+            ),
+        ) as model:
+            result = run_natural_evaluation_max_resolution(
+                source_path=args.source,
+                base_review_path=args.base_review,
+                review_output_path=args.review_output,
+                gold_output_path=args.gold_output,
+                checkpoint_dir=args.checkpoint_dir,
+                model=model,
+                model_id=args.model,
+                effort=args.effort,
+                concurrency=args.concurrency,
+                chunk_size=args.chunk_size,
+                selection_mode=args.selection_mode,
+                progress=print,
+            )
+        print(f"review: {result['review_output']}")
+        print(f"preliminary_gold: {result['gold_output']}")
+        print(
+            f"source_lines={result['source_line_count']} "
+            f"max_reviewed={result['maximum_review_line_count']} "
+            f"criteria={result['criterion_count']} "
+            f"remaining_uncertain={result['remaining_uncertain_count']}"
+        )
+        print(
+            "max_tokens: "
+            f"input={result['usage']['input_tokens']} "
+            f"output={result['usage']['output_tokens']} "
+            f"reasoning={result['usage']['thinking_tokens']} "
+            f"total={result['usage']['total_tokens']}"
+        )
+        return 0
+    if args.command == "build-natural-evaluation-conservative-gold":
+        result = build_conservative_natural_ai_gold(
+            source_path=args.source,
+            tiered_review_path=args.tiered_review,
+            selection_config_path=args.selection_config,
+            output_path=args.output,
+        )
+        print(f"conservative_preliminary_gold: {result['output']}")
+        print(
+            f"source_lines={result['source_line_count']} "
+            f"high_confidence_lines={result['high_confidence_source_line_count']} "
+            f"accepted_lines={result['accepted_source_line_count']} "
+            f"criteria={result['criterion_count']} "
+            f"deferred_complex_lines={result['deferred_complex_source_line_count']}"
+        )
+        print(
+            "low_coverage_trials="
+            + ",".join(result["low_coverage_trial_ids"])
         )
         return 0
     if args.command == "run-trialgpt-pilot":

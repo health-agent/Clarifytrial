@@ -204,7 +204,7 @@ PyTorch를 사용했다.
 | `src/clarifytrial/interactive/burden_benchmark.py` | 360개 상황 실행, 부담·회복 지표와 채택 기준 계산 |
 | `configs/interactive_public_benchmark_v1.json` | 공개 시험 15건·조건 80개·합성 환자 30명의 고정 자료 |
 | `configs/natural_evaluation_source_selection_v1.json` | 새 자연어 평가 시험을 결과와 무관하게 고르는 고정 규칙 |
-| `data/natural_evaluation_v1/` | 새 본 시험 15건의 조건 원문 272줄과 두 사람의 독립 검토표. 현재는 검토 전 초안 |
+| `data/natural_evaluation_v1/` | 새 본 시험 15건의 조건 원문 272줄, 독립 검토표와 AI 단독 예비 조건 62개 |
 | `src/clarifytrial/pilots/` | 조건 묶음 실행, 비용·오류 지표와 지시문 비교 |
 | `prompts/` | 에이전트별 역할, 입력, 허용 도구와 출력 형식 |
 | `examples/stale_lab/` | 시스템 입력, 숨은 답변과 평가 정답을 나눈 합성 사례 |
@@ -363,7 +363,8 @@ TrialGPT 조건 판단은 서로 다른 실행으로 유지한다.
 | 11 | 같은 후보 RAG에서 TrialGPT식 흐름과 ClarifyTrial 비교 | 한 명령 연결 완료, 공개 원문 구조화 정확도 평가와 본 비교는 아직 전 |
 | 12 | 기존 자료·새 검사와 환자별 추가 부담을 반영한 다음 행동 비교 | 구현 완료, 360개 상황·1,800개 정책 실행과 채택 기준 검사 완료 |
 | 13 | 환자 부담 규칙과 두 추천 목록을 여러 시험 에이전트 흐름에 연결 | 합성 통합 실행과 식별자·승인 경계 검사 완료 |
-| 14 | 자연어 기록·시험 원문에서 전체 흐름 실행 | 합성 검사와 Sol 한 사례 연결 완료. 기존 80개 조건은 개발용, 새 시험 15건·환자 30명은 고정 평가용으로 계획 확정 |
+| 14 | 자연어 기록·시험 원문에서 전체 흐름 실행 | 합성 검사와 Sol 한 사례 연결 완료. 새 시험 원문 272줄은 AI 예비 검토해 단순 조건 62개 확보 |
+| 15 | 새 시험·환자 평가자료 제작 | 조건이 부족한 시험 교체와 환자 30명·근거 상태 짝 60회 제작 전 |
 
 구현 세부는
 [RAG·평가 구현계획](docs/internal/CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)을

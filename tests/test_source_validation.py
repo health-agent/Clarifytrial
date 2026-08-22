@@ -127,3 +127,60 @@ def test_equivalent_unit_notation_is_accepted(left: str, right: str) -> None:
 
 def test_unit_conversion_is_not_assumed() -> None:
     assert not units_equivalent("mg/dL", "mmol/L")
+
+
+@pytest.mark.parametrize(
+    ("text", "concept", "operator", "threshold", "unit"),
+    [
+        ("Age 45 - 70 years.", "age", "gte", 45, "years"),
+        ("Age 45 - 70 years.", "age", "lte", 70, "years"),
+        ("being over the age of 19", "age", "gt", 19, "years"),
+        ("BMI ≥27 kg/m\\^2", "bmi", "gte", 27, "kg/m^2"),
+        ("BMI of 23 kg/m2 or greater", "bmi", "gte", 23, "kg/m2"),
+    ],
+)
+def test_common_protocol_range_and_unit_notation_is_supported(
+    text: str,
+    concept: str,
+    operator: str,
+    threshold: float,
+    unit: str,
+) -> None:
+    criterion = TrialCriterionDraft(
+        kind="inclusion",
+        statement=text,
+        source_quote=text,
+        numeric_constraint={
+            "concept": concept,
+            "operator": operator,
+            "threshold": threshold,
+            "unit": unit,
+        },
+    )
+
+    validate_trial_criterion_source(criterion, text)
+
+
+@pytest.mark.parametrize(
+    ("operator", "threshold"),
+    [("gte", 70), ("lte", 45)],
+)
+def test_numeric_range_does_not_accept_reversed_bounds(
+    operator: str,
+    threshold: float,
+) -> None:
+    text = "Age 45 - 70 years."
+    criterion = TrialCriterionDraft(
+        kind="inclusion",
+        statement=text,
+        source_quote=text,
+        numeric_constraint={
+            "concept": "age",
+            "operator": operator,
+            "threshold": threshold,
+            "unit": "years",
+        },
+    )
+
+    with pytest.raises(SourceValidationError):
+        validate_trial_criterion_source(criterion, text)

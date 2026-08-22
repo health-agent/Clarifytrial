@@ -25,6 +25,8 @@
 | [trialgpt_strong_reviewer_no_web_v2.md](trialgpt_strong_reviewer_no_web_v2.md) | 최초 판단이 경계 사례로 표시한 정보 부족만 집중 재검토 | `ArchitectureReviewerResponse` |
 | [trialgpt_strong_reviewer_web_v2.md](trialgpt_strong_reviewer_web_v2.md) | 같은 경계 사례에서 일반 의학 검색을 실제 사용해 재검토 | `ArchitectureReviewerResponse` |
 | [interactive_question_selector.md](interactive_question_selector.md) | 여러 후보 임상시험 중 현재 판정을 가장 많이 진전시킬 확인 항목 하나를 선택 | `AgentAction` |
+| [natural_criterion_ai_review.md](natural_criterion_ai_review.md) | 새 공개 시험 원문에서 객관적으로 옮길 수 있는 조건의 AI 예비 초안 작성 | `AiCriterionReviewBatch` |
+| [natural_criterion_ai_audit.md](natural_criterion_ai_audit.md) | 초안을 원문과 다시 대조하고 조건 방향·수치·복합 관계를 보수적으로 재검토 | `AiCriterionReviewBatch` |
 
 ## 같은 모델을 사용할 때의 기록 분리
 

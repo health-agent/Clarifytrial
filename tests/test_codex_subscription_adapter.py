@@ -172,6 +172,39 @@ def test_reuses_session_but_starts_fresh_thread_and_returns_full_usage() -> None
     assert not any((parent / ".git").exists() for parent in Path(request.cwd).parents)
 
 
+def test_accepts_explicit_model_and_maximum_reasoning_effort() -> None:
+    session = FakeSession(
+        outcomes=[
+            _TurnRecord(
+                thread_id="thread-max",
+                turn_id="turn-max",
+                final_response='{"value":"ok"}',
+                status="completed",
+                effective_model="gpt-5.6-sol",
+                effective_effort="max",
+            )
+        ]
+    )
+    model = CodexSubscriptionStructuredModel(
+        model_id="gpt-5.6-sol",
+        effort="max",
+        prompt_loader=lambda _: "prompt",
+        session_factory=lambda _: session,
+    )
+
+    _, usage = model.complete(_call())
+
+    assert session.requests[0].model == "gpt-5.6-sol"
+    assert session.requests[0].effort == "max"
+    assert usage.requested_model_id == "gpt-5.6-sol"
+    assert usage.requested_effort == "max"
+
+
+def test_rejects_unknown_reasoning_effort() -> None:
+    with pytest.raises(ValueError, match="effort must be one of"):
+        CodexSubscriptionStructuredModel(effort="ultra")
+
+
 def test_only_transient_failure_is_retried() -> None:
     transient = FakeSession(
         outcomes=[_SessionFailure("overload", transient=True), FakeSession().run(_dummy_request())]

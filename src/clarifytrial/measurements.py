@@ -20,6 +20,7 @@ def normalized_unit(unit: str) -> str:
     }
     for before, after in replacements.items():
         value = value.replace(before, after)
+    value = value.replace("\\", "")
     value = re.sub(r"\bper\b", "/", value)
     value = re.sub(r"\b(litres?|liters?)\b", "l", value)
     value = re.sub(r"\bdays\b", "day", value)

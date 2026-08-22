@@ -36,8 +36,19 @@ def _number_is_present(expected: float, text: str) -> bool:
     )
 
 
-def _unit_is_present(unit: str, source_text: str) -> bool:
-    return normalized_unit(unit) in normalized_unit(source_text)
+def _unit_is_present(
+    unit: str,
+    source_text: str,
+    concept: str | None = None,
+) -> bool:
+    if normalized_unit(unit) in normalized_unit(source_text):
+        return True
+    return bool(
+        concept
+        and "age" in concept.casefold()
+        and normalized_unit(unit) == "year"
+        and re.search(r"\bage\b", source_text, re.IGNORECASE)
+    )
 
 
 _ISO_DATE = re.compile(r"(?<!\d)(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})(?!\d)")
@@ -65,6 +76,7 @@ _OPERATOR_PATTERNS: dict[ComparisonOperator, tuple[re.Pattern[str], ...]] = {
             r"at\s+most",
             r"no\s+more\s+than",
             r"not\s+greater\s+than",
+            r"or\s+(?:less|lower|younger)",
             r"<=|≤|이하|최대",
         )
     ),
@@ -75,6 +87,7 @@ _OPERATOR_PATTERNS: dict[ComparisonOperator, tuple[re.Pattern[str], ...]] = {
             r"at\s+least",
             r"no\s+less\s+than",
             r"not\s+less\s+than",
+            r"or\s+(?:greater|more|older)",
             r">=|≥|이상|최소",
         )
     ),
@@ -114,6 +127,31 @@ def _supported_operators(source_text: str) -> set[ComparisonOperator]:
         for operator, patterns in _OPERATOR_PATTERNS.items()
         if any(pattern.search(normalized) for pattern in patterns)
     }
+
+
+_RANGE_PATTERN = re.compile(
+    r"(?:\bbetween\s+|\bfrom\s+)?"
+    r"([-+]?(?:\d+(?:\.\d+)?))\s*"
+    r"(?:-|–|—|\bto\b|\band\b)\s*"
+    r"([-+]?(?:\d+(?:\.\d+)?))",
+    re.IGNORECASE,
+)
+
+
+def _range_supports_operator(
+    expected: float,
+    operator: ComparisonOperator,
+    source_text: str,
+) -> bool:
+    normalized = unicodedata.normalize("NFKC", source_text)
+    for raw_lower, raw_upper in _RANGE_PATTERN.findall(normalized):
+        lower = float(raw_lower)
+        upper = float(raw_upper)
+        if operator is ComparisonOperator.GTE and math.isclose(expected, lower):
+            return True
+        if operator is ComparisonOperator.LTE and math.isclose(expected, upper):
+            return True
+    return False
 
 
 _NUMBER_WORDS = {
@@ -233,7 +271,7 @@ def validate_patient_fact_source(
                 f"patient value {fact.value:g} is not present in the cited source"
             )
         assert fact.unit is not None
-        if not _unit_is_present(fact.unit, matched_source_text):
+        if not _unit_is_present(fact.unit, matched_source_text, fact.concept):
             raise SourceValidationError(
                 f"patient unit {fact.unit!r} is not present in the cited source"
             )
@@ -261,12 +299,23 @@ def validate_trial_criterion_source(
             raise SourceValidationError(
                 f"criterion threshold {constraint.threshold:g} is not present in the cited source"
             )
-        if not _unit_is_present(constraint.unit, matched_source_text):
+        if not _unit_is_present(
+            constraint.unit,
+            matched_source_text,
+            constraint.concept,
+        ):
             raise SourceValidationError(
                 f"criterion unit {constraint.unit!r} is not present in the cited source"
             )
         supported = _supported_operators(matched_source_text)
-        if constraint.operator not in supported:
+        if (
+            constraint.operator not in supported
+            and not _range_supports_operator(
+                constraint.threshold,
+                constraint.operator,
+                matched_source_text,
+            )
+        ):
             raise SourceValidationError(
                 "criterion operator "
                 f"{constraint.operator.value!r} is not supported by the cited source"

@@ -10,6 +10,7 @@ from .anthropic import (
 )
 from .base import ModelCall, ModelUsage, StructuredModel
 from .codex_subscription import (
+    ALLOWED_CODEX_EFFORTS,
     CODEX_SDK_REQUIREMENT,
     DEFAULT_CODEX_EFFORT,
     DEFAULT_CODEX_MODEL,
@@ -29,6 +30,7 @@ from .prompts import FilePromptLoader, PromptLoader
 from .scripted import ScriptedStructuredModel
 
 __all__ = [
+    "ALLOWED_CODEX_EFFORTS",
     "AnthropicAdapterError",
     "AnthropicAPIError",
     "AnthropicResponseError",
