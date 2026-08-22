@@ -20,6 +20,7 @@
 | [근거문헌과 공개 코드](CLARIFYTRIAL_AGENT_SOURCE_INDEX.md) | 각 단계의 원 논문, 공개 코드와 재현 범위 |
 | [RAG·평가 구현계획](CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md) | 자료 준비, 검색기, 모델 연결, 평가 명령과 구현 기준 |
 | [쉬운 실험 안내](CLARIFYTRIAL_V5_DEVELOPED_EXPERIMENT_GUIDE.md) | 사례 제작부터 결과 해석까지의 실행 순서 |
+| [보고서·발표 정리본](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 전체 설명, 핵심 결과 그림, 대표 사례, 발표 문안과 주장 범위 |
 | [연구 지식 정리](RESEARCH_KNOWLEDGE_BASE.md) | 선행연구, 데이터와 구현 방법을 꺼내 쓰는 참고자료 |
 
 ## 현재 상태 한눈에 보기
@@ -32,6 +33,8 @@
   현재 v3 89%였다.
 - 기본 입력은 환자 상태와 시험 조건을 담은 규격화된 JSON이다. 자유 형식 기록을
   JSON으로 바꾸는 기능은 선택 연결 기능으로 둔다.
+- 대표 합성 환자 한 명을 외부 모델 없이 다시 실행하는 명령과 보고서용 SVG 그림을
+  저장소에 포함했다.
 - 92개 시험 조건과 합성 환자를 사용한 예비결과이며 의사 일치도는 측정하지 않았다.
 
 연구계획은 v5 문서 하나만 현행 기준으로 사용한다. `trash/`는 과거 기록이며 출처의

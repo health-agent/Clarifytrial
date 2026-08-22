@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">환자 부담을 반영한 확인 방법 선택</title>
+<desc id="desc">ClarifyTrial 연구 결과를 보여 주는 코드 기반 그림</desc>
+<rect width="1200" height="720" fill="#F5F7FB"/>
+<text x="70" y="82" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="38" font-weight="700" fill="#172033" text-anchor="start">환자가 실제로 이용할 수 있는 확인 방법을 먼저 선택</text>
+<text x="70" y="124" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="20" font-weight="400" fill="#64748B" text-anchor="start">고정 평가 240회 중 이동·비용 부담을 입력한 합성 상황 80회</text>
+<rect x="55" y="165" width="530" height="455" rx="20" fill="#FFFFFF" stroke="none"/>
+<rect x="615" y="165" width="530" height="455" rx="20" fill="#FFFFFF" stroke="none"/>
+<text x="90" y="220" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="24" font-weight="650" fill="#172033" text-anchor="start"><tspan x="90" dy="0">이용 가능한 방법만 써서</tspan><tspan x="90" dy="34">최종 판단까지 맞게 끝낸 시험</tspan></text>
+<text x="650" y="220" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="24" font-weight="650" fill="#172033" text-anchor="start"><tspan x="650" dy="0">새 검사·추가 방문이 어려운 환자에게</tspan><tspan x="650" dy="34">그 방법을 제안한 횟수</tspan></text>
+<text x="90" y="330" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="400" fill="#172033" text-anchor="start">고정 방식</text>
+<rect x="225" y="302" width="300" height="42" rx="10" fill="#EEF2F7" stroke="none"/>
+<rect x="225" y="302" width="243" height="42" rx="10" fill="#AAB5C5" stroke="none"/>
+<text x="525" y="332" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="22" font-weight="700" fill="#172033" text-anchor="end">81.0%</text>
+<text x="90" y="440" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="600" fill="#172033" text-anchor="start">환자 맞춤</text>
+<rect x="225" y="412" width="300" height="42" rx="10" fill="#EEF2F7" stroke="none"/>
+<rect x="225" y="412" width="266" height="42" rx="10" fill="#356AE6" stroke="none"/>
+<text x="525" y="442" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="22" font-weight="700" fill="#172033" text-anchor="end">88.5%</text>
+<text x="650" y="330" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="400" fill="#172033" text-anchor="start">고정 방식</text>
+<rect x="785" y="302" width="300" height="42" rx="10" fill="#EEF2F7" stroke="none"/>
+<rect x="785" y="302" width="279" height="42" rx="10" fill="#AAB5C5" stroke="none"/>
+<text x="1085" y="332" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="22" font-weight="700" fill="#172033" text-anchor="end">65회</text>
+<text x="650" y="440" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="600" fill="#172033" text-anchor="start">환자 맞춤</text>
+<rect x="785" y="412" width="300" height="42" rx="10" fill="#EEF2F7" stroke="none"/>
+<circle cx="797" cy="433" r="8" fill="#356AE6"/>
+<text x="1085" y="442" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="22" font-weight="700" fill="#172033" text-anchor="end">0회</text>
+<text x="70" y="665" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="700" fill="#356AE6" text-anchor="start">0회의 뜻</text>
+<text x="165" y="665" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#172033" text-anchor="start">기존 기록이나 환자 답변을 먼저 쓰고, 더 확인할 수 없으면 대기 상태로 남겼다.</text>
+</svg>

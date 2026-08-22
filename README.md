@@ -157,7 +157,8 @@ TrialGPT를 넘지 못했다. 일반 재검토와 인터넷 검색을 붙인 방
 ### 질문과 재판정
 
 질문 규칙을 정한 뒤 새로 만든 합성 환자 30명, 시험 판단 150건에서 확인 횟수 3회를
-허용했다. 아래 값은 모든 정보를 알았을 때의 시험 상태를 얼마나 회복했는지 나타낸다.
+허용했다. 환자의 전체 사실로 미리 계산한 최종 시험 상태를 채점 기준으로만 사용했다.
+실제 환자에게 모든 검사나 절차를 시켰다는 뜻은 아니다.
 
 | 방식 | 시험 상태 회복 |
 |---|---:|
@@ -166,18 +167,22 @@ TrialGPT를 넘지 못했다. 일반 재검토와 인터넷 검색을 붙인 방
 | 영향 범위만 보는 방식 | 87% |
 | 남은 횟수까지 보는 현재 방식 | 89% |
 
+![질문 순서 예비결과](docs/internal/diagrams/clarifytrial-question-policy-results.svg)
+
 질문을 다섯 번까지 허용하면 고정 순서와 v3가 모두 100%에 도달했다. 평균 확인 횟수는
 고정 순서 4.53회, v3 3.63회였다. 이 수치는 정해진 문장 틀과 AI 검토 기반 시험
 조건을 쓴 합성 예비평가이며 실제 의료 정확도가 아니다.
 
 ### 환자 부담을 반영한 경로 선택
 
-고정 평가 240회에서 이동·비용 부담이 큰 합성 환자의 결과는 다음과 같았다.
+고정 평가 240회 중 이동·비용 부담을 입력한 합성 상황 80회의 결과는 다음과 같았다.
 
 | 확인 내용 | 고정 방식 | 현재 환자 맞춤 방식 |
 |---|---:|---:|
 | 환자가 실제로 이용할 수 있는 방법만 사용해 최종 판단까지 맞게 끝낸 시험 비율 | 81.0% | 88.5% |
 | 새 검사나 추가 방문이 어렵다고 입력된 환자에게 이를 제안한 횟수 | 65회 | 0회 |
+
+![환자 부담을 반영한 확인 방법 예비결과](docs/internal/diagrams/clarifytrial-patient-burden-results.svg)
 
 이 결과는 이동·비용 부담과 이용 가능한 기록을 연구진이 정한 합성 상황에서 나온
 것이다. 0회는 기존 기록이나 환자 답변을 사용하거나, 더 확인할 수 없으면 대기 상태로
@@ -214,6 +219,16 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\clarifytrial.exe run-example `
   --case examples\stale_lab `
   --output runs\stale_lab
+```
+
+현재 질문 순서를 대표 합성 환자 한 명에서 재현하려면 다음 명령을 실행한다. 외부
+모델과 인터넷 검색은 사용하지 않는다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-json-question-policy-evaluation `
+  --split heldout `
+  --patient-id natural-breast_cancer-11 `
+  --output runs\report-demo.json
 ```
 
 자유 형식 기록을 JSON으로 정리하는 선택 연결 기능의 합성 예제는
@@ -259,6 +274,7 @@ py -3.12 -m venv .venv
 | [근거문헌과 공개 코드](docs/internal/CLARIFYTRIAL_AGENT_SOURCE_INDEX.md) | 각 단계에서 참고한 논문과 가져온 범위 |
 | [데이터셋 정리](docs/internal/CLARIFYTRIAL_DATASETS.md) | 공개자료 라벨, 합성자료 생성과 한계 |
 | [검증 결과](docs/internal/CLARIFYTRIAL_VALIDATION_RESULTS.md) | 실행 조건, 결과, 비용과 채택·기각 결정 |
+| [보고서·발표 정리본](docs/internal/CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 쉬운 전체 설명, 핵심 결과 그림, 대표 사례와 발표 문안 |
 | [전체 문서 색인](docs/internal/README.md) | 문서별 역할과 읽는 순서 |
 
 환자 정보, 외부 자료와 의료 출력에 관한 규칙은 [AGENTS.md](AGENTS.md),

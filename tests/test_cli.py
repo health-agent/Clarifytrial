@@ -188,6 +188,29 @@ def test_natural_record_structure_command_requires_subscription_confirmation(
     assert captured.value.code == 2
 
 
+def test_json_question_policy_alias_runs_without_structure_model(
+    tmp_path: Path,
+) -> None:
+    output = tmp_path / "json-question-demo.json"
+
+    exit_code = main(
+        [
+            "run-json-question-policy-evaluation",
+            "--split",
+            "heldout",
+            "--patient-id",
+            "natural-breast_cancer-11",
+            "--output",
+            str(output),
+        ]
+    )
+
+    assert exit_code == 0
+    payload = _read_json(output)
+    assert payload["input_mode"] == "standardized_json"
+    assert len(payload["runs"]) == 5
+
+
 def test_live_trialgpt_experiment_requires_explicit_confirmation(
     tmp_path: Path,
 ) -> None:

@@ -1,17 +1,18 @@
-"""Compare clarification policies on the frozen natural-record pairs.
+"""Compare question policies on frozen standardized synthetic patient pairs.
 
-All policies share the same record extraction.  The only experimental change
-is whether questions are allowed and, if so, how the next fact is selected.
-Verified answers come from the hidden sufficient member of the synthetic pair.
+Natural-record extraction results may replace the standardized input for an
+optional connection test. The policy comparison itself only changes whether
+questions are allowed and how the next fact is selected. Verified answers come
+from the hidden sufficient member of each synthetic pair.
 """
 
 from __future__ import annotations
 
 import json
-from math import comb
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
 from datetime import date, datetime
+from math import comb
 from pathlib import Path
 from typing import Any, Literal
 
@@ -628,6 +629,8 @@ def run_natural_policy_evaluation(
     destination: str | Path,
     action_budget: int = 3,
     action_budgets: Sequence[int] | None = None,
+    splits: Sequence[str] | None = None,
+    patient_ids: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     if action_budget < 0:
         raise ValueError("action_budget must not be negative")
@@ -643,6 +646,27 @@ def run_natural_policy_evaluation(
     pairs_doc = json.loads(patient_pairs_path.read_text(encoding="utf-8"))
     records_doc = json.loads(records_path.read_text(encoding="utf-8"))
     config = load_natural_patient_generation_config(generation_config_path)
+    selected_splits = set(splits or ())
+    allowed_splits = {"development", "heldout"}
+    if unknown_splits := selected_splits - allowed_splits:
+        raise ValueError(f"unknown splits: {sorted(unknown_splits)!r}")
+    selected_patient_ids = set(patient_ids or ())
+    available_patient_ids = {str(item["patient_id"]) for item in pairs_doc["pairs"]}
+    if unknown_patient_ids := selected_patient_ids - available_patient_ids:
+        raise ValueError(
+            f"unknown patient IDs: {sorted(unknown_patient_ids)!r}"
+        )
+    selected_pairs = [
+        item
+        for item in pairs_doc["pairs"]
+        if (not selected_splits or str(item["split"]) in selected_splits)
+        and (
+            not selected_patient_ids
+            or str(item["patient_id"]) in selected_patient_ids
+        )
+    ]
+    if not selected_pairs:
+        raise ValueError("the requested JSON evaluation filter selected no patients")
     normalized_rows = _normalized_criteria(trial_set["criteria"], config.fact_aliases)
     criteria_by_group = {
         group.group_id: _trial_criteria(
@@ -669,7 +693,7 @@ def run_natural_policy_evaluation(
         "clarifytrial_rule_v2_resolve_first",
         "clarifytrial_exact_coverage_v3",
     )
-    for pair in pairs_doc["pairs"]:
+    for pair in selected_pairs:
         episode = pair["insufficient_evidence_episode"]
         episode_id = str(episode["episode_id"])
         record = records[episode_id]
@@ -721,6 +745,15 @@ def run_natural_policy_evaluation(
             "All policies share the same initial record interpretation and hidden "
             "verified answers. Only question permission and question order change."
         ),
+        "input_mode": (
+            "standardized_json_and_natural_record_extraction"
+            if structure_result_paths
+            else "standardized_json"
+        ),
+        "filters": {
+            "splits": sorted(selected_splits),
+            "patient_ids": sorted(selected_patient_ids),
+        },
         "input_sha256": {
             "trial_set": portable_text_sha256(trial_set_path),
             "generation_config": portable_text_sha256(generation_config_path),
@@ -738,7 +771,7 @@ def run_natural_policy_evaluation(
     )
     return {
         "output": str(destination),
-        "patient_count": len(pairs_doc["pairs"]),
+        "patient_count": len(selected_pairs),
         "run_count": len(runs),
         "summaries": summaries,
         "paired_comparisons": paired_comparisons,

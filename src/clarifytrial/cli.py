@@ -1067,8 +1067,12 @@ def _parser() -> argparse.ArgumentParser:
     )
 
     natural_policy = commands.add_parser(
-        "run-natural-question-policy-evaluation",
-        help="compare no questions, fixed order, and ClarifyTrial question order",
+        "run-json-question-policy-evaluation",
+        aliases=["run-natural-question-policy-evaluation"],
+        help=(
+            "compare question order on standardized JSON; natural-record "
+            "structure results are optional"
+        ),
     )
     natural_policy.add_argument(
         "--trial-set",
@@ -1080,24 +1084,39 @@ def _parser() -> argparse.ArgumentParser:
     natural_policy.add_argument(
         "--generation-config",
         type=Path,
-        default=Path("configs") / "natural_evaluation_patient_generation_v1.json",
+        default=Path("configs") / "natural_evaluation_patient_generation_v2.json",
     )
     natural_policy.add_argument(
         "--patient-pairs",
         type=Path,
         default=Path("data")
-        / "natural_evaluation_v1"
+        / "natural_evaluation_v2"
         / "preliminary_patient_pairs.json",
     )
     natural_policy.add_argument(
         "--records",
         type=Path,
         default=Path("data")
-        / "natural_evaluation_v1"
+        / "natural_evaluation_v2"
         / "preliminary_natural_records.json",
     )
     natural_policy.add_argument(
-        "--structure-result", type=Path, action="append", required=True
+        "--structure-result",
+        type=Path,
+        action="append",
+        default=[],
+        help="optional natural-record extraction result; omit for JSON-only evaluation",
+    )
+    natural_policy.add_argument(
+        "--split",
+        choices=("development", "heldout"),
+        action="append",
+        help="evaluate only the selected split; may be repeated",
+    )
+    natural_policy.add_argument(
+        "--patient-id",
+        action="append",
+        help="evaluate only the selected patient ID; may be repeated",
     )
     natural_policy.add_argument("--output", type=Path, required=True)
     natural_policy.add_argument("--action-budget", type=int, default=3)
@@ -1650,7 +1669,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"tokens={result['token_usage']['total_tokens']}"
         )
         return 0 if result["failed_record_count"] == 0 else 2
-    if args.command == "run-natural-question-policy-evaluation":
+    if args.command in {
+        "run-natural-question-policy-evaluation",
+        "run-json-question-policy-evaluation",
+    }:
         result = run_natural_policy_evaluation(
             trial_set_path=args.trial_set,
             generation_config_path=args.generation_config,
@@ -1660,6 +1682,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             destination=args.output,
             action_budget=args.action_budget,
             action_budgets=range(6) if args.budget_sweep else None,
+            splits=args.split,
+            patient_ids=args.patient_id,
         )
         print(
             f"patients={result['patient_count']} runs={result['run_count']} "
