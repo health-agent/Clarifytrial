@@ -87,6 +87,11 @@ def test_report_replaces_internal_labels_with_self_explanatory_korean(
                         "arm": "no_questions",
                         "patient_count": 1,
                         "trial_status_recovery": 0.4,
+                        "candidate_status_accuracy": 0.8,
+                        "confirmation_status_accuracy": 0.5,
+                        "false_candidate_removals": 1,
+                        "premature_initial_confirmations": 0,
+                        "mean_unresolved_to_resolved": 0.0,
                         "mean_action_count": 0,
                         "model_call_count": 1,
                         "total_tokens": 0,
@@ -96,6 +101,11 @@ def test_report_replaces_internal_labels_with_self_explanatory_korean(
                         "arm": "fixed_order",
                         "patient_count": 1,
                         "trial_status_recovery": 0.6,
+                        "candidate_status_accuracy": 0.9,
+                        "confirmation_status_accuracy": 0.7,
+                        "false_candidate_removals": 0,
+                        "premature_initial_confirmations": 0,
+                        "mean_unresolved_to_resolved": 1.0,
                         "mean_action_count": 3,
                         "model_call_count": 7,
                         "total_tokens": 0,
@@ -105,12 +115,25 @@ def test_report_replaces_internal_labels_with_self_explanatory_korean(
                         "arm": "clarifytrial",
                         "patient_count": 1,
                         "trial_status_recovery": 0.8,
+                        "candidate_status_accuracy": 0.95,
+                        "confirmation_status_accuracy": 0.85,
+                        "false_candidate_removals": 0,
+                        "premature_initial_confirmations": 0,
+                        "mean_unresolved_to_resolved": 1.5,
                         "mean_action_count": 3,
                         "model_call_count": 7,
                         "total_tokens": 0,
                         "failed_patient_count": 0,
                     },
                 ],
+                "paired_clarifytrial_vs_fixed": {
+                    "patient_count": 1,
+                    "mean_recovery_difference": 0.2,
+                    "clarifytrial_better_patient_count": 1,
+                    "equal_patient_count": 0,
+                    "clarifytrial_worse_patient_count": 0,
+                    "two_sided_exact_sign_test_p": 1.0,
+                },
             }
         ),
         encoding="utf-8",
@@ -145,4 +168,7 @@ def test_report_replaces_internal_labels_with_self_explanatory_korean(
     assert "| 고정 방식 |" not in report
     assert "고정 응답기" not in report
     assert "조건 판단·질문 작성 단계를 실행한 총횟수" in report
+    assert "후보 유지·제외를 맞힌 비율" in report
+    assert "처음 자료가 부족한데 확정한 수" in report
+    assert "더 좋았던 환자는 1명" in report
     assert "합성 환자를 만들 때 저장한 답만 반환하는 실험용 코드" in report

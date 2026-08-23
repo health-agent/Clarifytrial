@@ -6,7 +6,14 @@ from typing import Any
 
 from pydantic import Field, model_validator
 
-from ..contracts import ContractModel, NextEvidenceRequest, PatientState
+from ..contracts import (
+    ContractModel,
+    EvidenceCaptureMethod,
+    EvidenceSourceType,
+    NextEvidenceRequest,
+    PatientState,
+    VerificationStatus,
+)
 from ..interactive.burden_contracts import AcquisitionOption, PatientBurdenInput
 from ..workflow import PatientScreeningResult, ScreeningTrial
 
@@ -58,15 +65,23 @@ class SessionEvent(ContractModel):
     action: str = Field(min_length=1)
     status: str = Field(min_length=1)
     evidence_id: str | None = None
+    capture_method: EvidenceCaptureMethod | None = None
+    source_type: EvidenceSourceType | None = None
+    verification_status: VerificationStatus | None = None
+    event_date: str | None = None
 
 
 class ScreeningSession(ContractModel):
     """Small resumable state file written after every accepted answer."""
 
-    format_version: int = 1
+    format_version: int = 2
     case_id: str = Field(min_length=1)
     patient_state: PatientState
     revealed_fact_ids: list[str] = Field(default_factory=list)
+    unavailable_fact_ids: list[str] = Field(default_factory=list)
+    pending_option_id: str | None = None
+    patient_approved_option_ids: list[str] = Field(default_factory=list)
+    clinician_authorized_option_ids: list[str] = Field(default_factory=list)
     action_count: int = Field(default=0, ge=0)
     events: list[SessionEvent] = Field(default_factory=list)
     completed: bool = False
@@ -74,9 +89,23 @@ class ScreeningSession(ContractModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
 
     @model_validator(mode="after")
-    def revealed_ids_are_unique(self) -> "ScreeningSession":
-        if len(self.revealed_fact_ids) != len(set(self.revealed_fact_ids)):
-            raise ValueError("revealed_fact_ids must not contain duplicates")
+    def state_ids_are_unique(self) -> "ScreeningSession":
+        fields = (
+            "revealed_fact_ids",
+            "unavailable_fact_ids",
+            "patient_approved_option_ids",
+            "clinician_authorized_option_ids",
+        )
+        for name in fields:
+            values = getattr(self, name)
+            if len(values) != len(set(values)):
+                raise ValueError(f"{name} must not contain duplicates")
+        overlap = set(self.revealed_fact_ids) & set(self.unavailable_fact_ids)
+        if overlap:
+            raise ValueError(
+                "a fact cannot be both revealed and unavailable: "
+                + ", ".join(sorted(overlap))
+            )
         return self
 
 

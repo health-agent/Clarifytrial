@@ -260,7 +260,7 @@ def test_patient_workflow_connects_agents_burden_rules_and_two_output_views() ->
 
     assert (
         result.stop_reason
-        is PatientScreeningStopReason.AWAITING_CLINICIAN_AUTHORIZATION
+        is PatientScreeningStopReason.AWAITING_PATIENT_CHOICE
     )
     by_trial = {item.trial_id: item for item in result.final_decisions}
     assert by_trial["TRIAL-A"].confirmation_status.value == "confirmed"
@@ -314,6 +314,99 @@ def test_patient_workflow_connects_agents_burden_rules_and_two_output_views() ->
         "next_evidence": 2,
     }
     assert sum(item.actor == "coordinator_rules" for item in trace.events) == 5
+
+
+def test_unavailable_answer_does_not_block_other_missing_facts() -> None:
+    case = _case()
+    options = [
+        item.model_copy(
+            update={
+                "acquisition_mode": AcquisitionMode.EXISTING_OFFICIAL_RESULT,
+                "new_test_required": False,
+                "requires_patient_choice": False,
+                "requires_clinician_authorization": False,
+            }
+        )
+        for item in case.acquisition_options
+    ]
+    case = case.model_copy(update={"acquisition_options": options})
+    requests = [
+        PublicFactRequest(
+            fact_id=item.fact_id,
+            description=item.description,
+            available_actions=tuple(item.acceptable_actions),
+        )
+        for item in case.evidence_requests
+    ]
+    tools = SyntheticInformationTools(
+        PublicQuestionCatalog(requests),
+        HiddenPatientEnvironment(
+            [
+                HiddenFactAnswer(
+                    fact_id="recent-d",
+                    access_path="REQUEST_VERIFICATION",
+                    evidence=_fact("revealed-d", "marker_d", 1),
+                )
+            ]
+        ),
+    )
+
+    result = PatientScreeningRunner(
+        _agents(_model()),
+        EpisodeSettings(
+            max_external_actions=3,
+            max_selective_reviews=0,
+            max_cycles=12,
+        ),
+    ).run(case, tools)
+
+    assert [item.agent_action.target_fact_id for item in result.action_history] == [
+        "recent-b",
+        "recent-d",
+    ]
+    assert result.action_history[0].tool_result.status.value == "not_available"
+    assert result.action_history[1].tool_result.status.value == "revealed"
+    by_trial = {item.trial_id: item for item in result.final_decisions}
+    assert by_trial["TRIAL-D"].confirmation_status.value == "confirmed"
+    assert result.stop_reason is PatientScreeningStopReason.DEFERRED
+
+
+def test_large_action_runs_only_after_both_approvals() -> None:
+    case = _case()
+    runner = PatientScreeningRunner(
+        _agents(_model()),
+        EpisodeSettings(
+            max_external_actions=2,
+            max_selective_reviews=0,
+            max_cycles=8,
+        ),
+    )
+    first = runner.run(case, _tools(case))
+    assert first.stop_reason is PatientScreeningStopReason.AWAITING_PATIENT_CHOICE
+    option_id = first.guidance.selected_option.option_id
+
+    second = runner.run(
+        case.model_copy(update={"initial_patient_state": first.final_patient_state}),
+        _tools(case),
+        initial_revealed_fact_ids={"recent-b"},
+        patient_approved_option_ids={option_id},
+    )
+    assert (
+        second.stop_reason
+        is PatientScreeningStopReason.AWAITING_CLINICIAN_AUTHORIZATION
+    )
+
+    third = runner.run(
+        case.model_copy(update={"initial_patient_state": first.final_patient_state}),
+        _tools(case),
+        initial_revealed_fact_ids={"recent-b"},
+        patient_approved_option_ids={option_id},
+        clinician_authorized_option_ids={option_id},
+    )
+    assert [item.agent_action.target_fact_id for item in third.action_history] == [
+        "recent-d"
+    ]
+    assert third.stop_reason is PatientScreeningStopReason.ALL_TRIALS_RESOLVED
 
 
 def test_message_agent_cannot_replace_the_code_selected_fact() -> None:

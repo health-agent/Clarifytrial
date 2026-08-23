@@ -220,8 +220,15 @@ TrialGPT의 답 이름을 그대로 흉내 내 점수만 높이는 조정은 하
 체험 화면으로 나뉜다. 일반 실행 명령은 새 환자 JSON과
 시험 JSON 또는 JSONL을 받아 검색, 판단, 질문, 답변, 재판정과 최종 결과를 처리한다.
 답변은 터미널에 직접 입력하거나 JSON 파일로 줄 수 있고, 중간에 끝낸 실행은 저장된
-세션에서 이어갈 수 있다. 체험 화면은 저장소의 합성 환자와 공개 시험 15개를 써서
-같은 과정을 한 화면에 재현한다.
+세션에서 이어갈 수 있다. 한 정보를 얻지 못하면 같은 질문만 되풀이하지 않고 다른
+정보를 확인한다. 새 검사처럼 별도 선택과 승인이 필요한 방법은 실행하지 않고 멈춘 뒤,
+환자 선택과 담당자 승인을 각각 기록하면 이어서 진행한다. 체험 화면은 저장소의 합성
+환자와 공개 시험 15개를 써서 같은 과정을 한 화면에 재현한다.
+
+직접 입력한 문장은 기본적으로 환자가 말한 내용으로 저장한다. 공식 결과를 요청한
+화면에서 입력했더라도 그 사실만으로 공식 자료가 되지는 않는다. JSON에 자료 종류,
+자료 위치, 확인 상태와 실제 날짜가 들어온 경우에만 그 구분을 사용한다. 실행 기록에는
+문장 입력, 직접 작성한 JSON, JSON 파일 가운데 어떤 방식으로 받은 자료인지도 남긴다.
 
 아직 다음 내용은 확인하지 않았다.
 
@@ -248,7 +255,9 @@ py -3.12 -m venv .venv
 
 새 환자와 시험 파일로 전체 흐름을 실행하는 기본 명령은 다음과 같다. 예제의 답변
 파일을 빼면 필요한 내용을 터미널에서 직접 묻는다. 실행을 중단하면 출력 폴더의
-`session.json`을 `--resume`에 넣어 이어갈 수 있다.
+`session.json`을 `--resume`에 넣어 이어갈 수 있다. 앞에서 얻지 못한 정보를 다시
+확인하려면 `--retry-unavailable`을 붙인다. 환자 선택이나 담당자 승인을 기다리는
+상태라면 각각 `--approve-patient-choice`, `--authorize-clinician`을 붙여 재개한다.
 
 ```powershell
 .\.venv\Scripts\clarifytrial.exe run-screening `
@@ -264,6 +273,20 @@ py -3.12 -m venv .venv
   --resume runs\general-screening\session.json `
   --provider deterministic `
   --output runs\general-screening-resumed
+```
+
+기본 명령은 전달한 시험 파일 안에서 가벼운 검색을 한다. 준비된 TrialGPT 검색 자료가
+있다면 같은 명령에서 수만 건 검색 결과를 사용하고, 그중 구조화 조건이 들어 있는
+시험만 실제 판단 대상으로 넘길 수 있다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-screening `
+  --patient examples\general_screening\patient.json `
+  --trials path\to\structured-trials.jsonl `
+  --candidate-search trialgpt `
+  --trialgpt-corpus path\to\trial-corpus.jsonl `
+  --trialgpt-cache path\to\retrieval-cache `
+  --output runs\general-screening
 ```
 
 입력 필드의 전체 설명은 [범용 예제](examples/general_screening/README.md)와 다음 명령이
@@ -321,7 +344,9 @@ JSON을 읽고, 시험 15개 검색, 후보 5개 조건 판단, 최대 세 번�
 ```
 
 이미 만든 질문 순서, 환자 부담, 전체 흐름과 검색 결과를 한 보고서로 합치는 명령은
-다음과 같다. 표, Markdown 요약과 SVG 그림이 같은 폴더에 만들어진다.
+다음과 같다. 표, Markdown 요약과 SVG 그림이 같은 폴더에 만들어진다. 전체 흐름
+표에는 후보 유지·제외, 현재 확정 여부, 잘못된 제외, 정보가 부족한데 확정한 경우,
+질문 뒤 판단이 끝난 시험 수와 환자별 비교 결과가 함께 들어간다.
 
 ```powershell
 .\.venv\Scripts\clarifytrial.exe build-report `

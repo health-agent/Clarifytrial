@@ -233,7 +233,9 @@ def build_research_report(
                 "",
                 f"합성 환자 {workflow['patient_count']}명에게 같은 시험과 처음 환자 자료를 주고, 추가 정보를 확인하지 않는 경우와 두 가지 확인 순서를 비교했다. 추가 확인을 사용하는 두 방법에는 환자 한 명당 최대 {workflow['action_budget']}번의 기회를 줬다.",
                 "",
-                "| 전체 프로그램에서 부족한 정보를 처리한 방법 | 합성 환자 수 | 모든 환자 정보를 알 때와 같은 판단에 도달한 시험 비율 | 환자 한 명당 실제로 확인한 정보 수 | 조건 판단·질문 작성 단계를 실행한 총횟수 | 외부 언어모델을 사용했다면 보낸·받은 전체 토큰 | 실행 오류가 난 환자 수 |",
+                "### 판단 결과",
+                "",
+                "| 부족한 정보를 처리한 방법 | 후보 유지·제외와 현재 확정 상태를 모두 맞힌 비율 | 후보 유지·제외를 맞힌 비율 | 현재 자료로 확정 가능한지를 맞힌 비율 | 남겨야 할 시험을 잘못 제외한 수 | 처음 자료가 부족한데 확정한 수 | 질문 뒤 판단이 끝난 시험 수 |",
                 "|---|---:|---:|---:|---:|---:|---:|",
             ]
         )
@@ -244,10 +246,15 @@ def build_research_report(
         }
         for row in workflow["arm_metrics"]:
             sections.append(
-                f"| {arm_labels.get(row['arm'], row['arm'])} | {row['patient_count']} | {row['trial_status_recovery']:.1%} | {row['mean_action_count']:.2f}개 | {row['model_call_count']}회 | {row['total_tokens']:,} | {row['failed_patient_count']}명 |"
+                f"| {arm_labels.get(row['arm'], row['arm'])} | {row['trial_status_recovery']:.1%} | {row['candidate_status_accuracy']:.1%} | {row['confirmation_status_accuracy']:.1%} | {row['false_candidate_removals']}개 | {row['premature_initial_confirmations']}개 | 환자당 {row['mean_unresolved_to_resolved']:.2f}개 |"
             )
             for name in (
                 "trial_status_recovery",
+                "candidate_status_accuracy",
+                "confirmation_status_accuracy",
+                "false_candidate_removals",
+                "premature_initial_confirmations",
+                "mean_unresolved_to_resolved",
                 "mean_action_count",
                 "model_call_count",
                 "total_tokens",
@@ -256,6 +263,45 @@ def build_research_report(
                 metric_rows.append(
                     {"section": "full_workflow", "arm": row["arm"], "metric": name, "value": row[name]}
                 )
+        sections.extend(
+            [
+                "",
+                "### 실행량과 오류",
+                "",
+                "| 부족한 정보를 처리한 방법 | 합성 환자 수 | 환자 한 명당 실제로 확인한 정보 수 | 조건 판단·질문 작성 단계를 실행한 총횟수 | 외부 언어모델을 사용했다면 보낸·받은 전체 토큰 | 실행 오류가 난 환자 수 |",
+                "|---|---:|---:|---:|---:|---:|",
+                *[
+                    f"| {arm_labels.get(row['arm'], row['arm'])} | {row['patient_count']} | {row['mean_action_count']:.2f}개 | {row['model_call_count']}회 | {row['total_tokens']:,} | {row['failed_patient_count']}명 |"
+                    for row in workflow["arm_metrics"]
+                ],
+            ]
+        )
+        paired = workflow.get("paired_clarifytrial_vs_fixed")
+        if isinstance(paired, dict):
+            normalized["full_workflow_paired_comparison"] = paired
+            sections.extend(
+                [
+                    "",
+                    f"환자별로 두 질문 순서를 직접 비교하면, 가장 많은 시험 판단을 끝낼 정보를 다시 계산한 방법이 더 좋았던 환자는 {paired['clarifytrial_better_patient_count']}명, 같았던 환자는 {paired['equal_patient_count']}명, 더 낮았던 환자는 {paired['clarifytrial_worse_patient_count']}명이었다.",
+                ]
+            )
+            for name in (
+                "clarifytrial_better_patient_count",
+                "equal_patient_count",
+                "clarifytrial_worse_patient_count",
+                "mean_recovery_difference",
+                "two_sided_exact_sign_test_p",
+            ):
+                value = paired.get(name)
+                if value is not None:
+                    metric_rows.append(
+                        {
+                            "section": "full_workflow_paired_comparison",
+                            "arm": "clarifytrial_vs_input_order",
+                            "metric": name,
+                            "value": value,
+                        }
+                    )
         workflow_total_tokens = sum(row["total_tokens"] for row in workflow["arm_metrics"])
         if workflow_total_tokens == 0:
             workflow_execution_note = (

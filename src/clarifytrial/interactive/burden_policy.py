@@ -530,6 +530,7 @@ def select_acquisition_option(
     view: InteractivePolicyView,
     snapshot: InteractiveSnapshot,
     revealed_fact_ids: frozenset[str],
+    unavailable_fact_ids: frozenset[str] = frozenset(),
     catalog: Mapping[str, Sequence[AcquisitionOption]],
     profile: PatientBurdenProfile,
     policy_id: AcquisitionPolicyId,
@@ -548,7 +549,14 @@ def select_acquisition_option(
     active: list[AcquisitionOption] = []
     for option in considered:
         impact = impacts.get(option.fact_id)
-        if impact is None or impact[0] == 0:
+        if option.fact_id in unavailable_fact_ids:
+            removed.append(
+                RemovedOption(
+                    option_id=option.option_id,
+                    reason="이번 실행에서 확인했지만 정보를 얻지 못한 항목",
+                )
+            )
+        elif impact is None or impact[0] == 0:
             removed.append(RemovedOption(option_id=option.option_id, reason="현재 미해결 후보에 영향 없음"))
         elif not option.available_now:
             removed.append(RemovedOption(option_id=option.option_id, reason="현재 사용할 수 없는 경로"))

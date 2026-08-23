@@ -196,6 +196,29 @@ def _read_disclaimer() -> str:
     return _DISCLAIMER_FALLBACK
 
 
+def _build_trialgpt_candidate_search(
+    args: argparse.Namespace,
+    parser: argparse.ArgumentParser,
+) -> CandidateSearch:
+    if args.trialgpt_corpus is None or args.trialgpt_cache is None:
+        parser.error(
+            "trialgpt candidate search requires --trialgpt-corpus and "
+            "--trialgpt-cache"
+        )
+    runtime_search = TrialGPTRuntimeSearch(
+        args.trialgpt_corpus,
+        args.trialgpt_cache,
+        TrialGPTRetrievalConfig(
+            corpus_name=args.trialgpt_corpus_name,
+            bm25_weight=1,
+            medcpt_weight=0 if args.bm25_only else 1,
+            device=args.retrieval_device,
+        ),
+        progress=print,
+    )
+    return TrialGPTCandidateSearch(runtime_search)
+
+
 def _read_env_value(path: Path, name: str) -> str:
     """Read one named value without copying the credential into project files."""
 
@@ -616,6 +639,21 @@ def _parser() -> argparse.ArgumentParser:
     general.add_argument("--trials", required=True, type=Path)
     general.add_argument("--output", required=True, type=Path)
     general.add_argument(
+        "--candidate-search",
+        choices=("trialgpt", "local-bm25"),
+        default="local-bm25",
+    )
+    general.add_argument("--trialgpt-corpus", type=Path)
+    general.add_argument("--trialgpt-cache", type=Path)
+    general.add_argument(
+        "--trialgpt-corpus-name",
+        choices=("trec_2021", "trec_2022"),
+        default="trec_2022",
+    )
+    general.add_argument("--retrieval-device", default="cuda")
+    general.add_argument("--bm25-only", action="store_true")
+    general.add_argument("--retrieval-search-depth", type=int, default=500)
+    general.add_argument(
         "--answers",
         type=Path,
         help="optional deterministic answer file; omit to type answers",
@@ -624,6 +662,21 @@ def _parser() -> argparse.ArgumentParser:
         "--resume",
         type=Path,
         help="resume from a previously saved session.json",
+    )
+    general.add_argument(
+        "--retry-unavailable",
+        action="store_true",
+        help="try facts again even if an earlier session could not obtain them",
+    )
+    general.add_argument(
+        "--approve-patient-choice",
+        action="store_true",
+        help="record patient approval for the option waiting in --resume",
+    )
+    general.add_argument(
+        "--authorize-clinician",
+        action="store_true",
+        help="record clinician authorization for the option waiting in --resume",
     )
     general.add_argument(
         "--provider",
@@ -1579,6 +1632,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"trace: {args.output / 'trace.jsonl'}")
         return 0
     if args.command == "run-screening":
+        if (
+            args.retry_unavailable
+            or args.approve_patient_choice
+            or args.authorize_clinician
+        ) and args.resume is None:
+            parser.error(
+                "retry and approval flags require --resume with a saved session"
+            )
         live_provider = args.provider != "deterministic"
         if live_provider and not args.confirm_model_run:
             parser.error(
@@ -1592,6 +1653,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             batch_trial_judgments=not args.no_batch_judgments,
             question_policy=args.question_policy,
         )
+        candidate_search = None
+        if args.candidate_search == "trialgpt" and args.resume is None:
+            candidate_search = _build_trialgpt_candidate_search(args, parser)
         options = GeneralRunOptions(
             patient_path=args.patient,
             trials_path=args.trials,
@@ -1599,6 +1663,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             settings=settings,
             answers_path=args.answers,
             resume_path=args.resume,
+            retry_unavailable=args.retry_unavailable,
+            approve_patient_choice=args.approve_patient_choice,
+            authorize_clinician=args.authorize_clinician,
+            candidate_search=candidate_search,
+            candidate_search_depth=args.retrieval_search_depth,
         )
         if args.provider == "deterministic":
             outcome = run_general_screening(
@@ -1658,23 +1727,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 [TrialProtocolSource.model_validate(item) for item in source_rows]
             )
         else:
-            if args.trialgpt_corpus is None or args.trialgpt_cache is None:
-                parser.error(
-                    "trialgpt candidate search requires --trialgpt-corpus and "
-                    "--trialgpt-cache"
-                )
-            runtime_search = TrialGPTRuntimeSearch(
-                args.trialgpt_corpus,
-                args.trialgpt_cache,
-                TrialGPTRetrievalConfig(
-                    corpus_name=args.trialgpt_corpus_name,
-                    bm25_weight=1,
-                    medcpt_weight=0 if args.bm25_only else 1,
-                    device=args.retrieval_device,
-                ),
-                progress=print,
-            )
-            candidate_search = TrialGPTCandidateSearch(runtime_search)
+            candidate_search = _build_trialgpt_candidate_search(args, parser)
         if args.provider == "codex-subscription":
             with CodexSubscriptionStructuredModel(
                 timeout_seconds=args.timeout_seconds,

@@ -13,7 +13,9 @@ from ..agents import (
     NextEvidenceAgent,
     SelectiveReviewerAgent,
 )
+from ..contracts import EvidenceCaptureMethod, EvidenceInputProvenance
 from ..environment import (
+    EnvironmentStatus,
     HiddenFactAnswer,
     HiddenPatientEnvironment,
     PublicFactRequest,
@@ -21,12 +23,18 @@ from ..environment import (
     SyntheticInformationTools,
 )
 from ..llm import StructuredModel
-from ..preparation import summarize_model_usage
+from ..preparation import CandidateSearch, summarize_model_usage
 from ..settings import EpisodeSettings
 from ..trace import TraceRecorder
-from ..workflow import EpisodeAgents, PatientScreeningRunner
-from .contracts import ScreeningSession
+from ..workflow import (
+    EpisodeAgents,
+    PatientScreeningResult,
+    PatientScreeningRunner,
+    PatientScreeningStopReason,
+)
+from .contracts import GeneralPatientInput, ScreeningSession, StructuredTrialSource
 from .loaders import (
+    PreparedGeneralCase,
     load_general_patient,
     load_structured_trials,
     prepare_general_case,
@@ -46,6 +54,22 @@ class GeneralRunOptions:
     settings: EpisodeSettings
     answers_path: Path | None = None
     resume_path: Path | None = None
+    retry_unavailable: bool = False
+    approve_patient_choice: bool = False
+    authorize_clinician: bool = False
+    candidate_search: CandidateSearch | None = None
+    candidate_search_depth: int = 500
+
+    def __post_init__(self) -> None:
+        if self.candidate_search_depth < 1:
+            raise ValueError("candidate_search_depth must be at least one")
+        resume_only = (
+            self.retry_unavailable
+            or self.approve_patient_choice
+            or self.authorize_clinician
+        )
+        if resume_only and self.resume_path is None:
+            raise ValueError("retry and approval options require resume_path")
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,13 +80,33 @@ class GeneralRunOutcome:
     paused: bool
 
 
+def _mark_synthetic_answer(item: HiddenFactAnswer) -> HiddenFactAnswer:
+    if item.evidence.input_provenance is not None:
+        return item
+    provenance = EvidenceInputProvenance(
+        capture_method=EvidenceCaptureMethod.SYNTHETIC_ENVIRONMENT,
+        requested_action=item.access_path,
+        source_type_declared=True,
+        source_location_declared=True,
+        verification_status_declared=True,
+        event_date_declared=item.evidence.event_date is not None,
+        recorded_date_declared=item.evidence.recorded_date is not None,
+    )
+    evidence = item.evidence.model_copy(
+        update={"input_provenance": provenance}
+    )
+    return item.model_copy(update={"evidence": evidence})
+
+
 def _read_answers(path: Path) -> list[HiddenFactAnswer]:
     raw = json.loads(path.read_text(encoding="utf-8"))
     if isinstance(raw, dict):
         raw = raw.get("answers")
     if not isinstance(raw, list):
         raise ValueError("answer JSON must be a list or an object with answers")
-    return [HiddenFactAnswer.model_validate(item) for item in raw]
+    return [
+        _mark_synthetic_answer(HiddenFactAnswer.model_validate(item)) for item in raw
+    ]
 
 
 def _agents(model: StructuredModel) -> EpisodeAgents:
@@ -95,6 +139,137 @@ def _show_final(result: dict, write: Callable[[str], None]) -> None:
     write(f"- 모델 호출: {usage['call_count']}회, {usage['total_tokens']:,}토큰")
 
 
+def _candidate_metadata(prepared: PreparedGeneralCase) -> dict[str, object]:
+    return {
+        "candidate_trial_ids": [
+            item.source.trial_id for item in prepared.candidate_hits
+        ],
+        "candidate_search_method": prepared.candidate_hits[0].retrieval_method,
+    }
+
+
+def _prepare_session(
+    *,
+    options: GeneralRunOptions,
+    patient: GeneralPatientInput,
+    sources: list[StructuredTrialSource],
+    model_label: str,
+    session_path: Path,
+) -> tuple[SessionStore, PreparedGeneralCase]:
+    if options.resume_path is None:
+        prepared = prepare_general_case(
+            patient,
+            sources,
+            candidate_search=options.candidate_search,
+            search_depth=options.candidate_search_depth,
+        )
+        store = SessionStore(
+            session_path,
+            ScreeningSession(
+                case_id=prepared.case.case_id,
+                patient_state=prepared.case.initial_patient_state,
+                metadata={
+                    "patient_path": str(options.patient_path),
+                    "trials_path": str(options.trials_path),
+                    "model": model_label,
+                    "action_budget": options.settings.max_external_actions,
+                    **_candidate_metadata(prepared),
+                },
+            ),
+        )
+        store.save()
+        return store, prepared
+
+    store = SessionStore.load(options.resume_path)
+    if store.session.case_id != patient.case_id:
+        raise ValueError("resume session belongs to a different case_id")
+    if options.retry_unavailable:
+        store.clear_unavailable_facts()
+    if options.approve_patient_choice or options.authorize_clinician:
+        store.approve_pending_option(
+            patient_choice=options.approve_patient_choice,
+            clinician_authorization=options.authorize_clinician,
+        )
+    saved_candidate_ids = store.session.metadata.get("candidate_trial_ids")
+    if isinstance(saved_candidate_ids, list) and all(
+        isinstance(item, str) for item in saved_candidate_ids
+    ):
+        prepared = prepare_general_case(
+            patient,
+            sources,
+            fixed_candidate_trial_ids=saved_candidate_ids,
+            fixed_retrieval_method=str(
+                store.session.metadata.get(
+                    "candidate_search_method", "saved-session-candidates"
+                )
+            ),
+        )
+    else:
+        prepared = prepare_general_case(
+            patient,
+            sources,
+            candidate_search=options.candidate_search,
+            search_depth=options.candidate_search_depth,
+        )
+        metadata = {**store.session.metadata, **_candidate_metadata(prepared)}
+        store.session = store.session.model_copy(update={"metadata": metadata})
+        store.save()
+    return store, prepared
+
+
+def _save_finished_session(
+    *,
+    store: SessionStore,
+    screening: PatientScreeningResult,
+    previous_action_count: int,
+) -> None:
+    revealed = list(store.session.revealed_fact_ids)
+    unavailable = list(store.session.unavailable_fact_ids)
+    for item in screening.action_history:
+        fact_id = item.agent_action.target_fact_id
+        if (
+            item.tool_result.status is EnvironmentStatus.REVEALED
+            and fact_id is not None
+        ):
+            if fact_id not in revealed:
+                revealed.append(fact_id)
+            unavailable = [value for value in unavailable if value != fact_id]
+        elif (
+            item.tool_result.status is EnvironmentStatus.NOT_AVAILABLE
+            and fact_id is not None
+        ):
+            if fact_id not in unavailable:
+                unavailable.append(fact_id)
+
+    resumable_stop_reasons = {
+        PatientScreeningStopReason.AWAITING_PATIENT_CHOICE,
+        PatientScreeningStopReason.AWAITING_CLINICIAN_AUTHORIZATION,
+        PatientScreeningStopReason.DEFERRED,
+        PatientScreeningStopReason.TOOL_RETURNED_NO_INFORMATION,
+    }
+    pending_option_id = None
+    if screening.stop_reason in {
+        PatientScreeningStopReason.AWAITING_PATIENT_CHOICE,
+        PatientScreeningStopReason.AWAITING_CLINICIAN_AUTHORIZATION,
+    } and screening.guidance.selected_option is not None:
+        pending_option_id = screening.guidance.selected_option.option_id
+    store.session = store.session.model_copy(
+        update={
+            "patient_state": screening.final_patient_state,
+            "revealed_fact_ids": revealed,
+            "unavailable_fact_ids": unavailable,
+            "pending_option_id": pending_option_id,
+            "action_count": max(
+                store.session.action_count,
+                previous_action_count + len(screening.action_history),
+            ),
+            "completed": screening.stop_reason not in resumable_stop_reasons,
+            "result": screening,
+        }
+    )
+    store.save()
+
+
 def run_general_screening(
     *,
     options: GeneralRunOptions,
@@ -106,31 +281,17 @@ def run_general_screening(
 ) -> GeneralRunOutcome:
     patient = load_general_patient(options.patient_path)
     sources = load_structured_trials(options.trials_path)
-    prepared = prepare_general_case(patient, sources)
     options.output_dir.mkdir(parents=True, exist_ok=True)
     trace_path = options.output_dir / "trace.jsonl"
     result_path = options.output_dir / "result.json"
     session_path = options.resume_path or options.output_dir / "session.json"
-
-    if options.resume_path is not None:
-        store = SessionStore.load(options.resume_path)
-        if store.session.case_id != prepared.case.case_id:
-            raise ValueError("resume session belongs to a different case_id")
-    else:
-        store = SessionStore(
-            session_path,
-            ScreeningSession(
-                case_id=prepared.case.case_id,
-                patient_state=prepared.case.initial_patient_state,
-                metadata={
-                    "patient_path": str(options.patient_path),
-                    "trials_path": str(options.trials_path),
-                    "model": model_label,
-                    "action_budget": options.settings.max_external_actions,
-                },
-            ),
-        )
-        store.save()
+    store, prepared = _prepare_session(
+        options=options,
+        patient=patient,
+        sources=sources,
+        model_label=model_label,
+        session_path=session_path,
+    )
 
     case = prepared.case.model_copy(
         update={"initial_patient_state": store.session.patient_state}
@@ -153,7 +314,7 @@ def run_general_screening(
             "trial_pool_count": prepared.trial_pool_count,
             "trial_ids": [item.source.trial_id for item in prepared.candidate_hits],
             "scores": [item.score for item in prepared.candidate_hits],
-            "method": "local-bm25-structured-trial-pool",
+            "method": prepared.candidate_hits[0].retrieval_method,
         },
     )
     write("ClarifyTrial 범용 실행")
@@ -186,6 +347,13 @@ def run_general_screening(
             tools,
             trace=recorder,
             initial_revealed_fact_ids=set(store.session.revealed_fact_ids),
+            initial_unavailable_fact_ids=set(store.session.unavailable_fact_ids),
+            patient_approved_option_ids=set(
+                store.session.patient_approved_option_ids
+            ),
+            clinician_authorized_option_ids=set(
+                store.session.clinician_authorized_option_ids
+            ),
         )
     except InteractiveSessionPaused:
         recorder.write_jsonl(trace_path)
@@ -224,28 +392,11 @@ def run_general_screening(
         encoding="utf-8",
     )
     recorder.write_jsonl(trace_path)
-    revealed_after_run = list(store.session.revealed_fact_ids)
-    for item in screening.action_history:
-        fact_id = item.agent_action.target_fact_id
-        if (
-            item.tool_result.status.value == "revealed"
-            and fact_id is not None
-            and fact_id not in revealed_after_run
-        ):
-            revealed_after_run.append(fact_id)
-    store.session = store.session.model_copy(
-        update={
-            "patient_state": screening.final_patient_state,
-            "revealed_fact_ids": revealed_after_run,
-            "action_count": max(
-                store.session.action_count,
-                previous_action_count + len(screening.action_history),
-            ),
-            "completed": True,
-            "result": screening,
-        }
+    _save_finished_session(
+        store=store,
+        screening=screening,
+        previous_action_count=previous_action_count,
     )
-    store.save()
     _show_final(result_document, write)
     write(f"결과 파일: {result_path}")
     write(medical_disclaimer)

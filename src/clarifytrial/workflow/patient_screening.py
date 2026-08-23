@@ -75,6 +75,9 @@ class PatientScreeningRunner:
         *,
         trace: TraceRecorder | None = None,
         initial_revealed_fact_ids: set[str] | None = None,
+        initial_unavailable_fact_ids: set[str] | None = None,
+        patient_approved_option_ids: set[str] | None = None,
+        clinician_authorized_option_ids: set[str] | None = None,
     ) -> PatientScreeningResult:
         recorder = trace or TraceRecorder(case.case_id)
         trials_by_id = {item.trial_id: item for item in case.trials}
@@ -102,6 +105,9 @@ class PatientScreeningRunner:
         decisions: dict[str, TrialDecision] = {}
         dirty_ids = set(criteria_by_id)
         revealed_fact_ids: set[str] = set(initial_revealed_fact_ids or ())
+        unavailable_fact_ids: set[str] = set(initial_unavailable_fact_ids or ())
+        patient_approved = set(patient_approved_option_ids or ())
+        clinician_authorized = set(clinician_authorized_option_ids or ())
         selected_options: list[AcquisitionOption] = []
         action_history: list[PatientScreeningActionRecord] = []
         review_history: list[ReviewDecision] = []
@@ -310,6 +316,7 @@ class PatientScreeningRunner:
                             item.fact_id
                             for item in pending
                             if item.fact_id not in revealed_fact_ids
+                            and item.fact_id not in unavailable_fact_ids
                             and item.fact_id in catalog
                         ),
                         None,
@@ -323,6 +330,7 @@ class PatientScreeningRunner:
                     view=view,
                     snapshot=snapshot,
                     revealed_fact_ids=frozenset(revealed_fact_ids),
+                    unavailable_fact_ids=frozenset(unavailable_fact_ids),
                     catalog=selection_catalog,
                     profile=profile,
                     policy_id=AcquisitionPolicyId.PATIENT_ADAPTIVE,
@@ -356,20 +364,35 @@ class PatientScreeningRunner:
                 decision_history.append(
                     history_snapshot(cycle, "다음 확인 경로 선택", decisions)
                 )
-                if (
+                patient_choice_needed = (
                     last_acquisition.action_status
-                    is ActionStatus.AWAITING_CLINICIAN_AUTHORIZATION
+                    is ActionStatus.AWAITING_PATIENT_CHOICE
+                    or selected.requires_patient_choice
+                )
+                if patient_choice_needed and selected.option_id not in patient_approved:
+                    last_acquisition = last_acquisition.model_copy(
+                        update={"action_status": ActionStatus.AWAITING_PATIENT_CHOICE}
+                    )
+                    forced_stop = PatientScreeningStopReason.AWAITING_PATIENT_CHOICE
+                    continue
+                if (
+                    selected.requires_clinician_authorization
+                    and selected.option_id not in clinician_authorized
                 ):
+                    last_acquisition = last_acquisition.model_copy(
+                        update={
+                            "action_status": (
+                                ActionStatus.AWAITING_CLINICIAN_AUTHORIZATION
+                            )
+                        }
+                    )
                     forced_stop = (
                         PatientScreeningStopReason.AWAITING_CLINICIAN_AUTHORIZATION
                     )
                     continue
-                if (
-                    last_acquisition.action_status
-                    is ActionStatus.AWAITING_PATIENT_CHOICE
-                ):
-                    forced_stop = PatientScreeningStopReason.AWAITING_PATIENT_CHOICE
-                    continue
+                last_acquisition = last_acquisition.model_copy(
+                    update={"action_status": ActionStatus.RECOMMENDED}
+                )
 
                 tool_result = tools.execute(planned_action, patient_state)
                 action_history.append(
@@ -390,12 +413,12 @@ class PatientScreeningRunner:
                     output=tool_result.model_dump(mode="json"),
                 )
                 if tool_result.status is not EnvironmentStatus.REVEALED:
-                    forced_stop = (
-                        PatientScreeningStopReason.TOOL_RETURNED_NO_INFORMATION
-                    )
+                    unavailable_fact_ids.add(selected.fact_id)
+                    planned_action = None
                     continue
                 patient_state = tool_result.patient_state
                 revealed_fact_ids.add(selected.fact_id)
+                unavailable_fact_ids.discard(selected.fact_id)
                 review_requested_ids.discard(selected.fact_id)
                 dirty_ids.update(request.related_criterion_ids)
                 continue

@@ -83,6 +83,15 @@ class VerificationStatus(str, Enum):
     CONFLICTING = "conflicting"
 
 
+class EvidenceCaptureMethod(str, Enum):
+    """How an evidence item entered the observable patient state."""
+
+    INTERACTIVE_TEXT = "interactive_text"
+    INTERACTIVE_JSON = "interactive_json"
+    IMPORTED_JSON_FILE = "imported_json_file"
+    SYNTHETIC_ENVIRONMENT = "synthetic_environment"
+
+
 class CriterionKind(str, Enum):
     """Original role of a criterion in the trial protocol."""
 
@@ -140,6 +149,18 @@ class ContractModel(BaseModel):
     )
 
 
+class EvidenceInputProvenance(ContractModel):
+    """Audit details kept separate from the clinical source claim itself."""
+
+    capture_method: EvidenceCaptureMethod
+    requested_action: NextAction | None = None
+    source_type_declared: bool = False
+    source_location_declared: bool = False
+    verification_status_declared: bool = False
+    event_date_declared: bool = False
+    recorded_date_declared: bool = False
+
+
 def _require_unique(values: list[str], field_name: str) -> list[str]:
     if len(values) != len(set(values)):
         raise ValueError(f"{field_name} must not contain duplicate identifiers")
@@ -159,6 +180,7 @@ class EvidenceFact(ContractModel):
     concept: str | None = Field(default=None, min_length=1)
     value: float | None = Field(default=None, allow_inf_nan=False)
     unit: str | None = Field(default=None, min_length=1)
+    input_provenance: EvidenceInputProvenance | None = None
 
     @model_validator(mode="after")
     def structured_numeric_fields_form_one_value(self) -> Self:
