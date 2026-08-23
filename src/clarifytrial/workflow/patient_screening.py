@@ -8,7 +8,12 @@ The loop in this module only coordinates named steps.  Typed contracts live in
 
 from __future__ import annotations
 
-from ..agents import CoordinatorRoute, ReviewDecision, ReviewOutcome
+from ..agents import (
+    CoordinatorDecision,
+    CoordinatorRoute,
+    ReviewDecision,
+    ReviewOutcome,
+)
 from ..contracts import AgentAction, CriterionAssessment, TrialDecision
 from ..environment import EnvironmentStatus
 from ..interactive.burden_contracts import (
@@ -49,7 +54,11 @@ from .patient_screening_rules import (
     no_action_decision,
     pending_requests,
 )
-from .trial_assessment import TrialAssessmentProtocolError, assess_trial_criteria
+from .trial_assessment import (
+    TrialAssessmentProtocolError,
+    assess_criteria_bundle,
+    assess_trial_criteria,
+)
 
 
 class PatientScreeningRunner:
@@ -65,6 +74,7 @@ class PatientScreeningRunner:
         tools: InformationTools,
         *,
         trace: TraceRecorder | None = None,
+        initial_revealed_fact_ids: set[str] | None = None,
     ) -> PatientScreeningResult:
         recorder = trace or TraceRecorder(case.case_id)
         trials_by_id = {item.trial_id: item for item in case.trials}
@@ -91,7 +101,7 @@ class PatientScreeningRunner:
         }
         decisions: dict[str, TrialDecision] = {}
         dirty_ids = set(criteria_by_id)
-        revealed_fact_ids: set[str] = set()
+        revealed_fact_ids: set[str] = set(initial_revealed_fact_ids or ())
         selected_options: list[AcquisitionOption] = []
         action_history: list[PatientScreeningActionRecord] = []
         review_history: list[ReviewDecision] = []
@@ -120,28 +130,47 @@ class PatientScreeningRunner:
                 review_trial_ids=review_trial_ids,
                 forced_stop=forced_stop,
             )
-            coordinator = self._agents.coordinator.run(
-                {
-                    "case_id": case.case_id,
-                    "cycle": cycle,
-                    "trial_count": len(case.trials),
-                    "decision_count": len(decisions),
-                    "dirty_criterion_ids": sorted(dirty_ids),
-                    "pending_request_ids": [item.fact_id for item in pending],
-                    "review_trial_ids": sorted(review_trial_ids),
-                    "remaining_external_actions": (
-                        self._settings.max_external_actions - len(action_history)
-                    ),
-                    "remaining_selective_reviews": (
-                        self._settings.max_selective_reviews - len(review_history)
-                    ),
-                    "allowed_routes": [item.value for item in allowed_routes],
-                    "required_target_ids": required_targets,
-                },
-                trace=recorder,
-                cycle=cycle,
-                input_refs=[case.case_id, *required_targets],
-            ).output
+            coordinator_payload = {
+                "case_id": case.case_id,
+                "cycle": cycle,
+                "trial_count": len(case.trials),
+                "decision_count": len(decisions),
+                "dirty_criterion_ids": sorted(dirty_ids),
+                "pending_request_ids": [item.fact_id for item in pending],
+                "review_trial_ids": sorted(review_trial_ids),
+                "remaining_external_actions": (
+                    self._settings.max_external_actions - len(action_history)
+                ),
+                "remaining_selective_reviews": (
+                    self._settings.max_selective_reviews - len(review_history)
+                ),
+                "allowed_routes": [item.value for item in allowed_routes],
+                "required_target_ids": required_targets,
+            }
+            if self._settings.use_model_coordinator:
+                coordinator = self._agents.coordinator.run(
+                    coordinator_payload,
+                    trace=recorder,
+                    cycle=cycle,
+                    input_refs=[case.case_id, *required_targets],
+                ).output
+            else:
+                coordinator = CoordinatorDecision(
+                    route=allowed_routes[0],
+                    target_ids=required_targets,
+                    reason_code="single_allowed_route",
+                    reason="코드 규칙상 가능한 다음 단계가 하나라 그대로 실행한다.",
+                )
+                recorder.record(
+                    cycle=cycle,
+                    actor="coordinator_rules",
+                    event="single_route_selected",
+                    input_refs=[case.case_id, *required_targets],
+                    output={
+                        "request": coordinator_payload,
+                        "response": coordinator.model_dump(mode="json"),
+                    },
+                )
             if coordinator.route not in allowed_routes:
                 raise WorkflowProtocolError(
                     f"coordinator selected {coordinator.route.value}; allowed route is "
@@ -153,19 +182,16 @@ class PatientScreeningRunner:
                 )
 
             if coordinator.route is CoordinatorRoute.MATCHER_JUDGE:
-                for trial_id in sorted(trials_by_id):
-                    trial = trials_by_id[trial_id]
+                if self._settings.batch_trial_judgments:
                     target = [
                         criterion
+                        for trial in case.trials
                         for criterion in trial.criteria
                         if criterion.criterion_id in dirty_ids
                     ]
-                    if not target:
-                        continue
                     try:
-                        updated = assess_trial_criteria(
+                        updated = assess_criteria_bundle(
                             case_id=case.case_id,
-                            trial_id=trial_id,
                             criteria=target,
                             patient_state=patient_state,
                             evidence_requests=case.evidence_requests,
@@ -175,15 +201,50 @@ class PatientScreeningRunner:
                         )
                     except TrialAssessmentProtocolError as error:
                         raise WorkflowProtocolError(str(error)) from error
-                    assessments[trial_id].update(
-                        {item.criterion_id: item for item in updated}
-                    )
-                    decisions[trial_id] = aggregate_screening_trial(
-                        trial=trial,
-                        assessments=assessments[trial_id],
-                        evidence_requests=case.evidence_requests,
-                        patient_state=patient_state,
-                    )
+                    touched_trial_ids: set[str] = set()
+                    for item in updated:
+                        trial_id = criterion_to_trial[item.criterion_id]
+                        assessments[trial_id][item.criterion_id] = item
+                        touched_trial_ids.add(trial_id)
+                    for trial_id in sorted(touched_trial_ids):
+                        decisions[trial_id] = aggregate_screening_trial(
+                            trial=trials_by_id[trial_id],
+                            assessments=assessments[trial_id],
+                            evidence_requests=case.evidence_requests,
+                            patient_state=patient_state,
+                        )
+                else:
+                    for trial_id in sorted(trials_by_id):
+                        trial = trials_by_id[trial_id]
+                        target = [
+                            criterion
+                            for criterion in trial.criteria
+                            if criterion.criterion_id in dirty_ids
+                        ]
+                        if not target:
+                            continue
+                        try:
+                            updated = assess_trial_criteria(
+                                case_id=case.case_id,
+                                trial_id=trial_id,
+                                criteria=target,
+                                patient_state=patient_state,
+                                evidence_requests=case.evidence_requests,
+                                matcher_judge=self._agents.matcher_judge,
+                                trace=recorder,
+                                cycle=cycle,
+                            )
+                        except TrialAssessmentProtocolError as error:
+                            raise WorkflowProtocolError(str(error)) from error
+                        assessments[trial_id].update(
+                            {item.criterion_id: item for item in updated}
+                        )
+                        decisions[trial_id] = aggregate_screening_trial(
+                            trial=trial,
+                            assessments=assessments[trial_id],
+                            evidence_requests=case.evidence_requests,
+                            patient_state=patient_state,
+                        )
                 dirty_ids.clear()
                 decision_history.append(
                     history_snapshot(cycle, "조건 판단과 상태 집계", decisions)
@@ -242,11 +303,27 @@ class PatientScreeningRunner:
 
             if coordinator.route is CoordinatorRoute.NEXT_EVIDENCE:
                 snapshot = interactive_snapshot(patient_state, decisions)
+                selection_catalog = catalog
+                if self._settings.question_policy == "fixed_order":
+                    fixed_fact_id = next(
+                        (
+                            item.fact_id
+                            for item in pending
+                            if item.fact_id not in revealed_fact_ids
+                            and item.fact_id in catalog
+                        ),
+                        None,
+                    )
+                    selection_catalog = (
+                        {}
+                        if fixed_fact_id is None
+                        else {fixed_fact_id: catalog[fixed_fact_id]}
+                    )
                 last_acquisition = select_acquisition_option(
                     view=view,
                     snapshot=snapshot,
                     revealed_fact_ids=frozenset(revealed_fact_ids),
-                    catalog=catalog,
+                    catalog=selection_catalog,
                     profile=profile,
                     policy_id=AcquisitionPolicyId.PATIENT_ADAPTIVE,
                     selected_options=selected_options,

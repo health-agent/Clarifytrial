@@ -26,6 +26,7 @@ from .codex_subscription import (
     CodexSubscriptionTransportError,
     CodexSubscriptionUnavailableError,
 )
+from .deterministic import DeterministicWorkflowModel
 from .prompts import FilePromptLoader, PromptLoader
 from .scripted import ScriptedStructuredModel
 
@@ -51,6 +52,7 @@ __all__ = [
     "CodexSubscriptionToolUseError",
     "CodexSubscriptionTransportError",
     "CodexSubscriptionUnavailableError",
+    "DeterministicWorkflowModel",
     "ModelCall",
     "ModelUsage",
     "PromptLoader",

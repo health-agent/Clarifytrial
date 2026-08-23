@@ -24,6 +24,12 @@ class EpisodeSettings(BaseModel):
     max_external_actions: int = Field(ge=0)
     max_selective_reviews: int = Field(ge=0)
     max_cycles: int = Field(gt=0)
+    use_model_coordinator: bool = False
+    batch_trial_judgments: bool = True
+    question_policy: str = Field(
+        default="clarifytrial",
+        pattern="^(clarifytrial|fixed_order)$",
+    )
 
 
 class TraceSettings(BaseModel):

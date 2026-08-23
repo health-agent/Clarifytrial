@@ -163,16 +163,30 @@ class IntegratedTerminalRenderer:
                     self.judgment_started = True
                 self.write(f"  진행 관리: {_ROUTE_LABELS.get(route, route)}")
             return
+        if event.actor == "coordinator_rules" and event.event == "single_route_selected":
+            response = output.get("response", {})
+            route = str(response.get("route", ""))
+            if route:
+                if route == "MATCHER_JUDGE" and not self.judgment_started:
+                    self.write("")
+                    self.write("[4/6] 조건별 판단")
+                    self.judgment_started = True
+                self.write(f"  진행 규칙: {_ROUTE_LABELS.get(route, route)}")
+            return
         if event.actor == "matcher_judge" and event.event == "structured_model_completed":
             response = output.get("response", {})
             assessments = list(response.get("assessments", []))
             if not assessments:
                 return
-            criterion_id = str(assessments[0].get("criterion_id", ""))
-            trial_id = criterion_id.split(":", 1)[0]
-            verb = "재판정" if trial_id in self.judged_trials else "첫 판단"
-            self.judged_trials.add(trial_id)
-            self.write(f"  검색·판단: {trial_id} 조건 {len(assessments)}개 {verb} 완료")
+            counts: dict[str, int] = {}
+            for assessment in assessments:
+                criterion_id = str(assessment.get("criterion_id", ""))
+                trial_id = criterion_id.split(":", 1)[0]
+                counts[trial_id] = counts.get(trial_id, 0) + 1
+            for trial_id, count in sorted(counts.items()):
+                verb = "재판정" if trial_id in self.judged_trials else "첫 판단"
+                self.judged_trials.add(trial_id)
+                self.write(f"  검색·판단: {trial_id} 조건 {count}개 {verb} 완료")
             return
         if event.actor == "selective_reviewer" and event.event == "structured_model_completed":
             response = output.get("response", {})

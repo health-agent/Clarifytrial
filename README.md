@@ -27,7 +27,7 @@
 → 현재 확인된 시험과 추가 확인 후보를 나누어 설명
 ```
 
-![ClarifyTrial v5 에이전트 구조](docs/internal/diagrams/clarifytrial-workflow.png)
+![ClarifyTrial v5 에이전트 구조](docs/internal/diagrams/clarifytrial-workflow.svg)
 
 [상세 실행 그림](docs/internal/diagrams/clarifytrial-detailed-workflow.svg) ·
 [수정 가능한 Mermaid 원본](docs/internal/diagrams/clarifytrial-performance-agent-architecture.mmd)
@@ -86,13 +86,13 @@
 
 ## 에이전트 구성
 
-여기서 에이전트는 서로 다른 인공지능 네 개를 뜻하지 않는다. 같은 모델을 역할별
-지시문과 입력으로 여러 번 부를 수 있다. 각 역할의 대화 기록과 출력 형식은 분리한다.
+에이전트는 서로 다른 인공지능 제품을 뜻하지 않는다. 같은 모델을 역할별 지시문과
+입력으로 여러 번 부를 수 있다. 각 역할의 대화 기록과 출력 형식은 분리한다.
 
 | 역할 | 맡은 일 | 호출 시점 |
 |---|---|---|
-| 진행 관리 | 환자 상태, 남은 후보와 확인 횟수를 관리하고 다음 실행과 종료를 결정 | 매 진행 주기 |
-| 검색·판단 | 후보를 찾고 조건별 임상 상태와 현재 근거의 충분성을 판단 | 처음과 관련 정보 변경 뒤 |
+| 진행 관리 | 환자 상태, 남은 후보와 확인 횟수를 관리하고 다음 실행과 종료를 결정 | 기본은 코드, 비교할 때만 모델 호출 |
+| 검색·판단 | 후보를 찾고 조건별 임상 상태와 현재 근거의 충분성을 판단 | 처음과 관련 정보 변경 뒤, 바뀐 시험을 한 묶음으로 호출 |
 | 다음 확인 | 코드가 고른 정보와 확인 방법을 환자가 이해할 질문이나 요청문으로 작성 | 정보가 부족할 때 |
 | 선택적 검토 | 중요한 제거·확정의 약한 근거, 기록 충돌과 설명 불일치를 다시 확인 | 정해진 조건에 걸릴 때만 |
 
@@ -210,9 +210,11 @@ TrialGPT의 답 이름을 그대로 흉내 내 점수만 높이는 조정은 하
 숫자·기간 조건으로 참가 조건 불충족이 확인되면 현재 값이 기준보다 얼마나 높거나
 낮은지도 같은 조건 안에서만 표시한다.
 
-이 흐름은 한 터미널 화면에서도 실행할 수 있다. 표준 JSON 환자 상태를 읽고 공개 시험
-15개에서 같은 질환의 후보 5개를 찾은 뒤, 역할별 판단·질문·합성 답변·재판정과 최종
-결과를 순서대로 보여 준다.
+이 흐름은 일반 실행 명령과 고정 평가 화면으로 나뉜다. 일반 실행 명령은 새 환자 JSON과
+시험 JSON 또는 JSONL을 받아 검색, 판단, 질문, 답변, 재판정과 최종 결과를 처리한다.
+답변은 터미널에 직접 입력하거나 JSON 파일로 줄 수 있고, 중간에 끝낸 실행은 저장된
+세션에서 이어갈 수 있다. 고정 평가 화면은 저장소의 합성 환자와 공개 시험 15개를 써서
+같은 과정을 한 화면에 재현한다.
 
 아직 다음 내용은 확인하지 않았다.
 
@@ -223,9 +225,8 @@ TrialGPT의 답 이름을 그대로 흉내 내 점수만 높이는 조정은 하
 자유 형식 기록 해석은 입력 규격 밖의 선택 기능이므로 현재 에이전트의 완성 조건으로
 두지 않는다.
 
-새 평가의 92조건은 AI가 먼저 검토했다. 사람 두 명의 독립 확인을 마치기 전까지는
-연구진 작성 초기 정답으로 취급한다. 과거 Solar 합성 데모 수치와 84%는 현재 v5
-결과표에서 제외했다.
+새 평가의 92조건은 공개 시험 원문에서 만든 연구용 평가 조건이다. 과거 Solar 합성
+데모 수치와 84%는 현재 v5 결과표에서 제외했다.
 
 ## 빠른 실행
 
@@ -236,6 +237,33 @@ Python 3.11 이상이 필요하다. 다음 명령은 외부 모델 없이 오래
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev,codex-subscription]"
 .\.venv\Scripts\python.exe -m pytest -q
+```
+
+새 환자와 시험 파일로 전체 흐름을 실행하는 기본 명령은 다음과 같다. 예제의 답변
+파일을 빼면 필요한 내용을 터미널에서 직접 묻는다. 실행을 중단하면 출력 폴더의
+`session.json`을 `--resume`에 넣어 이어갈 수 있다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-screening `
+  --patient examples\general_screening\patient.json `
+  --trials examples\general_screening\trials.jsonl `
+  --answers examples\general_screening\answers.json `
+  --provider deterministic `
+  --output runs\general-screening
+
+.\.venv\Scripts\clarifytrial.exe run-screening `
+  --patient examples\general_screening\patient.json `
+  --trials examples\general_screening\trials.jsonl `
+  --resume runs\general-screening\session.json `
+  --provider deterministic `
+  --output runs\general-screening-resumed
+```
+
+입력 필드의 전체 설명은 [범용 예제](examples/general_screening/README.md)와 다음 명령이
+만드는 JSON Schema에서 확인할 수 있다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe export-schemas --output runs\schemas
 ```
 
 전체 경로를 한 화면에서 보려면 다음 명령을 실행한다. 기본 합성 환자 한 명의 표준
@@ -272,6 +300,32 @@ JSON을 읽고, 시험 15개 검색, 후보 5개 조건 판단, 최대 세 번�
 30명의 질문 순서를 한꺼번에 다시 계산하는 명령은
 [쉬운 실험 안내](docs/internal/CLARIFYTRIAL_V5_DEVELOPED_EXPERIMENT_GUIDE.md)에 있다.
 
+질문하지 않음, 정해진 순서, 현재 방식을 같은 30명에게 전체 흐름으로 실행하려면
+다음 명령을 사용한다. 환자별 실행은 병렬로 처리되며 사례별 결과와 전체 요약을 함께
+저장한다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-workflow-evaluation `
+  --provider deterministic `
+  --split heldout `
+  --action-budget 3 `
+  --concurrency 4 `
+  --output runs\full-workflow-evaluation
+```
+
+이미 만든 질문 순서, 환자 부담, 전체 흐름과 검색 결과를 한 보고서로 합치는 명령은
+다음과 같다. 표, Markdown 요약과 SVG 그림이 같은 폴더에 만들어진다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe build-report `
+  --question-policy runs\natural-question-policy-fully-missing-heldout-v1.json `
+  --burden runs\patient-burden-v2\summary.json `
+  --workflow runs\full-workflow-evaluation\summary.json `
+  --retrieval runs\trialgpt-retrieval\trec_2021\hybrid\summary.json `
+  --retrieval runs\trialgpt-retrieval\trec_2022\hybrid\summary.json `
+  --output runs\research-report
+```
+
 자유 형식 기록을 JSON으로 정리하는 선택 연결 기능의 합성 예제는
 [examples/natural_screening](examples/natural_screening)에 있다. 이 실행은 실제
 모델을 호출하므로 확인 옵션이 필요하고, 숨은 합성 답은 별도 파일에서만 읽는다.
@@ -301,8 +355,9 @@ JSON을 읽고, 시험 15개 검색, 후보 5개 조건 판단, 최대 세 번�
 | `src/clarifytrial/retrieval/` | 관련 시험 검색과 조건 판단에 필요한 환자 문장 표시 |
 | `src/clarifytrial/interactive/` | 평가용으로 숨긴 답, 질문 순서와 환자 부담 규칙 |
 | `src/clarifytrial/workflow/` | 여러 시험을 판단하고 새 정보 뒤 다시 판단하는 전체 흐름 |
+| `src/clarifytrial/app/` | 일반 JSON 입력, 직접 답변, 세션 재개와 세 방식 전체 평가 |
 | `src/clarifytrial/ui/` | 15개 시험 검색부터 역할별 호출·질문·최종 결과까지 보여 주는 통합 터미널 화면 |
-| `src/clarifytrial/reporting/` | 현재 확인 목록, 추가 확인 후보와 탈락 기준의 숫자·기간 차이 |
+| `src/clarifytrial/reporting/` | 최종 목록·기준 차이와 실험 결과표·그림·Markdown 보고서 생성 |
 | `src/clarifytrial/datasets/` | 공개자료 준비, 합성 환자와 자연어 평가자료 |
 | `tests/` | 조건 판단, 자료 분리, 질문 순서, 승인 규칙과 전체 흐름 검사 |
 

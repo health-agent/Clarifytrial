@@ -10,12 +10,14 @@ from typing import Any
 
 from ..contracts import (
     EvidenceFact,
+    EvidenceRequirement,
     EvidenceSourceType,
     NextAction,
     NextEvidenceRequest,
     NumericConstraint,
     PatientState,
     TrialCriterion,
+    VerificationStatus,
 )
 from ..environment import HiddenFactAnswer
 from ..interactive.burden_contracts import AcquisitionMode, AcquisitionOption
@@ -41,6 +43,43 @@ _SOURCE_ACTIONS = {
     EvidenceSourceType.MEDICAL_RECORD: NextAction.LOOKUP_RECORD,
     EvidenceSourceType.OFFICIAL_VERIFICATION: NextAction.REQUEST_VERIFICATION,
 }
+
+_PATIENT_ANSWER_TOKENS = (
+    "willing",
+    "access",
+    "speak_english",
+    "english_speaking",
+    "self_reported",
+    "smoking",
+    "diet",
+    "right_handed",
+    "refrain",
+)
+
+
+def _categorical_value(value: object) -> float:
+    normalized = str(value).strip().casefold()
+    if normalized in {"present", "diagnosed", "true"}:
+        return 1.0
+    if normalized in {"absent", "not_diagnosed", "false"}:
+        return 0.0
+    raise ValueError(f"unsupported categorical state: {value}")
+
+
+def _sufficient_evidence_requirement(fact_code: str) -> EvidenceRequirement:
+    patient_answer = any(token in fact_code for token in _PATIENT_ANSWER_TOKENS)
+    return EvidenceRequirement(
+        allowed_source_types=[
+            EvidenceSourceType.PATIENT_REPORT
+            if patient_answer
+            else EvidenceSourceType.MEDICAL_RECORD
+        ],
+        allowed_verification_statuses=[
+            VerificationStatus.REPORTED
+            if patient_answer
+            else VerificationStatus.VERIFIED
+        ],
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -115,6 +154,7 @@ def _screening_trials(
     trial_document: dict[str, Any],
     group_id: str,
     candidate_ids: list[str],
+    fact_aliases: dict[str, str],
 ) -> list[ScreeningTrial]:
     metadata = {
         str(item["nct_id"]): item for item in trial_document["trials"]
@@ -124,14 +164,21 @@ def _screening_trials(
         trial_id = str(row["nct_id"])
         if trial_id not in candidate_ids:
             continue
-        numeric = None
-        if row["operator"] is not None:
-            numeric = NumericConstraint(
-                concept=f"{group_id}:{row['fact_code']}",
-                operator=str(row["operator"]),
-                threshold=float(row["threshold"]),
-                unit=str(row["unit"]),
-            )
+        fact_code = fact_aliases.get(str(row["fact_code"]), str(row["fact_code"]))
+        if row["operator"] is None:
+            operator = "eq"
+            threshold = _categorical_value(row.get("expected_value"))
+            unit = "bool"
+        else:
+            operator = str(row["operator"])
+            threshold = float(row["threshold"])
+            unit = str(row["unit"])
+        numeric = NumericConstraint(
+            concept=f"{group_id}:{fact_code}",
+            operator=operator,
+            threshold=threshold,
+            unit=unit,
+        )
         trial = metadata[trial_id]
         criteria_by_trial[trial_id].append(
             TrialCriterion(
@@ -144,6 +191,7 @@ def _screening_trials(
                 ),
                 required=True,
                 numeric_constraint=numeric,
+                evidence_requirement=_sufficient_evidence_requirement(fact_code),
             )
         )
     return [
@@ -272,6 +320,10 @@ def build_integrated_ui_fixture(
             trial_document=trial_document,
             group_id=group_id,
             candidate_ids=candidate_ids,
+            fact_aliases={
+                str(key): str(value)
+                for key, value in generation_config.get("fact_aliases", {}).items()
+            },
         ),
         initial_patient_state=patient_state,
         evidence_requests=requests,

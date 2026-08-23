@@ -21,10 +21,9 @@ class TrialAssessmentProtocolError(RuntimeError):
     """The matching role referred to data outside its supplied input."""
 
 
-def assess_trial_criteria(
+def assess_criteria_bundle(
     *,
     case_id: str,
-    trial_id: str,
     criteria: Sequence[TrialCriterion],
     patient_state: PatientState,
     evidence_requests: Sequence[NextEvidenceRequest],
@@ -32,10 +31,11 @@ def assess_trial_criteria(
     trace: TraceRecorder,
     cycle: int,
 ) -> list[CriterionAssessment]:
-    """Check structured values, call the matcher, and validate every identifier.
+    """Check and judge one or more trials in a single model call.
 
-    This function is intentionally complete: both workflow runners use the
-    same numeric checks, model payload, identifier checks, and code authority.
+    The criteria may span trials.  Stable trial and criterion identifiers keep
+    the response separable after the call, while deterministic checks retain
+    authority over configured numeric and temporal rules.
     """
 
     if not criteria:
@@ -43,8 +43,7 @@ def assess_trial_criteria(
     criterion_ids = [item.criterion_id for item in criteria]
     if len(criterion_ids) != len(set(criterion_ids)):
         raise ValueError("criteria must not repeat criterion_id")
-    if any(item.trial_id != trial_id for item in criteria):
-        raise ValueError("every criterion must belong to trial_id")
+    trial_ids = sorted({item.trial_id for item in criteria})
 
     mechanical_by_id = {
         criterion.criterion_id: evaluate_criterion(criterion, patient_state)
@@ -71,7 +70,8 @@ def assess_trial_criteria(
     response = matcher_judge.run(
         {
             "case_id": case_id,
-            "trial_id": trial_id,
+            "trial_id": trial_ids[0] if len(trial_ids) == 1 else "multiple_trials",
+            "trial_ids": trial_ids,
             "as_of": patient_state.as_of.isoformat(),
             "criteria": [item.model_dump(mode="json") for item in criteria],
             "patient_facts": [
@@ -183,3 +183,29 @@ def assess_trial_criteria(
             output={"corrections": mechanical_corrections},
         )
     return validated
+
+
+def assess_trial_criteria(
+    *,
+    case_id: str,
+    trial_id: str,
+    criteria: Sequence[TrialCriterion],
+    patient_state: PatientState,
+    evidence_requests: Sequence[NextEvidenceRequest],
+    matcher_judge: MatcherJudgeAgent,
+    trace: TraceRecorder,
+    cycle: int,
+) -> list[CriterionAssessment]:
+    """Compatibility wrapper for a single supplied trial."""
+
+    if any(item.trial_id != trial_id for item in criteria):
+        raise ValueError("every criterion must belong to trial_id")
+    return assess_criteria_bundle(
+        case_id=case_id,
+        criteria=criteria,
+        patient_state=patient_state,
+        evidence_requests=evidence_requests,
+        matcher_judge=matcher_judge,
+        trace=trace,
+        cycle=cycle,
+    )

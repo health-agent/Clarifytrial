@@ -1,0 +1,56 @@
+{
+  "case_id": "general-synthetic-diabetes",
+  "search_conditions": ["type 2 diabetes"],
+  "candidate_count": 2,
+  "patient_state": {
+    "patient_id": "SYNTHETIC-GENERAL-001",
+    "as_of": "2026-08-23T00:00:00+09:00",
+    "facts": [
+      {
+        "evidence_id": "historical-hba1c",
+        "statement": "2026년 5월 1일 HbA1c는 6.5%였다.",
+        "source_type": "medical_record",
+        "source_location": "synthetic-record#historical-hba1c",
+        "event_date": "2026-05-01",
+        "recorded_date": "2026-05-01",
+        "verification_status": "verified",
+        "concept": "hba1c",
+        "value": 6.5,
+        "unit": "%"
+      }
+    ]
+  },
+  "evidence_requests": [
+    {
+      "fact_id": "recent-hba1c",
+      "description": "최근 14일 안의 공식 HbA1c 결과",
+      "related_criterion_ids": [
+        "NCT-SYNTH-A:inclusion:hba1c",
+        "NCT-SYNTH-B:inclusion:hba1c"
+      ],
+      "acceptable_actions": ["REQUEST_VERIFICATION"],
+      "reason": "두 후보의 현재 확인에 최근 공식 결과가 필요하다."
+    }
+  ],
+  "acquisition_options": [
+    {
+      "option_id": "recent-hba1c:existing-result",
+      "fact_id": "recent-hba1c",
+      "action": "REQUEST_VERIFICATION",
+      "acquisition_mode": "existing_official_result",
+      "available_now": true,
+      "expected_delay_hours": 1,
+      "visit_required": false,
+      "direct_cost_band": "none",
+      "physical_burden_0_to_3": 0,
+      "emotional_burden_0_to_3": 0,
+      "medical_risk_0_to_3": 0,
+      "treatment_disruption_0_to_3": 0,
+      "already_planned_in_care": false,
+      "new_test_required": false,
+      "requires_patient_choice": false,
+      "requires_clinician_authorization": false,
+      "source_note": "합성 기존 공식 결과"
+    }
+  ]
+}

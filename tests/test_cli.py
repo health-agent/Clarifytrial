@@ -5,7 +5,13 @@ from pathlib import Path
 
 import pytest
 
-from clarifytrial.cli import _read_env_value, export_schemas, main, run_example
+from clarifytrial.cli import (
+    _configure_utf8_stream,
+    _read_env_value,
+    export_schemas,
+    main,
+    run_example,
+)
 from clarifytrial.workflow import EpisodeRunner
 
 
@@ -128,8 +134,27 @@ def test_export_schemas_writes_parseable_key_contracts(tmp_path: Path) -> None:
         "patient-screening-result.schema.json",
         "natural-screening-request.schema.json",
         "natural-screening-result.schema.json",
+        "general-patient-input.schema.json",
+        "structured-trial-source.schema.json",
+        "screening-session.schema.json",
     }
     assert all(_read_json(path)["type"] == "object" for path in paths)
+
+
+def test_windows_style_stream_is_reconfigured_to_utf8() -> None:
+    class LegacyStream:
+        encoding = "cp949"
+
+        def __init__(self) -> None:
+            self.options: dict[str, str] = {}
+
+        def reconfigure(self, **options: str) -> None:
+            self.options = options
+
+    stream = LegacyStream()
+    _configure_utf8_stream(stream)
+
+    assert stream.options == {"encoding": "utf-8", "errors": "replace"}
 
 
 def test_natural_screening_command_requires_explicit_model_confirmation(

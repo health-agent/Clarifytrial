@@ -85,6 +85,22 @@ def test_integrated_fixture_supports_each_disease_group() -> None:
     assert all(len(item.hidden_answers) == 5 for item in fixtures)
 
 
+def test_integrated_fixture_uses_the_same_aliases_and_categorical_rules_as_evaluation() -> None:
+    fixture = _fixture("natural-type_2_diabetes-11")
+    criteria = {
+        item.criterion_id: item
+        for trial in fixture.screening_case.trials
+        for item in trial.criteria
+    }
+
+    bmi = criteria["NCT06897475:candidate:003:annotation:01"]
+    diagnosis = criteria["NCT06897475:candidate:001:annotation:01"]
+    assert bmi.numeric_constraint.concept == "type_2_diabetes:body_mass_index"
+    assert diagnosis.numeric_constraint.operator.value == "eq"
+    assert diagnosis.numeric_constraint.unit == "bool"
+    assert diagnosis.evidence_requirement is not None
+
+
 def test_terminal_renderer_shows_every_stage_without_private_reasoning(
     tmp_path: Path,
 ) -> None:

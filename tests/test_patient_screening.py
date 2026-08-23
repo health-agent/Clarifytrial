@@ -310,10 +310,10 @@ def test_patient_workflow_connects_agents_burden_rules_and_two_output_views() ->
     assert "기준보다 1 score 낮습니다" in boundary.explanation
     assert any(item.actor == "information_planning_rules" for item in trace.events)
     assert model.call_count == {
-        "coordinator": 5,
-        "matcher_judge": 5,
+        "matcher_judge": 2,
         "next_evidence": 2,
     }
+    assert sum(item.actor == "coordinator_rules" for item in trace.events) == 5
 
 
 def test_message_agent_cannot_replace_the_code_selected_fact() -> None:

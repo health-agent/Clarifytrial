@@ -18,20 +18,23 @@ flowchart TB
     I[["입력 원문<br/>환자 기록 · 임상시험 문서 모음"]]
     B["시작 준비 호출<br/>환자 기록 · 시험 조건 정리"]
     S[["공통 자료와 도구<br/>시험 조건 · 환자 상태 · 관련 시험 검색"]]
-    A1["모델 역할 1 · 진행 관리<br/>다음 단계 결정"]
+    A1["코드 진행 관리<br/>다음 단계 · 종료 결정"]
+    A1M["선택 비교 · 모델 진행 관리<br/>기본 실행에서는 호출하지 않음"]
 
-    A2["모델 역할 2 · 검색·판단<br/>관련 시험 검색 · 조건 판단"]
+    A2["모델 역할 1 · 검색·판단<br/>바뀐 시험 조건을 한 번에 판단"]
     C["코드 처리<br/>규칙 검사 · 두 결과 정리"]
     C3["코드 계산<br/>확인할 정보 조합 · 환자 한도"]
-    A3["모델 역할 3 · 다음 확인<br/>선택한 정보 · 요청 문장"]
+    A3["모델 역할 2 · 다음 확인<br/>선택한 정보 · 요청 문장"]
     E["정보 확인<br/>기록 · 환자 · 의료진"]
-    A4["모델 역할 4 · 선택 검토<br/>중요 결론 · 근거 충돌"]
+    A4["선택 모델 역할 3 · 근거 검토<br/>중요 결론 · 근거 충돌"]
 
     O["결과<br/>후보 · 현재 확인 · 근거<br/>남은 정보"]
 
     I --> B
     B --> S
     S --> A1
+    A1 -.->|비교 설정| A1M
+    A1M -.-> A1
     S -.-> A2
     A1 -->|판단 요청| A2
     A2 --> C
@@ -50,7 +53,8 @@ flowchart TB
     classDef shared fill:#f7f9fc,stroke:#8a98a8,stroke-width:1.5px,color:#304457;
     classDef output fill:#365f91,stroke:#365f91,stroke-width:2px,color:#ffffff;
 
-    class A1 lead;
+    class A1 shared;
+    class A1M optional;
     class A2,A3 agent;
     class A4 optional;
     class I,S,C,C3,E shared;

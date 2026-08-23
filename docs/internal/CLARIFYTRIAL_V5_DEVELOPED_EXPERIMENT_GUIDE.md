@@ -314,8 +314,38 @@ ClarifyTrial은 새로 받은 정보를 임상시험 조건에 반영한다. 결
 12. 완료 — 새 평가 환자 30명의 핵심 값 다섯 개를 모두 지운 조건을 0~5회에서 실행
 13. 완료 — 필요한 정보 선택률, 결과를 더 바꾸지 않은 확인과 미정 해소 수 집계
 14. 완료 — 숫자·기간 기준의 차이 출력과 질문 과정을 보여 주는 텍스트 화면 구현
-15. 후속 — 사람 두 명이 92개 조건을 독립적으로 확인하고 불일치를 합의
-16. 가능하면 임상시험 담당자나 의사가 결과와 부담 표시를 직접 검토
+15. 완료 — 새 환자·시험 JSON을 받는 일반 실행 명령과 터미널 직접 답변 구현
+16. 완료 — 중단한 실행을 저장된 세션에서 이어가는 기능 구현
+17. 완료 — 세 질문 방식을 같은 전체 흐름에서 30명에게 일괄 실행
+18. 완료 — 환자별 병렬 실행과 호출·토큰·시간 집계
+19. 완료 — 여러 실험 결과에서 표·SVG·Markdown 보고서 자동 생성
+
+### 범용 실행과 전체 평가 명령
+
+```powershell
+# 새 환자와 시험 파일로 실행
+.\.venv\Scripts\clarifytrial.exe run-screening `
+  --patient examples\general_screening\patient.json `
+  --trials examples\general_screening\trials.jsonl `
+  --answers examples\general_screening\answers.json `
+  --provider deterministic `
+  --output runs\general-screening
+
+# 질문 없음·고정 순서·현재 방식 전체 비교
+.\.venv\Scripts\clarifytrial.exe run-workflow-evaluation `
+  --provider deterministic `
+  --split heldout `
+  --action-budget 3 `
+  --concurrency 4 `
+  --output runs\full-workflow-evaluation
+
+# 저장된 실험 결과에서 표와 그림 생성
+.\.venv\Scripts\clarifytrial.exe build-report `
+  --question-policy runs\natural-question-policy-fully-missing-heldout-v1.json `
+  --burden runs\patient-burden-v2\summary.json `
+  --workflow runs\full-workflow-evaluation\summary.json `
+  --output runs\research-report
+```
 
 ---
 
@@ -356,9 +386,10 @@ ClarifyTrial은 새로 받은 정보를 임상시험 조건에 반영한다. 결
 환자에게 시간·이동·비용·절차 부담이 얼마나 새로 생기는지를 함께 본다. 부담이 큰
 행동은 시스템이 자동으로 실행하지 않고 환자와 의료진의 선택으로 남긴다.
 
-새 합성 환자 30명에서 질문을 세 번 허용했을 때 미리 계산한 최종 상태와 같아진 시험
-판단은 질문 없음 42%, 고정 순서 75%, 현재 방식 89%였다. AI가 먼저 검토한 조건과 합성 환자를
-쓴 결과이므로 실제 환자에게도 같은 성능이라고 말하지 않는다.
+새 합성 환자 30명에서 질문 순서만 계산한 평가에서는 세 번 확인 뒤 고정 순서 75.3%,
+현재 방식 88.7%였다. 검색·조건 판단·질문·답변·재판정을 실제 실행기에 모두 연결한
+평가에서는 질문 없음 42%, 고정 순서 66%, 현재 방식 77%였다. 두 결과는 검사한 범위가
+달라 따로 보고한다.
 
 같은 환자의 핵심 값 다섯 개를 모두 지운 조건에서도 질문 세 번 뒤 현재 방식은 88.7%,
 고정 순서는 75.3%였다. 현재 방식은 필요한 정보 묶음을 모두 포함했고, 총 88번 확인

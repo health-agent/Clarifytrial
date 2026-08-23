@@ -4,12 +4,21 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel
 
+from .app import (
+    GeneralPatientInput,
+    GeneralRunOptions,
+    ScreeningSession,
+    StructuredTrialSource,
+    run_full_workflow_evaluation,
+    run_general_screening,
+)
 from .agents import (
     CoordinatorAgent,
     MatcherJudgeAgent,
@@ -65,6 +74,7 @@ from .llm import (
     CodexSubscriptionStructuredModel,
     DEFAULT_CODEX_EFFORT,
     DEFAULT_CODEX_MODEL,
+    DeterministicWorkflowModel,
     ScriptedStructuredModel,
     StructuredModel,
 )
@@ -90,6 +100,7 @@ from .retrieval import (
     TrialGPTRuntimeSearch,
     run_trialgpt_retrieval,
 )
+from .reporting import build_research_report
 from .preparation import (
     CandidateSearch,
     InMemoryCandidateSearch,
@@ -116,6 +127,24 @@ from .workflow import (
     PatientScreeningResult,
     PatientScreeningRunner,
 )
+
+
+def _configure_utf8_stream(stream: Any) -> None:
+    """Keep Korean terminal input and output readable across Windows code pages."""
+
+    encoding = str(getattr(stream, "encoding", "") or "").replace("-", "").lower()
+    reconfigure = getattr(stream, "reconfigure", None)
+    if encoding in {"utf8", "utf8sig"} or not callable(reconfigure):
+        return
+    try:
+        reconfigure(encoding="utf-8", errors="replace")
+    except (OSError, ValueError):
+        return
+
+
+def _configure_utf8_stdio() -> None:
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        _configure_utf8_stream(stream)
 
 
 _DISCLAIMER_FALLBACK = (
@@ -433,6 +462,9 @@ def export_schemas(output_dir: str | Path) -> list[Path]:
         ("patient-screening-result.schema.json", PatientScreeningResult),
         ("natural-screening-request.schema.json", NaturalScreeningRequest),
         ("natural-screening-result.schema.json", NaturalScreeningResult),
+        ("general-patient-input.schema.json", GeneralPatientInput),
+        ("structured-trial-source.schema.json", StructuredTrialSource),
+        ("screening-session.schema.json", ScreeningSession),
     )
     paths: list[Path] = []
     for name, model in models:
@@ -573,6 +605,53 @@ def _parser() -> argparse.ArgumentParser:
     run.add_argument("--case", required=True, type=Path)
     run.add_argument("--output", required=True, type=Path)
 
+    general = commands.add_parser(
+        "run-screening",
+        help=(
+            "search a supplied structured trial pool, ask for missing facts, "
+            "and save resumable results"
+        ),
+    )
+    general.add_argument("--patient", required=True, type=Path)
+    general.add_argument("--trials", required=True, type=Path)
+    general.add_argument("--output", required=True, type=Path)
+    general.add_argument(
+        "--answers",
+        type=Path,
+        help="optional deterministic answer file; omit to type answers",
+    )
+    general.add_argument(
+        "--resume",
+        type=Path,
+        help="resume from a previously saved session.json",
+    )
+    general.add_argument(
+        "--provider",
+        choices=("deterministic", "codex-subscription", "anthropic"),
+        default="deterministic",
+    )
+    general.add_argument("--model")
+    general.add_argument(
+        "--effort",
+        choices=sorted(ALLOWED_CODEX_EFFORTS),
+        default=DEFAULT_CODEX_EFFORT,
+    )
+    general.add_argument("--api-key-env-file", type=Path)
+    general.add_argument("--api-key-name", default="ANTHROPIC_API_KEY")
+    general.add_argument("--max-output-tokens", type=int, default=8_192)
+    general.add_argument("--timeout-seconds", type=float, default=300)
+    general.add_argument("--max-external-actions", type=int, default=3)
+    general.add_argument("--max-selective-reviews", type=int, default=1)
+    general.add_argument("--max-cycles", type=int, default=12)
+    general.add_argument(
+        "--question-policy",
+        choices=("clarifytrial", "fixed_order"),
+        default="clarifytrial",
+    )
+    general.add_argument("--use-model-coordinator", action="store_true")
+    general.add_argument("--no-batch-judgments", action="store_true")
+    general.add_argument("--confirm-model-run", action="store_true")
+
     natural = commands.add_parser(
         "run-natural-screening",
         help=(
@@ -672,6 +751,61 @@ def _parser() -> argparse.ArgumentParser:
         help="apply each prepared synthetic answer without waiting for Enter",
     )
     full_ui.add_argument("--confirm-model-run", action="store_true")
+
+    workflow_evaluation = commands.add_parser(
+        "run-workflow-evaluation",
+        help=(
+            "run no-question, fixed-order, and ClarifyTrial arms through the "
+            "same connected workflow"
+        ),
+    )
+    workflow_evaluation.add_argument(
+        "--trial-set",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v1"
+        / "preliminary_trial_set.json",
+    )
+    workflow_evaluation.add_argument(
+        "--patient-pairs",
+        type=Path,
+        default=Path("data")
+        / "natural_evaluation_v2"
+        / "preliminary_patient_pairs.json",
+    )
+    workflow_evaluation.add_argument(
+        "--generation-config",
+        type=Path,
+        default=Path("configs") / "natural_evaluation_patient_generation_v2.json",
+    )
+    workflow_evaluation.add_argument("--output", required=True, type=Path)
+    workflow_evaluation.add_argument(
+        "--split",
+        choices=("development", "heldout"),
+        default="heldout",
+    )
+    workflow_evaluation.add_argument("--patient-id", action="append", default=[])
+    workflow_evaluation.add_argument("--limit", type=int)
+    workflow_evaluation.add_argument(
+        "--provider",
+        choices=("deterministic", "codex-subscription", "anthropic"),
+        default="deterministic",
+    )
+    workflow_evaluation.add_argument("--model")
+    workflow_evaluation.add_argument(
+        "--effort",
+        choices=sorted(ALLOWED_CODEX_EFFORTS),
+        default=DEFAULT_CODEX_EFFORT,
+    )
+    workflow_evaluation.add_argument("--api-key-env-file", type=Path)
+    workflow_evaluation.add_argument("--api-key-name", default="ANTHROPIC_API_KEY")
+    workflow_evaluation.add_argument("--max-output-tokens", type=int, default=8_192)
+    workflow_evaluation.add_argument("--timeout-seconds", type=float, default=300)
+    workflow_evaluation.add_argument("--action-budget", type=int, default=3)
+    workflow_evaluation.add_argument("--max-selective-reviews", type=int, default=1)
+    workflow_evaluation.add_argument("--max-cycles", type=int, default=12)
+    workflow_evaluation.add_argument("--concurrency", type=int, default=1)
+    workflow_evaluation.add_argument("--confirm-model-run", action="store_true")
 
     schemas = commands.add_parser(
         "export-schemas",
@@ -1419,10 +1553,24 @@ def _parser() -> argparse.ArgumentParser:
     burden.add_argument(
         "--action-budget", type=int, choices=(3,), default=3
     )
+
+    report = commands.add_parser(
+        "build-report",
+        help="build Markdown, CSV, and SVG figures from evaluation JSON",
+    )
+    report.add_argument("--question-policy", type=Path)
+    report.add_argument("--burden", type=Path)
+    report.add_argument("--workflow", type=Path)
+    report.add_argument("--retrieval", type=Path, action="append", default=[])
+    report.add_argument("--output", type=Path, required=True)
+    report.add_argument("--split", default="heldout")
+    report.add_argument("--input-state", default="fully_missing")
+    report.add_argument("--action-budget", type=int, default=3)
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    _configure_utf8_stdio()
     parser = _parser()
     args = parser.parse_args(argv)
     if args.command == "run-example":
@@ -1430,6 +1578,65 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"result: {result_path}")
         print(f"trace: {args.output / 'trace.jsonl'}")
         return 0
+    if args.command == "run-screening":
+        live_provider = args.provider != "deterministic"
+        if live_provider and not args.confirm_model_run:
+            parser.error(
+                "live run-screening providers require --confirm-model-run"
+            )
+        settings = EpisodeSettings(
+            max_external_actions=args.max_external_actions,
+            max_selective_reviews=args.max_selective_reviews,
+            max_cycles=args.max_cycles,
+            use_model_coordinator=args.use_model_coordinator,
+            batch_trial_judgments=not args.no_batch_judgments,
+            question_policy=args.question_policy,
+        )
+        options = GeneralRunOptions(
+            patient_path=args.patient,
+            trials_path=args.trials,
+            output_dir=args.output,
+            settings=settings,
+            answers_path=args.answers,
+            resume_path=args.resume,
+        )
+        if args.provider == "deterministic":
+            outcome = run_general_screening(
+                options=options,
+                model=DeterministicWorkflowModel(),
+                model_label="deterministic-workflow",
+                medical_disclaimer=_read_disclaimer(),
+            )
+        elif args.provider == "codex-subscription":
+            model_id = args.model or DEFAULT_CODEX_MODEL
+            with CodexSubscriptionStructuredModel(
+                model_id=model_id,
+                effort=args.effort,
+                timeout_seconds=args.timeout_seconds,
+            ) as model:
+                outcome = run_general_screening(
+                    options=options,
+                    model=model,
+                    model_label=f"{model_id} / {args.effort}",
+                    medical_disclaimer=_read_disclaimer(),
+                )
+        else:
+            if args.api_key_env_file is None:
+                parser.error("anthropic provider requires --api-key-env-file")
+            model_id = args.model or "claude-sonnet-5"
+            model = AnthropicStructuredModel(
+                api_key=_read_env_value(args.api_key_env_file, args.api_key_name),
+                model_id=model_id,
+                max_output_tokens=args.max_output_tokens,
+                timeout_seconds=args.timeout_seconds,
+            )
+            outcome = run_general_screening(
+                options=options,
+                model=model,
+                model_label=model_id,
+                medical_disclaimer=_read_disclaimer(),
+            )
+        return 0 if outcome.result_path is not None or outcome.paused else 2
     if args.command == "run-natural-screening":
         if not args.confirm_model_run:
             parser.error(
@@ -1558,6 +1765,70 @@ def main(argv: Sequence[str] | None = None) -> int:
                 medical_disclaimer=_read_disclaimer(),
                 auto_advance=args.auto,
             )
+        return 0
+    if args.command == "run-workflow-evaluation":
+        live_provider = args.provider != "deterministic"
+        if live_provider and not args.confirm_model_run:
+            parser.error(
+                "live run-workflow-evaluation providers require "
+                "--confirm-model-run"
+            )
+        run_kwargs = {
+            "trial_set_path": args.trial_set,
+            "patient_pairs_path": args.patient_pairs,
+            "generation_config_path": args.generation_config,
+            "destination": args.output,
+            "split": args.split,
+            "patient_ids": args.patient_id,
+            "limit": args.limit,
+            "action_budget": args.action_budget,
+            "max_selective_reviews": args.max_selective_reviews,
+            "max_cycles": args.max_cycles,
+            "concurrency": args.concurrency,
+        }
+        if args.provider == "deterministic":
+            summary = run_full_workflow_evaluation(
+                **run_kwargs,
+                model=DeterministicWorkflowModel(),
+                model_label="deterministic-workflow",
+            )
+        elif args.provider == "codex-subscription":
+            model_id = args.model or DEFAULT_CODEX_MODEL
+            with CodexSubscriptionModelPool(
+                size=args.concurrency,
+                worker_factory=lambda: CodexSubscriptionStructuredModel(
+                    model_id=model_id,
+                    effort=args.effort,
+                    timeout_seconds=args.timeout_seconds,
+                ),
+            ) as model:
+                summary = run_full_workflow_evaluation(
+                    **run_kwargs,
+                    model=model,
+                    model_label=f"{model_id} / {args.effort}",
+                )
+        else:
+            if args.concurrency != 1:
+                parser.error("anthropic workflow evaluation currently uses concurrency=1")
+            if args.api_key_env_file is None:
+                parser.error("anthropic provider requires --api-key-env-file")
+            model_id = args.model or "claude-sonnet-5"
+            model = AnthropicStructuredModel(
+                api_key=_read_env_value(args.api_key_env_file, args.api_key_name),
+                model_id=model_id,
+                max_output_tokens=args.max_output_tokens,
+                timeout_seconds=args.timeout_seconds,
+            )
+            summary = run_full_workflow_evaluation(
+                **run_kwargs,
+                model=model,
+                model_label=model_id,
+            )
+        print(f"summary: {args.output / 'summary.json'}")
+        print(
+            f"patients={summary['patient_count']} "
+            f"paired={summary['paired_clarifytrial_vs_fixed']['patient_count']}"
+        )
         return 0
     if args.command == "export-schemas":
         for path in export_schemas(args.output):
@@ -1878,6 +2149,20 @@ def main(argv: Sequence[str] | None = None) -> int:
             auto_advance=args.auto,
         )
         print(f"\n상세 실행 기록: {args.output}")
+        return 0
+    if args.command == "build-report":
+        result = build_research_report(
+            destination=args.output,
+            question_policy_path=args.question_policy,
+            burden_path=args.burden,
+            workflow_path=args.workflow,
+            retrieval_paths=args.retrieval,
+            split=args.split,
+            input_state=args.input_state,
+            action_budget=args.action_budget,
+        )
+        print(f"report: {result['report']}")
+        print(f"metrics: {result['metric_count']}")
         return 0
     if args.command == "run-trialgpt-pilot":
         if not args.confirm_live_api:
