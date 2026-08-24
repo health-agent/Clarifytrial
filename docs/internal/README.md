@@ -16,7 +16,7 @@
 | 문서 | 역할 |
 |---|---|
 | [현행 연구계획 v5](CLARIFYTRIAL_RESEARCH_PLAN_V5.md) | 연구 질문, 비교 범위와 주장 기준을 정하는 유일한 현행 계획 |
-| [실험자료 정리](CLARIFYTRIAL_DATASETS.md) | TrialGPT·TREC·ClinicalTrials.gov와 합성자료의 실제 용도와 정답 구조 |
+| [실험자료 구성](CLARIFYTRIAL_DATASETS.md) | TrialGPT·TREC·ClinicalTrials.gov와 합성자료의 실제 용도와 정답 구조 |
 | [연구 지식 정리](RESEARCH_KNOWLEDGE_BASE.md) | 선행연구와 구현 방법 참고자료 |
 | [근거문헌과 공개 코드](CLARIFYTRIAL_AGENT_SOURCE_INDEX.md) | 현재 구조에 영향을 준 논문, 공개 코드와 가져온 범위 |
 
@@ -46,7 +46,7 @@
 | [에이전트 실행 구조](CLARIFYTRIAL_AGENT_ARCHITECTURE_REDESIGN.md) | 역할별 모델 호출, 코드 실행 순서와 입출력 형식 |
 | [관련 시험 검색·평가 구현계획](CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md) | 자료 다운로드, 검색기 준비, 평가 명령과 구현 기준 |
 | [쉬운 실험 안내](CLARIFYTRIAL_V5_DEVELOPED_EXPERIMENT_GUIDE.md) | 사례 실행, 일괄 평가와 보고서 생성 명령 |
-| [개발 상세 기록](CLARIFYTRIAL_IMPLEMENTATION_RECORD.md) | 완료·보류·기각된 요구사항 101개와 과거 결정 |
+| [개발 상세 기록](CLARIFYTRIAL_IMPLEMENTATION_RECORD.md) | 완료·보류·기각된 요구사항 106개와 과거 결정 |
 
 개발 기준은 [현재 상태](CURRENT_STATUS.md),
 [현행 연구계획](CLARIFYTRIAL_RESEARCH_PLAN_V5.md)과 변경 대상에 해당하는 구현 문서다.

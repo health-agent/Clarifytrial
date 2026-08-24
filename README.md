@@ -213,7 +213,7 @@ TrialGPT가 공개한 검색 절차를 같은 자료에서 다시 실행했으�
 | [현재 상태](docs/internal/CURRENT_STATUS.md) | 완성된 범위와 다음 작업 |
 | [검증 결과](docs/internal/CLARIFYTRIAL_VALIDATION_RESULTS.md) | 각 숫자의 실행 조건과 한계 |
 | [현행 연구계획 v5](docs/internal/CLARIFYTRIAL_RESEARCH_PLAN_V5.md) | 연구 질문과 비교 기준 |
-| [실험자료 정리](docs/internal/CLARIFYTRIAL_DATASETS.md) | 공개자료와 합성자료 구성 |
+| [실험자료 구성](docs/internal/CLARIFYTRIAL_DATASETS.md) | 공개자료와 합성자료 구성 |
 | [전체 자료 구성](docs/internal/README.md) | 연구 자료와 구현·재현 자료의 구분 |
 
 ## 개발자용 실행·코드 참고
