@@ -435,6 +435,10 @@ JSON을 읽고, 시험 15개 검색, 후보 5개 조건 판단, 최대 세 번�
 | `src/clarifytrial/interactive/` | 평가용으로 숨긴 답, 질문 순서와 환자 부담 규칙 |
 | `src/clarifytrial/workflow/` | 여러 시험을 판단하고 새 정보 뒤 다시 판단하는 전체 흐름 |
 | `src/clarifytrial/app/` | 일반 JSON·대회 topics 입력, 직접 답변, 세션 재개와 세 방식 전체 평가 |
+| `src/clarifytrial/app/challenge_contracts.py` | 대회 topics 입력과 실행 옵션 |
+| `src/clarifytrial/app/challenge_input.py` | 환자 문장 변환과 공통 JSON 파일 저장 |
+| `src/clarifytrial/app/challenge_runner.py` | 캐시·검색·판정·세션을 연결하는 실행 순서 |
+| `src/clarifytrial/app/challenge_cli.py` | `run-challenge` 명령의 옵션과 모델 연결 |
 | `src/clarifytrial/ui/` | 15개 시험 검색부터 역할별 호출·질문·최종 결과까지 보여 주는 통합 터미널 화면 |
 | `src/clarifytrial/reporting/` | 최종 목록·기준 차이와 실험 결과표·그림·Markdown 보고서 생성 |
 | `src/clarifytrial/datasets/` | 공개자료 준비, 합성 환자와 자연어 평가자료 |
