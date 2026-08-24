@@ -18,6 +18,7 @@ from ..contracts import (
     VerificationStatus,
 )
 from ..environment import EnvironmentStatus, ToolExecutionResult
+from ..io import atomic_write_text
 from .contracts import ScreeningSession, SessionEvent
 
 
@@ -58,8 +59,8 @@ class SessionStore:
         return cls(source, session)
 
     def save(self) -> None:
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.path.write_text(
+        atomic_write_text(
+            self.path,
             self.session.model_dump_json(indent=2) + "\n",
             encoding="utf-8",
         )

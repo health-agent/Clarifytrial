@@ -178,7 +178,11 @@ def _tools(case: PatientScreeningCase) -> SyntheticInformationTools:
     )
 
 
-def _model(*, change_selected_action: bool = False) -> ScriptedStructuredModel:
+def _model(
+    *,
+    change_selected_action: bool = False,
+    return_one_assessment_per_call: bool = False,
+) -> ScriptedStructuredModel:
     def coordinate(payload: Mapping[str, Any]) -> Mapping[str, Any]:
         return {
             "route": payload["allowed_routes"][0],
@@ -212,7 +216,13 @@ def _model(*, change_selected_action: bool = False) -> ScriptedStructuredModel:
                     "review_flags": [],
                 }
             )
-        return {"assessments": assessments}
+        return {
+            "assessments": (
+                assessments[:1]
+                if return_one_assessment_per_call
+                else assessments
+            )
+        }
 
     def write_request(payload: Mapping[str, Any]) -> Mapping[str, Any]:
         required = dict(payload["required_action"])
@@ -426,3 +436,22 @@ def test_message_agent_cannot_replace_the_code_selected_fact() -> None:
         match="cannot change the fact, acquisition path, or related criteria",
     ):
         runner.run(case, _tools(case))
+
+
+def test_large_criterion_bundle_is_chunked_and_missing_rows_are_retried() -> None:
+    case = _case()
+    model = _model(return_one_assessment_per_call=True)
+    result = PatientScreeningRunner(
+        _agents(model),
+        EpisodeSettings(
+            max_external_actions=0,
+            max_selective_reviews=0,
+            max_cycles=4,
+            criterion_batch_size=2,
+        ),
+    ).run(case, _tools(case))
+
+    assert len(result.final_decisions) == 4
+    # Two initial chunks return one of two requested rows.  Each missing row is
+    # then requested alone, while the two successful rows are preserved.
+    assert model.call_count["matcher_judge"] == 4

@@ -614,7 +614,11 @@ def select_acquisition_option(
             view=view,
             snapshot=snapshot,
             revealed_fact_ids=revealed_fact_ids,
-            remaining_budget=max(0, view.action_budget - len(revealed_fact_ids)),
+            # Failed attempts still consume an external-action slot.  Counting
+            # only revealed facts would let the planner look farther ahead
+            # than the workflow can actually execute after an unavailable
+            # record or unanswered question.
+            remaining_budget=max(0, view.action_budget - len(selected_options)),
             allowed_fact_ids={item.fact_id for item in active},
         )
 

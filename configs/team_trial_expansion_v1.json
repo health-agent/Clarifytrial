@@ -1,0 +1,102 @@
+{
+  "protocol_id": "clarifytrial-team-trial-expansion-v1",
+  "disease_groups": [
+    {
+      "group_id": "bladder_cancer",
+      "group_label": "방광암",
+      "condition_aliases": [
+        "bladder cancer",
+        "bladder carcinoma",
+        "urothelial carcinoma"
+      ],
+      "target_count": 5
+    },
+    {
+      "group_id": "pulmonary_fibrosis",
+      "group_label": "폐섬유증",
+      "condition_aliases": [
+        "idiopathic pulmonary fibrosis",
+        "pulmonary fibrosis",
+        "interstitial lung disease"
+      ],
+      "target_count": 5
+    },
+    {
+      "group_id": "acute_pancreatitis",
+      "group_label": "급성 췌장염",
+      "condition_aliases": [
+        "acute pancreatitis",
+        "pancreatitis, acute",
+        "post-ercp acute pancreatitis",
+        "recurrent acute pancreatitis"
+      ],
+      "target_count": 5
+    },
+    {
+      "group_id": "thyroid_eye_disease",
+      "group_label": "갑상선 안병증",
+      "condition_aliases": [
+        "thyroid eye disease",
+        "graves ophthalmopathy",
+        "thyroid associated ophthalmopathy"
+      ],
+      "target_count": 5
+    },
+    {
+      "group_id": "nephrotic_syndrome",
+      "group_label": "신증후군",
+      "condition_aliases": [
+        "nephrotic syndrome",
+        "minimal change disease",
+        "focal segmental glomerulosclerosis",
+        "membranous nephropathy"
+      ],
+      "target_count": 5
+    },
+    {
+      "group_id": "migraine",
+      "group_label": "편두통",
+      "condition_aliases": [
+        "migraine"
+      ],
+      "target_count": 5
+    },
+    {
+      "group_id": "retinal_detachment",
+      "group_label": "망막박리",
+      "condition_aliases": [
+        "retinal detachment",
+        "rhegmatogenous retinal detachment",
+        "proliferative vitreoretinopathy"
+      ],
+      "target_count": 5
+    },
+    {
+      "group_id": "chronic_pancreatitis",
+      "group_label": "만성 췌장염",
+      "condition_aliases": [
+        "chronic pancreatitis"
+      ],
+      "target_count": 5
+    },
+    {
+      "group_id": "lung_cancer",
+      "group_label": "폐암",
+      "condition_aliases": [
+        "lung cancer",
+        "non-small cell lung cancer",
+        "small cell lung cancer"
+      ],
+      "target_count": 5
+    },
+    {
+      "group_id": "ovarian_cancer",
+      "group_label": "난소암",
+      "condition_aliases": [
+        "ovarian cancer",
+        "ovarian carcinoma"
+      ],
+      "target_count": 5
+    }
+  ]
+}

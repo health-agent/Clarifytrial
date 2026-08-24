@@ -18,7 +18,9 @@ from ..llm import (
 )
 from ..preparation import (
     CandidateSearch,
+    DEFAULT_ENROLLING_STATUSES,
     InMemoryCandidateSearch,
+    TeamTrialCandidateSearch,
     TrialProtocolSource,
 )
 from ..settings import EpisodeSettings
@@ -71,10 +73,24 @@ def add_challenge_parser(commands: Any) -> argparse.ArgumentParser:
     challenge.add_argument("--output", required=True, type=Path)
     challenge.add_argument(
         "--candidate-search",
-        choices=("trialgpt", "local-bm25"),
+        choices=("team-jsonl", "trialgpt", "local-bm25"),
         default="trialgpt",
     )
     challenge.add_argument("--trial-sources", type=Path)
+    challenge.add_argument(
+        "--team-trials",
+        type=Path,
+        help="team trials.jsonl snapshot used by team-jsonl search",
+    )
+    challenge.add_argument(
+        "--trial-status",
+        action="append",
+        default=[],
+        help=(
+            "recruitment status admitted by team-jsonl search; repeat to add "
+            "statuses, or omit to use the current enrolling statuses"
+        ),
+    )
     challenge.add_argument("--trialgpt-corpus", type=Path)
     challenge.add_argument("--trialgpt-cache", type=Path)
     challenge.add_argument(
@@ -153,6 +169,14 @@ def _candidate_search(
         return None
     if args.candidate_search == "trialgpt":
         return dependencies.build_trialgpt_candidate_search(args, parser)
+    if args.candidate_search == "team-jsonl":
+        if args.team_trials is None:
+            parser.error("team-jsonl requires --team-trials")
+        statuses = args.trial_status or sorted(DEFAULT_ENROLLING_STATUSES)
+        return TeamTrialCandidateSearch(
+            args.team_trials,
+            included_statuses=statuses,
+        )
     if args.trial_sources is None:
         parser.error("local-bm25 requires --trial-sources")
     source_rows = dependencies.read_json(args.trial_sources)

@@ -35,6 +35,9 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.data-files]
+"prompts" = ["prompts/*.md"]
+
 [tool.pytest.ini_options]
 addopts = "-ra"
 testpaths = ["tests"]

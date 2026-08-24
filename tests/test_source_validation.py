@@ -70,6 +70,36 @@ def test_patient_numeric_value_and_explicit_date_must_match_source() -> None:
         validate_patient_fact_source(fact, fact.source_quote)
 
 
+def test_patient_numeric_concept_must_match_the_cited_source() -> None:
+    fact = PatientFactDraft(
+        fact_key="hba1c",
+        statement="HbA1c was 7.0%.",
+        source_quote="Platelet count was 7.0 % on 2026-05-01.",
+        event_date=date(2026, 5, 1),
+        concept="hba1c",
+        value=7.0,
+        unit="percent",
+    )
+
+    with pytest.raises(SourceValidationError, match="patient concept"):
+        validate_patient_fact_source(fact, fact.source_quote)
+
+
+def test_patient_event_date_cannot_be_added_when_source_has_no_date() -> None:
+    fact = PatientFactDraft(
+        fact_key="hba1c",
+        statement="HbA1c was 7.0%.",
+        source_quote="HbA1c was 7.0 %.",
+        event_date=date(2026, 5, 1),
+        concept="hba1c",
+        value=7.0,
+        unit="percent",
+    )
+
+    with pytest.raises(SourceValidationError, match="event date is not present"):
+        validate_patient_fact_source(fact, fact.source_quote)
+
+
 def test_trial_requirement_cannot_add_an_unwritten_official_source() -> None:
     criterion = TrialCriterionDraft(
         kind="inclusion",

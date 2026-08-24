@@ -315,9 +315,12 @@ ClarifyTrial은 새로 받은 정보를 임상시험 조건에 반영한다. 결
 14. 완료 — 숫자·기간 기준의 차이 출력과 질문 과정을 보여 주는 텍스트 화면 구현
 15. 완료 — 새 환자·시험 JSON을 받는 일반 실행 명령과 터미널 직접 답변 구현
 16. 완료 — 중단한 실행을 저장된 세션에서 이어가는 기능 구현
-17. 완료 — 세 질문 방식을 같은 전체 흐름에서 30명에게 일괄 실행
+17. 완료 — 네 질문 방식을 같은 전체 흐름에서 30명에게 일괄 실행
 18. 완료 — 환자별 병렬 실행과 호출·토큰·시간 집계
 19. 완료 — 여러 실험 결과에서 표·SVG·Markdown 보고서 자동 생성
+20. 완료 — 답 하나를 얻지 못한 상황에서 같은 정보를 반복하지 않는지 평가
+21. 완료 — 팀 시험 1,931건 변환, 모집 상태 필터와 10개 질환군·50건 선택
+22. 완료 — 긴 시험 원문과 많은 조건 분할, 빠진 조건 재요청과 중단된 일괄 평가 재개
 
 ### 범용 실행과 전체 평가 명령
 
@@ -330,19 +333,20 @@ ClarifyTrial은 새로 받은 정보를 임상시험 조건에 반영한다. 결
   --provider deterministic `
   --output runs\general-screening
 
-# 추가 정보를 확인하지 않는 방법과 두 가지 정보 확인 순서를 전체 프로그램에서 비교
+# 정해진 후보 시험에서 추가 확인 없음과 세 가지 정보 확인 순서를 비교
 .\.venv\Scripts\clarifytrial.exe run-workflow-evaluation `
   --provider deterministic `
   --split heldout `
   --action-budget 3 `
   --concurrency 4 `
-  --output runs\full-workflow-evaluation
+  --include-unavailable-scenario `
+  --output runs\full-workflow-evaluation-v2
 
 # 저장된 실험 결과에서 표와 그림 생성
 .\.venv\Scripts\clarifytrial.exe build-report `
   --question-policy runs\natural-question-policy-fully-missing-heldout-v1.json `
   --burden runs\patient-burden-v2\summary.json `
-  --workflow runs\full-workflow-evaluation\summary.json `
+  --workflow runs\full-workflow-evaluation-v2\summary.json `
   --output runs\research-report
 ```
 

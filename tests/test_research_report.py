@@ -92,6 +92,8 @@ def test_report_replaces_internal_labels_with_self_explanatory_korean(
                         "confirmation_status_accuracy": 0.5,
                         "false_candidate_removals": 1,
                         "premature_initial_confirmations": 0,
+                        "premature_final_confirmations": 0,
+                        "resolved_to_unresolved": 0,
                         "mean_unresolved_to_resolved": 0.0,
                         "mean_action_count": 0,
                         "model_call_count": 1,
@@ -106,7 +108,25 @@ def test_report_replaces_internal_labels_with_self_explanatory_korean(
                         "confirmation_status_accuracy": 0.7,
                         "false_candidate_removals": 0,
                         "premature_initial_confirmations": 0,
+                        "premature_final_confirmations": 0,
+                        "resolved_to_unresolved": 0,
                         "mean_unresolved_to_resolved": 1.0,
+                        "mean_action_count": 3,
+                        "model_call_count": 7,
+                        "total_tokens": 0,
+                        "failed_patient_count": 0,
+                    },
+                    {
+                        "arm": "immediate_coverage",
+                        "patient_count": 1,
+                        "trial_status_recovery": 0.7,
+                        "candidate_status_accuracy": 0.9,
+                        "confirmation_status_accuracy": 0.8,
+                        "false_candidate_removals": 0,
+                        "premature_initial_confirmations": 0,
+                        "premature_final_confirmations": 0,
+                        "resolved_to_unresolved": 0,
+                        "mean_unresolved_to_resolved": 1.3,
                         "mean_action_count": 3,
                         "model_call_count": 7,
                         "total_tokens": 0,
@@ -120,6 +140,8 @@ def test_report_replaces_internal_labels_with_self_explanatory_korean(
                         "confirmation_status_accuracy": 0.85,
                         "false_candidate_removals": 0,
                         "premature_initial_confirmations": 0,
+                        "premature_final_confirmations": 0,
+                        "resolved_to_unresolved": 0,
                         "mean_unresolved_to_resolved": 1.5,
                         "mean_action_count": 3,
                         "model_call_count": 7,
@@ -134,6 +156,20 @@ def test_report_replaces_internal_labels_with_self_explanatory_korean(
                     "equal_patient_count": 0,
                     "clarifytrial_worse_patient_count": 0,
                     "two_sided_exact_sign_test_p": 1.0,
+                },
+                "paired_clarifytrial_vs_immediate_coverage": {
+                    "patient_count": 1,
+                    "mean_recovery_difference": 0.1,
+                    "clarifytrial_better_patient_count": 1,
+                    "equal_patient_count": 0,
+                    "clarifytrial_worse_patient_count": 0,
+                    "two_sided_exact_sign_test_p": 1.0,
+                },
+                "decision_separation": {
+                    "trial_decision_count": 5,
+                    "retained_but_not_confirmed_count": 3,
+                    "if_only_confirmed_trials_are_kept_false_removals": 3,
+                    "if_every_retained_trial_is_called_confirmed_premature_confirmations": 3,
                 },
             }
         ),
@@ -170,6 +206,46 @@ def test_report_replaces_internal_labels_with_self_explanatory_korean(
     assert "고정 응답기" not in report
     assert "조건 판단·질문 작성 단계를 실행한 총횟수" in report
     assert "후보 유지·제외를 맞힌 비율" in report
-    assert "처음 자료가 부족한데 확정한 수" in report
+    assert "질문 뒤에도 정보가 부족한데 확정한 수" in report
+    assert "현재 가장 많은 미완료 시험에 연결된 정보" in report
+    assert "후보로는 남겨야 하지만 아직 참가 조건을 확인할 수 없었던" in report
     assert "더 좋았던 환자는 1명" in report
     assert "합성 환자를 만들 때 저장한 답만 반환하는 실험용 코드" in report
+
+
+def test_report_uses_the_requested_burden_split(tmp_path: Path) -> None:
+    def comparison(recovery: float) -> dict:
+        return {
+            "baseline_recovery": recovery + 0.01,
+            "candidate_recovery": recovery,
+            "constrained_baseline_feasible_recovery": recovery - 0.02,
+            "constrained_candidate_feasible_recovery": recovery + 0.03,
+            "constrained_new_test_visit_baseline": 2,
+            "constrained_new_test_visit_candidate": 0,
+            "urgent_mean_delay_baseline": 10.0,
+            "urgent_mean_delay_candidate": 8.0,
+        }
+
+    burden_path = tmp_path / "burden.json"
+    burden_path.write_text(
+        json.dumps(
+            {
+                "adoption_comparison": {
+                    "development": comparison(0.72),
+                    "heldout": comparison(0.79),
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    output = tmp_path / "development-report"
+
+    build_research_report(
+        destination=output,
+        burden_path=burden_path,
+        split="development",
+    )
+
+    report = (output / "report.md").read_text(encoding="utf-8")
+    assert "72.0%" in report
+    assert "79.0%" not in report

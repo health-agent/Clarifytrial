@@ -107,6 +107,7 @@ JSON 파일이다. 자유롭게 작성된 환자 기록을 이 형식으로 정�
 | ClinicalTrials.gov | 실제 시험 원문에서 평가 조건 제작 | 개발 15건·80조건, 새 평가 15건·92조건 |
 | ClarifyTrial 합성 환자 | 여러 정보가 부족한 상태에서 질문하고 다시 판단 | 개발 30명, 별도 평가 30명 |
 | 환자 부담 합성 상황 | 이동·비용·시간에 따라 확인 방법을 바꾸는지 검사 | 360개 상황·1,800회 실행 |
+| 팀 공개 시험 모음 | 여러 질환의 넓은 후보 검색 | 전체 1,931건, 모집 중·모집 예정 589건 |
 
 실제 환자 기록과 개인식별정보는 사용하지 않는다. 합성 환자는 수치, 날짜, 검사와
 치료 상태를 먼저 정한 뒤 기록으로 만든다. 미리 정한 상태표에 없는 사실을 모델이
@@ -148,10 +149,20 @@ TrialGPT가 공개한 검색 절차를 같은 자료에서 다시 실행했으�
 |---|---:|
 | 추가 정보를 확인하지 않음 | 63/150개, 42% |
 | 입력 파일에 적힌 순서대로 최대 세 개 확인 | 99/150개, 66% |
+| 현재 가장 많은 미완료 시험에 연결된 정보부터 확인 | 112/150개, 75% |
 | 남은 횟수 안에서 가장 많은 시험 판단을 끝낼 정보를 매번 계산 | 115/150개, 77% |
 
 마지막 방법은 입력 순서대로 확인한 방법보다 환자 16명에서 더 많은 판단을 끝냈고,
 12명에서는 같았으며, 2명에서는 적었다.
+
+현재 가장 많은 미완료 시험에 연결된 정보를 고르는 방식과 비교하면 마지막 방법은
+환자 3명에서 좋았고 27명에서 같았다. 평균 차이는 2퍼센트포인트였다. 따라서 남은
+세 번을 모두 계산하는 방법은 현재 자료에서 작은 보완이며, 입력 순서 방식과의 차이만
+보고 큰 성능 향상으로 해석하지 않는다.
+
+처음 자료에서 후보로는 남겨야 하지만 아직 참가 조건을 확인할 수 없었던 시험 판단은
+87개였다. 질문할 답 하나를 얻지 못하게 한 별도 실행에서는 판단 완료가 77%에서 58%로
+낮아졌지만, 얻지 못한 같은 정보를 반복한 횟수는 0회였다.
 
 ![질문 순서 결과](docs/internal/diagrams/clarifytrial-question-policy-results.svg)
 
@@ -184,6 +195,10 @@ TrialGPT가 공개한 검색 절차를 같은 자료에서 다시 실행했으�
 - 여러 환자 일괄 평가와 표·그림·보고서 생성
 - 팀의 `topics[num, title]` 형식 합성 환자 입력 처리
 - 반복되는 시험 조건 정리 결과의 재사용
+- 팀 시험 1,931건 변환과 모집 상태 필터
+- 10개 질환군에서 정밀 평가 후보 50건 선택
+- 긴 시험 원문·많은 조건의 분할 호출과 빠진 조건만 재요청
+- 중단된 일괄 평가에서 끝난 환자를 건너뛰고 이어서 실행
 
 자유롭게 쓴 환자 기록을 JSON으로 정리하는 기능도 연결되어 있지만, 기본 연구 평가는
 처음부터 정해진 JSON 입력을 사용한다.
@@ -193,10 +208,10 @@ TrialGPT가 공개한 검색 절차를 같은 자료에서 다시 실행했으�
 현재의 3개 질환·15개 시험 평가는 기능을 정밀하게 확인하는 첫 자료로 유지한다. 다음
 평가에서는 검색 범위와 정밀 채점 범위를 따로 넓힌다.
 
-1. 팀에서 만든 ClinicalTrials.gov 시험 1,931건 자료를 넓은 후보 검색에 사용한다.
-2. 모집이 끝난 시험은 현재 추천 대상에서 제외한다.
-3. 정밀 평가 범위는 약 10개 질환과 50개 시험으로 넓힌다.
-4. 새 질환에서는 약 35명의 합성 환자와 두 가지 정보 부족 상태를 추가한다.
+1. 팀 시험 1,931건을 변환하고 모집이 끝난 시험을 제외하는 작업은 완료했다.
+2. 10개 질환군·50개 정밀 평가 후보 선택도 완료했다.
+3. 선택한 50건에서 객관적으로 계산할 조건을 정리한다.
+4. 새 질환에서 약 35명의 합성 환자와 두 가지 정보 부족 상태를 추가한다.
 5. 1,931개 시험 전체에 정답을 붙이지 않고, 검색된 시험 가운데 정밀 평가 대상으로
    고른 시험에만 조건별 정답과 질문 뒤 변화를 만든다.
 6. 자료 범위를 고정한 뒤 현재 전체 프로그램으로 최종 통계와 모델 사용량을 다시 낸다.
@@ -247,12 +262,17 @@ py -3.12 -m venv .venv
 확인 옵션이 필요하다.
 
 ```powershell
+.\.venv\Scripts\clarifytrial.exe prepare-team-trials
+
+.\.venv\Scripts\clarifytrial.exe select-team-evaluation-trials `
+  --trials .research-cache\team-trials\trials.jsonl `
+  --output runs\team-trial-expansion\selection.json
+
 .\.venv\Scripts\clarifytrial.exe run-challenge `
   --topics "C:\path\to\synthetic-patients.json" `
   --topic-id S001 `
-  --candidate-search trialgpt `
-  --trialgpt-corpus C:\path\to\trial-corpus.jsonl `
-  --trialgpt-cache C:\path\to\retrieval-cache `
+  --candidate-search team-jsonl `
+  --team-trials .research-cache\team-trials\trials.jsonl `
   --provider codex-subscription `
   --effort medium `
   --output runs\challenge-S001 `
@@ -271,16 +291,20 @@ py -3.12 -m venv .venv
   --split heldout `
   --action-budget 3 `
   --concurrency 4 `
-  --output runs\full-workflow-evaluation
+  --include-unavailable-scenario `
+  --output runs\full-workflow-evaluation-v2
 
 .\.venv\Scripts\clarifytrial.exe build-report `
   --question-policy runs\natural-question-policy-fully-missing-heldout-v1.json `
   --burden runs\patient-burden-v2\summary.json `
-  --workflow runs\full-workflow-evaluation\summary.json `
+  --workflow runs\full-workflow-evaluation-v2\summary.json `
   --retrieval runs\trialgpt-retrieval\trec_2021\hybrid\summary.json `
   --retrieval runs\trialgpt-retrieval\trec_2022\hybrid\summary.json `
   --output runs\research-report
 ```
+
+일괄 평가가 중단됐다면 같은 `run-workflow-evaluation` 명령 끝에 `--resume`을 붙인다.
+입력 자료와 모델 설정이 같을 때만 이미 끝난 환자·비교 방식을 건너뛴다.
 
 ### 코드 위치
 

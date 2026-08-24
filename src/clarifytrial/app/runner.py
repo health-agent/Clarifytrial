@@ -27,6 +27,7 @@ from ..environment import (
     SyntheticInformationTools,
 )
 from ..llm import StructuredModel
+from ..io import atomic_write_text
 from ..preparation import CandidateSearch, summarize_model_usage
 from ..settings import EpisodeSettings
 from ..trace import TraceRecorder
@@ -427,7 +428,8 @@ def run_general_screening(
         "usage": usage.model_dump(mode="json"),
         "medical_disclaimer": medical_disclaimer,
     }
-    result_path.write_text(
+    atomic_write_text(
+        result_path,
         json.dumps(result_document, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )

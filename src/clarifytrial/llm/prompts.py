@@ -33,7 +33,16 @@ class FilePromptLoader:
 
 
 def repository_prompt_loader() -> FilePromptLoader:
-    """Return the loader for prompts tracked in this source checkout."""
+    """Return the prompt loader in a source checkout or installed wheel."""
 
-    repository_root = Path(__file__).resolve().parents[3]
-    return FilePromptLoader(repository_root)
+    module_path = Path(__file__).resolve()
+    candidates = (
+        module_path.parents[3],  # repository/src/clarifytrial/llm
+        module_path.parents[2],  # installed-prefix/clarifytrial/llm
+    )
+    for root in candidates:
+        if (root / "prompts").is_dir():
+            return FilePromptLoader(root)
+    raise FileNotFoundError(
+        "prompt directory was not installed; reinstall ClarifyTrial from the wheel"
+    )

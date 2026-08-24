@@ -21,6 +21,9 @@ from .source_validation import (
 )
 
 
+DEFAULT_PROTOCOL_CHUNK_CHAR_LIMIT = 8_000
+
+
 class TrialProtocolStructurerAgent(StructuredAgent[TrialProtocolDraft]):
     """Extract criteria only from grounded parts of a supplied protocol."""
 
@@ -86,49 +89,114 @@ def _fact_id(fact_key: str) -> str:
     return f"missing:{digest}"
 
 
+@dataclass(frozen=True, slots=True)
+class _EligibilityChunk:
+    text: str
+    start_char: int
+
+
+def _eligibility_chunks(
+    text: str,
+    *,
+    char_limit: int,
+) -> tuple[_EligibilityChunk, ...]:
+    """Split long protocols only at line boundaries so criteria stay intact."""
+
+    if char_limit < 1:
+        raise ValueError("char_limit must be positive")
+    if len(text) <= char_limit:
+        return (_EligibilityChunk(text=text, start_char=0),)
+    chunks: list[_EligibilityChunk] = []
+    current: list[str] = []
+    current_length = 0
+    current_start = 0
+    consumed = 0
+    for line in text.splitlines(keepends=True):
+        if current and current_length + len(line) > char_limit:
+            chunks.append(
+                _EligibilityChunk(
+                    text="".join(current),
+                    start_char=current_start,
+                )
+            )
+            current = []
+            current_length = 0
+            current_start = consumed
+        current.append(line)
+        current_length += len(line)
+        consumed += len(line)
+    if current:
+        chunks.append(
+            _EligibilityChunk(
+                text="".join(current),
+                start_char=current_start,
+            )
+        )
+    return tuple(item for item in chunks if item.text.strip())
+
+
 def structure_trial_protocol(
     source: TrialProtocolSource,
     agent: TrialProtocolStructurerAgent,
     *,
     known_needs: dict[str, DeclaredInformationNeed] | None = None,
+    chunk_char_limit: int = DEFAULT_PROTOCOL_CHUNK_CHAR_LIMIT,
     trace: TraceRecorder,
 ) -> PreparedTrial:
     """Ground criteria, check decision fields, and assign criterion IDs in code."""
 
-    draft = agent.run(
+    chunks = _eligibility_chunks(
+        source.eligibility_text,
+        char_limit=chunk_char_limit,
+    )
+    draft_items = []
+    known_information_needs = [
         {
+            "fact_key": item.fact_key,
+            "description": item.description,
+            "acceptable_actions": [
+                action.value for action in item.acceptable_actions
+            ],
+        }
+        for item in (known_needs or {}).values()
+    ]
+    for chunk_index, chunk in enumerate(chunks, start=1):
+        draft = agent.run(
+            {
             "trial_id": source.trial_id,
             "title": source.title,
             "conditions": source.conditions,
             "summary": source.summary,
             "source_location": source.source_location,
-            "eligibility_text": source.eligibility_text,
-            "known_information_needs": [
-                {
-                    "fact_key": item.fact_key,
-                    "description": item.description,
-                    "acceptable_actions": [
-                        action.value for action in item.acceptable_actions
-                    ],
-                }
-                for item in (known_needs or {}).values()
+                "eligibility_text": chunk.text,
+                "known_information_needs": known_information_needs,
+                "chunk": {
+                    "index": chunk_index,
+                    "count": len(chunks),
+                },
+            },
+            trace=trace,
+            cycle=0,
+            input_refs=[
+                source.trial_id,
+                source.source_location,
+                f"chunk:{chunk_index}/{len(chunks)}",
             ],
-        },
-        trace=trace,
-        cycle=0,
-        input_refs=[source.trial_id, source.source_location],
-    ).output
+        ).output
+        draft_items.extend((item, chunk) for item in draft.criteria)
     criteria = []
     needs: list[PreparedInformationNeed] = []
     source_matches = []
-    for index, item in enumerate(draft.criteria, start=1):
+    for index, (item, chunk) in enumerate(draft_items, start=1):
         match = resolve_source_span(
-            source.eligibility_text,
+            chunk.text,
             item.source_quote,
             approximate_start_char=item.start_char,
             approximate_end_char=item.end_char,
         )
         validate_trial_criterion_source(item, match.source_text)
+        global_start = chunk.start_char + match.start_char
+        global_end = chunk.start_char + match.end_char
         criterion_id = f"{source.trial_id}:{item.kind.value}:{index:03d}"
         criteria.append(
             TrialCriterion(
@@ -137,7 +205,7 @@ def structure_trial_protocol(
                 kind=item.kind,
                 statement=match.source_text.strip(),
                 source_location=(
-                    f"{source.source_location}#chars={match.start_char}-{match.end_char}"
+                    f"{source.source_location}#chars={global_start}-{global_end}"
                 ),
                 # Every eligibility item extracted from prose is a condition to
                 # evaluate. Optional grouping is only accepted in manually
@@ -150,8 +218,8 @@ def structure_trial_protocol(
         source_matches.append(
             {
                 "criterion_id": criterion_id,
-                "start_char": match.start_char,
-                "end_char": match.end_char,
+                "start_char": global_start,
+                "end_char": global_end,
                 "match_method": match.match_method,
             }
         )
@@ -178,6 +246,7 @@ def structure_trial_protocol(
         input_refs=[source.trial_id],
         output={
             "criterion_ids": [item.criterion_id for item in criteria],
+            "protocol_chunk_count": len(chunks),
             "information_need_count": len(needs),
             "source_matches": source_matches,
         },

@@ -62,6 +62,7 @@ def _fact(
     source_type: EvidenceSourceType = EvidenceSourceType.OFFICIAL_VERIFICATION,
     verification_status: VerificationStatus = VerificationStatus.VERIFIED,
     concept: str = "platelet_count",
+    recorded_date: date | None = None,
 ) -> EvidenceFact:
     return EvidenceFact(
         evidence_id=evidence_id,
@@ -69,7 +70,7 @@ def _fact(
         source_type=source_type,
         source_location=f"synthetic-record#{evidence_id}",
         event_date=event_date,
-        recorded_date=event_date,
+        recorded_date=recorded_date or event_date,
         verification_status=verification_status,
         concept=concept,
         value=value,
@@ -120,6 +121,47 @@ def test_recent_official_qualifying_value_supports_and_confirms() -> None:
     assert result.clinical_status is ClinicalStatus.SUPPORTS
     assert result.evidence_sufficiency is EvidenceSufficiency.SUFFICIENT
     assert result.issue_codes == []
+
+
+def test_record_added_after_the_decision_time_cannot_confirm() -> None:
+    result = evaluate_criterion(
+        _criterion(),
+        _state(
+            _fact(
+                evidence_id="late-record-entry",
+                value=126,
+                event_date=date(2026, 8, 18),
+                recorded_date=date(2026, 8, 21),
+            )
+        ),
+    )
+
+    assert result.clinical_status is ClinicalStatus.SUPPORTS
+    assert result.evidence_sufficiency is EvidenceSufficiency.INSUFFICIENT
+    assert result.issue_codes == [MechanicalIssueCode.FUTURE_RECORDED_DATE]
+
+
+def test_same_day_verified_results_on_opposite_sides_are_conflicting() -> None:
+    result = evaluate_criterion(
+        _criterion(),
+        _state(
+            _fact(
+                evidence_id="same-day-low",
+                value=82,
+                event_date=date(2026, 8, 18),
+            ),
+            _fact(
+                evidence_id="same-day-high",
+                value=126,
+                event_date=date(2026, 8, 18),
+            ),
+        ),
+    )
+
+    assert result.clinical_status is ClinicalStatus.UNKNOWN
+    assert result.evidence_sufficiency is EvidenceSufficiency.CONFLICTING
+    assert result.evidence_ids == ["same-day-high", "same-day-low"]
+    assert result.issue_codes == [MechanicalIssueCode.EVIDENCE_CONFLICT]
 
 
 def test_concept_label_formatting_does_not_hide_matching_evidence() -> None:

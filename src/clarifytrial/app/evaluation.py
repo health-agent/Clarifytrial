@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 from collections import defaultdict
 from collections.abc import Sequence
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -24,6 +25,7 @@ from ..environment import (
     SyntheticInformationTools,
 )
 from ..llm import StructuredModel
+from ..io import atomic_write_text
 from ..preparation import summarize_model_usage
 from ..settings import EpisodeSettings
 from ..trace import TraceRecorder
@@ -34,8 +36,48 @@ from ..workflow import EpisodeAgents, PatientScreeningRunner
 _ARMS = {
     "no_questions": {"actions": 0, "question_policy": "clarifytrial"},
     "fixed_order": {"actions": 3, "question_policy": "fixed_order"},
+    "immediate_coverage": {
+        "actions": 3,
+        "question_policy": "immediate_coverage",
+    },
     "clarifytrial": {"actions": 3, "question_policy": "clarifytrial"},
 }
+
+
+def _file_sha256(path: str | Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _row_key(row: dict[str, Any]) -> tuple[str, str, str]:
+    return (
+        str(row["patient_id"]),
+        str(row.get("scenario", "all_answers_available")),
+        str(row["arm"]),
+    )
+
+
+def _load_case_rows(path: Path) -> dict[tuple[str, str, str], dict[str, Any]]:
+    """Read the latest row per run key and tolerate one torn final line."""
+
+    if not path.is_file():
+        return {}
+    lines = path.read_text(encoding="utf-8").splitlines()
+    rows: dict[tuple[str, str, str], dict[str, Any]] = {}
+    for index, line in enumerate(lines):
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            if index == len(lines) - 1:
+                continue
+            raise ValueError(f"invalid workflow case JSON at line {index + 1}")
+        rows[_row_key(row)] = row
+    return rows
 
 
 def _agents(model: StructuredModel) -> EpisodeAgents:
@@ -47,7 +89,11 @@ def _agents(model: StructuredModel) -> EpisodeAgents:
     )
 
 
-def _tools(fixture: Any) -> SyntheticInformationTools:
+def _tools(
+    fixture: Any,
+    *,
+    unavailable_fact_ids: frozenset[str] = frozenset(),
+) -> SyntheticInformationTools:
     return SyntheticInformationTools(
         PublicQuestionCatalog(
             [
@@ -59,7 +105,11 @@ def _tools(fixture: Any) -> SyntheticInformationTools:
                 for item in fixture.screening_case.evidence_requests
             ]
         ),
-        HiddenPatientEnvironment(fixture.hidden_answers),
+        HiddenPatientEnvironment(
+            item
+            for item in fixture.hidden_answers
+            if item.fact_id not in unavailable_fact_ids
+        ),
     )
 
 
@@ -92,14 +142,7 @@ def _metrics(
     confirmation = sum(
         final.get(item, (None, None))[1] == gold[item][1] for item in trial_ids
     )
-    resolved_before = sum(
-        initial.get(item, (None, "uncertain"))[1] in {"confirmed", "ineligible"}
-        for item in trial_ids
-    )
-    resolved_after = sum(
-        final.get(item, (None, "uncertain"))[1] in {"confirmed", "ineligible"}
-        for item in trial_ids
-    )
+    resolved_states = {"confirmed", "ineligible"}
     return {
         "trial_count": len(trial_ids),
         "exact_trial_status_count": exact,
@@ -115,7 +158,21 @@ def _metrics(
             and initial_gold.get(item, (None, None))[1] != "confirmed"
             for item in trial_ids
         ),
-        "unresolved_to_resolved": max(0, resolved_after - resolved_before),
+        "premature_final_confirmations": sum(
+            final.get(item, (None, None))[1] == "confirmed"
+            and gold[item][1] != "confirmed"
+            for item in trial_ids
+        ),
+        "unresolved_to_resolved": sum(
+            initial.get(item, (None, "uncertain"))[1] not in resolved_states
+            and final.get(item, (None, "uncertain"))[1] in resolved_states
+            for item in trial_ids
+        ),
+        "resolved_to_unresolved": sum(
+            initial.get(item, (None, "uncertain"))[1] in resolved_states
+            and final.get(item, (None, "uncertain"))[1] not in resolved_states
+            for item in trial_ids
+        ),
     }
 
 
@@ -152,6 +209,12 @@ def _aggregate(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
                 )
                 / trial_count,
                 "mean_action_count": mean(item["action_count"] for item in items),
+                "unavailable_action_count": sum(
+                    item["unavailable_action_count"] for item in items
+                ),
+                "repeated_fact_action_count": sum(
+                    item["repeated_fact_action_count"] for item in items
+                ),
                 "mean_unresolved_to_resolved": mean(
                     item["metrics"]["unresolved_to_resolved"] for item in items
                 ),
@@ -161,6 +224,13 @@ def _aggregate(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
                 "premature_initial_confirmations": sum(
                     item["metrics"]["premature_initial_confirmations"]
                     for item in items
+                ),
+                "premature_final_confirmations": sum(
+                    item["metrics"]["premature_final_confirmations"]
+                    for item in items
+                ),
+                "resolved_to_unresolved": sum(
+                    item["metrics"]["resolved_to_unresolved"] for item in items
                 ),
                 "model_call_count": sum(item["usage"]["call_count"] for item in items),
                 "total_tokens": sum(item["usage"]["total_tokens"] for item in items),
@@ -178,7 +248,24 @@ def _aggregate(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
     return result
 
 
-def _paired(rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
+def _aggregate_by_group(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Keep disease-level variation visible instead of reporting one mean only."""
+
+    groups = sorted({str(item["group_id"]) for item in rows})
+    result = []
+    for group_id in groups:
+        for arm_metrics in _aggregate(
+            [item for item in rows if str(item["group_id"]) == group_id]
+        ):
+            result.append({"group_id": group_id, **arm_metrics})
+    return result
+
+
+def _paired(
+    rows: Sequence[dict[str, Any]],
+    *,
+    baseline_arm: str,
+) -> dict[str, Any]:
     completed = {
         (item["patient_id"], item["arm"]): item
         for item in rows
@@ -187,11 +274,11 @@ def _paired(rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
     patient_ids = sorted(
         patient_id
         for patient_id, arm in completed
-        if arm == "clarifytrial" and (patient_id, "fixed_order") in completed
+        if arm == "clarifytrial" and (patient_id, baseline_arm) in completed
     )
     differences = [
         completed[(item, "clarifytrial")]["metrics"]["trial_status_recovery"]
-        - completed[(item, "fixed_order")]["metrics"]["trial_status_recovery"]
+        - completed[(item, baseline_arm)]["metrics"]["trial_status_recovery"]
         for item in patient_ids
     ]
     wins = sum(item > 1e-12 for item in differences)
@@ -209,12 +296,40 @@ def _paired(rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
         else 1.0
     )
     return {
+        "baseline_arm": baseline_arm,
         "patient_count": len(patient_ids),
         "mean_recovery_difference": mean(differences) if differences else None,
         "clarifytrial_better_patient_count": wins,
         "equal_patient_count": ties,
         "clarifytrial_worse_patient_count": losses,
         "two_sided_exact_sign_test_p": sign_p,
+    }
+
+
+def _decision_separation_summary(pairs: Sequence[dict[str, Any]]) -> dict[str, Any]:
+    """Count states that one binary answer cannot represent without loss."""
+
+    decisions = [
+        decision
+        for pair in pairs
+        for decision in pair["insufficient_evidence_episode"][
+            "expected_trial_decisions"
+        ]
+    ]
+    retained_but_not_confirmed = sum(
+        item["candidate_status"] == "retain"
+        and item["confirmation_status"] == "not_confirmed"
+        for item in decisions
+    )
+    return {
+        "trial_decision_count": len(decisions),
+        "retained_but_not_confirmed_count": retained_but_not_confirmed,
+        "if_only_confirmed_trials_are_kept_false_removals": (
+            retained_but_not_confirmed
+        ),
+        "if_every_retained_trial_is_called_confirmed_premature_confirmations": (
+            retained_but_not_confirmed
+        ),
     }
 
 
@@ -233,6 +348,8 @@ def run_full_workflow_evaluation(
     max_selective_reviews: int = 1,
     max_cycles: int = 12,
     concurrency: int = 1,
+    include_unavailable_scenario: bool = False,
+    resume: bool = False,
     progress: Any = print,
 ) -> dict[str, Any]:
     if concurrency < 1:
@@ -252,7 +369,43 @@ def run_full_workflow_evaluation(
     output_dir = Path(destination)
     output_dir.mkdir(parents=True, exist_ok=True)
     case_path = output_dir / "cases.jsonl"
-    rows: list[dict[str, Any]] = []
+    manifest_path = output_dir / "run-manifest.json"
+    manifest = {
+        "protocol_id": "clarifytrial-full-workflow-evaluation-v2",
+        "model": model_label,
+        "split": split,
+        "patient_ids": [str(item["patient_id"]) for item in pairs],
+        "action_budget": action_budget,
+        "max_selective_reviews": max_selective_reviews,
+        "max_cycles": max_cycles,
+        "include_unavailable_scenario": include_unavailable_scenario,
+        "arms": list(_ARMS),
+        "inputs": {
+            "trial_set_sha256": _file_sha256(trial_set_path),
+            "patient_pairs_sha256": _file_sha256(patient_pairs_path),
+            "generation_config_sha256": _file_sha256(generation_config_path),
+        },
+    }
+    if resume:
+        if not manifest_path.is_file() or not case_path.is_file():
+            raise ValueError("resume requires run-manifest.json and cases.jsonl")
+        existing_manifest = json.loads(
+            manifest_path.read_text(encoding="utf-8")
+        )
+        if existing_manifest != manifest:
+            raise ValueError(
+                "resume settings or input files differ from the saved run"
+            )
+        row_by_key = _load_case_rows(case_path)
+    else:
+        atomic_write_text(
+            manifest_path,
+            json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        )
+        row_by_key: dict[tuple[str, str, str], dict[str, Any]] = {}
+    completed_keys = {
+        key for key, row in row_by_key.items() if row.get("status") == "completed"
+    }
 
     def evaluate_pair(pair: dict[str, Any]) -> list[dict[str, Any]]:
         patient_rows = []
@@ -267,111 +420,174 @@ def run_full_workflow_evaluation(
         initial_gold = pair["insufficient_evidence_episode"][
             "expected_trial_decisions"
         ]
-        for arm, arm_spec in _ARMS.items():
-            trace = TraceRecorder(f"{patient_id}:{arm}")
-            settings = EpisodeSettings(
-                max_external_actions=(0 if arm == "no_questions" else action_budget),
-                max_selective_reviews=max_selective_reviews,
-                max_cycles=max_cycles,
-                use_model_coordinator=False,
-                batch_trial_judgments=True,
-                question_policy=arm_spec["question_policy"],
-            )
-            try:
-                result = PatientScreeningRunner(_agents(model), settings).run(
-                    fixture.screening_case,
-                    _tools(fixture),
-                    trace=trace,
+        scenarios: list[tuple[str, frozenset[str]]] = [("all_answers_available", frozenset())]
+        if include_unavailable_scenario:
+            first_fact_id = fixture.screening_case.evidence_requests[0].fact_id
+            scenarios.append(("one_answer_unavailable", frozenset({first_fact_id})))
+        for scenario, unavailable_fact_ids in scenarios:
+            for arm, arm_spec in _ARMS.items():
+                key = (patient_id, scenario, arm)
+                if key in completed_keys:
+                    continue
+                trace = TraceRecorder(f"{patient_id}:{scenario}:{arm}")
+                settings = EpisodeSettings(
+                    max_external_actions=(0 if arm == "no_questions" else action_budget),
+                    max_selective_reviews=max_selective_reviews,
+                    max_cycles=max_cycles,
+                    use_model_coordinator=False,
+                    batch_trial_judgments=True,
+                    question_policy=arm_spec["question_policy"],
                 )
-            except Exception as error:
-                row = {
-                    "patient_id": patient_id,
-                    "split": split,
-                    "arm": arm,
-                    "status": "failed",
-                    "error_type": type(error).__name__,
-                    "error": str(error),
-                }
-            else:
-                dumped = result.model_dump(mode="json")
-                initial_rows = result.decision_history[0].model_dump(mode="json")[
-                    "decisions"
-                ]
-                usage = summarize_model_usage(trace).model_dump(mode="json")
-                total_latency = sum(
-                    int(event.usage.get("latency_ms") or 0)
-                    for event in trace.events
-                    if event.usage is not None
-                )
-                row = {
-                    "patient_id": patient_id,
-                    "split": split,
-                    "arm": arm,
-                    "status": "completed",
-                    "stop_reason": result.stop_reason.value,
-                    "action_count": len(result.action_history),
-                    "selected_fact_ids": [
+                try:
+                    result = PatientScreeningRunner(_agents(model), settings).run(
+                        fixture.screening_case,
+                        _tools(
+                            fixture,
+                            unavailable_fact_ids=unavailable_fact_ids,
+                        ),
+                        trace=trace,
+                    )
+                except Exception as error:
+                    row = {
+                        "patient_id": patient_id,
+                        "group_id": str(pair["group_id"]),
+                        "split": split,
+                        "scenario": scenario,
+                        "unavailable_fact_ids": sorted(unavailable_fact_ids),
+                        "arm": arm,
+                        "status": "failed",
+                        "error_type": type(error).__name__,
+                        "error": str(error),
+                    }
+                else:
+                    dumped = result.model_dump(mode="json")
+                    initial_rows = result.decision_history[0].model_dump(mode="json")[
+                        "decisions"
+                    ]
+                    usage = summarize_model_usage(trace).model_dump(mode="json")
+                    total_latency = sum(
+                        int(event.usage.get("latency_ms") or 0)
+                        for event in trace.events
+                        if event.usage is not None
+                    )
+                    selected_fact_ids = [
                         item.agent_action.target_fact_id
                         for item in result.action_history
-                    ],
-                    "final_decisions": [
-                        {
-                            "trial_id": item["trial_id"],
-                            "candidate_status": item["candidate_status"],
-                            "confirmation_status": item["confirmation_status"],
-                            "pending_fact_ids": [
-                                request["fact_id"]
-                                for request in item["pending_information"]
-                            ],
-                        }
-                        for item in dumped["final_decisions"]
-                    ],
-                    "metrics": _metrics(
-                        final_rows=dumped["final_decisions"],
-                        initial_rows=initial_rows,
-                        gold_rows=full_gold,
-                        initial_gold_rows=initial_gold,
-                    ),
-                    "usage": usage,
-                    "total_latency_ms": total_latency,
-                }
-            patient_rows.append(row)
+                    ]
+                    row = {
+                        "patient_id": patient_id,
+                        "group_id": str(pair["group_id"]),
+                        "split": split,
+                        "scenario": scenario,
+                        "unavailable_fact_ids": sorted(unavailable_fact_ids),
+                        "arm": arm,
+                        "status": "completed",
+                        "stop_reason": result.stop_reason.value,
+                        "action_count": len(result.action_history),
+                        "selected_fact_ids": selected_fact_ids,
+                        "unavailable_action_count": sum(
+                            item.tool_result.status.value == "not_available"
+                            for item in result.action_history
+                        ),
+                        "repeated_fact_action_count": (
+                            len(selected_fact_ids) - len(set(selected_fact_ids))
+                        ),
+                        "final_decisions": [
+                            {
+                                "trial_id": item["trial_id"],
+                                "candidate_status": item["candidate_status"],
+                                "confirmation_status": item["confirmation_status"],
+                                "pending_fact_ids": [
+                                    request["fact_id"]
+                                    for request in item["pending_information"]
+                                ],
+                            }
+                            for item in dumped["final_decisions"]
+                        ],
+                        "metrics": _metrics(
+                            final_rows=dumped["final_decisions"],
+                            initial_rows=initial_rows,
+                            gold_rows=full_gold,
+                            initial_gold_rows=initial_gold,
+                        ),
+                        "usage": usage,
+                        "total_latency_ms": total_latency,
+                    }
+                patient_rows.append(row)
         return patient_rows
 
-    with case_path.open("w", encoding="utf-8", newline="\n") as stream:
+    with case_path.open(
+        "a" if resume else "w",
+        encoding="utf-8",
+        newline="\n",
+    ) as stream:
         if concurrency == 1:
             completed_batches = (evaluate_pair(pair) for pair in pairs)
             for patient_index, patient_rows in enumerate(completed_batches, start=1):
-                rows.extend(patient_rows)
                 for row in patient_rows:
+                    row_by_key[_row_key(row)] = row
                     stream.write(json.dumps(row, ensure_ascii=False) + "\n")
                 stream.flush()
-                progress(f"completed {patient_index}/{len(pairs)} patients")
+                progress(
+                    f"processed {patient_index}/{len(pairs)} patients "
+                    f"({len(patient_rows)} new runs)"
+                )
         else:
             with ThreadPoolExecutor(max_workers=concurrency) as executor:
                 futures = {executor.submit(evaluate_pair, pair): pair for pair in pairs}
                 for patient_index, future in enumerate(as_completed(futures), start=1):
                     patient_rows = future.result()
-                    rows.extend(patient_rows)
                     for row in patient_rows:
+                        row_by_key[_row_key(row)] = row
                         stream.write(json.dumps(row, ensure_ascii=False) + "\n")
                     stream.flush()
-                    progress(f"completed {patient_index}/{len(pairs)} patients")
+                    progress(
+                        f"processed {patient_index}/{len(pairs)} patients "
+                        f"({len(patient_rows)} new runs)"
+                    )
 
+    rows = list(row_by_key.values())
+    normal_rows = [
+        item for item in rows if item.get("scenario") == "all_answers_available"
+    ]
+    unavailable_rows = [
+        item for item in rows if item.get("scenario") == "one_answer_unavailable"
+    ]
     payload = {
-        "protocol_id": "clarifytrial-full-workflow-evaluation-v1",
+        "protocol_id": "clarifytrial-full-workflow-evaluation-v2",
         "model": model_label,
         "split": split,
         "patient_count": len(pairs),
         "arms": list(_ARMS),
         "action_budget": action_budget,
         "concurrency": concurrency,
+        "include_unavailable_scenario": include_unavailable_scenario,
+        "resumed": resume,
         "case_results": str(case_path),
-        "arm_metrics": _aggregate(rows),
-        "paired_clarifytrial_vs_fixed": _paired(rows),
+        "evaluation_scope": {
+            "patient_input": "standardized_json",
+            "candidate_selection": "five_declared_same_disease_trials",
+            "includes_broad_corpus_search": False,
+            "includes_natural_record_structuring": False,
+        },
+        "arm_metrics": _aggregate(normal_rows),
+        "group_metrics": _aggregate_by_group(normal_rows),
+        "unavailable_answer_metrics": (
+            _aggregate(unavailable_rows) if unavailable_rows else []
+        ),
+        "decision_separation": _decision_separation_summary(pairs),
+        "paired_clarifytrial_vs_fixed": _paired(
+            normal_rows,
+            baseline_arm="fixed_order",
+        ),
+        "paired_clarifytrial_vs_immediate_coverage": _paired(
+            normal_rows,
+            baseline_arm="immediate_coverage",
+        ),
     }
     summary_path = output_dir / "summary.json"
-    summary_path.write_text(
+    atomic_write_text(
+        summary_path,
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )

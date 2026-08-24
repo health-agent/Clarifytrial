@@ -59,6 +59,7 @@ from .datasets import (
     split_trialgpt_pairs_by_patient,
     summarize_trialgpt_rows,
 )
+from .datasets.team_expansion import select_team_evaluation_trials
 from .datasets.natural_ai_review import (
     build_conservative_natural_ai_gold,
     run_natural_evaluation_ai_review,
@@ -114,9 +115,12 @@ from .preparation import (
     NaturalScreeningPipeline,
     NaturalScreeningRequest,
     NaturalScreeningResult,
+    TeamTrialCandidateSearch,
     TrialGPTCandidateSearch,
     TrialProtocolSource,
     build_synthetic_information_tools,
+    inspect_team_trial_corpus,
+    prepare_team_trial_corpus,
 )
 from .preparation.patient_record import PatientRecordStructurerAgent
 from .preparation.trial_protocol import TrialProtocolStructurerAgent
@@ -817,8 +821,8 @@ def _parser() -> argparse.ArgumentParser:
     workflow_evaluation = commands.add_parser(
         "run-workflow-evaluation",
         help=(
-            "run no-question, fixed-order, and ClarifyTrial arms through the "
-            "same connected workflow"
+            "run no-question, fixed-order, immediate-coverage, and "
+            "ClarifyTrial arms through the same connected workflow"
         ),
     )
     workflow_evaluation.add_argument(
@@ -867,6 +871,19 @@ def _parser() -> argparse.ArgumentParser:
     workflow_evaluation.add_argument("--max-selective-reviews", type=int, default=1)
     workflow_evaluation.add_argument("--max-cycles", type=int, default=12)
     workflow_evaluation.add_argument("--concurrency", type=int, default=1)
+    workflow_evaluation.add_argument(
+        "--include-unavailable-scenario",
+        action="store_true",
+        help=(
+            "also hide one declared answer per patient and verify that the "
+            "workflow moves on without repeating the failed request"
+        ),
+    )
+    workflow_evaluation.add_argument(
+        "--resume",
+        action="store_true",
+        help="reuse completed patient and comparison runs in the output directory",
+    )
     workflow_evaluation.add_argument("--confirm-model-run", action="store_true")
 
     schemas = commands.add_parser(
@@ -896,6 +913,35 @@ def _parser() -> argparse.ArgumentParser:
         default=Path(".research-cache") / "clinicaltrials-v5",
     )
     prepare_public.add_argument("--force", action="store_true")
+
+    prepare_team = commands.add_parser(
+        "prepare-team-trials",
+        help=(
+            "download and validate the pinned 1,931-trial team snapshot, "
+            "then report the currently enrolling subset"
+        ),
+    )
+    prepare_team.add_argument(
+        "--output",
+        type=Path,
+        default=Path(".research-cache") / "team-trials" / "trials.jsonl",
+    )
+    prepare_team.add_argument("--force", action="store_true")
+
+    select_team_trials = commands.add_parser(
+        "select-team-evaluation-trials",
+        help=(
+            "select 50 currently enrolling trials across ten disease groups "
+            "for later detailed evaluation"
+        ),
+    )
+    select_team_trials.add_argument("--trials", required=True, type=Path)
+    select_team_trials.add_argument(
+        "--config",
+        type=Path,
+        default=Path("configs") / "team_trial_expansion_v1.json",
+    )
+    select_team_trials.add_argument("--output", required=True, type=Path)
 
     prepare_natural_evaluation = commands.add_parser(
         "prepare-natural-evaluation-sources",
@@ -1860,6 +1906,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             "max_selective_reviews": args.max_selective_reviews,
             "max_cycles": args.max_cycles,
             "concurrency": args.concurrency,
+            "include_unavailable_scenario": args.include_unavailable_scenario,
+            "resume": args.resume,
         }
         if args.provider == "deterministic":
             summary = run_full_workflow_evaluation(
@@ -1921,6 +1969,31 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(
             f"studies: {metadata['study_count']} "
             f"data_timestamp={metadata['data_timestamp']}"
+        )
+        return 0
+    if args.command == "prepare-team-trials":
+        corpus_path, metadata_path = prepare_team_trial_corpus(
+            args.output,
+            force=args.force,
+        )
+        summary = inspect_team_trial_corpus(corpus_path)
+        print(f"trials: {corpus_path}")
+        print(f"metadata: {metadata_path}")
+        print(
+            f"all_trials={summary.row_count} "
+            f"currently_enrolling={summary.included_trial_count}"
+        )
+        return 0
+    if args.command == "select-team-evaluation-trials":
+        result = select_team_evaluation_trials(
+            corpus_path=args.trials,
+            config_path=args.config,
+            destination=args.output,
+        )
+        print(f"selection: {args.output}")
+        print(
+            f"groups={result['group_count']} "
+            f"trials={result['selected_trial_count']}"
         )
         return 0
     if args.command == "prepare-natural-evaluation-sources":

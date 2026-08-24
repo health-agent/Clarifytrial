@@ -34,9 +34,11 @@ class MechanicalIssueCode(str, Enum):
     UNIT_MISMATCH = "unit_mismatch"
     MISSING_EVENT_DATE = "missing_event_date"
     FUTURE_EVENT_DATE = "future_event_date"
+    FUTURE_RECORDED_DATE = "future_recorded_date"
     EVIDENCE_TOO_OLD = "evidence_too_old"
     SOURCE_NOT_ALLOWED = "source_not_allowed"
     VERIFICATION_NOT_ALLOWED = "verification_not_allowed"
+    EVIDENCE_CONFLICT = "evidence_conflict"
 
 
 class MechanicalCriterionResult(ContractModel):
@@ -71,18 +73,22 @@ def _requirement_issues(
     requirement: EvidenceRequirement | None,
     as_of: date,
 ) -> list[MechanicalIssueCode]:
-    if requirement is None:
-        return []
-
     issues: list[MechanicalIssueCode] = []
+    if fact.event_date is not None and fact.event_date > as_of:
+        issues.append(MechanicalIssueCode.FUTURE_EVENT_DATE)
+    if fact.recorded_date is not None and fact.recorded_date > as_of:
+        issues.append(MechanicalIssueCode.FUTURE_RECORDED_DATE)
+    if fact.verification_status.value == "conflicting":
+        issues.append(MechanicalIssueCode.EVIDENCE_CONFLICT)
+    if requirement is None:
+        return issues
+
     if requirement.max_age_days is not None:
         if fact.event_date is None:
             issues.append(MechanicalIssueCode.MISSING_EVENT_DATE)
         else:
             age_days = (as_of - fact.event_date).days
-            if age_days < 0:
-                issues.append(MechanicalIssueCode.FUTURE_EVENT_DATE)
-            elif age_days > requirement.max_age_days:
+            if age_days > requirement.max_age_days:
                 issues.append(MechanicalIssueCode.EVIDENCE_TOO_OLD)
 
     if (
@@ -170,7 +176,33 @@ def evaluate_criterion(
     ]
     sufficient_facts = [fact for fact, issues in facts_with_issues if not issues]
     if sufficient_facts:
-        selected = max(sufficient_facts, key=_recency_key)
+        newest_event_date = max(fact.event_date or date.min for fact in sufficient_facts)
+        newest_facts = [
+            fact
+            for fact in sufficient_facts
+            if (fact.event_date or date.min) == newest_event_date
+        ]
+        directions = {
+            _clinical_status(
+                criterion,
+                _compare(
+                    fact.value,
+                    constraint.operator,
+                    constraint.threshold,
+                ),
+            )
+            for fact in newest_facts
+            if fact.value is not None
+        }
+        if len(directions) > 1:
+            return MechanicalCriterionResult(
+                configured=True,
+                clinical_status=ClinicalStatus.UNKNOWN,
+                evidence_sufficiency=EvidenceSufficiency.CONFLICTING,
+                evidence_ids=sorted(fact.evidence_id for fact in newest_facts),
+                issue_codes=[MechanicalIssueCode.EVIDENCE_CONFLICT],
+            )
+        selected = max(newest_facts, key=_recency_key)
         issues: list[MechanicalIssueCode] = []
         sufficiency = EvidenceSufficiency.SUFFICIENT
     else:
@@ -178,7 +210,11 @@ def evaluate_criterion(
             facts_with_issues,
             key=lambda item: _recency_key(item[0]),
         )
-        sufficiency = EvidenceSufficiency.INSUFFICIENT
+        sufficiency = (
+            EvidenceSufficiency.CONFLICTING
+            if MechanicalIssueCode.EVIDENCE_CONFLICT in issues
+            else EvidenceSufficiency.INSUFFICIENT
+        )
 
     assert selected.value is not None
     condition_met = _compare(

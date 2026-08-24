@@ -195,18 +195,24 @@ class PatientScreeningRunner:
                         for criterion in trial.criteria
                         if criterion.criterion_id in dirty_ids
                     ]
-                    try:
-                        updated = assess_criteria_bundle(
-                            case_id=case.case_id,
-                            criteria=target,
-                            patient_state=patient_state,
-                            evidence_requests=case.evidence_requests,
-                            matcher_judge=self._agents.matcher_judge,
-                            trace=recorder,
-                            cycle=cycle,
-                        )
-                    except TrialAssessmentProtocolError as error:
-                        raise WorkflowProtocolError(str(error)) from error
+                    updated = []
+                    batch_size = self._settings.criterion_batch_size
+                    for start in range(0, len(target), batch_size):
+                        batch = target[start : start + batch_size]
+                        try:
+                            updated.extend(
+                                assess_criteria_bundle(
+                                    case_id=case.case_id,
+                                    criteria=batch,
+                                    patient_state=patient_state,
+                                    evidence_requests=case.evidence_requests,
+                                    matcher_judge=self._agents.matcher_judge,
+                                    trace=recorder,
+                                    cycle=cycle,
+                                )
+                            )
+                        except TrialAssessmentProtocolError as error:
+                            raise WorkflowProtocolError(str(error)) from error
                     touched_trial_ids: set[str] = set()
                     for item in updated:
                         trial_id = criterion_to_trial[item.criterion_id]
@@ -260,13 +266,14 @@ class PatientScreeningRunner:
             if coordinator.route is CoordinatorRoute.SELECTIVE_REVIEWER:
                 trial_id = required_targets[0]
                 decision = decisions[trial_id]
+                review_payload = build_review_payload(
+                    case_id=case.case_id,
+                    trial=trials_by_id[trial_id],
+                    decision=decision,
+                    patient_state=patient_state,
+                )
                 review = self._agents.selective_reviewer.run(
-                    build_review_payload(
-                        case_id=case.case_id,
-                        trial=trials_by_id[trial_id],
-                        decision=decision,
-                        patient_state=patient_state,
-                    ),
+                    review_payload,
                     trace=recorder,
                     cycle=cycle,
                     input_refs=[trial_id],
@@ -276,6 +283,14 @@ class PatientScreeningRunner:
                     trial_id=trial_id,
                     known_criterion_ids=set(criteria_by_id),
                     known_fact_ids=set(request_by_id),
+                    known_patient_evidence_ids={
+                        str(item["evidence_id"])
+                        for item in review_payload["patient_facts"]
+                    },
+                    known_trial_evidence_ids={
+                        str(item["criterion_id"])
+                        for item in review_payload["criteria"]
+                    },
                 )
                 review_history.append(review)
                 if review.decision is ReviewOutcome.APPROVE:
@@ -326,6 +341,11 @@ class PatientScreeningRunner:
                         if fixed_fact_id is None
                         else {fixed_fact_id: catalog[fixed_fact_id]}
                     )
+                selection_policy = (
+                    AcquisitionPolicyId.IMPACT_ONLY
+                    if self._settings.question_policy == "immediate_coverage"
+                    else AcquisitionPolicyId.PATIENT_ADAPTIVE
+                )
                 last_acquisition = select_acquisition_option(
                     view=view,
                     snapshot=snapshot,
@@ -333,7 +353,7 @@ class PatientScreeningRunner:
                     unavailable_fact_ids=frozenset(unavailable_fact_ids),
                     catalog=selection_catalog,
                     profile=profile,
-                    policy_id=AcquisitionPolicyId.PATIENT_ADAPTIVE,
+                    policy_id=selection_policy,
                     selected_options=selected_options,
                 )
                 recorder.record(

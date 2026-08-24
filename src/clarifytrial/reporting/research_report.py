@@ -155,9 +155,9 @@ def build_research_report(
         )
         sections.extend(
             [
-                "## 부족한 환자 정보 가운데 무엇을 먼저 확인할지 비교",
+                "## 질문 순서 계산만 분리해 검사한 결과",
                 "",
-                f"처음 자료가 불완전한 합성 환자 {current['patient_count']}명에게 추가 확인을 최대 {action_budget}번 허용했다. 합성자료에는 가려 둔 답을 반영했을 때 각 시험이 놓일 상태가 미리 정해져 있으며, 질문 뒤 같은 상태에 도달하면 판단을 끝낸 것으로 셌다.",
+                f"처음 자료가 불완전한 합성 환자 {current['patient_count']}명에게 추가 확인을 최대 {action_budget}번 허용했다. 이 검사는 저장된 조건 연결과 정답 상태를 사용해 질문 순서 계산만 실행한다. 조건 판단 모델과 전체 에이전트 흐름은 실행하지 않으므로, 뒤에 나오는 연결 실행 결과와 수치를 합치지 않는다.",
                 "",
                 "| 부족한 정보를 고른 방법 | 확인 횟수 안에 판단을 끝낸 시험 비율 | 최종 판단에 실제로 필요했던 정보 중 확인한 비율 | 확인했지만 어떤 시험의 판단도 더 바꾸지 못한 정보 수 |",
                 "|---|---:|---:|---:|",
@@ -171,7 +171,12 @@ def build_research_report(
 
     if burden_path is not None:
         burden = _read(burden_path)
-        comparison = burden["adoption_comparison"]["heldout"]
+        comparisons = burden["adoption_comparison"]
+        if split not in comparisons:
+            raise ValueError(
+                f"burden result has no requested split {split!r}"
+            )
+        comparison = comparisons[split]
         normalized["patient_burden"] = comparison
         burden_metrics = {
             "overall_recovery_fixed": comparison["baseline_recovery"],
@@ -185,7 +190,7 @@ def build_research_report(
         }
         for name, value in burden_metrics.items():
             metric_rows.append(
-                {"section": "patient_burden", "arm": "heldout", "metric": name, "value": value}
+                {"section": "patient_burden", "arm": split, "metric": name, "value": value}
             )
         (output / "patient-burden.svg").write_text(
             _bar_svg(
@@ -229,24 +234,25 @@ def build_research_report(
         normalized["full_workflow"] = workflow
         sections.extend(
             [
-                "## 관련 시험 검색부터 질문 뒤 재판정까지 전체 프로그램을 실행한 결과",
+                "## 정해진 후보 시험에서 조건 판단부터 질문 뒤 재판정까지 실행한 결과",
                 "",
-                f"합성 환자 {workflow['patient_count']}명에게 같은 시험과 처음 환자 자료를 주고, 추가 정보를 확인하지 않는 경우와 두 가지 확인 순서를 비교했다. 추가 확인을 사용하는 두 방법에는 환자 한 명당 최대 {workflow['action_budget']}번의 기회를 줬다.",
+                f"합성 환자 {workflow['patient_count']}명에게 질환별 후보 시험 5개와 같은 처음 환자 자료를 주고, 추가 정보를 확인하지 않는 경우와 세 가지 확인 순서를 비교했다. 추가 확인을 사용하는 방법에는 환자 한 명당 최대 {workflow['action_budget']}번의 기회를 줬다. 이 평가는 수천 건에서 후보를 찾는 검색 단계와 자유 형식 기록 정리를 포함하지 않는다.",
                 "",
                 "### 판단 결과",
                 "",
-                "| 부족한 정보를 처리한 방법 | 후보 유지·제외와 현재 확정 상태를 모두 맞힌 비율 | 후보 유지·제외를 맞힌 비율 | 현재 자료로 확정 가능한지를 맞힌 비율 | 남겨야 할 시험을 잘못 제외한 수 | 처음 자료가 부족한데 확정한 수 | 질문 뒤 판단이 끝난 시험 수 |",
+                "| 부족한 정보를 처리한 방법 | 후보 유지·제외와 현재 확정 상태를 모두 맞힌 비율 | 후보 유지·제외를 맞힌 비율 | 현재 자료로 확정 가능한지를 맞힌 비율 | 남겨야 할 시험을 잘못 제외한 수 | 질문 뒤에도 정보가 부족한데 확정한 수 | 질문 뒤 판단이 끝난 시험 수 |",
                 "|---|---:|---:|---:|---:|---:|---:|",
             ]
         )
         arm_labels = {
             "no_questions": "추가 정보를 확인하지 않고 처음 환자 자료만 사용",
             "fixed_order": f"처음 빠진 정보 목록에 적힌 순서대로 최대 {workflow['action_budget']}개를 확인",
+            "immediate_coverage": f"현재 가장 많은 미완료 시험에 연결된 정보를 최대 {workflow['action_budget']}개 확인",
             "clarifytrial": f"남은 {workflow['action_budget']}번 안에 가장 많은 시험 판단을 끝낼 정보를 매번 다시 계산",
         }
         for row in workflow["arm_metrics"]:
             sections.append(
-                f"| {arm_labels.get(row['arm'], row['arm'])} | {row['trial_status_recovery']:.1%} | {row['candidate_status_accuracy']:.1%} | {row['confirmation_status_accuracy']:.1%} | {row['false_candidate_removals']}개 | {row['premature_initial_confirmations']}개 | 환자당 {row['mean_unresolved_to_resolved']:.2f}개 |"
+                f"| {arm_labels.get(row['arm'], row['arm'])} | {row['trial_status_recovery']:.1%} | {row['candidate_status_accuracy']:.1%} | {row['confirmation_status_accuracy']:.1%} | {row['false_candidate_removals']}개 | {row.get('premature_final_confirmations', 0)}개 | 환자당 {row['mean_unresolved_to_resolved']:.2f}개 |"
             )
             for name in (
                 "trial_status_recovery",
@@ -254,6 +260,8 @@ def build_research_report(
                 "confirmation_status_accuracy",
                 "false_candidate_removals",
                 "premature_initial_confirmations",
+                "premature_final_confirmations",
+                "resolved_to_unresolved",
                 "mean_unresolved_to_resolved",
                 "mean_action_count",
                 "model_call_count",
@@ -302,6 +310,99 @@ def build_research_report(
                             "value": value,
                         }
                     )
+        immediate_paired = workflow.get(
+            "paired_clarifytrial_vs_immediate_coverage"
+        )
+        if isinstance(immediate_paired, dict):
+            sections.extend(
+                [
+                    "",
+                    "현재 가장 많은 미완료 시험에 연결된 정보부터 확인하는 방식과 비교하면, "
+                    f"ClarifyTrial이 더 좋았던 환자는 {immediate_paired['clarifytrial_better_patient_count']}명, "
+                    f"같았던 환자는 {immediate_paired['equal_patient_count']}명, "
+                    f"더 낮았던 환자는 {immediate_paired['clarifytrial_worse_patient_count']}명이었다.",
+                ]
+            )
+        separation = workflow.get("decision_separation")
+        if isinstance(separation, dict):
+            sections.extend(
+                [
+                    "",
+                    "### 후보 유지와 현재 확인을 따로 표시해야 하는 사례",
+                    "",
+                    f"처음 자료에서 후보로는 남겨야 하지만 아직 참가 조건을 확인할 수 없었던 시험 판단은 {separation['retained_but_not_confirmed_count']}개였다. 하나의 답만 사용해 확인이 끝난 시험만 남기면 이 후보들을 모두 잃고, 반대로 남긴 시험을 모두 확인 완료로 표시하면 같은 수만큼 성급하게 확정하게 된다.",
+                ]
+            )
+        group_metrics = workflow.get("group_metrics")
+        if isinstance(group_metrics, list) and group_metrics:
+            group_labels = {
+                "type_2_diabetes": "제2형 당뇨병",
+                "breast_cancer": "유방암",
+                "major_depressive_disorder": "주요우울장애",
+            }
+            rows_by_group = {}
+            for row in group_metrics:
+                rows_by_group.setdefault(row["group_id"], {})[row["arm"]] = row
+            sections.extend(
+                [
+                    "",
+                    "### 질환별 판단 완료",
+                    "",
+                    "| 합성 환자 질환 | 현재 영향이 큰 정보부터 확인 | 남은 횟수 전체를 계산 |",
+                    "|---|---:|---:|",
+                ]
+            )
+            for group_id, rows_for_group in sorted(rows_by_group.items()):
+                immediate = rows_for_group.get("immediate_coverage")
+                current = rows_for_group.get("clarifytrial")
+                if immediate is None or current is None:
+                    continue
+                sections.append(
+                    f"| {group_labels.get(group_id, group_id)} | "
+                    f"{immediate['trial_status_recovery']:.1%} | "
+                    f"{current['trial_status_recovery']:.1%} |"
+                )
+        unavailable_metrics = workflow.get("unavailable_answer_metrics")
+        if isinstance(unavailable_metrics, list) and unavailable_metrics:
+            sections.extend(
+                [
+                    "",
+                    "### 확인하려던 정보를 얻지 못한 경우",
+                    "",
+                    "환자마다 정해 둔 답 하나를 제공하지 않고 같은 흐름을 다시 실행했다.",
+                    "",
+                    "| 부족한 정보를 처리한 방법 | 판단을 끝낸 시험 비율 | 정보를 얻지 못한 확인 | 같은 정보 반복 |",
+                    "|---|---:|---:|---:|",
+                ]
+            )
+            for row in unavailable_metrics:
+                if row["arm"] == "no_questions":
+                    continue
+                sections.append(
+                    f"| {arm_labels.get(row['arm'], row['arm'])} | "
+                    f"{row['trial_status_recovery']:.1%} | "
+                    f"{row['unavailable_action_count']}회 | "
+                    f"{row['repeated_fact_action_count']}회 |"
+                )
+                for name in (
+                    "trial_status_recovery",
+                    "unavailable_action_count",
+                    "repeated_fact_action_count",
+                ):
+                    metric_rows.append(
+                        {
+                            "section": "unavailable_answer",
+                            "arm": row["arm"],
+                            "metric": name,
+                            "value": row[name],
+                        }
+                    )
+            sections.extend(
+                [
+                    "",
+                    "답을 얻지 못하면 판단 완료율은 낮아지지만, 현재 실행에서는 얻지 못한 같은 정보를 다시 확인하지 않고 남은 정보로 넘어갔다.",
+                ]
+            )
         workflow_total_tokens = sum(row["total_tokens"] for row in workflow["arm_metrics"])
         if workflow_total_tokens == 0:
             workflow_execution_note = (

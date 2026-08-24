@@ -156,3 +156,54 @@ def test_changed_cache_contents_are_ignored_and_rebuilt(tmp_path: Path) -> None:
     assert rebuilt.trial.criteria[0].numeric_constraint.threshold == 7.0
     assert model.call_count["trial_protocol_structurer"] == 2
     assert second_cache.stats.invalid_cache_file_count == 1
+
+
+def test_long_protocol_is_split_at_lines_and_uses_global_source_offsets() -> None:
+    eligibility = (
+        "HbA1c must be below 7.0 %.\n"
+        "Age must be at least 18 years.\n"
+    )
+
+    def structure_chunk(payload):
+        text = payload["eligibility_text"]
+        if "HbA1c" in text:
+            concept, operator, threshold, unit = "hba1c", "lt", 7.0, "%"
+        else:
+            concept, operator, threshold, unit = "age", "gte", 18.0, "years"
+        return {
+            "criteria": [
+                {
+                    "kind": "inclusion",
+                    "statement": text.strip(),
+                    "source_quote": text.strip(),
+                    "numeric_constraint": {
+                        "concept": concept,
+                        "operator": operator,
+                        "threshold": threshold,
+                        "unit": unit,
+                    },
+                    "information_needs": [],
+                }
+            ]
+        }
+
+    model = ScriptedStructuredModel(
+        {"trial_protocol_structurer": structure_chunk}
+    )
+    result = structure_trial_protocol(
+        TrialProtocolSource(
+            trial_id="T-LONG",
+            title="Long synthetic protocol",
+            conditions=["type 2 diabetes"],
+            eligibility_text=eligibility,
+            source_location="synthetic:T-LONG",
+        ),
+        TrialProtocolStructurerAgent(model),
+        chunk_char_limit=34,
+        trace=TraceRecorder("long"),
+    )
+
+    assert model.call_count["trial_protocol_structurer"] == 2
+    assert len(result.trial.criteria) == 2
+    second_start = eligibility.index("Age must")
+    assert f"chars={second_start}-" in result.trial.criteria[1].source_location

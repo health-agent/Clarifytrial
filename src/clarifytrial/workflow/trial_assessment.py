@@ -91,10 +91,13 @@ def assess_criteria_bundle(
     ).output
 
     returned_ids = {item.criterion_id for item in response.assessments}
-    if returned_ids != criterion_id_set:
+    unknown_ids = returned_ids - criterion_id_set
+    if unknown_ids:
         raise TrialAssessmentProtocolError(
-            "matcher_judge must return exactly the requested criteria"
+            "matcher_judge returned criteria outside the request: "
+            + ", ".join(sorted(unknown_ids))
         )
+    missing_ids = criterion_id_set - returned_ids
     request_ids = {item.fact_id for item in evidence_requests}
     validated = []
     mechanical_corrections = []
@@ -182,7 +185,33 @@ def assess_criteria_bundle(
             ],
             output={"corrections": mechanical_corrections},
         )
-    return validated
+    if missing_ids:
+        trace.record(
+            cycle=cycle,
+            actor="matcher_judge_protocol",
+            event="missing_criteria_retried",
+            input_refs=sorted(missing_ids),
+            output={
+                "preserved_criterion_ids": sorted(returned_ids),
+                "retried_criterion_ids": sorted(missing_ids),
+            },
+        )
+        missing_criteria = [
+            item for item in criteria if item.criterion_id in missing_ids
+        ]
+        validated.extend(
+            assess_criteria_bundle(
+                case_id=case_id,
+                criteria=missing_criteria,
+                patient_state=patient_state,
+                evidence_requests=evidence_requests,
+                matcher_judge=matcher_judge,
+                trace=trace,
+                cycle=cycle,
+            )
+        )
+    by_id = {item.criterion_id: item for item in validated}
+    return [by_id[item] for item in criterion_ids]
 
 
 def assess_trial_criteria(

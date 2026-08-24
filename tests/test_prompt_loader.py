@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from clarifytrial.llm.prompts import FilePromptLoader
+from clarifytrial.llm.prompts import FilePromptLoader, repository_prompt_loader
 
 
 def test_file_prompt_loader_reads_only_beneath_configured_root(tmp_path: Path) -> None:
@@ -29,3 +29,6 @@ def test_file_prompt_loader_reports_missing_prompt_by_identifier(tmp_path: Path)
     with pytest.raises(FileNotFoundError, match="prompts/missing.md"):
         loader("prompts/missing.md")
 
+
+def test_repository_prompt_loader_reads_a_core_role_prompt() -> None:
+    assert "후보 유지" in repository_prompt_loader()("prompts/matcher_judge.md")

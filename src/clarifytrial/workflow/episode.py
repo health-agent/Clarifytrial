@@ -262,6 +262,22 @@ class EpisodeRunner:
                     raise WorkflowProtocolError(
                         "selective_reviewer returned unknown missing fact identifiers"
                     )
+                known_patient_evidence_ids = {
+                    str(item["evidence_id"])
+                    for item in review_payload["patient_facts"]
+                }
+                if set(review.patient_evidence_ids) - known_patient_evidence_ids:
+                    raise WorkflowProtocolError(
+                        "selective_reviewer returned unknown patient evidence identifiers"
+                    )
+                known_trial_evidence_ids = {
+                    str(item["criterion_id"])
+                    for item in review_payload["criteria"]
+                }
+                if set(review.trial_evidence_ids) - known_trial_evidence_ids:
+                    raise WorkflowProtocolError(
+                        "selective_reviewer returned unknown trial evidence identifiers"
+                    )
                 reviews.append(review)
                 if review.decision is ReviewOutcome.APPROVE:
                     review_resolved = True

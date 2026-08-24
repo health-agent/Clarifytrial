@@ -20,8 +20,8 @@
 - 연구 기준: [CLARIFYTRIAL_RESEARCH_PLAN_V5.md](CLARIFYTRIAL_RESEARCH_PLAN_V5.md)
 - 근거문헌과 공개 코드: [CLARIFYTRIAL_AGENT_SOURCE_INDEX.md](CLARIFYTRIAL_AGENT_SOURCE_INDEX.md)
 - 관련 시험 검색과 평가 구현: [CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md](CLARIFYTRIAL_RAG_EVALUATION_IMPLEMENTATION_PLAN.md)
-- 전체 구조: [PNG](diagrams/clarifytrial-workflow.png) · [SVG](diagrams/clarifytrial-workflow.svg) · [Mermaid](diagrams/clarifytrial-performance-agent-architecture.mmd)
-- 상세 실행 흐름: [PNG](diagrams/clarifytrial-detailed-workflow.png) · [SVG](diagrams/clarifytrial-detailed-workflow.svg) · [Mermaid](diagrams/clarifytrial-detailed-workflow.mmd)
+- 전체 구조: [SVG](diagrams/clarifytrial-workflow.svg) · [Mermaid](diagrams/clarifytrial-performance-agent-architecture.mmd)
+- 상세 실행 흐름: [SVG](diagrams/clarifytrial-detailed-workflow.svg) · [Mermaid](diagrams/clarifytrial-detailed-workflow.mmd)
 
 ## 1. 결정된 구조
 
@@ -159,6 +159,10 @@ LLM이 조건을 나눈 뒤 코드가 원문에 있는 수치, 단위, 비교 �
 순서 조정은 같은 공개 평가자료에서 전문가가 환자와 관련 있다고 표시한 시험을 놓치는
 비율이 늘지 않을 때만 추가한다.
 
+팀 공개 `trials.jsonl`도 같은 후보 검색 계약으로 변환한다. 전체 1,931건 가운데 현재
+모집 중이거나 모집 예정인 589건만 검색에 넣으며, 모집이 끝난 시험은 조건 판단 전에
+제외한다.
+
 ### 4.4 조건별 판단
 
 선정 조건과 제외 조건을 따로 처리한다.
@@ -236,6 +240,12 @@ LLM이 조건을 나눈 뒤 코드가 원문에 있는 수치, 단위, 비교 �
 안정적으로 높지 않았고 확인 비용도 더 컸다.
 따라서 복잡한 계산은 연구용 비교 코드로만 남기고 실제 다음 확인에는 쓰지 않는다.
 DQueST식 영향 범위와 Fink식 비용 고려를 결합한 단순 규칙이 현행 선택 방식이다.
+
+현행 방식은 남은 확인 횟수 안에서 판단을 끝낼 수 있는 정보 조합을 모두 계산한다.
+별도 비교 방식은 남은 횟수 전체를 보지 않고 현재 가장 많은 미완료 시험에 연결된
+정보를 하나씩 고른다. 평가 환자 30명에서 현행 방식은 이 비교보다 3명에서 좋고
+27명에서 같았으며 평균 차이는 2퍼센트포인트였다. 따라서 전체 조합 계산은 작은
+보완으로 유지하고 큰 성능 향상 근거로 사용하지 않는다.
 
 #### 첫 질문 정책의 한계와 후속 구현
 
@@ -516,7 +526,9 @@ ChatGPT 구독 연결은 공식 Codex Python SDK와 App Server를 사용한다. 
 
 기본 실행에서는 다음 단계가 하나뿐이면 코드가 진행하므로 진행 관리 모델을 부르지
 않는다. 처음 판단하거나 새 정보가 들어오면 그때 바뀐 시험과 조건을 한 요청으로
-묶는다. 제공자 입력 한도를 넘는 경우에만 여러 묶음으로 나눈다. 비교가 필요하면
+묶는다. 조건은 최대 40개씩 나누고, 시험 원문은 8,000자보다 길면 줄 경계에서
+나눈다. 응답에서 일부 조건만 빠지면 성공한 조건은 보존하고 빠진 조건만 다시
+요청한다. 비교가 필요하면
 `--use-model-coordinator`로 진행 관리 모델을 켜고, `--no-batch-judgments`로 시험별
 호출 방식도 다시 실행할 수 있다. 전체 호출 수는 후보 수와 조건 수, 확인 횟수에 따라
 달라지므로 하나의 숫자로 고정하지 않는다. 대신 다음 실행 제한을 사용한다.
@@ -526,6 +538,7 @@ ChatGPT 구독 연결은 공식 Codex Python SDK와 App Server를 사용한다. 
 - 선택적 검토 최대 1회
 - 검토 뒤 관련 조건 다시 판단 최대 1회
 - JSON 형식 수정 최대 1회
+- 중단된 일괄 평가는 입력 파일·모델·설정이 같을 때 완료한 환자와 비교 방식을 재사용
 
 실제 호출 수, 에이전트별 호출 수, 후보·조건 묶음 크기, 토큰, 시간과 비용을 모두
 남긴다. 비교 시스템에는 같은 행동 한도를 적용하고, 호출 수 차이는 성능과 함께
@@ -722,6 +735,10 @@ TrialGPT 자료에 새로 확인할 숨은 사실이 없으므로 이 실험은 
 여러 시험에 공통인 부족 정보를 합치고, 자료를 한 번 확인한 뒤 두 시험을 다시 판단하는 데까지 검사했다. Sol `medium`
 합성 사례 한 건에서도 같은 상태 전이를 확인했다. 외부 모델의 자연어 구조화 정확도와
 이 전체 흐름의 추천 성능은 아직 측정하지 않았다.
+
+팀 공개 시험 1,931건을 읽고 모집 상태로 589건을 거르는 검색 연결과 10개 질환군에서
+정밀 평가 후보 50건을 고르는 절차까지 구현했다. 기존 30명 평가는 후보 시험 5개가
+미리 정해진 뒤부터 시작하므로 이 넓은 검색을 포함한 전체 성능으로 표현하지 않는다.
 
 따라서 TrialMatchAI, CLEAR-MATCH, EXACT보다 정확하다는 주장, 질문 수와 검토 시간이
 줄었다는 주장, 실제 임상 업무에 사용할 수 있다는 주장은 하지 않는다. 이 판단은

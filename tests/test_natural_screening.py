@@ -364,6 +364,19 @@ def test_natural_sources_run_through_search_structure_and_rejudgment() -> None:
     assert result.usage.call_count == 6
     assert result.usage.total_tokens == 0
     assert result.usage.by_role["trial_protocol_structurer"].call_count == 2
+    structurer_event = next(
+        item for item in trace.events if item.actor == "patient_record_structurer"
+    )
+    response_trace = structurer_event.output["response"]
+    assert response_trace == {
+        "search_condition_count": 1,
+        "fact_count": 1,
+        "fact_keys": ["historical_hba1c"],
+        "structured_value_fact_count": 1,
+    }
+    assert PATIENT_TEXT not in json.dumps(
+        structurer_event.model_dump(mode="json"), ensure_ascii=False
+    )
 
 
 def test_formatting_differences_and_wrong_offset_hints_are_accepted() -> None:

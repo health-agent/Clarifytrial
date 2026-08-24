@@ -9,7 +9,7 @@ from clarifytrial.llm import DeterministicWorkflowModel
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_full_workflow_evaluation_uses_three_arms_and_batched_calls(
+def test_full_workflow_evaluation_uses_four_arms_and_batched_calls(
     tmp_path: Path,
 ) -> None:
     result = run_full_workflow_evaluation(
@@ -21,6 +21,7 @@ def test_full_workflow_evaluation_uses_three_arms_and_batched_calls(
         model_label="deterministic-workflow",
         limit=2,
         concurrency=2,
+        include_unavailable_scenario=True,
         progress=lambda _: None,
     )
 
@@ -29,12 +30,41 @@ def test_full_workflow_evaluation_uses_three_arms_and_batched_calls(
     assert [item["arm"] for item in result["arm_metrics"]] == [
         "no_questions",
         "fixed_order",
+        "immediate_coverage",
         "clarifytrial",
     ]
     assert all(item["failed_patient_count"] == 0 for item in result["arm_metrics"])
-    no_questions, fixed, current = result["arm_metrics"]
+    no_questions, fixed, immediate, current = result["arm_metrics"]
     assert no_questions["model_call_count"] == 2
     assert fixed["model_call_count"] <= 14
+    assert immediate["model_call_count"] <= 14
     assert current["model_call_count"] <= 14
+    assert result["decision_separation"]["retained_but_not_confirmed_count"] > 0
+    assert (
+        result["paired_clarifytrial_vs_immediate_coverage"]["patient_count"]
+        == 2
+    )
+    assert len(result["unavailable_answer_metrics"]) == 4
+    assert all(
+        item["repeated_fact_action_count"] == 0
+        for item in result["unavailable_answer_metrics"]
+    )
+
+    resume_model = DeterministicWorkflowModel()
+    resumed = run_full_workflow_evaluation(
+        trial_set_path=ROOT / "data/natural_evaluation_v1/preliminary_trial_set.json",
+        patient_pairs_path=ROOT / "data/natural_evaluation_v2/preliminary_patient_pairs.json",
+        generation_config_path=ROOT / "configs/natural_evaluation_patient_generation_v2.json",
+        destination=tmp_path,
+        model=resume_model,
+        model_label="deterministic-workflow",
+        limit=2,
+        concurrency=1,
+        include_unavailable_scenario=True,
+        resume=True,
+        progress=lambda _: None,
+    )
+    assert resumed["resumed"] is True
+    assert resume_model.call_count == {}
     assert (tmp_path / "cases.jsonl").exists()
     assert (tmp_path / "summary.json").exists()

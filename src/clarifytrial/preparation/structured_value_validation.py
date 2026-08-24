@@ -21,6 +21,31 @@ _NUMBER_PATTERN = re.compile(
     r"(?<![\w.])[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?![\w.])"
 )
 
+_GENERIC_CONCEPT_WORDS = {
+    "at",
+    "current",
+    "count",
+    "diagnosis",
+    "history",
+    "level",
+    "measurement",
+    "result",
+    "screening",
+    "status",
+    "test",
+    "value",
+}
+_CONCEPT_ALIASES: dict[str, tuple[str, ...]] = {
+    "absolute_neutrophil_count": ("absolute neutrophil count", "anc"),
+    "body_mass_index": ("body mass index", "bmi"),
+    "estimated_glomerular_filtration_rate": (
+        "estimated glomerular filtration rate",
+        "egfr",
+    ),
+    "hba1c": ("hba1c", "hb a1c", "hemoglobin a1c", "glycated hemoglobin"),
+    "platelet_count": ("platelet count", "platelet", "platelets"),
+}
+
 
 def _numbers(text: str) -> list[float]:
     return [
@@ -33,6 +58,37 @@ def _number_is_present(expected: float, text: str) -> bool:
     return any(
         math.isclose(expected, observed, rel_tol=1e-9, abs_tol=1e-9)
         for observed in _numbers(text)
+    )
+
+
+def _concept_is_present(concept: str, source_text: str) -> bool:
+    """Require lexical support without demanding identical spacing or casing."""
+
+    source = unicodedata.normalize("NFKC", source_text).casefold()
+    source_compact = re.sub(r"[^0-9a-z가-힣]+", "", source)
+    concept_key = re.sub(
+        r"[^0-9a-z가-힣]+",
+        "_",
+        unicodedata.normalize("NFKC", concept).casefold(),
+    ).strip("_")
+    phrases = {
+        concept_key.replace("_", " "),
+        *_CONCEPT_ALIASES.get(concept_key, ()),
+    }
+    tokens = [
+        item
+        for item in concept_key.split("_")
+        if item and item not in _GENERIC_CONCEPT_WORDS
+    ]
+    if len(tokens) >= 2:
+        phrases.add("".join(item[0] for item in tokens))
+    for token in tokens:
+        if len(token) >= 4 or token in {"age", "anc", "bmi", "egfr", "isi"}:
+            phrases.add(token)
+    return any(
+        re.sub(r"[^0-9a-z가-힣]+", "", phrase.casefold()) in source_compact
+        for phrase in phrases
+        if phrase
     )
 
 
@@ -266,6 +322,11 @@ def validate_patient_fact_source(
     """Verify patient values and explicit dates used downstream by code."""
 
     if fact.value is not None:
+        assert fact.concept is not None
+        if not _concept_is_present(fact.concept, matched_source_text):
+            raise SourceValidationError(
+                f"patient concept {fact.concept!r} is not supported by the cited source"
+            )
         if not _number_is_present(fact.value, matched_source_text):
             raise SourceValidationError(
                 f"patient value {fact.value:g} is not present in the cited source"
@@ -277,6 +338,10 @@ def validate_patient_fact_source(
             )
 
     source_dates = _explicit_dates(matched_source_text)
+    if fact.event_date is not None and not source_dates:
+        raise SourceValidationError(
+            "patient event date is not present in the cited source"
+        )
     if source_dates and fact.event_date is None:
         raise SourceValidationError(
             "patient fact omitted an explicit event date from the cited source"

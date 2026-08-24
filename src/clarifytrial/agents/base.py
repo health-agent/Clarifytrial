@@ -122,6 +122,21 @@ class StructuredAgent(Generic[ResponseT]):
         typed_response = cast(ResponseT, response)
 
         if trace is not None:
+            response_trace = typed_response.model_dump(mode="json")
+            if self.agent_name == "patient_record_structurer":
+                # Patient source quotes, dates and values stay in the prepared
+                # cited input files.  The general execution trace needs only
+                # enough structure to audit the model boundary.
+                facts = response_trace.get("facts", [])
+                search_conditions = response_trace.get("search_conditions", [])
+                response_trace = {
+                    "search_condition_count": len(search_conditions),
+                    "fact_count": len(facts),
+                    "fact_keys": [item.get("fact_key") for item in facts],
+                    "structured_value_fact_count": sum(
+                        item.get("value") is not None for item in facts
+                    ),
+                }
             trace.record(
                 cycle=cycle,
                 actor=self.agent_name,
@@ -130,7 +145,7 @@ class StructuredAgent(Generic[ResponseT]):
                 output={
                     "prompt_id": self.prompt_id,
                     "response_model": self.response_model.__name__,
-                    "response": typed_response.model_dump(mode="json"),
+                    "response": response_trace,
                 },
                 usage=usage,
             )

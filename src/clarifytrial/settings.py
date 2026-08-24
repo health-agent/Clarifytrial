@@ -26,9 +26,10 @@ class EpisodeSettings(BaseModel):
     max_cycles: int = Field(gt=0)
     use_model_coordinator: bool = False
     batch_trial_judgments: bool = True
+    criterion_batch_size: int = Field(default=40, ge=1)
     question_policy: str = Field(
         default="clarifytrial",
-        pattern="^(clarifytrial|fixed_order)$",
+        pattern="^(clarifytrial|immediate_coverage|fixed_order)$",
     )
 
 

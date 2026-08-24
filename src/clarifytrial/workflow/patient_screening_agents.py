@@ -103,6 +103,8 @@ def validate_review(
     trial_id: str,
     known_criterion_ids: set[str],
     known_fact_ids: set[str],
+    known_patient_evidence_ids: set[str],
+    known_trial_evidence_ids: set[str],
 ) -> None:
     """Reject review output that escapes the supplied trial and fact IDs."""
 
@@ -117,6 +119,14 @@ def validate_review(
     if set(review.missing_fact_ids) - known_fact_ids:
         raise WorkflowProtocolError(
             "selective_reviewer returned unknown missing fact identifiers"
+        )
+    if set(review.patient_evidence_ids) - known_patient_evidence_ids:
+        raise WorkflowProtocolError(
+            "selective_reviewer returned unknown patient evidence identifiers"
+        )
+    if set(review.trial_evidence_ids) - known_trial_evidence_ids:
+        raise WorkflowProtocolError(
+            "selective_reviewer returned unknown trial evidence identifiers"
         )
     if review.decision is ReviewOutcome.REJUDGE and not review.affected_condition_ids:
         raise WorkflowProtocolError("rejudge requires an affected condition")

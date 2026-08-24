@@ -1,7 +1,8 @@
 """Inspectable JSONL execution traces.
 
-Trace events contain identifiers and structured summaries, not hidden patient
-facts, API keys, or a model's private chain of thought.
+Trace events contain identifiers and structured summaries, not hidden synthetic
+answers, raw patient source quotes, API keys, or a model's private chain of
+thought.
 """
 
 from __future__ import annotations
@@ -14,6 +15,7 @@ from typing import Any, Mapping
 from pydantic import BaseModel, ConfigDict, Field
 
 from .llm.base import ModelUsage
+from .io import atomic_write_text
 
 
 class TraceEvent(BaseModel):
@@ -63,9 +65,8 @@ class TraceRecorder:
 
     def write_jsonl(self, path: str | Path) -> Path:
         destination = Path(path)
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        with destination.open("w", encoding="utf-8", newline="\n") as stream:
-            for event in self.events:
-                stream.write(json.dumps(event.model_dump(mode="json"), ensure_ascii=False))
-                stream.write("\n")
-        return destination
+        payload = "".join(
+            json.dumps(event.model_dump(mode="json"), ensure_ascii=False) + "\n"
+            for event in self.events
+        )
+        return atomic_write_text(destination, payload, encoding="utf-8")
