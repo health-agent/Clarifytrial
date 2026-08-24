@@ -207,7 +207,7 @@ TrialGPT가 공개한 검색 절차를 같은 자료에서 다시 실행했으�
 
 ## 문서 안내
 
-처음 읽는 사람은 다음 순서만 보면 된다.
+
 
 1. [보고서·발표 정리본](docs/internal/CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) — 핵심 아이디어, 대표 사례와 결과
 2. [현재 상태](docs/internal/CURRENT_STATUS.md) — 완성한 범위와 바로 다음 작업
