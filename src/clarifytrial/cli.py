@@ -768,6 +768,12 @@ def _parser() -> argparse.ArgumentParser:
     selection.add_argument("--all-topics", action="store_true")
     challenge.add_argument("--candidate-count", type=int, default=10)
     challenge.add_argument(
+        "--trial-protocol-cache",
+        type=Path,
+        default=Path("runs") / "trial-protocol-cache",
+        help="directory that reuses unchanged structured trial criteria",
+    )
+    challenge.add_argument(
         "--as-of",
         help="decision time in ISO format; defaults to the current local time",
     )
@@ -1889,6 +1895,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             as_of=as_of,
             candidate_count=args.candidate_count,
             settings=settings,
+            trial_protocol_cache_dir=args.trial_protocol_cache,
             resume_path=args.resume,
             retry_unavailable=args.retry_unavailable,
             approve_patient_choice=args.approve_patient_choice,

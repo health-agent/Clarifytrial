@@ -375,6 +375,7 @@ def test_one_topic_runs_from_free_text_to_ranked_result(tmp_path: Path) -> None:
                 max_selective_reviews=0,
                 max_cycles=4,
             ),
+            trial_protocol_cache_dir=tmp_path / "trial-cache",
         ),
         model=model,
         model_label="scripted-local",
@@ -396,3 +397,49 @@ def test_one_topic_runs_from_free_text_to_ranked_result(tmp_path: Path) -> None:
     assert result["usage"]["call_count"] == 3
     session = json.loads((output / "session.json").read_text(encoding="utf-8"))
     assert session["metadata"]["candidate_ranking"][0]["rank"] == 1
+    assert session["metadata"]["trial_protocol_cache"] == {
+        "reused_trial_count": 0,
+        "newly_structured_trial_count": 1,
+        "saved_trial_count": 1,
+        "invalid_cache_file_count": 0,
+        "cache_write_failure_count": 0,
+    }
+
+    second_output = tmp_path / "second-output"
+    second_outcome = run_challenge_screening(
+        options=ChallengeRunOptions(
+            topics_path=topics_path,
+            output_dir=second_output,
+            topic_ids=("S001",),
+            all_topics=False,
+            as_of=datetime(2026, 8, 24, tzinfo=timezone.utc),
+            candidate_count=1,
+            settings=EpisodeSettings(
+                max_external_actions=1,
+                max_selective_reviews=0,
+                max_cycles=4,
+            ),
+            trial_protocol_cache_dir=tmp_path / "trial-cache",
+        ),
+        model=model,
+        model_label="scripted-local",
+        candidate_search=search,
+        medical_disclaimer="학생 과제용 실험 결과입니다.",
+        read=lambda _: pytest.fail("a resolved case must not ask a question"),
+        write=lambda _: None,
+    )
+    second_result = json.loads(
+        second_outcome.runs[0].result_path.read_text(encoding="utf-8")
+    )
+    second_session = json.loads(
+        (second_output / "session.json").read_text(encoding="utf-8")
+    )
+    assert second_result["usage"]["call_count"] == 2
+    assert second_session["metadata"]["trial_protocol_cache"] == {
+        "reused_trial_count": 1,
+        "newly_structured_trial_count": 0,
+        "saved_trial_count": 0,
+        "invalid_cache_file_count": 0,
+        "cache_write_failure_count": 0,
+    }
+    assert model.call_count["trial_protocol_structurer"] == 1

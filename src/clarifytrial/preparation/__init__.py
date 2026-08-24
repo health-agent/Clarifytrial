@@ -18,6 +18,7 @@ from .pipeline import (
     NaturalScreeningResult,
     summarize_model_usage,
 )
+from .trial_cache import TrialProtocolCache, TrialProtocolCacheStats
 from .synthetic_tools import build_synthetic_information_tools
 
 __all__ = [
@@ -32,6 +33,8 @@ __all__ = [
     "RawPatientRecord",
     "TrialProtocolSource",
     "TrialGPTCandidateSearch",
+    "TrialProtocolCache",
+    "TrialProtocolCacheStats",
     "build_synthetic_information_tools",
     "summarize_model_usage",
 ]

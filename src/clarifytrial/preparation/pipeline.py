@@ -27,6 +27,7 @@ from .trial_protocol import (
     merge_information_requests,
     structure_trial_protocol,
 )
+from .trial_cache import TrialProtocolCache
 
 
 class InformationToolFactory(Protocol):
@@ -122,11 +123,13 @@ class NaturalScreeningPipeline:
         trial_structurer: TrialProtocolStructurerAgent,
         candidate_search: CandidateSearch,
         screening_runner: PatientScreeningRunner,
+        trial_protocol_cache: TrialProtocolCache | None = None,
     ) -> None:
         self._patient_structurer = patient_structurer
         self._trial_structurer = trial_structurer
         self._candidate_search = candidate_search
         self._screening_runner = screening_runner
+        self._trial_protocol_cache = trial_protocol_cache
 
     def prepare(
         self,
@@ -163,15 +166,25 @@ class NaturalScreeningPipeline:
             },
         )
         known_needs = declared_information_needs(request.acquisition_paths)
-        prepared_trials = [
-            structure_trial_protocol(
-                item.source,
+        prepared_trials = []
+        for item in candidate_hits:
+            build = lambda source=item.source: structure_trial_protocol(
+                source,
                 self._trial_structurer,
                 known_needs=known_needs,
                 trace=recorder,
             )
-            for item in candidate_hits
-        ]
+            if self._trial_protocol_cache is None:
+                prepared_trials.append(build())
+            else:
+                prepared_trials.append(
+                    self._trial_protocol_cache.get_or_structure(
+                        item.source,
+                        known_needs=known_needs,
+                        trace=recorder,
+                        build=build,
+                    )
+                )
         evidence_requests, fact_id_by_key = merge_information_requests(
             prepared_trials
         )

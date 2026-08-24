@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -34,6 +34,7 @@ from ..preparation import (
     NaturalScreeningRequest,
     PreparedScreeningCase,
     RawPatientRecord,
+    TrialProtocolCache,
 )
 from ..preparation.patient_record import PatientRecordStructurerAgent
 from ..preparation.trial_protocol import TrialProtocolStructurerAgent
@@ -73,6 +74,7 @@ class ChallengeRunOptions:
     as_of: datetime
     candidate_count: int
     settings: EpisodeSettings
+    trial_protocol_cache_dir: Path = Path("runs") / "trial-protocol-cache"
     resume_path: Path | None = None
     retry_unavailable: bool = False
     approve_patient_choice: bool = False
@@ -231,6 +233,7 @@ def materialize_prepared_topic(
     topic: ChallengeTopic,
     prepared: PreparedScreeningCase,
     output_dir: Path,
+    cache_summary: Mapping[str, object] | None = None,
 ) -> tuple[Path, Path]:
     """Save the adapter result in the same files accepted by ``run-screening``."""
 
@@ -275,6 +278,7 @@ def materialize_prepared_topic(
             "missing_information": [
                 item.model_dump(mode="json") for item in case.evidence_requests
             ],
+            "trial_protocol_cache": dict(cache_summary or {}),
         },
     )
     return patient_path, trials_path
@@ -378,6 +382,10 @@ def run_challenge_screening(
         )
         if candidate_search is None:
             raise ValueError("a candidate search is required for a new topic")
+        trial_cache = TrialProtocolCache(
+            options.trial_protocol_cache_dir,
+            model_label=model_label,
+        )
         pipeline = NaturalScreeningPipeline(
             patient_structurer=PatientRecordStructurerAgent(model),
             trial_structurer=TrialProtocolStructurerAgent(model),
@@ -386,6 +394,7 @@ def run_challenge_screening(
                 _episode_agents(model),
                 options.settings,
             ),
+            trial_protocol_cache=trial_cache,
         )
         write("")
         write(f"입력 {topic.num} 준비")
@@ -397,10 +406,17 @@ def run_challenge_screening(
         )
         write(f"환자 기록에서 확인한 사실: {len(prepared.patient_state.facts)}개")
         write(f"검토할 임상시험: {len(prepared.candidate_hits)}개")
+        cache_summary = trial_cache.stats.model_dump(mode="json")
+        write(
+            "시험 조건 정리: "
+            f"저장본 재사용 {cache_summary['reused_trial_count']}개, "
+            f"새로 정리 {cache_summary['newly_structured_trial_count']}개"
+        )
         patient_path, trials_path = materialize_prepared_topic(
             topic=topic,
             prepared=prepared,
             output_dir=topic_dir,
+            cache_summary=cache_summary,
         )
         outcome = run_general_screening(
             options=GeneralRunOptions(
@@ -415,6 +431,10 @@ def run_challenge_screening(
                 session_metadata={
                     "challenge_topics_path": str(options.topics_path),
                     "challenge_topic_id": topic.num,
+                    "trial_protocol_cache_dir": str(
+                        options.trial_protocol_cache_dir
+                    ),
+                    "trial_protocol_cache": cache_summary,
                 },
             ),
             model=model,
