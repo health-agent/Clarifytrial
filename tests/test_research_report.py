@@ -41,7 +41,8 @@ def test_report_figures_read_values_from_evaluation_json(tmp_path: Path) -> None
     assert "처음 빠진 정보 목록의 앞 3개" in first_svg
     assert "가장 많은 시험 판단을 끝낼" in first_svg
     report = (output / "report.md").read_text(encoding="utf-8")
-    assert "모든 환자 정보를 알 때와 같은 판단에 도달한 시험 비율" in report
+    assert "확인 횟수 안에 판단을 끝낸 시험 비율" in report
+    assert "모든 환자 정보를 알 때" not in report
     assert "고정 순서" not in report
 
     question_path.write_text(json.dumps(_question_document(0.91)), encoding="utf-8")

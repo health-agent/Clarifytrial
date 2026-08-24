@@ -6,7 +6,7 @@
 <text x="70" y="124" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="20" font-weight="400" fill="#64748B" text-anchor="start">개발에 쓰지 않은 합성 환자의 이동·비용 제한 상황 80회</text>
 <rect x="55" y="165" width="530" height="455" rx="20" fill="#FFFFFF" stroke="none"/>
 <rect x="615" y="165" width="530" height="455" rx="20" fill="#FFFFFF" stroke="none"/>
-<text x="90" y="220" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="650" fill="#172033" text-anchor="start"><tspan x="90" dy="0">환자 제한 때문에 쓸 수 없는 방법을 제외하고도</tspan><tspan x="90" dy="34">모든 정보를 알 때의 판단까지 도달한 시험</tspan></text>
+<text x="90" y="220" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="650" fill="#172033" text-anchor="start"><tspan x="90" dy="0">환자가 실제로 이용할 수 있는 방법만 사용해</tspan><tspan x="90" dy="34">판단을 끝낸 시험</tspan></text>
 <text x="650" y="220" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="24" font-weight="650" fill="#172033" text-anchor="start"><tspan x="650" dy="0">새 검사·추가 방문이 어려운 환자에게</tspan><tspan x="650" dy="34">그 방법을 제안한 횟수</tspan></text>
 <text x="90" y="330" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="400" fill="#172033" text-anchor="start">모든 환자에게 같은 비용표</text>
 <rect x="320" y="302" width="205" height="42" rx="10" fill="#EEF2F7" stroke="none"/>

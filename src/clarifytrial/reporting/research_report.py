@@ -138,7 +138,7 @@ def build_research_report(
                 )
         (output / "question-policy.svg").write_text(
             _bar_svg(
-                f"추가 정보를 {action_budget}번 확인한 뒤 모든 환자 정보를 알 때의 판단과 같아진 시험",
+                f"추가 정보를 {action_budget}번 확인한 뒤 판단을 끝낸 시험",
                 f"처음 자료가 불완전한 합성 환자 {current['patient_count']}명 · 추가 확인 최대 {action_budget}번",
                 [
                     (
@@ -157,9 +157,9 @@ def build_research_report(
             [
                 "## 부족한 환자 정보 가운데 무엇을 먼저 확인할지 비교",
                 "",
-                f"처음 자료가 불완전한 합성 환자 {current['patient_count']}명에게 추가 확인을 최대 {action_budget}번 허용했다. 확인이 끝난 뒤의 시험 판단을, 가려 두었던 환자 정보를 모두 넣어 계산한 판단과 비교했다.",
+                f"처음 자료가 불완전한 합성 환자 {current['patient_count']}명에게 추가 확인을 최대 {action_budget}번 허용했다. 합성자료에는 가려 둔 답을 반영했을 때 각 시험이 놓일 상태가 미리 정해져 있으며, 질문 뒤 같은 상태에 도달하면 판단을 끝낸 것으로 셌다.",
                 "",
-                "| 부족한 정보를 고른 방법 | 모든 환자 정보를 알 때와 같은 판단에 도달한 시험 비율 | 최종 판단에 실제로 필요했던 정보 중 확인한 비율 | 확인했지만 어떤 시험의 판단도 더 바꾸지 못한 정보 수 |",
+                "| 부족한 정보를 고른 방법 | 확인 횟수 안에 판단을 끝낸 시험 비율 | 최종 판단에 실제로 필요했던 정보 중 확인한 비율 | 확인했지만 어떤 시험의 판단도 더 바꾸지 못한 정보 수 |",
                 "|---|---:|---:|---:|",
                 f"| 처음 빠진 정보 목록의 앞 {action_budget}개를 적힌 순서대로 확인 | {fixed['trial_status_recovery']:.1%} | {fixed['mean_needed_fact_recall']:.1%} | 환자당 {fixed['mean_unnecessary_action_count']:.2f}개 |",
                 f"| 남은 {action_budget}번 안에 가장 많은 시험 판단을 끝낼 정보 조합을 매번 다시 계산 | {current['trial_status_recovery']:.1%} | {current['mean_needed_fact_recall']:.1%} | 환자당 {current['mean_unnecessary_action_count']:.2f}개 |",
@@ -189,7 +189,7 @@ def build_research_report(
             )
         (output / "patient-burden.svg").write_text(
             _bar_svg(
-                "환자의 제한을 어기지 않고 모든 정보를 알 때의 판단까지 도달한 시험",
+                "환자가 이용할 수 있는 방법만 사용해 판단을 끝낸 시험",
                 "이동·비용 부담 때문에 새 검사나 추가 방문을 피해야 하는 합성 상황",
                 [
                     (
@@ -212,8 +212,8 @@ def build_research_report(
                 "",
                 "| 무엇을 측정했는가 | 모든 환자에게 같은 비용표를 적용해 확인 방법을 선택 | 환자의 이동·비용·시간 제한을 반영해 확인 방법을 선택 |",
                 "|---|---:|---:|",
-                f"| 이동·비용 제한이 없는 상황까지 모두 합쳤을 때, 모든 환자 정보를 알 때와 같은 판단에 도달한 시험 비율 | {comparison['baseline_recovery']:.1%} | {comparison['candidate_recovery']:.1%} |",
-                f"| 이동·비용 제한 때문에 사용할 수 없는 확인 방법을 제외하고도, 모든 환자 정보를 알 때와 같은 판단에 도달한 시험 비율 | {comparison['constrained_baseline_feasible_recovery']:.1%} | {comparison['constrained_candidate_feasible_recovery']:.1%} |",
+                f"| 이동·비용 제한이 없는 상황까지 모두 합쳤을 때 판단을 끝낸 시험 비율 | {comparison['baseline_recovery']:.1%} | {comparison['candidate_recovery']:.1%} |",
+                f"| 환자가 실제로 이용할 수 있는 방법만 사용해 판단을 끝낸 시험 비율 | {comparison['constrained_baseline_feasible_recovery']:.1%} | {comparison['constrained_candidate_feasible_recovery']:.1%} |",
                 f"| 환자가 새 검사나 추가 방문을 피해야 한다고 입력했는데도 그런 방법을 선택한 횟수 | {comparison['constrained_new_test_visit_baseline']}회 | {comparison['constrained_new_test_visit_candidate']}회 |",
                 f"| 시간이 급하다고 입력한 환자에게 선택한 확인 방법의 예상 대기시간 합계 | {comparison['urgent_mean_delay_baseline']:.2f}시간 | {comparison['urgent_mean_delay_candidate']:.2f}시간 |",
                 "",

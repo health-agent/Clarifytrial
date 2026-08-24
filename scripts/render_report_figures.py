@@ -91,11 +91,11 @@ def svg_document(height: int, body: list[str], title_value: str) -> str:
 def render_question_policy_results() -> str:
     height = 700
     body = [
-        text(70, 82, "환자 정보 5개가 빠졌을 때, 어떤 3개를 먼저 확인했는가", size=36, weight=700),
+        text(70, 82, "질문 세 번 안에 판단을 끝낸 시험", size=36, weight=700),
         text(
             70,
             124,
-            "합성 환자 30명 · 환자마다 후보 시험 5개 · 추가 확인은 최대 3번",
+            "합성 환자 30명 · 시험 판단 150개 · 추가 확인은 최대 3번",
             size=20,
             fill=MUTED,
         ),
@@ -104,9 +104,8 @@ def render_question_policy_results() -> str:
 
     rows = [
         ("추가 정보를 확인하지 않고\n처음 환자 자료만 사용", 42, False),
-        ("처음 빠진 정보 목록의 앞 3개를\n적힌 순서대로 확인", 75, False),
-        ("가장 많은 시험에 연결된 정보부터\n3개 확인", 87, False),
-        ("3번 안에 가장 많은 시험 판단을 끝낼\n정보 조합을 계산", 89, True),
+        ("처음 빠진 정보 목록의 앞 3개를\n적힌 순서대로 확인", 66, False),
+        ("3번 안에 가장 많은 시험 판단을 끝낼\n정보 조합을 계산", 77, True),
     ]
     bar_x = 590
     max_width = 450
@@ -151,7 +150,7 @@ def render_question_policy_results() -> str:
             text(
                 132,
                 659,
-                "입력 목록 순서대로 확인하면 75%, 판단을 가장 많이 끝낼 정보를 계산하면 89%였다.",
+                "판단 완료: 질문 없음 63개 · 입력 순서 99개 · 현재 방법 115개",
                 size=19,
             ),
         ]
@@ -175,7 +174,7 @@ def render_patient_burden_results() -> str:
         multiline(
             90,
             220,
-            ["환자 제한 때문에 쓸 수 없는 방법을 제외하고도", "모든 정보를 알 때의 판단까지 도달한 시험"],
+            ["환자가 실제로 이용할 수 있는 방법만 사용해", "판단을 끝낸 시험"],
             size=21,
             weight=650,
             line_height=34,

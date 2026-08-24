@@ -2,8 +2,8 @@
 <title id="title">환자 정보가 빠졌을 때 먼저 확인할 정보 비교</title>
 <desc id="desc">ClarifyTrial 연구 결과를 보여 주는 코드 기반 그림</desc>
 <rect width="1200" height="700" fill="#F5F7FB"/>
-<text x="70" y="82" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="36" font-weight="700" fill="#172033" text-anchor="start">환자 정보 5개가 빠졌을 때, 어떤 3개를 먼저 확인했는가</text>
-<text x="70" y="124" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="20" font-weight="400" fill="#64748B" text-anchor="start">합성 환자 30명 · 환자마다 후보 시험 5개 · 추가 확인은 최대 3번</text>
+<text x="70" y="82" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="36" font-weight="700" fill="#172033" text-anchor="start">질문 세 번 안에 판단을 끝낸 시험</text>
+<text x="70" y="124" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="20" font-weight="400" fill="#64748B" text-anchor="start">합성 환자 30명 · 시험 판단 150개 · 추가 확인은 최대 3번</text>
 <rect x="55" y="165" width="1090" height="450" rx="20" fill="#FFFFFF" stroke="none"/>
 <text x="95" y="235" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="400" fill="#172033" text-anchor="start"><tspan x="95" dy="0">추가 정보를 확인하지 않고</tspan><tspan x="95" dy="24">처음 환자 자료만 사용</tspan></text>
 <rect x="590" y="220" width="450" height="48" rx="12" fill="#EEF2F7" stroke="none"/>
@@ -11,16 +11,12 @@
 <text x="765" y="252" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="700" fill="#FFFFFF" text-anchor="end">42%</text>
 <text x="95" y="327" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="400" fill="#172033" text-anchor="start"><tspan x="95" dy="0">처음 빠진 정보 목록의 앞 3개를</tspan><tspan x="95" dy="24">적힌 순서대로 확인</tspan></text>
 <rect x="590" y="312" width="450" height="48" rx="12" fill="#EEF2F7" stroke="none"/>
-<rect x="590" y="312" width="338" height="48" rx="12" fill="#AAB5C5" stroke="none"/>
-<text x="914" y="344" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="700" fill="#FFFFFF" text-anchor="end">75%</text>
-<text x="95" y="419" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="400" fill="#172033" text-anchor="start"><tspan x="95" dy="0">가장 많은 시험에 연결된 정보부터</tspan><tspan x="95" dy="24">3개 확인</tspan></text>
+<rect x="590" y="312" width="297" height="48" rx="12" fill="#AAB5C5" stroke="none"/>
+<text x="873" y="344" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="700" fill="#FFFFFF" text-anchor="end">66%</text>
+<text x="95" y="419" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="600" fill="#172033" text-anchor="start"><tspan x="95" dy="0">3번 안에 가장 많은 시험 판단을 끝낼</tspan><tspan x="95" dy="24">정보 조합을 계산</tspan></text>
 <rect x="590" y="404" width="450" height="48" rx="12" fill="#EEF2F7" stroke="none"/>
-<rect x="590" y="404" width="392" height="48" rx="12" fill="#AAB5C5" stroke="none"/>
-<text x="968" y="436" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="700" fill="#FFFFFF" text-anchor="end">87%</text>
-<text x="95" y="511" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="600" fill="#172033" text-anchor="start"><tspan x="95" dy="0">3번 안에 가장 많은 시험 판단을 끝낼</tspan><tspan x="95" dy="24">정보 조합을 계산</tspan></text>
-<rect x="590" y="496" width="450" height="48" rx="12" fill="#EEF2F7" stroke="none"/>
-<rect x="590" y="496" width="400" height="48" rx="12" fill="#356AE6" stroke="none"/>
-<text x="976" y="528" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="700" fill="#FFFFFF" text-anchor="end">89%</text>
+<rect x="590" y="404" width="346" height="48" rx="12" fill="#356AE6" stroke="none"/>
+<text x="922" y="436" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="700" fill="#FFFFFF" text-anchor="end">77%</text>
 <text x="70" y="659" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="700" fill="#356AE6" text-anchor="start">해석</text>
-<text x="132" y="659" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#172033" text-anchor="start">입력 목록 순서대로 확인하면 75%, 판단을 가장 많이 끝낼 정보를 계산하면 89%였다.</text>
+<text x="132" y="659" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#172033" text-anchor="start">판단 완료: 질문 없음 63개 · 입력 순서 99개 · 현재 방법 115개</text>
 </svg>
