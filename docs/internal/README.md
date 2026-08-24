@@ -1,29 +1,27 @@
-# ClarifyTrial 문서 안내
+# ClarifyTrial 자료 구성
 
-처음 보는 사람은 [저장소 README](../../README.md)부터 읽는다. 핵심 아이디어, 전체
-흐름, 사용한 자료, 현재 결과와 다음 평가 범위를 한 문서에서 설명한다.
+[저장소 README](../../README.md)에 핵심 아이디어, 전체 흐름, 사용한 자료, 현재 결과와
+다음 평가 범위가 정리돼 있다.
 
-## 처음 읽는 사람에게 필요한 문서
+## 연구 요약과 현재 결과
 
-| 순서 | 문서 | 알 수 있는 내용 |
-|---:|---|---|
-| 1 | [보고서·발표 정리본](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 핵심 아이디어, 대표 사례, 결과 그림과 발표 문안 |
-| 2 | [현재 상태](CURRENT_STATUS.md) | 완성된 범위, 현재 자료와 바로 다음 작업 |
-| 3 | [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) | 각 실험을 어떻게 했고 숫자가 무엇을 뜻하는지 |
+| 자료 | 내용 |
+|---|---|
+| [연구 요약](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 핵심 아이디어, 대표 사례와 결과 그림 |
+| [현재 상태](CURRENT_STATUS.md) | 완성된 범위, 현재 자료와 다음 작업 |
+| [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) | 실험 조건, 결과, 비용과 한계 |
 
-세 문서만 읽으면 현재 연구의 설명과 결과 범위를 파악할 수 있다.
-
-## 연구를 이어갈 때 보는 현행 문서
+## 현행 연구 기준
 
 | 문서 | 역할 |
 |---|---|
 | [현행 연구계획 v5](CLARIFYTRIAL_RESEARCH_PLAN_V5.md) | 연구 질문, 비교 범위와 주장 기준을 정하는 유일한 현행 계획 |
 | [실험자료 정리](CLARIFYTRIAL_DATASETS.md) | TrialGPT·TREC·ClinicalTrials.gov와 합성자료의 실제 용도와 정답 구조 |
-| [연구 지식 정리](RESEARCH_KNOWLEDGE_BASE.md) | 선행연구와 구현 방법을 필요할 때 꺼내 보는 참고자료 |
+| [연구 지식 정리](RESEARCH_KNOWLEDGE_BASE.md) | 선행연구와 구현 방법 참고자료 |
 | [근거문헌과 공개 코드](CLARIFYTRIAL_AGENT_SOURCE_INDEX.md) | 현재 구조에 영향을 준 논문, 공개 코드와 가져온 범위 |
 
-연구계획은 v5 문서 하나만 현행 기준으로 사용한다. 검증 결과는 실행한 사실을 기록하고,
-연구 지식 정리는 선행연구를 보관한다. 두 문서를 새 계획처럼 사용하지 않는다.
+현행 계획은 v5 연구계획 하나다. 검증 결과에는 실행한 사실을, 연구 지식 정리에는
+선행연구를 보관한다.
 
 ## 현재 상태 한눈에 보기
 
@@ -41,10 +39,7 @@
 
 과거 합성 데모 수치는 현재 결과나 비교 기준으로 사용하지 않는다.
 
-## 개발자와 작업 에이전트가 필요할 때만 보는 문서
-
-아래 문서는 프로그램을 수정하거나 실험을 다시 실행할 때 사용한다. 연구 설명을 처음
-읽을 때는 건너뛰어도 된다.
+## 구현과 재현
 
 | 문서 | 내용 |
 |---|---|
@@ -53,6 +48,5 @@
 | [쉬운 실험 안내](CLARIFYTRIAL_V5_DEVELOPED_EXPERIMENT_GUIDE.md) | 사례 실행, 일괄 평가와 보고서 생성 명령 |
 | [개발 상세 기록](CLARIFYTRIAL_IMPLEMENTATION_RECORD.md) | 완료·보류·기각된 요구사항 101개와 과거 결정 |
 
-코드 작업을 재개할 때는 [현재 상태](CURRENT_STATUS.md)와
-[현행 연구계획](CLARIFYTRIAL_RESEARCH_PLAN_V5.md)을 먼저 읽고, 바꾸려는 부분에 해당하는
-개발자 문서만 추가로 읽는다.
+개발 기준은 [현재 상태](CURRENT_STATUS.md),
+[현행 연구계획](CLARIFYTRIAL_RESEARCH_PLAN_V5.md)과 변경 대상에 해당하는 구현 문서다.

@@ -205,22 +205,20 @@ TrialGPT가 공개한 검색 절차를 같은 자료에서 다시 실행했으�
 임신·피임, 환자 답변, 기록 조회와 새 검사처럼 서로 다른 조건과 확인 방법이 포함되도록
 질환과 시험을 고른다.
 
-## 문서 안내
+## 관련 자료
 
-
-
-1. [보고서·발표 정리본](docs/internal/CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) — 핵심 아이디어, 대표 사례와 결과
-2. [현재 상태](docs/internal/CURRENT_STATUS.md) — 완성한 범위와 바로 다음 작업
-3. [검증 결과](docs/internal/CLARIFYTRIAL_VALIDATION_RESULTS.md) — 각 숫자의 실행 조건과 한계
-4. [현행 연구계획 v5](docs/internal/CLARIFYTRIAL_RESEARCH_PLAN_V5.md) — 연구 질문과 비교 기준
-5. [실험자료 정리](docs/internal/CLARIFYTRIAL_DATASETS.md) — 공개자료와 합성자료 구성
-
-[전체 문서 색인](docs/internal/README.md)에는 연구 문서와 개발자 참고 문서를 나누어
-정리했다.
+| 자료 | 내용 |
+|---|---|
+| [연구 요약](docs/internal/CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 핵심 아이디어, 대표 사례와 결과 |
+| [현재 상태](docs/internal/CURRENT_STATUS.md) | 완성된 범위와 다음 작업 |
+| [검증 결과](docs/internal/CLARIFYTRIAL_VALIDATION_RESULTS.md) | 각 숫자의 실행 조건과 한계 |
+| [현행 연구계획 v5](docs/internal/CLARIFYTRIAL_RESEARCH_PLAN_V5.md) | 연구 질문과 비교 기준 |
+| [실험자료 정리](docs/internal/CLARIFYTRIAL_DATASETS.md) | 공개자료와 합성자료 구성 |
+| [전체 자료 구성](docs/internal/README.md) | 연구 자료와 구현·재현 자료의 구분 |
 
 ## 개발자용 실행·코드 참고
 
-아래 내용은 프로그램을 설치하거나 다시 실행할 때만 필요하다.
+프로그램 설치와 재실행에 필요한 명령을 정리했다.
 
 ### 설치와 자동 검사
 

@@ -1,7 +1,6 @@
-# ClarifyTrial v5 쉬운 전체 계획
+# ClarifyTrial v5 실험 흐름
 
-문서 역할: ClarifyTrial의 진행 방식과 실험 순서를 쉬운 말로 설명  
-문서 우선순위: [CLARIFYTRIAL_RESEARCH_PLAN_V5.md](CLARIFYTRIAL_RESEARCH_PLAN_V5.md)  
+연구 기준: [CLARIFYTRIAL_RESEARCH_PLAN_V5.md](CLARIFYTRIAL_RESEARCH_PLAN_V5.md)
 현재 단계: 정해진 형식의 JSON으로 질문 순서 평가 완료, 자유 형식 입력은 선택 기능
 
 ---
@@ -349,7 +348,7 @@ ClarifyTrial은 새로 받은 정보를 임상시험 조건에 반영한다. 결
 
 ---
 
-## 9. 결과를 읽는 방법
+## 9. 결과 해석
 
 현재 질문 순서가 의미를 가지려면 다음 모습이 나와야 한다.
 
@@ -363,7 +362,7 @@ ClarifyTrial은 새로 받은 정보를 임상시험 조건에 반영한다. 결
 
 ---
 
-## 10. 현재 말할 수 있는 범위
+## 10. 확인된 범위
 
 - 정해진 형식으로 옮긴 공개 시험 조건에서 질문 순서를 고르는 실험은 실행했다.
 - 답의 확률을 가정한 질문 나무는 쓰지 않는다. 대신 남은 확인 횟수 안에서 가장 많은
