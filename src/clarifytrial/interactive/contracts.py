@@ -73,7 +73,7 @@ class InteractivePolicyView(ContractModel):
     case_id: str = Field(min_length=1)
     disease_group: str = Field(min_length=1)
     trials: list[InteractiveTrial] = Field(min_length=1)
-    available_information: list[InteractivePublicFact] = Field(min_length=1)
+    available_information: list[InteractivePublicFact] = Field(default_factory=list)
     action_budget: int = Field(ge=0)
 
 

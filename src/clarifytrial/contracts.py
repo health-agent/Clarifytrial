@@ -313,6 +313,15 @@ class MissingInformationSummary(ContractModel):
     confirmation_methods: list[str] = Field(min_length=1)
 
 
+class TrialSearchRank(ContractModel):
+    """The candidate-search position preserved through the screening workflow."""
+
+    trial_id: str = Field(min_length=1)
+    rank: int = Field(ge=1)
+    score: float = Field(allow_inf_nan=False)
+    retrieval_method: str = Field(min_length=1)
+
+
 class TrialRecommendationSummary(ContractModel):
     """One trial in either recommendation view."""
 
@@ -320,6 +329,9 @@ class TrialRecommendationSummary(ContractModel):
     status_label: str = Field(min_length=1)
     explanation: str = Field(min_length=1)
     missing_information: list[MissingInformationSummary] = Field(default_factory=list)
+    recommendation_rank: int | None = Field(default=None, ge=1)
+    search_rank: int | None = Field(default=None, ge=1)
+    ranking_explanation: str | None = Field(default=None, min_length=1)
 
     @model_validator(mode="after")
     def missing_fact_ids_are_unique(self) -> Self:

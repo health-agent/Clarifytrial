@@ -13,6 +13,7 @@ from ..preparation import (
     TrialProtocolSource,
 )
 from ..preparation.contracts import CandidateSearchHit
+from ..contracts import TrialSearchRank
 from ..workflow import PatientScreeningCase
 from .contracts import GeneralPatientInput, StructuredTrialSource
 
@@ -89,6 +90,7 @@ def prepare_general_case(
     candidate_search: CandidateSearch | None = None,
     search_depth: int | None = None,
     fixed_candidate_trial_ids: list[str] | None = None,
+    fixed_candidate_ranking: list[TrialSearchRank] | None = None,
     fixed_retrieval_method: str = "saved-session-candidates",
 ) -> PreparedGeneralCase:
     source_by_id = {item.trial_id: item for item in trial_sources}
@@ -106,7 +108,31 @@ def prepare_general_case(
         for item in trial_sources
     ]
     search_source_by_id = {item.trial_id: item for item in search_sources}
-    if fixed_candidate_trial_ids is not None:
+    if fixed_candidate_ranking is not None:
+        if fixed_candidate_trial_ids is not None:
+            raise ValueError(
+                "fixed_candidate_ranking and fixed_candidate_trial_ids cannot be combined"
+            )
+        unknown = [
+            item.trial_id
+            for item in fixed_candidate_ranking
+            if item.trial_id not in source_by_id
+        ]
+        if unknown:
+            raise ValueError(
+                "fixed candidate trials are missing from the supplied trial file: "
+                + ", ".join(unknown)
+            )
+        hits = [
+            CandidateSearchHit(
+                rank=item.rank,
+                score=item.score,
+                retrieval_method=item.retrieval_method,
+                source=search_source_by_id[item.trial_id],
+            )
+            for item in sorted(fixed_candidate_ranking, key=lambda value: value.rank)
+        ]
+    elif fixed_candidate_trial_ids is not None:
         unknown = [
             item for item in fixed_candidate_trial_ids if item not in source_by_id
         ]
@@ -172,6 +198,15 @@ def prepare_general_case(
         evidence_requests=requests,
         acquisition_options=options,
         patient_burden_input=patient.patient_burden_input,
+        candidate_ranking=[
+            TrialSearchRank(
+                trial_id=item.source.trial_id,
+                rank=item.rank,
+                score=item.score,
+                retrieval_method=item.retrieval_method,
+            )
+            for item in hits
+        ],
     )
     return PreparedGeneralCase(
         case=case,

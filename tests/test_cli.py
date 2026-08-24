@@ -137,6 +137,7 @@ def test_export_schemas_writes_parseable_key_contracts(tmp_path: Path) -> None:
         "general-patient-input.schema.json",
         "structured-trial-source.schema.json",
         "screening-session.schema.json",
+        "challenge-topics-input.schema.json",
     }
     assert all(_read_json(path)["type"] == "object" for path in paths)
 

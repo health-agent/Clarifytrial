@@ -14,6 +14,7 @@ from ..contracts import (
     CriterionBoundaryDifference,
     NextEvidenceRequest,
     PatientState,
+    TrialSearchRank,
     TrialCriterion,
     TrialDecision,
 )
@@ -78,12 +79,25 @@ class PatientScreeningCase(ContractModel):
     evidence_requests: list[NextEvidenceRequest] = Field(default_factory=list)
     acquisition_options: list[AcquisitionOption] = Field(default_factory=list)
     patient_burden_input: PatientBurdenInput | None = None
+    candidate_ranking: list[TrialSearchRank] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def references_are_closed(self) -> "PatientScreeningCase":
         trial_ids = [item.trial_id for item in self.trials]
         if len(trial_ids) != len(set(trial_ids)):
             raise ValueError("trials must not repeat trial_id")
+        ranked_trial_ids = [item.trial_id for item in self.candidate_ranking]
+        if len(ranked_trial_ids) != len(set(ranked_trial_ids)):
+            raise ValueError("candidate_ranking must not repeat trial_id")
+        ranks = [item.rank for item in self.candidate_ranking]
+        if len(ranks) != len(set(ranks)):
+            raise ValueError("candidate_ranking must not repeat rank")
+        unknown_ranked = set(ranked_trial_ids) - set(trial_ids)
+        if unknown_ranked:
+            raise ValueError(
+                "candidate_ranking refers to trials outside this case: "
+                + ", ".join(sorted(unknown_ranked))
+            )
         criterion_ids = [
             criterion.criterion_id
             for trial in self.trials

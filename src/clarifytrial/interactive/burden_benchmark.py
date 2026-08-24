@@ -229,7 +229,10 @@ def build_guidance_output(
     """Build patient-facing and detailed outputs from the same selected IDs."""
 
     groups = trial_groups(snapshot)
-    recommendation_views = build_recommendation_views(snapshot.decisions)
+    recommendation_views = build_recommendation_views(
+        snapshot.decisions,
+        getattr(case, "candidate_ranking", ()),
+    )
     selected = decision.selected_option
     impacts = current_fact_impacts(view, snapshot, revealed_fact_ids)
     if selected is None:

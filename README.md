@@ -275,6 +275,46 @@ py -3.12 -m venv .venv
   --output runs\general-screening-resumed
 ```
 
+팀에서 쓰는 다음 대회 입력도 그대로 받을 수 있다. `num`은 환자 번호이고 `title`은
+한 환자의 합성 기록 전체다. `title`이 구조화된 환자 JSON이라는 뜻은 아니다. 프로그램이
+이 문장을 먼저 읽어 질환과 환자 사실을 정리한 뒤 기존 검색·판정·질문 흐름에 넘긴다.
+
+```json
+{
+  "topics": [
+    {"num": "S001", "title": "합성 환자 기록..."},
+    {"num": "S002", "title": "합성 환자 기록..."}
+  ]
+}
+```
+
+한 명을 실행하는 명령은 다음과 같다. `--candidate-count`를 생략하면 관련 시험 10개를
+검토한다. 자료가 부족하면 터미널에서 답변 문장, JSON 또는 `@JSON파일경로`를 받는다.
+`quit`으로 중단한 뒤 같은 `session.json`을 `--resume`에 주면 이어서 실행한다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-challenge `
+  --topics "C:\path\to\synthetic-patients.json" `
+  --topic-id S001 `
+  --candidate-search trialgpt `
+  --trialgpt-corpus C:\path\to\trial-corpus.jsonl `
+  --trialgpt-cache C:\path\to\retrieval-cache `
+  --provider codex-subscription `
+  --effort medium `
+  --output runs\challenge-S001 `
+  --confirm-model-run
+```
+
+파일 안의 모든 환자를 차례대로 실행하려면 `--topic-id S001` 대신 `--all-topics`를 쓴다. 출력 폴더에는
+원래 환자 문장, 문장에서 찾은 환자 사실, 처음 후보 순위, 정리된 환자·시험 JSON,
+질문 기록, 최종 결과와 모델 사용량이 남는다.
+
+최종 목록의 순서는 숨은 종합 점수로 정하지 않는다. 현재 자료로 조건 확인이 끝난
+시험을 먼저 놓고, 추가 확인이 필요한 시험은 남은 정보가 적은 순서로 놓는다. 같은
+상태에서는 처음 검색 순위를 따른다. 각 시험에는 목록 순위, 처음 검색 순위와 그
+위치에 놓인 이유를 함께 기록한다. 질문의 답이 들어와 시험 상태가 바뀌면 같은 규칙으로
+목록을 다시 만든다.
+
 기본 명령은 전달한 시험 파일 안에서 가벼운 검색을 한다. 준비된 TrialGPT 검색 자료가
 있다면 같은 명령에서 수만 건 검색 결과를 사용하고, 그중 구조화 조건이 들어 있는
 시험만 실제 판단 대상으로 넘길 수 있다.
@@ -387,7 +427,7 @@ JSON을 읽고, 시험 15개 검색, 후보 5개 조건 판단, 최대 세 번�
 | `src/clarifytrial/retrieval/` | 관련 시험 검색과 조건 판단에 필요한 환자 문장 표시 |
 | `src/clarifytrial/interactive/` | 평가용으로 숨긴 답, 질문 순서와 환자 부담 규칙 |
 | `src/clarifytrial/workflow/` | 여러 시험을 판단하고 새 정보 뒤 다시 판단하는 전체 흐름 |
-| `src/clarifytrial/app/` | 일반 JSON 입력, 직접 답변, 세션 재개와 세 방식 전체 평가 |
+| `src/clarifytrial/app/` | 일반 JSON·대회 topics 입력, 직접 답변, 세션 재개와 세 방식 전체 평가 |
 | `src/clarifytrial/ui/` | 15개 시험 검색부터 역할별 호출·질문·최종 결과까지 보여 주는 통합 터미널 화면 |
 | `src/clarifytrial/reporting/` | 최종 목록·기준 차이와 실험 결과표·그림·Markdown 보고서 생성 |
 | `src/clarifytrial/datasets/` | 공개자료 준비, 합성 환자와 자연어 평가자료 |

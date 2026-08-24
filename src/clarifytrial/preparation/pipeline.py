@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from ..contracts import ContractModel
+from ..contracts import ContractModel, TrialSearchRank
 from ..trace import TraceRecorder
 from ..workflow import (
     PatientScreeningCase,
@@ -188,6 +188,15 @@ class NaturalScreeningPipeline:
             evidence_requests=evidence_requests,
             acquisition_options=acquisition_options,
             patient_burden_input=request.patient_burden_input,
+            candidate_ranking=[
+                TrialSearchRank(
+                    trial_id=item.source.trial_id,
+                    rank=item.rank,
+                    score=item.score,
+                    retrieval_method=item.retrieval_method,
+                )
+                for item in candidate_hits
+            ],
         )
         recorder.record(
             cycle=0,

@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Mapping
 
 from ..agents import (
     CoordinatorAgent,
@@ -13,7 +13,11 @@ from ..agents import (
     NextEvidenceAgent,
     SelectiveReviewerAgent,
 )
-from ..contracts import EvidenceCaptureMethod, EvidenceInputProvenance
+from ..contracts import (
+    EvidenceCaptureMethod,
+    EvidenceInputProvenance,
+    TrialSearchRank,
+)
 from ..environment import (
     EnvironmentStatus,
     HiddenFactAnswer,
@@ -59,6 +63,9 @@ class GeneralRunOptions:
     authorize_clinician: bool = False
     candidate_search: CandidateSearch | None = None
     candidate_search_depth: int = 500
+    fixed_candidate_ranking: tuple[TrialSearchRank, ...] | None = None
+    run_mode: str | None = None
+    session_metadata: Mapping[str, object] | None = None
 
     def __post_init__(self) -> None:
         if self.candidate_search_depth < 1:
@@ -127,7 +134,11 @@ def _show_final(result: dict, write: Callable[[str], None]) -> None:
         view = views[key]
         write(f"- {view['title']}: {len(view['trials'])}개")
         for trial in view["trials"]:
-            write(f"  · {trial['trial_id']}: {trial['status_label']}")
+            rank = trial.get("recommendation_rank")
+            prefix = f"{rank}." if rank is not None else "·"
+            write(f"  {prefix} {trial['trial_id']}: {trial['status_label']}")
+            if trial.get("ranking_explanation"):
+                write(f"     {trial['ranking_explanation']}")
     removed = [
         item
         for item in screening["final_decisions"]
@@ -145,6 +156,10 @@ def _candidate_metadata(prepared: PreparedGeneralCase) -> dict[str, object]:
             item.source.trial_id for item in prepared.candidate_hits
         ],
         "candidate_search_method": prepared.candidate_hits[0].retrieval_method,
+        "candidate_ranking": [
+            item.model_dump(mode="json")
+            for item in prepared.case.candidate_ranking
+        ],
     }
 
 
@@ -162,6 +177,11 @@ def _prepare_session(
             sources,
             candidate_search=options.candidate_search,
             search_depth=options.candidate_search_depth,
+            fixed_candidate_ranking=(
+                None
+                if options.fixed_candidate_ranking is None
+                else list(options.fixed_candidate_ranking)
+            ),
         )
         store = SessionStore(
             session_path,
@@ -173,6 +193,7 @@ def _prepare_session(
                     "trials_path": str(options.trials_path),
                     "model": model_label,
                     "action_budget": options.settings.max_external_actions,
+                    **dict(options.session_metadata or {}),
                     **_candidate_metadata(prepared),
                 },
             ),
@@ -190,8 +211,25 @@ def _prepare_session(
             patient_choice=options.approve_patient_choice,
             clinician_authorization=options.authorize_clinician,
         )
+    saved_candidate_ranking = store.session.metadata.get("candidate_ranking")
+    if isinstance(saved_candidate_ranking, list):
+        try:
+            ranking = [
+                TrialSearchRank.model_validate(item)
+                for item in saved_candidate_ranking
+            ]
+        except (TypeError, ValueError):
+            ranking = []
+    else:
+        ranking = []
     saved_candidate_ids = store.session.metadata.get("candidate_trial_ids")
-    if isinstance(saved_candidate_ids, list) and all(
+    if ranking:
+        prepared = prepare_general_case(
+            patient,
+            sources,
+            fixed_candidate_ranking=ranking,
+        )
+    elif isinstance(saved_candidate_ids, list) and all(
         isinstance(item, str) for item in saved_candidate_ids
     ):
         prepared = prepare_general_case(
@@ -278,6 +316,7 @@ def run_general_screening(
     medical_disclaimer: str,
     read: Callable[[str], str] = input,
     write: Callable[[str], None] = print,
+    trace: TraceRecorder | None = None,
 ) -> GeneralRunOutcome:
     patient = load_general_patient(options.patient_path)
     sources = load_structured_trials(options.trials_path)
@@ -304,7 +343,7 @@ def run_general_screening(
     run_settings = options.settings.model_copy(
         update={"max_external_actions": remaining_actions}
     )
-    recorder = TraceRecorder(case.case_id)
+    recorder = trace or TraceRecorder(case.case_id)
     recorder.record(
         cycle=0,
         actor="candidate_trial_search",
@@ -367,7 +406,7 @@ def run_general_screening(
 
     usage = summarize_model_usage(recorder)
     result_document = {
-        "run_mode": (
+        "run_mode": options.run_mode or (
             "general_structured_synthetic_answers"
             if options.answers_path is not None
             else "general_structured_interactive"
@@ -382,6 +421,7 @@ def run_general_screening(
             ],
             "resumed": options.resume_path is not None,
             "previous_action_count": previous_action_count,
+            **dict(options.session_metadata or {}),
         },
         "screening": screening.model_dump(mode="json"),
         "usage": usage.model_dump(mode="json"),
