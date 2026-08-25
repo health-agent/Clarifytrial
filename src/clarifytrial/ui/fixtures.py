@@ -57,6 +57,18 @@ _PATIENT_ANSWER_TOKENS = (
 )
 
 
+def _condition_for_group(document: dict[str, Any], group_id: str) -> str:
+    for group in document.get("groups", []):
+        if str(group.get("group_id")) != group_id:
+            continue
+        condition = group.get("search_condition") or group.get("group_label")
+        if condition:
+            return str(condition)
+    if group_id in _GROUP_CONDITIONS:
+        return _GROUP_CONDITIONS[group_id]
+    raise ValueError(f"trial set has no search condition for group: {group_id}")
+
+
 def _categorical_value(value: object) -> float:
     normalized = str(value).strip().casefold()
     if normalized in {"present", "diagnosed", "true"}:
@@ -120,7 +132,7 @@ def _trial_sources(document: dict[str, Any]) -> tuple[TrialProtocolSource, ...]:
                 trial_id=trial_id,
                 title=str(trial["title"]),
                 conditions=[
-                    _GROUP_CONDITIONS[group_id],
+                    _condition_for_group(document, group_id),
                     str(trial["group_label"]),
                 ],
                 summary=str(trial["title"]),
@@ -180,6 +192,17 @@ def _screening_trials(
             unit=unit,
         )
         trial = metadata[trial_id]
+        if row.get("evidence_source_type") and row.get("verification_status"):
+            evidence_requirement = EvidenceRequirement(
+                allowed_source_types=[
+                    EvidenceSourceType(str(row["evidence_source_type"]))
+                ],
+                allowed_verification_statuses=[
+                    VerificationStatus(str(row["verification_status"]))
+                ],
+            )
+        else:
+            evidence_requirement = _sufficient_evidence_requirement(fact_code)
         criteria_by_trial[trial_id].append(
             TrialCriterion(
                 criterion_id=str(row["criterion_id"]),
@@ -191,7 +214,7 @@ def _screening_trials(
                 ),
                 required=True,
                 numeric_constraint=numeric,
-                evidence_requirement=_sufficient_evidence_requirement(fact_code),
+                evidence_requirement=evidence_requirement,
             )
         )
     return [
@@ -250,7 +273,7 @@ def build_integrated_ui_fixture(
         raise ValueError(f"unknown patient ID: {patient_id}")
 
     group_id = str(pair["group_id"])
-    condition = _GROUP_CONDITIONS[group_id]
+    condition = _condition_for_group(trial_document, group_id)
     all_sources = _trial_sources(trial_document)
     group_sources = tuple(
         source
@@ -293,7 +316,15 @@ def build_integrated_ui_fixture(
             raise ValueError("synthetic verification answer needs a concept")
         answer_by_key[answer.concept.rsplit(":", 1)[-1]] = answer
 
-    options = []
+    raw_options = pair["insufficient_evidence_episode"].get(
+        "acquisition_options"
+    )
+    if raw_options is None:
+        options: list[AcquisitionOption] = []
+    else:
+        options = [AcquisitionOption.model_validate(item) for item in raw_options]
+        requested_fact_ids = {request.fact_id for request in requests}
+        options = [item for item in options if item.fact_id in requested_fact_ids]
     hidden_answers = []
     for request in requests:
         fact_key = request.fact_id.rsplit(":", 1)[-1]
@@ -304,7 +335,10 @@ def build_integrated_ui_fixture(
             [item.value for item in request.acceptable_actions],
             answer.source_type,
         )
-        options.append(_acquisition_option(request=request, action=action))
+        if raw_options is None:
+            options.append(_acquisition_option(request=request, action=action))
+        elif not any(item.fact_id == request.fact_id for item in options):
+            raise ValueError(f"missing acquisition option for {request.fact_id}")
         hidden_answers.append(
             HiddenFactAnswer(
                 fact_id=request.fact_id,

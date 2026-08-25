@@ -321,6 +321,9 @@ ClarifyTrial은 새로 받은 정보를 임상시험 조건에 반영한다. 결
 20. 완료 — 답 하나를 얻지 못한 상황에서 같은 정보를 반복하지 않는지 평가
 21. 완료 — 팀 시험 1,931건 변환, 모집 상태 필터와 10개 질환군·50건 선택
 22. 완료 — 긴 시험 원문과 많은 조건 분할, 빠진 조건 재요청과 중단된 일괄 평가 재개
+23. 완료 — 질환 10개·합성 시험 50개·합성 환자 50명의 성숙도 점검 자료
+24. 완료 — 후보 보존, 질문 뒤 실제 후보 확정과 결국 제외되는 후보를 별도 집계
+25. 완료 — 실제 공개 조건·넓은 검색·외부 모델까지 포함됐는지 준비 상태 점검
 
 ### 범용 실행과 전체 평가 명령
 
@@ -341,6 +344,31 @@ ClarifyTrial은 새로 받은 정보를 임상시험 조건에 반영한다. 결
   --concurrency 4 `
   --include-unavailable-scenario `
   --output runs\full-workflow-evaluation-v2
+
+# 넓은 합성 성숙도 점검 자료 생성과 자체 확인
+.\.venv\Scripts\clarifytrial.exe build-broad-rescue-dataset
+.\.venv\Scripts\clarifytrial.exe audit-broad-rescue-dataset
+
+# 넓은 합성자료의 전체 흐름 실행
+.\.venv\Scripts\clarifytrial.exe run-workflow-evaluation `
+  --trial-set data\broad_rescue_maturity_v1\trial_set.json `
+  --patient-pairs data\broad_rescue_maturity_v1\patient_pairs.json `
+  --generation-config configs\broad_rescue_maturity_v1.json `
+  --provider deterministic `
+  --split heldout `
+  --action-budget 3 `
+  --concurrency 4 `
+  --include-unavailable-scenario `
+  --include-patient-choice-scenario `
+  --approve-synthetic-actions `
+  --output runs\broad-rescue-maturity
+
+# 최종 성능평가 준비 상태 확인
+.\.venv\Scripts\clarifytrial.exe audit-final-evaluation-readiness `
+  --trial-set data\broad_rescue_maturity_v1\trial_set.json `
+  --patient-pairs data\broad_rescue_maturity_v1\patient_pairs.json `
+  --workflow runs\broad-rescue-maturity\summary.json `
+  --output runs\broad-rescue-maturity\readiness
 
 # 저장된 실험 결과에서 표와 그림 생성
 .\.venv\Scripts\clarifytrial.exe build-report `

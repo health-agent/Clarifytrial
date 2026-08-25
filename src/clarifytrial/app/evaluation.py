@@ -26,6 +26,7 @@ from ..environment import (
 )
 from ..llm import StructuredModel
 from ..io import atomic_write_text
+from ..interactive.burden_contracts import PatientBurdenInput
 from ..preparation import summarize_model_usage
 from ..settings import EpisodeSettings
 from ..trace import TraceRecorder
@@ -143,6 +144,18 @@ def _metrics(
         final.get(item, (None, None))[1] == gold[item][1] for item in trial_ids
     )
     resolved_states = {"confirmed", "ineligible"}
+    rescue_opportunities = {
+        item
+        for item in trial_ids
+        if gold[item] == ("retain", "confirmed")
+        and initial.get(item) != ("retain", "confirmed")
+    }
+    false_preservations = {
+        item
+        for item in trial_ids
+        if initial.get(item) == ("retain", "not_confirmed")
+        and gold[item] == ("remove", "ineligible")
+    }
     return {
         "trial_count": len(trial_ids),
         "exact_trial_status_count": exact,
@@ -173,6 +186,20 @@ def _metrics(
             and final.get(item, (None, "uncertain"))[1] not in resolved_states
             for item in trial_ids
         ),
+        "rescue_opportunity_count": len(rescue_opportunities),
+        "candidate_preservation_count": sum(
+            initial.get(item, (None, None))[0] == "retain"
+            for item in rescue_opportunities
+        ),
+        "confirmed_rescue_count": sum(
+            final.get(item) == ("retain", "confirmed")
+            for item in rescue_opportunities
+        ),
+        "false_preservation_count": len(false_preservations),
+        "false_preservation_resolved_count": sum(
+            final.get(item) == ("remove", "ineligible")
+            for item in false_preservations
+        ),
     }
 
 
@@ -187,6 +214,22 @@ def _aggregate(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
         if not items:
             continue
         trial_count = sum(item["metrics"]["trial_count"] for item in items)
+        rescue_opportunities = sum(
+            item["metrics"]["rescue_opportunity_count"] for item in items
+        )
+        preserved = sum(
+            item["metrics"]["candidate_preservation_count"] for item in items
+        )
+        rescued = sum(
+            item["metrics"]["confirmed_rescue_count"] for item in items
+        )
+        false_preservations = sum(
+            item["metrics"]["false_preservation_count"] for item in items
+        )
+        false_resolved = sum(
+            item["metrics"]["false_preservation_resolved_count"]
+            for item in items
+        )
         result.append(
             {
                 "arm": arm,
@@ -232,6 +275,33 @@ def _aggregate(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
                 "resolved_to_unresolved": sum(
                     item["metrics"]["resolved_to_unresolved"] for item in items
                 ),
+                "rescue_opportunity_count": rescue_opportunities,
+                "candidate_preservation_count": preserved,
+                "candidate_preservation_rate": (
+                    preserved / rescue_opportunities
+                    if rescue_opportunities
+                    else None
+                ),
+                "confirmed_rescue_count": rescued,
+                "confirmed_rescue_rate": (
+                    rescued / rescue_opportunities
+                    if rescue_opportunities
+                    else None
+                ),
+                "false_preservation_count": false_preservations,
+                "false_preservation_resolved_count": false_resolved,
+                "false_preservation_resolution_rate": (
+                    false_resolved / false_preservations
+                    if false_preservations
+                    else None
+                ),
+                "new_test_count": sum(item.get("new_test_count", 0) for item in items),
+                "additional_visit_count": sum(
+                    item.get("additional_visit_count", 0) for item in items
+                ),
+                "patient_choice_action_count": sum(
+                    item.get("patient_choice_action_count", 0) for item in items
+                ),
                 "model_call_count": sum(item["usage"]["call_count"] for item in items),
                 "total_tokens": sum(item["usage"]["total_tokens"] for item in items),
                 "total_latency_ms": sum(item["total_latency_ms"] for item in items),
@@ -254,10 +324,25 @@ def _aggregate_by_group(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
     groups = sorted({str(item["group_id"]) for item in rows})
     result = []
     for group_id in groups:
-        for arm_metrics in _aggregate(
-            [item for item in rows if str(item["group_id"]) == group_id]
-        ):
-            result.append({"group_id": group_id, **arm_metrics})
+        group_rows = [
+            item for item in rows if str(item["group_id"]) == group_id
+        ]
+        group_label = next(
+            (
+                str(item["group_label"])
+                for item in group_rows
+                if item.get("group_label")
+            ),
+            group_id,
+        )
+        for arm_metrics in _aggregate(group_rows):
+            result.append(
+                {
+                    "group_id": group_id,
+                    "group_label": group_label,
+                    **arm_metrics,
+                }
+            )
     return result
 
 
@@ -333,6 +418,27 @@ def _decision_separation_summary(pairs: Sequence[dict[str, Any]]) -> dict[str, A
     }
 
 
+def _least_connected_fact_id(fixture: Any) -> str:
+    criterion_to_trial = {
+        criterion.criterion_id: trial.trial_id
+        for trial in fixture.screening_case.trials
+        for criterion in trial.criteria
+    }
+    request = min(
+        fixture.screening_case.evidence_requests,
+        key=lambda item: (
+            len(
+                {
+                    criterion_to_trial[criterion_id]
+                    for criterion_id in item.related_criterion_ids
+                }
+            ),
+            item.fact_id,
+        ),
+    )
+    return request.fact_id
+
+
 def run_full_workflow_evaluation(
     *,
     trial_set_path: str | Path,
@@ -349,12 +455,19 @@ def run_full_workflow_evaluation(
     max_cycles: int = 12,
     concurrency: int = 1,
     include_unavailable_scenario: bool = False,
+    include_patient_choice_scenario: bool = False,
+    approve_synthetic_actions: bool = False,
     resume: bool = False,
     progress: Any = print,
 ) -> dict[str, Any]:
     if concurrency < 1:
         raise ValueError("concurrency must be at least one")
     pairs_document = json.loads(Path(patient_pairs_path).read_text(encoding="utf-8"))
+    group_label_by_id = {
+        str(item["group_id"]): str(item["group_label"])
+        for item in pairs_document.get("groups", [])
+        if item.get("group_label")
+    }
     requested = set(patient_ids)
     pairs = [
         item
@@ -371,7 +484,7 @@ def run_full_workflow_evaluation(
     case_path = output_dir / "cases.jsonl"
     manifest_path = output_dir / "run-manifest.json"
     manifest = {
-        "protocol_id": "clarifytrial-full-workflow-evaluation-v2",
+        "protocol_id": "clarifytrial-full-workflow-evaluation-v3",
         "model": model_label,
         "split": split,
         "patient_ids": [str(item["patient_id"]) for item in pairs],
@@ -379,6 +492,13 @@ def run_full_workflow_evaluation(
         "max_selective_reviews": max_selective_reviews,
         "max_cycles": max_cycles,
         "include_unavailable_scenario": include_unavailable_scenario,
+        "include_patient_choice_scenario": include_patient_choice_scenario,
+        "approve_synthetic_actions": approve_synthetic_actions,
+        "unavailable_answer_selection": (
+            "fewest_connected_trials_then_fact_id"
+            if include_unavailable_scenario
+            else None
+        ),
         "arms": list(_ARMS),
         "inputs": {
             "trial_set_sha256": _file_sha256(trial_set_path),
@@ -420,11 +540,36 @@ def run_full_workflow_evaluation(
         initial_gold = pair["insufficient_evidence_episode"][
             "expected_trial_decisions"
         ]
-        scenarios: list[tuple[str, frozenset[str]]] = [("all_answers_available", frozenset())]
+        scenarios: list[
+            tuple[str, frozenset[str], PatientBurdenInput | None]
+        ] = [("all_answers_available", frozenset(), None)]
         if include_unavailable_scenario:
-            first_fact_id = fixture.screening_case.evidence_requests[0].fact_id
-            scenarios.append(("one_answer_unavailable", frozenset({first_fact_id})))
-        for scenario, unavailable_fact_ids in scenarios:
+            unavailable_fact_id = _least_connected_fact_id(fixture)
+            scenarios.append(
+                (
+                    "one_answer_unavailable",
+                    frozenset({unavailable_fact_id}),
+                    None,
+                )
+            )
+        if include_patient_choice_scenario:
+            scenarios.append(
+                (
+                    "patient_declines_new_tests",
+                    frozenset(),
+                    PatientBurdenInput.model_validate(
+                        {
+                            "preference_mode": "least_extra_burden",
+                            "stated_limits": {
+                                "max_additional_visits": 0,
+                                "allow_new_tests": False,
+                                "allow_treatment_change": False,
+                            },
+                        }
+                    ),
+                )
+            )
+        for scenario, unavailable_fact_ids, burden_input in scenarios:
             for arm, arm_spec in _ARMS.items():
                 key = (patient_id, scenario, arm)
                 if key in completed_keys:
@@ -439,21 +584,46 @@ def run_full_workflow_evaluation(
                     question_policy=arm_spec["question_policy"],
                 )
                 try:
+                    screening_case = fixture.screening_case.model_copy(
+                        update={"patient_burden_input": burden_input}
+                    )
                     result = PatientScreeningRunner(_agents(model), settings).run(
-                        fixture.screening_case,
+                        screening_case,
                         _tools(
                             fixture,
                             unavailable_fact_ids=unavailable_fact_ids,
                         ),
                         trace=trace,
+                        patient_approved_option_ids=(
+                            {
+                                option.option_id
+                                for option in fixture.screening_case.acquisition_options
+                                if option.requires_patient_choice
+                            }
+                            if approve_synthetic_actions
+                            else None
+                        ),
+                        clinician_authorized_option_ids=(
+                            {
+                                option.option_id
+                                for option in fixture.screening_case.acquisition_options
+                                if option.requires_clinician_authorization
+                            }
+                            if approve_synthetic_actions
+                            else None
+                        ),
                     )
                 except Exception as error:
                     row = {
                         "patient_id": patient_id,
                         "group_id": str(pair["group_id"]),
+                        "group_label": group_label_by_id.get(
+                            str(pair["group_id"]), str(pair["group_id"])
+                        ),
                         "split": split,
                         "scenario": scenario,
                         "unavailable_fact_ids": sorted(unavailable_fact_ids),
+                        "patient_choice_scenario": scenario,
                         "arm": arm,
                         "status": "failed",
                         "error_type": type(error).__name__,
@@ -474,9 +644,17 @@ def run_full_workflow_evaluation(
                         item.agent_action.target_fact_id
                         for item in result.action_history
                     ]
+                    selected_options = [
+                        item.acquisition_decision.selected_option
+                        for item in result.action_history
+                        if item.acquisition_decision.selected_option is not None
+                    ]
                     row = {
                         "patient_id": patient_id,
                         "group_id": str(pair["group_id"]),
+                        "group_label": group_label_by_id.get(
+                            str(pair["group_id"]), str(pair["group_id"])
+                        ),
                         "split": split,
                         "scenario": scenario,
                         "unavailable_fact_ids": sorted(unavailable_fact_ids),
@@ -485,6 +663,18 @@ def run_full_workflow_evaluation(
                         "stop_reason": result.stop_reason.value,
                         "action_count": len(result.action_history),
                         "selected_fact_ids": selected_fact_ids,
+                        "selected_option_ids": [
+                            item.option_id for item in selected_options
+                        ],
+                        "new_test_count": sum(
+                            item.new_test_required for item in selected_options
+                        ),
+                        "additional_visit_count": sum(
+                            item.visit_required is True for item in selected_options
+                        ),
+                        "patient_choice_action_count": sum(
+                            item.requires_patient_choice for item in selected_options
+                        ),
                         "unavailable_action_count": sum(
                             item.tool_result.status.value == "not_available"
                             for item in result.action_history
@@ -553,8 +743,13 @@ def run_full_workflow_evaluation(
     unavailable_rows = [
         item for item in rows if item.get("scenario") == "one_answer_unavailable"
     ]
+    patient_choice_rows = [
+        item
+        for item in rows
+        if item.get("scenario") == "patient_declines_new_tests"
+    ]
     payload = {
-        "protocol_id": "clarifytrial-full-workflow-evaluation-v2",
+        "protocol_id": "clarifytrial-full-workflow-evaluation-v3",
         "model": model_label,
         "split": split,
         "patient_count": len(pairs),
@@ -562,6 +757,13 @@ def run_full_workflow_evaluation(
         "action_budget": action_budget,
         "concurrency": concurrency,
         "include_unavailable_scenario": include_unavailable_scenario,
+        "include_patient_choice_scenario": include_patient_choice_scenario,
+        "approve_synthetic_actions": approve_synthetic_actions,
+        "unavailable_answer_selection": (
+            "fewest_connected_trials_then_fact_id"
+            if include_unavailable_scenario
+            else None
+        ),
         "resumed": resume,
         "case_results": str(case_path),
         "evaluation_scope": {
@@ -574,6 +776,9 @@ def run_full_workflow_evaluation(
         "group_metrics": _aggregate_by_group(normal_rows),
         "unavailable_answer_metrics": (
             _aggregate(unavailable_rows) if unavailable_rows else []
+        ),
+        "patient_declines_new_tests_metrics": (
+            _aggregate(patient_choice_rows) if patient_choice_rows else []
         ),
         "decision_separation": _decision_separation_summary(pairs),
         "paired_clarifytrial_vs_fixed": _paired(

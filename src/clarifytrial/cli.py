@@ -60,6 +60,10 @@ from .datasets import (
     summarize_trialgpt_rows,
 )
 from .datasets.team_expansion import select_team_evaluation_trials
+from .datasets.broad_rescue import (
+    audit_broad_rescue_dataset,
+    build_broad_rescue_dataset,
+)
 from .datasets.natural_ai_review import (
     build_conservative_natural_ai_gold,
     run_natural_evaluation_ai_review,
@@ -107,7 +111,7 @@ from .retrieval import (
     TrialGPTRuntimeSearch,
     run_trialgpt_retrieval,
 )
-from .reporting import build_research_report
+from .reporting import build_final_evaluation_readiness, build_research_report
 from .preparation import (
     CandidateSearch,
     InMemoryCandidateSearch,
@@ -880,6 +884,22 @@ def _parser() -> argparse.ArgumentParser:
         ),
     )
     workflow_evaluation.add_argument(
+        "--approve-synthetic-actions",
+        action="store_true",
+        help=(
+            "approve patient-choice and clinician-authorization gates that "
+            "are declared inside a fully synthetic evaluation dataset"
+        ),
+    )
+    workflow_evaluation.add_argument(
+        "--include-patient-choice-scenario",
+        action="store_true",
+        help=(
+            "also run the same synthetic cases with new tests and additional "
+            "visits declined"
+        ),
+    )
+    workflow_evaluation.add_argument(
         "--resume",
         action="store_true",
         help="reuse completed patient and comparison runs in the output directory",
@@ -1300,6 +1320,44 @@ def _parser() -> argparse.ArgumentParser:
         / "preliminary_patient_pairs.json",
     )
 
+    broad_rescue = commands.add_parser(
+        "build-broad-rescue-dataset",
+        help=(
+            "build ten-disease synthetic patients with both recoverable and "
+            "ineligible outcomes for workflow maturity testing"
+        ),
+    )
+    broad_rescue.add_argument(
+        "--config",
+        type=Path,
+        default=Path("configs") / "broad_rescue_maturity_v1.json",
+    )
+    broad_rescue.add_argument(
+        "--output",
+        type=Path,
+        default=Path("data") / "broad_rescue_maturity_v1",
+    )
+
+    audit_broad_rescue = commands.add_parser(
+        "audit-broad-rescue-dataset",
+        help="rebuild and compare every declared broad synthetic case",
+    )
+    audit_broad_rescue.add_argument(
+        "--config",
+        type=Path,
+        default=Path("configs") / "broad_rescue_maturity_v1.json",
+    )
+    audit_broad_rescue.add_argument(
+        "--trial-set",
+        type=Path,
+        default=Path("data") / "broad_rescue_maturity_v1" / "trial_set.json",
+    )
+    audit_broad_rescue.add_argument(
+        "--patient-pairs",
+        type=Path,
+        default=Path("data") / "broad_rescue_maturity_v1" / "patient_pairs.json",
+    )
+
     natural_records = commands.add_parser(
         "build-natural-evaluation-records",
         help="render the paired facts as synthetic record entries and prose",
@@ -1674,6 +1732,18 @@ def _parser() -> argparse.ArgumentParser:
     report.add_argument("--split", default="heldout")
     report.add_argument("--input-state", default="fully_missing")
     report.add_argument("--action-budget", type=int, default=3)
+
+    readiness = commands.add_parser(
+        "audit-final-evaluation-readiness",
+        help=(
+            "check synthetic breadth, connected rescue behavior, failure "
+            "fallback, public criteria, broad search, and model execution"
+        ),
+    )
+    readiness.add_argument("--trial-set", required=True, type=Path)
+    readiness.add_argument("--patient-pairs", required=True, type=Path)
+    readiness.add_argument("--workflow", required=True, type=Path)
+    readiness.add_argument("--output", required=True, type=Path)
     return parser
 
 
@@ -1907,6 +1977,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             "max_cycles": args.max_cycles,
             "concurrency": args.concurrency,
             "include_unavailable_scenario": args.include_unavailable_scenario,
+            "include_patient_choice_scenario": (
+                args.include_patient_choice_scenario
+            ),
+            "approve_synthetic_actions": args.approve_synthetic_actions,
             "resume": args.resume,
         }
         if args.provider == "deterministic":
@@ -2210,6 +2284,33 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"{result['verification_recovery_mismatch_count']}"
         )
         return 0
+    if args.command == "build-broad-rescue-dataset":
+        result = build_broad_rescue_dataset(
+            config_path=args.config,
+            output_dir=args.output,
+        )
+        print(f"trial_set: {result['trial_set']}")
+        print(f"patient_pairs: {result['patient_pairs']}")
+        print(
+            f"groups={result['group_count']} trials={result['trial_count']} "
+            f"patients={result['patient_count']} "
+            f"patient_trial_pairs={result['patient_trial_pair_count']} "
+            f"confirmed={result['complete_confirmed_candidate_count']} "
+            f"ineligible={result['complete_ineligible_count']}"
+        )
+        return 0
+    if args.command == "audit-broad-rescue-dataset":
+        result = audit_broad_rescue_dataset(
+            config_path=args.config,
+            trial_set_path=args.trial_set,
+            patient_pairs_path=args.patient_pairs,
+        )
+        print(
+            f"passed={result['passed']} groups={result['group_count']} "
+            f"trials={result['trial_count']} patients={result['patient_count']} "
+            f"patient_trial_pairs={result['patient_trial_pair_count']}"
+        )
+        return 0
     if args.command == "build-natural-evaluation-records":
         result = build_natural_evaluation_records(
             patient_pairs_path=args.patient_pairs,
@@ -2311,6 +2412,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         print(f"report: {result['report']}")
         print(f"metrics: {result['metric_count']}")
+        return 0
+    if args.command == "audit-final-evaluation-readiness":
+        result = build_final_evaluation_readiness(
+            trial_set_path=args.trial_set,
+            patient_pairs_path=args.patient_pairs,
+            workflow_summary_path=args.workflow,
+            output_dir=args.output,
+        )
+        print(
+            "software_ready="
+            f"{result['software_ready_for_source_anchored_evaluation']} "
+            "final_performance_ready="
+            f"{result['final_performance_claim_ready']}"
+        )
+        print(f"report: {args.output / 'readiness.md'}")
         return 0
     if args.command == "run-trialgpt-pilot":
         if not args.confirm_live_api:

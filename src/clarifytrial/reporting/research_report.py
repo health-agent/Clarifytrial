@@ -271,6 +271,63 @@ def build_research_report(
                 metric_rows.append(
                     {"section": "full_workflow", "arm": row["arm"], "metric": name, "value": row[name]}
                 )
+        if all(
+            "rescue_opportunity_count" in row
+            for row in workflow["arm_metrics"]
+        ):
+            sections.extend(
+                [
+                    "",
+                    "### 추가 확인 후보를 보존하고 실제 후보로 되돌린 결과",
+                    "",
+                    "처음 화면에서 현재 확인이 끝난 시험만 보여 주면 보이지 않을 시험 가운데, 모든 정보를 확인했을 때 실제 참가 가능 후보였던 경우를 `되살릴 수 있었던 후보`로 계산했다. 반대로 처음에는 후보로 남았지만 모든 정보를 확인하면 제외되는 시험도 따로 셌다.",
+                    "",
+                    "| 부족한 정보를 처리한 방법 | 되살릴 수 있었던 후보 | 추가 확인 후보로 보존 | 질문 뒤 실제 후보로 확정 | 결국 제외될 후보를 처음에 보존 | 질문 뒤 제외로 정리 | 새 검사·추가 방문 |",
+                    "|---|---:|---:|---:|---:|---:|---:|",
+                ]
+            )
+            for row in workflow["arm_metrics"]:
+                rescue_rate = row["confirmed_rescue_rate"]
+                false_resolution_rate = row["false_preservation_resolution_rate"]
+                rescue_rate_text = (
+                    "—" if rescue_rate is None else f"{rescue_rate:.1%}"
+                )
+                false_rate_text = (
+                    "—"
+                    if false_resolution_rate is None
+                    else f"{false_resolution_rate:.1%}"
+                )
+                sections.append(
+                    f"| {arm_labels.get(row['arm'], row['arm'])} | "
+                    f"{row['rescue_opportunity_count']}개 | "
+                    f"{row['candidate_preservation_count']}개 | "
+                    f"{row['confirmed_rescue_count']}개 "
+                    f"({rescue_rate_text}) | "
+                    f"{row['false_preservation_count']}개 | "
+                    f"{row['false_preservation_resolved_count']}개 "
+                    f"({false_rate_text}) | "
+                    f"{row.get('new_test_count', 0)}회·"
+                    f"{row.get('additional_visit_count', 0)}회 |"
+                )
+                for name in (
+                    "rescue_opportunity_count",
+                    "candidate_preservation_count",
+                    "confirmed_rescue_count",
+                    "confirmed_rescue_rate",
+                    "false_preservation_count",
+                    "false_preservation_resolved_count",
+                    "false_preservation_resolution_rate",
+                    "new_test_count",
+                    "additional_visit_count",
+                ):
+                    metric_rows.append(
+                        {
+                            "section": "candidate_rescue",
+                            "arm": row["arm"],
+                            "metric": name,
+                            "value": row.get(name, 0),
+                        }
+                    )
         sections.extend(
             [
                 "",
@@ -357,8 +414,14 @@ def build_research_report(
                 current = rows_for_group.get("clarifytrial")
                 if immediate is None or current is None:
                     continue
+                reported_label = current.get("group_label")
+                group_label = (
+                    reported_label
+                    if reported_label and reported_label != group_id
+                    else group_labels.get(group_id, group_id)
+                )
                 sections.append(
-                    f"| {group_labels.get(group_id, group_id)} | "
+                    f"| {group_label} | "
                     f"{immediate['trial_status_recovery']:.1%} | "
                     f"{current['trial_status_recovery']:.1%} |"
                 )
@@ -401,6 +464,31 @@ def build_research_report(
                 [
                     "",
                     "답을 얻지 못하면 판단 완료율은 낮아지지만, 현재 실행에서는 얻지 못한 같은 정보를 다시 확인하지 않고 남은 정보로 넘어갔다.",
+                ]
+            )
+        declined_metrics = workflow.get("patient_declines_new_tests_metrics")
+        if isinstance(declined_metrics, list) and declined_metrics:
+            normal_current = next(
+                row
+                for row in workflow["arm_metrics"]
+                if row["arm"] == "clarifytrial"
+            )
+            declined_current = next(
+                row for row in declined_metrics if row["arm"] == "clarifytrial"
+            )
+            sections.extend(
+                [
+                    "",
+                    "### 환자가 새 검사와 추가 방문을 원하지 않은 경우",
+                    "",
+                    "같은 합성 환자에게 새 검사와 추가 방문을 허용한 경우와 허용하지 않은 경우를 따로 실행했다.",
+                    "",
+                    "| 환자 선택 | 실제 후보로 확정 | 결국 제외될 후보를 정리 | 새 검사 | 추가 방문 |",
+                    "|---|---:|---:|---:|---:|",
+                    f"| 새 검사를 허용 | {normal_current['confirmed_rescue_count']}/{normal_current['rescue_opportunity_count']}개 | {normal_current['false_preservation_resolved_count']}/{normal_current['false_preservation_count']}개 | {normal_current['new_test_count']}회 | {normal_current['additional_visit_count']}회 |",
+                    f"| 새 검사와 추가 방문을 거절 | {declined_current['confirmed_rescue_count']}/{declined_current['rescue_opportunity_count']}개 | {declined_current['false_preservation_resolved_count']}/{declined_current['false_preservation_count']}개 | {declined_current['new_test_count']}회 | {declined_current['additional_visit_count']}회 |",
+                    "",
+                    "환자가 허용하지 않은 확인 방법을 사용해 회복률을 높이지 않는다. 확인하지 못한 정보가 남아 실제 후보 확정 수가 낮아질 수 있으므로 두 결과를 함께 표시한다.",
                 ]
             )
         workflow_total_tokens = sum(row["total_tokens"] for row in workflow["arm_metrics"])

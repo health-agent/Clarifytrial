@@ -1,0 +1,308 @@
+{
+  "protocol_id": "clarifytrial-broad-rescue-maturity-v1",
+  "as_of": "2026-08-25T12:00:00+09:00",
+  "profiles_per_group": 5,
+  "development_profiles_per_group": 2,
+  "groups": [
+    {
+      "group_id": "bladder_cancer",
+      "group_label": "방광암",
+      "search_condition": "bladder cancer",
+      "layout_variant": "A",
+      "measure": {
+        "fact_code": "creatinine_clearance",
+        "description": "크레아티닌 청소율",
+        "unit": "mL/min",
+        "operator": "gte",
+        "thresholds": [30, 40, 50],
+        "values": [65, 35, 55, 45, 70],
+        "acquisition_mode": "existing_official_result"
+      },
+      "history": {
+        "fact_code": "biopsy_confirmed_urothelial_carcinoma",
+        "description": "조직검사로 확인된 요로상피암",
+        "values": [1, 1, 0, 1, 1]
+      },
+      "choice": {
+        "fact_code": "willing_to_receive_bladder_radiotherapy",
+        "description": "방광 방사선치료 참여 의사",
+        "values": [1, 1, 1, 0, 1]
+      },
+      "risk": {
+        "fact_code": "current_pregnancy",
+        "description": "현재 임신",
+        "values": [0, 0, 0, 0, 1]
+      }
+    },
+    {
+      "group_id": "pulmonary_fibrosis",
+      "group_label": "폐섬유증",
+      "search_condition": "pulmonary fibrosis",
+      "layout_variant": "B",
+      "measure": {
+        "fact_code": "fvc_percent_predicted",
+        "description": "예측치 대비 노력성 폐활량",
+        "unit": "%",
+        "operator": "gte",
+        "thresholds": [40, 45, 50],
+        "values": [70, 42, 55, 47, 65],
+        "acquisition_mode": "new_noninvasive_test"
+      },
+      "history": {
+        "fact_code": "stable_antifibrotic_treatment",
+        "description": "안정적으로 유지한 항섬유화 치료",
+        "values": [1, 1, 0, 1, 1]
+      },
+      "choice": {
+        "fact_code": "willing_to_complete_lung_function_test",
+        "description": "폐기능검사 참여 의사",
+        "values": [1, 1, 1, 0, 1]
+      },
+      "risk": {
+        "fact_code": "recent_ipf_exacerbation",
+        "description": "최근 폐섬유증 급성 악화",
+        "values": [0, 0, 0, 0, 1]
+      }
+    },
+    {
+      "group_id": "acute_pancreatitis",
+      "group_label": "급성 췌장염",
+      "search_condition": "acute pancreatitis",
+      "layout_variant": "C",
+      "measure": {
+        "fact_code": "pain_free_interval_days",
+        "description": "마지막 급성 췌장염 뒤 통증이 없었던 기간",
+        "unit": "days",
+        "operator": "gte",
+        "thresholds": [14, 30, 60],
+        "values": [90, 20, 45, 35, 75],
+        "acquisition_mode": "internal_record"
+      },
+      "history": {
+        "fact_code": "recurrent_pancreatitis_diagnosis",
+        "description": "반복성 췌장염 진단",
+        "values": [1, 1, 0, 1, 1]
+      },
+      "choice": {
+        "fact_code": "willing_to_attend_pancreas_followup",
+        "description": "췌장 진료 추적 참여 의사",
+        "values": [1, 1, 1, 0, 1]
+      },
+      "risk": {
+        "fact_code": "active_pancreatic_infection",
+        "description": "현재 활동성 췌장 감염",
+        "values": [0, 0, 0, 0, 1]
+      }
+    },
+    {
+      "group_id": "thyroid_eye_disease",
+      "group_label": "갑상선 안병증",
+      "search_condition": "thyroid eye disease",
+      "layout_variant": "A",
+      "measure": {
+        "fact_code": "thyroid_eye_disease_duration_months",
+        "description": "갑상선 안병증 증상 지속 기간",
+        "unit": "months",
+        "operator": "lte",
+        "thresholds": [36, 24, 18],
+        "values": [12, 30, 20, 25, 10],
+        "acquisition_mode": "internal_record"
+      },
+      "history": {
+        "fact_code": "active_thyroid_eye_disease",
+        "description": "활동성 갑상선 안병증",
+        "values": [1, 1, 0, 1, 1]
+      },
+      "choice": {
+        "fact_code": "willing_to_complete_eye_imaging",
+        "description": "안구 영상검사 참여 의사",
+        "values": [1, 1, 1, 0, 1]
+      },
+      "risk": {
+        "fact_code": "recent_orbital_radiotherapy",
+        "description": "최근 안와 방사선치료",
+        "values": [0, 0, 0, 0, 1]
+      }
+    },
+    {
+      "group_id": "nephrotic_syndrome",
+      "group_label": "신증후군",
+      "search_condition": "nephrotic syndrome",
+      "layout_variant": "B",
+      "measure": {
+        "fact_code": "urine_protein_creatinine_ratio",
+        "description": "소변 단백질-크레아티닌 비율",
+        "unit": "g/g",
+        "operator": "gte",
+        "thresholds": [1, 2, 3],
+        "values": [4, 1.5, 3.5, 2.5, 5],
+        "acquisition_mode": "new_noninvasive_test"
+      },
+      "history": {
+        "fact_code": "refractory_nephrotic_syndrome",
+        "description": "기존 치료에 반응하지 않은 신증후군",
+        "values": [1, 1, 0, 1, 1]
+      },
+      "choice": {
+        "fact_code": "willing_to_provide_urine_sample",
+        "description": "소변 검체 제공 의사",
+        "values": [1, 1, 1, 0, 1]
+      },
+      "risk": {
+        "fact_code": "active_serious_infection",
+        "description": "현재 중증 감염",
+        "values": [0, 0, 0, 0, 1]
+      }
+    },
+    {
+      "group_id": "migraine",
+      "group_label": "편두통",
+      "search_condition": "migraine",
+      "layout_variant": "C",
+      "measure": {
+        "fact_code": "migraine_days_per_month",
+        "description": "한 달 편두통 일수",
+        "unit": "days/month",
+        "operator": "gte",
+        "thresholds": [4, 8, 15],
+        "values": [18, 6, 12, 9, 20],
+        "acquisition_mode": "patient_report"
+      },
+      "history": {
+        "fact_code": "migraine_diagnosis",
+        "description": "편두통 진단",
+        "values": [1, 1, 0, 1, 1]
+      },
+      "choice": {
+        "fact_code": "willing_to_use_headache_diary",
+        "description": "두통 일지 작성 의사",
+        "values": [1, 1, 1, 0, 1]
+      },
+      "risk": {
+        "fact_code": "medication_overuse_headache",
+        "description": "약물 과용 두통",
+        "values": [0, 0, 0, 0, 1]
+      }
+    },
+    {
+      "group_id": "retinal_detachment",
+      "group_label": "망막박리",
+      "search_condition": "retinal detachment",
+      "layout_variant": "A",
+      "measure": {
+        "fact_code": "days_since_retinal_detachment_diagnosis",
+        "description": "망막박리 진단 뒤 지난 기간",
+        "unit": "days",
+        "operator": "lte",
+        "thresholds": [30, 14, 7],
+        "values": [5, 20, 10, 15, 3],
+        "acquisition_mode": "internal_record"
+      },
+      "history": {
+        "fact_code": "rhegmatogenous_retinal_detachment",
+        "description": "열공성 망막박리 진단",
+        "values": [1, 1, 0, 1, 1]
+      },
+      "choice": {
+        "fact_code": "willing_to_complete_retinal_imaging",
+        "description": "망막 영상검사 참여 의사",
+        "values": [1, 1, 1, 0, 1]
+      },
+      "risk": {
+        "fact_code": "active_eye_infection",
+        "description": "현재 활동성 안구 감염",
+        "values": [0, 0, 0, 0, 1]
+      }
+    },
+    {
+      "group_id": "chronic_pancreatitis",
+      "group_label": "만성 췌장염",
+      "search_condition": "chronic pancreatitis",
+      "layout_variant": "B",
+      "measure": {
+        "fact_code": "abdominal_pain_score",
+        "description": "복통 점수",
+        "unit": "score",
+        "operator": "gte",
+        "thresholds": [3, 4, 5],
+        "values": [7, 3.5, 6, 4.5, 8],
+        "acquisition_mode": "patient_report"
+      },
+      "history": {
+        "fact_code": "chronic_pancreatitis_diagnosis",
+        "description": "만성 췌장염 진단",
+        "values": [1, 1, 0, 1, 1]
+      },
+      "choice": {
+        "fact_code": "willing_to_complete_pain_questionnaire",
+        "description": "통증 설문 참여 의사",
+        "values": [1, 1, 1, 0, 1]
+      },
+      "risk": {
+        "fact_code": "prior_pancreatic_surgery",
+        "description": "과거 췌장 수술",
+        "values": [0, 0, 0, 0, 1]
+      }
+    },
+    {
+      "group_id": "lung_cancer",
+      "group_label": "폐암",
+      "search_condition": "lung cancer",
+      "layout_variant": "C",
+      "measure": {
+        "fact_code": "ecog_performance_status",
+        "description": "일상생활 수행 상태 점수",
+        "unit": "score",
+        "operator": "lte",
+        "thresholds": [2, 1, 0],
+        "values": [0, 2, 1, 2, 0],
+        "acquisition_mode": "internal_record"
+      },
+      "history": {
+        "fact_code": "histology_confirmed_lung_cancer",
+        "description": "조직검사로 확인된 폐암",
+        "values": [1, 1, 0, 1, 1]
+      },
+      "choice": {
+        "fact_code": "willing_to_provide_tumor_sample",
+        "description": "종양 검체 제공 의사",
+        "values": [1, 1, 1, 0, 1]
+      },
+      "risk": {
+        "fact_code": "uncontrolled_brain_metastasis",
+        "description": "조절되지 않은 뇌전이",
+        "values": [0, 0, 0, 0, 1]
+      }
+    },
+    {
+      "group_id": "ovarian_cancer",
+      "group_label": "난소암",
+      "search_condition": "ovarian cancer",
+      "layout_variant": "A",
+      "measure": {
+        "fact_code": "days_since_cancer_diagnosis",
+        "description": "암 진단 뒤 지난 기간",
+        "unit": "days",
+        "operator": "lte",
+        "thresholds": [365, 180, 120],
+        "values": [90, 300, 150, 200, 60],
+        "acquisition_mode": "internal_record"
+      },
+      "history": {
+        "fact_code": "confirmed_ovarian_cancer",
+        "description": "확인된 난소암 진단",
+        "values": [1, 1, 0, 1, 1]
+      },
+      "choice": {
+        "fact_code": "willing_to_share_treatment_records",
+        "description": "치료 기록 제공 의사",
+        "values": [1, 1, 1, 0, 1]
+      },
+      "risk": {
+        "fact_code": "current_pregnancy",
+        "description": "현재 임신",
+        "values": [0, 0, 0, 0, 1]
+      }
+    }
+  ]
+}
