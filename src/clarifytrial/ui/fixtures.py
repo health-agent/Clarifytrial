@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from ..contracts import (
+    CriterionLogic,
     EvidenceFact,
     EvidenceRequirement,
     EvidenceSourceType,
@@ -16,12 +17,13 @@ from ..contracts import (
     NextEvidenceRequest,
     NumericConstraint,
     PatientState,
+    TrialSearchRank,
     TrialCriterion,
     VerificationStatus,
 )
 from ..environment import HiddenFactAnswer
 from ..interactive.burden_contracts import AcquisitionMode, AcquisitionOption
-from ..preparation import InMemoryCandidateSearch
+from ..preparation import InMemoryCandidateSearch, TeamTrialCandidateSearch
 from ..preparation.contracts import CandidateSearchHit, TrialProtocolSource
 from ..workflow import PatientScreeningCase, ScreeningTrial
 
@@ -69,6 +71,18 @@ def _condition_for_group(document: dict[str, Any], group_id: str) -> str:
     raise ValueError(f"trial set has no search condition for group: {group_id}")
 
 
+def _search_conditions_for_group(
+    document: dict[str, Any], group_id: str
+) -> tuple[str, ...]:
+    for group in document.get("groups", []):
+        if str(group.get("group_id")) != group_id:
+            continue
+        values = group.get("search_conditions")
+        if values:
+            return tuple(str(item) for item in values)
+    return (_condition_for_group(document, group_id),)
+
+
 def _categorical_value(value: object) -> float:
     normalized = str(value).strip().casefold()
     if normalized in {"present", "diagnosed", "true"}:
@@ -76,6 +90,19 @@ def _categorical_value(value: object) -> float:
     if normalized in {"absent", "not_diagnosed", "false"}:
         return 0.0
     raise ValueError(f"unsupported categorical state: {value}")
+
+
+def _normalized_evidence_fact(
+    fact: EvidenceFact,
+    *,
+    group_id: str,
+    fact_aliases: dict[str, str],
+) -> EvidenceFact:
+    if fact.concept is None:
+        return fact
+    fact_code = fact.concept.rsplit(":", 1)[-1]
+    normalized = fact_aliases.get(fact_code, fact_code)
+    return fact.model_copy(update={"concept": f"{group_id}:{normalized}"})
 
 
 def _sufficient_evidence_requirement(fact_code: str) -> EvidenceRequirement:
@@ -107,6 +134,11 @@ class IntegratedUIFixture:
     trial_set_path: str
     patient_pairs_path: str
     generation_config_path: str
+    structured_criterion_count: int
+    complete_protocol_coverage: bool
+    search_pool_count: int
+    search_scope_label: str
+    search_top_k: int
 
 
 def _read_json(path: Path) -> Any:
@@ -218,7 +250,17 @@ def _screening_trials(
             )
         )
     return [
-        ScreeningTrial(trial_id=trial_id, criteria=criteria_by_trial[trial_id])
+        ScreeningTrial(
+            trial_id=trial_id,
+            criteria=criteria_by_trial[trial_id],
+            eligibility_logic=(
+                None
+                if metadata[trial_id].get("eligibility_logic") is None
+                else CriterionLogic.model_validate(
+                    metadata[trial_id]["eligibility_logic"]
+                )
+            ),
+        )
         for trial_id in candidate_ids
     ]
 
@@ -252,6 +294,8 @@ def build_integrated_ui_fixture(
     patient_pairs_path: str | Path,
     generation_config_path: str | Path,
     patient_id: str,
+    broad_corpus_path: str | Path | None = None,
+    broad_search_top_k: int = 200,
 ) -> IntegratedUIFixture:
     """Create one structured full-path case with action-gated synthetic answers."""
 
@@ -273,24 +317,54 @@ def build_integrated_ui_fixture(
         raise ValueError(f"unknown patient ID: {patient_id}")
 
     group_id = str(pair["group_id"])
+    fact_aliases = {
+        str(key): str(value)
+        for key, value in generation_config.get("fact_aliases", {}).items()
+    }
     condition = _condition_for_group(trial_document, group_id)
+    search_conditions = _search_conditions_for_group(trial_document, group_id)
     all_sources = _trial_sources(trial_document)
-    group_sources = tuple(
-        source
-        for source in all_sources
-        if condition.casefold()
-        in {item.casefold() for item in source.conditions}
-    )
-    candidate_hits = tuple(
-        InMemoryCandidateSearch(group_sources).search(
-            [condition],
-            top_k=len(pair["trial_ids"]),
-        )
-    )
-    candidate_ids = [item.source.trial_id for item in candidate_hits]
     expected_ids = [str(item) for item in pair["trial_ids"]]
+    if broad_corpus_path is None:
+        group_sources = tuple(
+            source
+            for source in all_sources
+            if condition.casefold()
+            in {item.casefold() for item in source.conditions}
+        )
+        candidate_hits = tuple(
+            InMemoryCandidateSearch(group_sources).search(
+                [condition],
+                top_k=len(expected_ids),
+            )
+        )
+        search_pool_count = len(all_sources)
+        search_scope_label = "평가자료에 포함된 공개 임상시험"
+        applied_search_top_k = len(expected_ids)
+    else:
+        if broad_search_top_k < len(expected_ids):
+            raise ValueError(
+                "broad search depth must cover every declared candidate"
+            )
+        searcher = TeamTrialCandidateSearch(broad_corpus_path)
+        broad_hits = searcher.search(
+            search_conditions,
+            top_k=broad_search_top_k,
+        )
+        expected_set = set(expected_ids)
+        candidate_hits = tuple(
+            item for item in broad_hits if item.source.trial_id in expected_set
+        )
+        search_pool_count = searcher.summary.included_trial_count
+        search_scope_label = "모집 중·모집 예정 공개 임상시험"
+        applied_search_top_k = broad_search_top_k
+    candidate_ids = [item.source.trial_id for item in candidate_hits]
     if set(candidate_ids) != set(expected_ids):
-        raise ValueError("condition-filtered search did not recover the declared trials")
+        missing = sorted(set(expected_ids) - set(candidate_ids))
+        raise ValueError(
+            "candidate search did not recover the declared trials: "
+            + ", ".join(missing)
+        )
 
     pivotal = set(str(item) for item in pair["pivotal_fact_codes"])
     initial_facts = []
@@ -298,10 +372,17 @@ def build_integrated_ui_fixture(
         fact = EvidenceFact.model_validate(raw_fact)
         fact_code = "" if fact.concept is None else fact.concept.rsplit(":", 1)[-1]
         if fact_code not in pivotal:
-            initial_facts.append(fact)
+            initial_facts.append(
+                _normalized_evidence_fact(
+                    fact,
+                    group_id=group_id,
+                    fact_aliases=fact_aliases,
+                )
+            )
+    evaluation_as_of = pairs_document.get("as_of", generation_config["as_of"])
     patient_state = PatientState(
         patient_id=patient_id,
-        as_of=str(generation_config["as_of"]),
+        as_of=str(evaluation_as_of),
         facts=initial_facts,
     )
 
@@ -314,7 +395,12 @@ def build_integrated_ui_fixture(
         answer = EvidenceFact.model_validate(raw_answer)
         if answer.concept is None:
             raise ValueError("synthetic verification answer needs a concept")
-        answer_by_key[answer.concept.rsplit(":", 1)[-1]] = answer
+        answer_key = answer.concept.rsplit(":", 1)[-1]
+        answer_by_key[answer_key] = _normalized_evidence_fact(
+            answer,
+            group_id=group_id,
+            fact_aliases=fact_aliases,
+        )
 
     raw_options = pair["insufficient_evidence_episode"].get(
         "acquisition_options"
@@ -354,23 +440,36 @@ def build_integrated_ui_fixture(
             trial_document=trial_document,
             group_id=group_id,
             candidate_ids=candidate_ids,
-            fact_aliases={
-                str(key): str(value)
-                for key, value in generation_config.get("fact_aliases", {}).items()
-            },
+            fact_aliases=fact_aliases,
         ),
         initial_patient_state=patient_state,
         evidence_requests=requests,
         acquisition_options=options,
+        candidate_ranking=[
+            TrialSearchRank(
+                trial_id=item.source.trial_id,
+                rank=item.rank,
+                score=item.score,
+                retrieval_method=item.retrieval_method,
+            )
+            for item in candidate_hits
+        ],
     )
     return IntegratedUIFixture(
         screening_case=screening_case,
         trial_sources=all_sources,
         candidate_hits=candidate_hits,
         hidden_answers=tuple(hidden_answers),
-        search_conditions=(condition,),
+        search_conditions=search_conditions,
         expected_candidate_trial_ids=tuple(expected_ids),
         trial_set_path=str(trial_set_path),
         patient_pairs_path=str(patient_pairs_path),
         generation_config_path=str(generation_config_path),
+        structured_criterion_count=len(trial_document["criteria"]),
+        complete_protocol_coverage=bool(
+            trial_document.get("complete_protocol_coverage", False)
+        ),
+        search_pool_count=search_pool_count,
+        search_scope_label=search_scope_label,
+        search_top_k=applied_search_top_k,
     )

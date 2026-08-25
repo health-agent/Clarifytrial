@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -83,6 +84,62 @@ def test_integrated_fixture_supports_each_disease_group() -> None:
     }
     assert all(len(item.trial_sources) == 15 for item in fixtures)
     assert all(len(item.hidden_answers) == 5 for item in fixtures)
+
+
+def test_integrated_fixture_can_start_from_a_larger_public_search_pool(
+    tmp_path: Path,
+) -> None:
+    local_fixture = _fixture()
+    corpus = tmp_path / "trials.jsonl"
+    corpus.write_text(
+        "\n".join(
+            json.dumps(
+                {
+                    "nct_id": source.trial_id,
+                    "title": source.title,
+                    "conditions": source.conditions,
+                    "brief_summary": source.summary,
+                    "eligibility_text": source.eligibility_text,
+                    "overall_status": "RECRUITING",
+                },
+                ensure_ascii=False,
+            )
+            for source in local_fixture.trial_sources
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    fixture = build_integrated_ui_fixture(
+        trial_set_path=(
+            REPOSITORY_ROOT
+            / "data"
+            / "natural_evaluation_v1"
+            / "preliminary_trial_set.json"
+        ),
+        patient_pairs_path=(
+            REPOSITORY_ROOT
+            / "data"
+            / "natural_evaluation_v2"
+            / "preliminary_patient_pairs.json"
+        ),
+        generation_config_path=(
+            REPOSITORY_ROOT
+            / "configs"
+            / "natural_evaluation_patient_generation_v2.json"
+        ),
+        patient_id="natural-type_2_diabetes-11",
+        broad_corpus_path=corpus,
+        broad_search_top_k=15,
+    )
+
+    assert fixture.search_pool_count == 15
+    assert fixture.search_top_k == 15
+    assert fixture.search_scope_label == "모집 중·모집 예정 공개 임상시험"
+    assert {item.source.trial_id for item in fixture.candidate_hits} == set(
+        fixture.expected_candidate_trial_ids
+    )
+    assert fixture.screening_case.candidate_ranking
 
 
 def test_integrated_fixture_uses_the_same_aliases_and_categorical_rules_as_evaluation() -> None:
@@ -197,6 +254,7 @@ def test_terminal_renderer_shows_every_stage_without_private_reasoning(
     for stage in range(1, 7):
         assert f"[{stage}/6]" in text
     assert "전체 15개 중 후보 5개" in text
+    assert "시험의 모든 참가 조건을 옮긴 자료는 아닙니다" in text
     assert "진행 관리:" in text
     assert "검색·판단:" in text
     assert "판정 변화 요약" in text
@@ -281,8 +339,26 @@ def test_terminal_pauses_before_opening_the_synthetic_answer() -> None:
     assert "합성 환자의 나이는 55세다." in "\n".join(lines)
 
 
-def test_full_ui_command_requires_live_model_confirmation() -> None:
+def test_full_ui_live_model_requires_confirmation() -> None:
     with pytest.raises(SystemExit) as captured:
-        main(["run-full-ui"])
+        main(["run-full-ui", "--provider", "codex-subscription"])
 
     assert captured.value.code == 2
+
+
+def test_full_ui_default_runs_offline_on_current_public_dataset(
+    tmp_path: Path,
+) -> None:
+    exit_code = main(
+        [
+            "run-full-ui",
+            "--output",
+            str(tmp_path),
+            "--auto",
+        ]
+    )
+
+    assert exit_code == 0
+    result = (tmp_path / "result.json").read_text(encoding="utf-8")
+    assert '"run_mode": "integrated_terminal_ui_synthetic_evaluation"' in result
+    assert '"patient_id": "source-chronic_pancreatitis-04"' in result

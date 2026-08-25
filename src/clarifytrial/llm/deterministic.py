@@ -70,7 +70,7 @@ class DeterministicWorkflowModel:
                     "selection_reason",
                     "현재 판단을 끝내는 데 필요한 정보를 확인한다.",
                 ),
-                "message": f"{description}을(를) 확인해 주세요.",
+                "message": description,
             }
         elif call.role == "selective_reviewer":
             raw = {

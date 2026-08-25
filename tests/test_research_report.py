@@ -249,3 +249,41 @@ def test_report_uses_the_requested_burden_split(tmp_path: Path) -> None:
     report = (output / "report.md").read_text(encoding="utf-8")
     assert "72.0%" in report
     assert "79.0%" not in report
+
+
+def test_report_includes_budget_frontier_and_copies_its_figures(
+    tmp_path: Path,
+) -> None:
+    frontier = tmp_path / "frontier"
+    frontier.mkdir()
+    rows = []
+    for arm in ("fixed_order", "immediate_coverage", "clarifytrial"):
+        rows.append(
+            {
+                "action_budget": 1,
+                "arm": arm,
+                "confirmed_rescue_rate": 0.5,
+                "false_preservation_resolution_rate": 0.75,
+                "trial_status_recovery": 0.8,
+            }
+        )
+    (frontier / "frontier.json").write_text(
+        json.dumps({"patient_count": 10, "rows": rows}),
+        encoding="utf-8",
+    )
+    for name in (
+        "candidate-rescue-by-budget.svg",
+        "false-preservation-cleanup-by-budget.svg",
+    ):
+        (frontier / name).write_text("<svg></svg>", encoding="utf-8")
+
+    output = tmp_path / "report"
+    build_research_report(
+        destination=output,
+        budget_frontier_path=frontier,
+    )
+
+    report = (output / "report.md").read_text(encoding="utf-8")
+    assert "합성 환자 10명에게 확인 기회를 1회부터 1회까지" in report
+    assert "실제 참가 가능 후보로 확정" in report
+    assert (output / "candidate-rescue-by-budget.svg").is_file()

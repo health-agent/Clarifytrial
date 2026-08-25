@@ -1,7 +1,13 @@
 # ClarifyTrial 관련 시험 검색·평가 구현계획
 
-상태: 정해진 형식의 JSON으로 질문 순서 평가 완료, 자유롭게 작성된 기록의 변환은 선택 기능
-정리일: 2026-08-22
+상태: 공개 시험 589건 검색부터 조건 판단·질문·재판정까지 연결 완료
+정리일: 2026-08-25
+
+현재 전체 평가는 10개 질환·공개 시험 50건의 구조화 조건 202개와 합성 환자 50명을
+사용한다. 별도 평가 환자 30명에서는 589건 검색부터 질문 뒤 재판정까지 같은 사례로
+실행한다. 이 문서의 앞부분은 검색과 공통 평가 구현 기준이고, 뒤쪽의 과거 개발 수치와
+구조 비교 기록은 현재 결과가 아니라 선택 근거다. 현재 수치는
+[검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md)를 따른다.
 
 - 전체 구조: [CLARIFYTRIAL_AGENT_ARCHITECTURE_REDESIGN.md](CLARIFYTRIAL_AGENT_ARCHITECTURE_REDESIGN.md)
 - 데이터셋: [CLARIFYTRIAL_DATASETS.md](CLARIFYTRIAL_DATASETS.md)

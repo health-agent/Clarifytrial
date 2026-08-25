@@ -14,6 +14,10 @@ from .contracts import (
     CandidateStatus,
     ClinicalStatus,
     ConfirmationStatus,
+    CriterionLogic,
+    CriterionLogicEvaluation,
+    CriterionLogicOperator,
+    CriterionLogicStatus,
     CriterionAssessment,
     EvidenceSufficiency,
     NextAction,
@@ -42,9 +46,124 @@ def _has_conflict(assessment: CriterionAssessment) -> bool:
     )
 
 
+def _leaf_logic_status(
+    assessment: CriterionAssessment | None,
+) -> CriterionLogicStatus:
+    if assessment is None:
+        return CriterionLogicStatus.UNRESOLVED
+    if _has_conflict(assessment):
+        return CriterionLogicStatus.CONFLICTING
+    if assessment.evidence_sufficiency is not EvidenceSufficiency.SUFFICIENT:
+        return CriterionLogicStatus.UNRESOLVED
+    if assessment.clinical_status in {
+        ClinicalStatus.SUPPORTS,
+        ClinicalStatus.NOT_APPLICABLE,
+    }:
+        return CriterionLogicStatus.SATISFIED
+    if assessment.clinical_status is ClinicalStatus.VIOLATES:
+        return CriterionLogicStatus.VIOLATED
+    return CriterionLogicStatus.UNRESOLVED
+
+
+def _group_logic_status(
+    operator: CriterionLogicOperator,
+    child_statuses: Sequence[CriterionLogicStatus],
+    minimum_required: int | None,
+) -> CriterionLogicStatus:
+    satisfied = child_statuses.count(CriterionLogicStatus.SATISFIED)
+    violated = child_statuses.count(CriterionLogicStatus.VIOLATED)
+    unresolved = child_statuses.count(CriterionLogicStatus.UNRESOLVED)
+    conflicting = child_statuses.count(CriterionLogicStatus.CONFLICTING)
+
+    if operator is CriterionLogicOperator.ALL:
+        if violated:
+            return CriterionLogicStatus.VIOLATED
+        if satisfied == len(child_statuses):
+            return CriterionLogicStatus.SATISFIED
+        if conflicting and unresolved == 0:
+            return CriterionLogicStatus.CONFLICTING
+        return CriterionLogicStatus.UNRESOLVED
+
+    if operator is CriterionLogicOperator.ANY:
+        if satisfied:
+            return CriterionLogicStatus.SATISFIED
+        if violated == len(child_statuses):
+            return CriterionLogicStatus.VIOLATED
+        if conflicting and unresolved == 0:
+            return CriterionLogicStatus.CONFLICTING
+        return CriterionLogicStatus.UNRESOLVED
+
+    if operator is not CriterionLogicOperator.AT_LEAST:
+        raise ValueError(f"unsupported criterion logic operator: {operator.value}")
+    assert minimum_required is not None
+    if satisfied >= minimum_required:
+        return CriterionLogicStatus.SATISFIED
+    if satisfied + unresolved + conflicting < minimum_required:
+        return CriterionLogicStatus.VIOLATED
+    if satisfied + unresolved < minimum_required and conflicting:
+        return CriterionLogicStatus.CONFLICTING
+    return CriterionLogicStatus.UNRESOLVED
+
+
+def evaluate_criterion_logic(
+    logic: CriterionLogic,
+    assessments: Sequence[CriterionAssessment],
+) -> CriterionLogicEvaluation:
+    """Evaluate a nested eligibility expression without flattening its branches."""
+
+    assessment_by_id = _unique_by_id(
+        assessments, "criterion_id", "assessment criterion_id"
+    )
+
+    def evaluate(node: CriterionLogic) -> CriterionLogicEvaluation:
+        if node.operator is CriterionLogicOperator.CRITERION:
+            assert node.criterion_id is not None
+            return CriterionLogicEvaluation(
+                operator=node.operator,
+                status=_leaf_logic_status(assessment_by_id.get(node.criterion_id)),
+                criterion_id=node.criterion_id,
+                label=node.label,
+            )
+        children = [evaluate(child) for child in node.children]
+        return CriterionLogicEvaluation(
+            operator=node.operator,
+            status=_group_logic_status(
+                node.operator,
+                [child.status for child in children],
+                node.minimum_required,
+            ),
+            label=node.label,
+            minimum_required=node.minimum_required,
+            children=children,
+        )
+
+    return evaluate(logic)
+
+
+def _validate_logic_references(
+    criteria: Sequence[TrialCriterion],
+    logic: CriterionLogic,
+) -> None:
+    known = {criterion.criterion_id for criterion in criteria}
+    referenced = logic.referenced_criterion_ids()
+    unknown = referenced - known
+    if unknown:
+        names = ", ".join(sorted(unknown))
+        raise ValueError(f"criterion logic refers to unknown criteria: {names}")
+    missing_required = {
+        criterion.criterion_id
+        for criterion in criteria
+        if criterion.required and criterion.criterion_id not in referenced
+    }
+    if missing_required:
+        names = ", ".join(sorted(missing_required))
+        raise ValueError(f"criterion logic omits required criteria: {names}")
+
+
 def aggregate_statuses(
     criteria: Sequence[TrialCriterion],
     assessments: Sequence[CriterionAssessment],
+    eligibility_logic: CriterionLogic | None = None,
 ) -> tuple[CandidateStatus, ConfirmationStatus]:
     """Apply the published decision table to required criteria.
 
@@ -63,6 +182,29 @@ def aggregate_statuses(
     if unknown_criteria:
         names = ", ".join(sorted(unknown_criteria))
         raise ValueError(f"assessments refer to unknown criteria: {names}")
+
+    if eligibility_logic is not None:
+        _validate_logic_references(criteria, eligibility_logic)
+        result = evaluate_criterion_logic(eligibility_logic, assessments)
+        status_map = {
+            CriterionLogicStatus.SATISFIED: (
+                CandidateStatus.RETAIN,
+                ConfirmationStatus.CONFIRMED,
+            ),
+            CriterionLogicStatus.VIOLATED: (
+                CandidateStatus.REMOVE,
+                ConfirmationStatus.INELIGIBLE,
+            ),
+            CriterionLogicStatus.UNRESOLVED: (
+                CandidateStatus.RETAIN,
+                ConfirmationStatus.NOT_CONFIRMED,
+            ),
+            CriterionLogicStatus.CONFLICTING: (
+                CandidateStatus.UNCERTAIN,
+                ConfirmationStatus.UNCERTAIN,
+            ),
+        }
+        return status_map[result.status]
 
     required = [criterion for criterion in criteria if criterion.required]
     if not required:
@@ -224,13 +366,23 @@ def aggregate_trial_decision(
     pending_information: Sequence[NextEvidenceRequest] = (),
     next_action: AgentAction | None = None,
     available_evidence_ids: Collection[str] | None = None,
+    eligibility_logic: CriterionLogic | None = None,
 ) -> TrialDecision:
     """Build a complete, traceable trial decision without a model call."""
 
     if any(criterion.trial_id != trial_id for criterion in criteria):
         raise ValueError("every criterion must belong to the requested trial")
 
-    candidate_status, confirmation_status = aggregate_statuses(criteria, assessments)
+    candidate_status, confirmation_status = aggregate_statuses(
+        criteria,
+        assessments,
+        eligibility_logic,
+    )
+    logic_evaluation = (
+        None
+        if eligibility_logic is None
+        else evaluate_criterion_logic(eligibility_logic, assessments)
+    )
     review_reasons = select_review_reasons(
         criteria=criteria,
         assessments=assessments,
@@ -239,12 +391,14 @@ def aggregate_trial_decision(
         available_evidence_ids=available_evidence_ids,
     )
 
-    if confirmation_status in {
+    resolved = confirmation_status in {
         ConfirmationStatus.CONFIRMED,
         ConfirmationStatus.INELIGIBLE,
-    }:
+    }
+    effective_pending = [] if resolved else list(pending_information)
+    if resolved:
         no_action_reason = "현재 결과에는 추가 확인 행동이 필요하지 않다."
-    elif pending_information:
+    elif effective_pending:
         no_action_reason = "다음 확인 행동을 아직 선택하지 않았다."
     else:
         no_action_reason = "현재 결과를 바꿀 추가 확인 항목이 없다."
@@ -257,8 +411,9 @@ def aggregate_trial_decision(
         candidate_status=candidate_status,
         confirmation_status=confirmation_status,
         criterion_assessments=list(assessments),
-        pending_information=list(pending_information),
+        pending_information=effective_pending,
         next_action=resolved_action,
         review_required=bool(review_reasons),
         review_reasons=review_reasons,
+        logic_evaluation=logic_evaluation,
     )

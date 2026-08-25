@@ -10,6 +10,7 @@ from pydantic import Field, model_validator
 from ..agents import ReviewDecision
 from ..contracts import (
     AgentAction,
+    CriterionLogic,
     ContractModel,
     CriterionBoundaryDifference,
     NextEvidenceRequest,
@@ -56,6 +57,7 @@ class ScreeningTrial(ContractModel):
 
     trial_id: str = Field(min_length=1)
     criteria: list[TrialCriterion] = Field(min_length=1)
+    eligibility_logic: CriterionLogic | None = None
 
     @model_validator(mode="after")
     def criteria_belong_to_trial(self) -> "ScreeningTrial":
@@ -66,6 +68,17 @@ class ScreeningTrial(ContractModel):
             raise ValueError("every criterion must belong to trial_id")
         if not any(item.required for item in self.criteria):
             raise ValueError("at least one criterion must be required")
+        if self.eligibility_logic is not None:
+            known = set(criterion_ids)
+            referenced = self.eligibility_logic.referenced_criterion_ids()
+            unknown = referenced - known
+            if unknown:
+                raise ValueError("eligibility_logic refers to unknown criteria")
+            required = {
+                item.criterion_id for item in self.criteria if item.required
+            }
+            if not required.issubset(referenced):
+                raise ValueError("eligibility_logic must include required criteria")
         return self
 
 

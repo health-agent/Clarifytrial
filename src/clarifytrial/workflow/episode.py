@@ -21,6 +21,7 @@ from ..contracts import (
     AgentAction,
     ConfirmationStatus,
     ContractModel,
+    CriterionLogic,
     CriterionAssessment,
     NextAction,
     NextEvidenceRequest,
@@ -61,6 +62,7 @@ class EpisodeCase(ContractModel):
     case_id: str = Field(min_length=1)
     trial_id: str = Field(min_length=1)
     criteria: list[TrialCriterion] = Field(min_length=1)
+    eligibility_logic: CriterionLogic | None = None
     initial_patient_state: PatientState
     evidence_requests: list[NextEvidenceRequest] = Field(default_factory=list)
 
@@ -82,6 +84,15 @@ class EpisodeCase(ContractModel):
                     f"request {request.fact_id!r} refers to unknown criteria: "
                     + ", ".join(sorted(unknown))
                 )
+        if self.eligibility_logic is not None:
+            referenced = self.eligibility_logic.referenced_criterion_ids()
+            if not referenced.issubset(known_ids):
+                raise ValueError("eligibility_logic refers to unknown criteria")
+            required = {
+                item.criterion_id for item in self.criteria if item.required
+            }
+            if not required.issubset(referenced):
+                raise ValueError("eligibility_logic must include required criteria")
         return self
 
 
@@ -469,6 +480,7 @@ class EpisodeRunner:
             assessments=list(assessments.values()),
             pending_information=pending,
             available_evidence_ids=EpisodeRunner._evidence_ids(patient_state),
+            eligibility_logic=case.eligibility_logic,
         )
         recorder.record(
             cycle=cycle,

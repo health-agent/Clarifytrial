@@ -99,6 +99,24 @@ class CriterionKind(str, Enum):
     EXCLUSION = "exclusion"
 
 
+class CriterionLogicOperator(str, Enum):
+    """How criterion results are combined for one eligibility route."""
+
+    CRITERION = "criterion"
+    ALL = "all"
+    ANY = "any"
+    AT_LEAST = "at_least"
+
+
+class CriterionLogicStatus(str, Enum):
+    """Four-valued result of evaluating a criterion logic tree."""
+
+    SATISFIED = "satisfied"
+    VIOLATED = "violated"
+    UNRESOLVED = "unresolved"
+    CONFLICTING = "conflicting"
+
+
 class ComparisonOperator(str, Enum):
     """Numeric comparisons supported by the transparent rule checker."""
 
@@ -214,6 +232,66 @@ class NumericConstraint(ContractModel):
     operator: ComparisonOperator
     threshold: float = Field(allow_inf_nan=False)
     unit: str = Field(min_length=1)
+
+
+class CriterionLogic(ContractModel):
+    """Nested AND, OR, or N-of-M logic over criterion identifiers.
+
+    A leaf uses ``operator=criterion`` and names exactly one criterion.  Group
+    nodes contain child expressions.  Labels are optional human-readable route
+    names such as a study arm or an alternative eligibility pathway.
+    """
+
+    operator: CriterionLogicOperator
+    criterion_id: str | None = Field(default=None, min_length=1)
+    children: list["CriterionLogic"] = Field(default_factory=list)
+    minimum_required: int | None = Field(default=None, ge=1)
+    label: str | None = Field(default=None, min_length=1)
+
+    @model_validator(mode="after")
+    def node_shape_matches_operator(self) -> Self:
+        if self.operator is CriterionLogicOperator.CRITERION:
+            if self.criterion_id is None:
+                raise ValueError("criterion logic leaf needs criterion_id")
+            if self.children:
+                raise ValueError("criterion logic leaf cannot have children")
+            if self.minimum_required is not None:
+                raise ValueError("criterion logic leaf cannot set minimum_required")
+            return self
+
+        if self.criterion_id is not None:
+            raise ValueError("criterion logic group cannot set criterion_id")
+        if not self.children:
+            raise ValueError("criterion logic group needs at least one child")
+        if self.operator is CriterionLogicOperator.AT_LEAST:
+            if self.minimum_required is None:
+                raise ValueError("at_least logic needs minimum_required")
+            if self.minimum_required > len(self.children):
+                raise ValueError("minimum_required exceeds child count")
+        elif self.minimum_required is not None:
+            raise ValueError("only at_least logic can set minimum_required")
+        return self
+
+    def referenced_criterion_ids(self) -> set[str]:
+        if self.operator is CriterionLogicOperator.CRITERION:
+            assert self.criterion_id is not None
+            return {self.criterion_id}
+        return {
+            criterion_id
+            for child in self.children
+            for criterion_id in child.referenced_criterion_ids()
+        }
+
+
+class CriterionLogicEvaluation(ContractModel):
+    """Inspectable result for every node of a criterion logic tree."""
+
+    operator: CriterionLogicOperator
+    status: CriterionLogicStatus
+    criterion_id: str | None = Field(default=None, min_length=1)
+    label: str | None = Field(default=None, min_length=1)
+    minimum_required: int | None = Field(default=None, ge=1)
+    children: list["CriterionLogicEvaluation"] = Field(default_factory=list)
 
 
 class EvidenceRequirement(ContractModel):
@@ -414,6 +492,7 @@ class TrialDecision(ContractModel):
     next_action: AgentAction
     review_required: bool = False
     review_reasons: list[ReviewReason] = Field(default_factory=list)
+    logic_evaluation: CriterionLogicEvaluation | None = None
 
     @field_validator("criterion_assessments")
     @classmethod

@@ -84,6 +84,17 @@ def _decision_label(decision: Mapping[str, Any]) -> str:
     return _DECISION_LABELS.get(key, f"{key[0]} / {key[1]}")
 
 
+def _action_message_parts(message: str) -> tuple[str, str | None]:
+    prefix = "다음 시험 조건에 해당하는지:"
+    text = message.strip()
+    if not text.startswith(prefix):
+        return text, None
+    source_text = text.removeprefix(prefix).strip().lstrip("*- ")
+    if source_text.endswith(" 확인"):
+        source_text = source_text[: -len(" 확인")].rstrip()
+    return "공개 시험 원문의 다음 조건에 해당하는지 확인", source_text
+
+
 class IntegratedTerminalRenderer:
     """Render only observable workflow events, without model chain of thought."""
 
@@ -98,6 +109,9 @@ class IntegratedTerminalRenderer:
         self.model_label = model_label
         self.write = write
         self.titles = {item.trial_id: item.title for item in fixture.trial_sources}
+        self.titles.update(
+            {item.source.trial_id: item.source.title for item in fixture.candidate_hits}
+        )
         self.candidate_ids: list[str] = []
         self.structured_trials: set[str] = set()
         self.judged_trials: set[str] = set()
@@ -110,8 +124,21 @@ class IntegratedTerminalRenderer:
         self.write("ClarifyTrial 전체 경로 실행")
         self.write(_line())
         self.write(f"합성 환자: {case.initial_patient_state.patient_id}")
-        self.write(f"검색 대상: 공개 임상시험 {len(self.fixture.trial_sources)}개")
+        self.write(
+            f"검색 대상: {self.fixture.search_scope_label} "
+            f"{self.fixture.search_pool_count}개"
+        )
         self.write(f"가져올 후보: {len(self.fixture.candidate_hits)}개")
+        if self.fixture.complete_protocol_coverage:
+            self.write(
+                f"조건 범위: 시험 전체 조건 {self.fixture.structured_criterion_count}개"
+            )
+        else:
+            self.write(
+                "조건 범위: 공개 원문에서 구조화한 "
+                f"{self.fixture.structured_criterion_count}개 조건"
+            )
+            self.write("           시험의 모든 참가 조건을 옮긴 자료는 아닙니다.")
         self.write(f"모델: {self.model_label}")
         self.write("")
         self.write("[1/6] 표준 JSON 환자 상태 읽기")
@@ -130,10 +157,13 @@ class IntegratedTerminalRenderer:
             self.write("")
             self.write("[2/6] 관련 시험 검색 완료")
             self.write(
-                f"  전체 {len(self.fixture.trial_sources)}개 중 "
+                f"  전체 {self.fixture.search_pool_count}개 중 "
                 f"후보 {len(self.candidate_ids)}개를 골랐습니다."
             )
-            self.write("  검색 방법: 질환이 같은 시험을 먼저 고른 뒤 문구가 가까운 순서로 정렬")
+            self.write(
+                f"  검색 범위: 상위 {self.fixture.search_top_k}개까지 확인"
+            )
+            self.write("  검색 방법: 질환명과 시험 문구가 가까운 순서로 정렬")
             for index, trial_id in enumerate(self.candidate_ids, start=1):
                 score = scores[index - 1] if index - 1 < len(scores) else None
                 score_text = "" if score is None else f" · 검색점수 {float(score):.4f}"
@@ -205,7 +235,12 @@ class IntegratedTerminalRenderer:
                 self.write(f"  선택 이유: {reason}")
 
     def show_action(self, action: AgentAction) -> None:
-        self.write(f"  확인 내용: {action.message or action.reason}")
+        message, source_text = _action_message_parts(
+            action.message or action.reason
+        )
+        self.write(f"  확인 내용: {message}")
+        if source_text:
+            self.write(f"  원문 조건: {source_text}")
         self.write(f"  확인 방법: {_ACTION_LABELS.get(action.action.value, action.action.value)}")
         self.write(f"  영향을 받는 조건: {len(action.related_criterion_ids)}개")
 
@@ -450,7 +485,7 @@ def run_integrated_terminal_ui(
         "medical_disclaimer": medical_disclaimer,
         "input": {
             "patient_id": case.initial_patient_state.patient_id,
-            "trial_search_pool_count": len(fixture.trial_sources),
+            "trial_search_pool_count": fixture.search_pool_count,
             "trial_set": fixture.trial_set_path,
             "patient_pairs": fixture.patient_pairs_path,
             "generation_config": fixture.generation_config_path,

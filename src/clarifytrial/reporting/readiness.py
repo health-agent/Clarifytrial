@@ -28,6 +28,25 @@ def _gate(
     }
 
 
+def _group_topology_signatures(trial_set: dict[str, Any]) -> set[tuple[Any, ...]]:
+    """Summarize how facts are shared across trials in each disease group."""
+
+    criteria_by_group: dict[str, list[dict[str, Any]]] = {}
+    for criterion in trial_set.get("criteria", []):
+        criteria_by_group.setdefault(str(criterion["group_id"]), []).append(criterion)
+    signatures = set()
+    for rows in criteria_by_group.values():
+        trial_counts = Counter(str(row["nct_id"]) for row in rows)
+        fact_counts = Counter(str(row["fact_code"]) for row in rows)
+        signatures.add(
+            (
+                tuple(sorted(trial_counts.values())),
+                tuple(sorted(fact_counts.values())),
+            )
+        )
+    return signatures
+
+
 def build_final_evaluation_readiness(
     *,
     trial_set_path: str | Path,
@@ -48,11 +67,16 @@ def build_final_evaluation_readiness(
         f"{missing_count}개 누락 {patient_count}명"
         for missing_count, patient_count in sorted(missing_counts.items())
     )
-    layout_variants = {
-        group.get("layout_variant")
+    topology_signatures = _group_topology_signatures(trial_set)
+    declared_layouts = {
+        str(group["layout_variant"])
         for group in pairs.get("groups", [])
         if group.get("layout_variant")
     }
+    structure_variant_count = max(
+        len(topology_signatures),
+        len(declared_layouts),
+    )
     current = next(
         row for row in workflow["arm_metrics"] if row["arm"] == "clarifytrial"
     )
@@ -80,7 +104,7 @@ def build_final_evaluation_readiness(
         and pairs.get("complete_ineligible_count", 0) > 0
         and {1, 2, 3, 5}.issubset(missing_counts)
         and len(acquisition_modes) >= 4
-        and len(layout_variants) >= 3
+        and structure_variant_count >= 3
     )
     connected_stability = (
         current["failed_patient_count"] == 0
@@ -107,12 +131,32 @@ def build_final_evaluation_readiness(
         and unavailable["unavailable_action_count"] > 0
         and unavailable["repeated_fact_action_count"] == 0
     )
-    public_criteria = trial_set.get("status") != "synthetic_maturity_benchmark"
-    broad_search = bool(
-        workflow.get("evaluation_scope", {}).get("includes_broad_corpus_search")
+    source_snapshot = trial_set.get("source_snapshot", {})
+    source_coverage = trial_set.get("source_coverage", {})
+    public_criteria = (
+        trial_set.get("status") == "public_protocol_derived_benchmark"
+        and trial_set.get("criterion_count", 0) >= 100
+        and source_snapshot.get("sha256")
+        and source_snapshot.get("commit")
+        and source_coverage.get("structured_eligibility_source_line_count", 0) > 0
+        and trial_set.get("explicit_non_all_logic_trial_count", 0) > 0
+    )
+    broad_metrics = workflow.get("broad_search_metrics") or {}
+    broad_search = (
+        bool(
+            workflow.get("evaluation_scope", {}).get(
+                "includes_broad_corpus_search"
+            )
+        )
+        and broad_metrics.get("target_trial_count", 0) > 0
+        and broad_metrics.get("target_recall", 0) > 0
     )
     external_model = workflow.get("model") != "deterministic-workflow"
 
+    complex_logic_group_count = trial_set.get(
+        "explicit_non_all_logic_group_count",
+        trial_set.get("explicit_non_all_logic_trial_count"),
+    )
     gates = [
         _gate(
             "G1",
@@ -122,7 +166,7 @@ def build_final_evaluation_readiness(
                 f"질환 {pairs.get('group_count')}개, 합성 환자 "
                 f"{pairs.get('patient_count')}명, 시험 {pairs.get('trial_count')}개, "
                 f"{missing_count_text}, "
-                f"시험-정보 연결 구조 {len(layout_variants)}종"
+                f"시험-정보 연결 구조 {structure_variant_count}종"
             ),
         ),
         _gate(
@@ -174,7 +218,11 @@ def build_final_evaluation_readiness(
             "실제 공개 시험 조건에 연결된 자료인가",
             public_criteria,
             (
-                "공개 시험 조건 사용"
+                (
+                    f"공개 시험 {trial_set.get('trial_count')}건에서 원문 근거가 있는 "
+                    f"조건 {trial_set.get('criterion_count')}개와 복합 조건 "
+                    f"{complex_logic_group_count}묶음 사용"
+                )
                 if public_criteria
                 else "현재 자료는 기능을 흔들어 보기 위한 합성 시험 조건"
             ),
@@ -184,7 +232,11 @@ def build_final_evaluation_readiness(
             "넓은 시험 검색부터 같은 사례로 평가했는가",
             broad_search,
             (
-                "넓은 검색 포함"
+                (
+                    f"모집 중 시험 {broad_metrics.get('corpus_trial_count')}건에서 "
+                    f"평가 대상 {broad_metrics.get('target_trial_count')}건 중 "
+                    f"{broad_metrics.get('retrieved_target_count')}건 검색"
+                )
                 if broad_search
                 else "질환별 시험 5개를 미리 정한 상태에서 시작"
             ),
@@ -198,7 +250,7 @@ def build_final_evaluation_readiness(
             ),
         ),
     ]
-    software_ready = all(item["passed"] for item in gates[:5])
+    software_ready = all(item["passed"] for item in gates[:7])
     final_ready = all(item["passed"] for item in gates)
     payload = {
         "protocol_id": "clarifytrial-final-evaluation-readiness-v1",
@@ -206,13 +258,12 @@ def build_final_evaluation_readiness(
         "final_performance_claim_ready": final_ready,
         "gates": gates,
         "conclusion": (
-            "The connected software is mature enough to receive the final "
-            "source-anchored dataset, but final performance claims remain blocked."
+            "공개 시험에 연결한 결정론적 전체 평가는 끝났고 외부 모델 평가만 남았다."
             if software_ready and not final_ready
             else (
-                "All declared final-evaluation gates passed."
+                "정한 최종 평가 항목을 모두 통과했다."
                 if final_ready
-                else "The connected software still has blocking maturity failures."
+                else "최종 평가 전에 해결할 항목이 남아 있다."
             )
         ),
     }
@@ -225,9 +276,9 @@ def build_final_evaluation_readiness(
         "# ClarifyTrial 최종 성능평가 준비 상태",
         "",
         (
-            "현재 프로그램은 실제 공개 시험 조건으로 최종 평가를 시작할 수 있는 "
-            "기능 수준에 도달했다. 다만 지금 실행은 합성 시험 조건과 미리 정한 "
-            "후보 5개를 사용했으므로 최종 성능 수치로 발표할 단계는 아니다."
+            "공개 시험 검색, 조건 판정, 질문 선택, 답변 반영, 환자 부담 기록을 "
+            "하나의 사례로 연결한 결정론적 평가는 끝났다. 남은 일은 마지막에 "
+            "사용할 외부 모델을 같은 자료와 규칙으로 실행하는 것이다."
             if software_ready and not final_ready
             else payload["conclusion"]
         ),
@@ -245,10 +296,8 @@ def build_final_evaluation_readiness(
             "",
             "## 다음 순서",
             "",
-            "1. 이미 고른 공개 시험 50건에서 계산 가능한 참가 조건을 정리한다.",
-            "2. 새 합성 환자를 그 실제 조건과 연결한다.",
-            "3. 모집 가능한 589건 검색부터 질문 뒤 순위 변경까지 한 사례로 실행한다.",
-            "4. 마지막에 사용할 모델로 호출 수·토큰·회복 결과를 다시 계산한다.",
+            "1. 마지막에 사용할 외부 모델로 같은 30명 평가를 실행한다.",
+            "2. 질문 전후 판단 변화, 새 검사·방문 수, 호출 수와 토큰을 함께 기록한다.",
             "",
         ]
     )

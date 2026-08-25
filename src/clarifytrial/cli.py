@@ -64,6 +64,10 @@ from .datasets.broad_rescue import (
     audit_broad_rescue_dataset,
     build_broad_rescue_dataset,
 )
+from .datasets.source_benchmark import (
+    audit_source_benchmark,
+    build_source_benchmark,
+)
 from .datasets.natural_ai_review import (
     build_conservative_natural_ai_gold,
     run_natural_evaluation_ai_review,
@@ -111,7 +115,11 @@ from .retrieval import (
     TrialGPTRuntimeSearch,
     run_trialgpt_retrieval,
 )
-from .reporting import build_final_evaluation_readiness, build_research_report
+from .reporting import (
+    build_budget_frontier,
+    build_final_evaluation_readiness,
+    build_research_report,
+)
 from .preparation import (
     CandidateSearch,
     InMemoryCandidateSearch,
@@ -765,7 +773,7 @@ def _parser() -> argparse.ArgumentParser:
     full_ui = commands.add_parser(
         "run-full-ui",
         help=(
-            "show patient input, search across 15 public trials, role calls, "
+            "show patient input, search across supplied public trials, role calls, "
             "questions, reassessment, and final results in one terminal view"
         ),
     )
@@ -773,15 +781,15 @@ def _parser() -> argparse.ArgumentParser:
         "--trial-set",
         type=Path,
         default=Path("data")
-        / "natural_evaluation_v1"
-        / "preliminary_trial_set.json",
+        / "public_protocol_benchmark_v1"
+        / "trial_set.json",
     )
     full_ui.add_argument(
         "--patient-pairs",
         type=Path,
         default=Path("data")
-        / "natural_evaluation_v2"
-        / "preliminary_patient_pairs.json",
+        / "public_protocol_benchmark_v1"
+        / "patient_pairs.json",
     )
     full_ui.add_argument(
         "--generation-config",
@@ -790,8 +798,17 @@ def _parser() -> argparse.ArgumentParser:
     )
     full_ui.add_argument(
         "--patient-id",
-        default="natural-type_2_diabetes-11",
+        default="source-chronic_pancreatitis-04",
     )
+    full_ui.add_argument(
+        "--broad-corpus",
+        type=Path,
+        help=(
+            "optional public trial JSONL; when supplied, the screen starts "
+            "with the currently enrolling subset of this larger search pool"
+        ),
+    )
+    full_ui.add_argument("--broad-search-top-k", type=int, default=200)
     full_ui.add_argument(
         "--output",
         type=Path,
@@ -799,8 +816,8 @@ def _parser() -> argparse.ArgumentParser:
     )
     full_ui.add_argument(
         "--provider",
-        choices=("codex-subscription", "anthropic"),
-        default="codex-subscription",
+        choices=("deterministic", "codex-subscription", "anthropic"),
+        default="deterministic",
     )
     full_ui.add_argument("--model")
     full_ui.add_argument(
@@ -872,6 +889,25 @@ def _parser() -> argparse.ArgumentParser:
     workflow_evaluation.add_argument("--max-output-tokens", type=int, default=8_192)
     workflow_evaluation.add_argument("--timeout-seconds", type=float, default=300)
     workflow_evaluation.add_argument("--action-budget", type=int, default=3)
+    workflow_evaluation.add_argument(
+        "--budget-sweep",
+        action="store_true",
+        help="run the same evaluation for every information budget from zero to five",
+    )
+    workflow_evaluation.add_argument(
+        "--broad-corpus",
+        type=Path,
+        help=(
+            "optional 1,931-trial team snapshot; when supplied, target trials "
+            "must first be recovered from the currently enrolling subset"
+        ),
+    )
+    workflow_evaluation.add_argument(
+        "--broad-search-top-k",
+        type=int,
+        default=200,
+        help="number of broad-corpus search results passed to target evaluation",
+    )
     workflow_evaluation.add_argument("--max-selective-reviews", type=int, default=1)
     workflow_evaluation.add_argument("--max-cycles", type=int, default=12)
     workflow_evaluation.add_argument("--concurrency", type=int, default=1)
@@ -1358,6 +1394,66 @@ def _parser() -> argparse.ArgumentParser:
         default=Path("data") / "broad_rescue_maturity_v1" / "patient_pairs.json",
     )
 
+    source_benchmark = commands.add_parser(
+        "build-public-protocol-benchmark",
+        help=(
+            "build synthetic patient episodes against a conservative subset "
+            "of 50 selected public trial protocols"
+        ),
+    )
+    source_benchmark.add_argument(
+        "--config",
+        type=Path,
+        default=Path("configs") / "public_protocol_benchmark_v1.json",
+    )
+    source_benchmark.add_argument(
+        "--selection",
+        type=Path,
+        default=Path("runs") / "team-trial-expansion" / "selection.json",
+    )
+    source_benchmark.add_argument(
+        "--trials",
+        type=Path,
+        default=Path(".research-cache") / "team-trials" / "trials.jsonl",
+    )
+    source_benchmark.add_argument(
+        "--output",
+        type=Path,
+        default=Path("data") / "public_protocol_benchmark_v1",
+    )
+
+    audit_source = commands.add_parser(
+        "audit-public-protocol-benchmark",
+        help="rebuild and compare the public-protocol subset and synthetic patients",
+    )
+    audit_source.add_argument(
+        "--config",
+        type=Path,
+        default=Path("configs") / "public_protocol_benchmark_v1.json",
+    )
+    audit_source.add_argument(
+        "--selection",
+        type=Path,
+        default=Path("runs") / "team-trial-expansion" / "selection.json",
+    )
+    audit_source.add_argument(
+        "--trials",
+        type=Path,
+        default=Path(".research-cache") / "team-trials" / "trials.jsonl",
+    )
+    audit_source.add_argument(
+        "--trial-set",
+        type=Path,
+        default=Path("data") / "public_protocol_benchmark_v1" / "trial_set.json",
+    )
+    audit_source.add_argument(
+        "--patient-pairs",
+        type=Path,
+        default=Path("data")
+        / "public_protocol_benchmark_v1"
+        / "patient_pairs.json",
+    )
+
     natural_records = commands.add_parser(
         "build-natural-evaluation-records",
         help="render the paired facts as synthetic record entries and prose",
@@ -1727,6 +1823,7 @@ def _parser() -> argparse.ArgumentParser:
     report.add_argument("--question-policy", type=Path)
     report.add_argument("--burden", type=Path)
     report.add_argument("--workflow", type=Path)
+    report.add_argument("--budget-frontier", type=Path)
     report.add_argument("--retrieval", type=Path, action="append", default=[])
     report.add_argument("--output", type=Path, required=True)
     report.add_argument("--split", default="heldout")
@@ -1902,23 +1999,34 @@ def main(argv: Sequence[str] | None = None) -> int:
             ),
         )
     if args.command == "run-full-ui":
-        if not args.confirm_model_run:
+        if args.provider != "deterministic" and not args.confirm_model_run:
             parser.error(
-                "run-full-ui requires --confirm-model-run because it makes live "
-                "model calls"
+                "live run-full-ui providers require --confirm-model-run"
             )
         fixture = build_integrated_ui_fixture(
             trial_set_path=args.trial_set,
             patient_pairs_path=args.patient_pairs,
             generation_config_path=args.generation_config,
             patient_id=args.patient_id,
+            broad_corpus_path=args.broad_corpus,
+            broad_search_top_k=args.broad_search_top_k,
         )
         settings = EpisodeSettings(
             max_external_actions=args.max_external_actions,
             max_selective_reviews=args.max_selective_reviews,
             max_cycles=args.max_cycles,
         )
-        if args.provider == "codex-subscription":
+        if args.provider == "deterministic":
+            run_integrated_terminal_ui(
+                fixture=fixture,
+                model=DeterministicWorkflowModel(),
+                model_label="deterministic-workflow",
+                settings=settings,
+                output_dir=args.output,
+                medical_disclaimer=_read_disclaimer(),
+                auto_advance=args.auto,
+            )
+        elif args.provider == "codex-subscription":
             model_id = args.model or DEFAULT_CODEX_MODEL
             with CodexSubscriptionStructuredModel(
                 model_id=model_id,
@@ -1968,11 +2076,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             "trial_set_path": args.trial_set,
             "patient_pairs_path": args.patient_pairs,
             "generation_config_path": args.generation_config,
-            "destination": args.output,
             "split": args.split,
             "patient_ids": args.patient_id,
             "limit": args.limit,
-            "action_budget": args.action_budget,
             "max_selective_reviews": args.max_selective_reviews,
             "max_cycles": args.max_cycles,
             "concurrency": args.concurrency,
@@ -1981,13 +2087,42 @@ def main(argv: Sequence[str] | None = None) -> int:
                 args.include_patient_choice_scenario
             ),
             "approve_synthetic_actions": args.approve_synthetic_actions,
+            "broad_corpus_path": args.broad_corpus,
+            "broad_search_top_k": args.broad_search_top_k,
             "resume": args.resume,
         }
+        def run_declared_budgets(model: StructuredModel, model_label: str) -> dict[str, Any]:
+            if not args.budget_sweep:
+                return run_full_workflow_evaluation(
+                    **run_kwargs,
+                    destination=args.output,
+                    action_budget=args.action_budget,
+                    model=model,
+                    model_label=model_label,
+                )
+            summary_paths = []
+            latest = None
+            for budget in range(6):
+                budget_output = args.output / f"budget-{budget}"
+                latest = run_full_workflow_evaluation(
+                    **run_kwargs,
+                    destination=budget_output,
+                    action_budget=budget,
+                    model=model,
+                    model_label=model_label,
+                )
+                summary_paths.append(budget_output / "summary.json")
+            frontier = build_budget_frontier(
+                workflow_summary_paths=summary_paths,
+                output_dir=args.output / "frontier",
+            )
+            assert latest is not None
+            return {**latest, "budget_frontier": frontier}
+
         if args.provider == "deterministic":
-            summary = run_full_workflow_evaluation(
-                **run_kwargs,
-                model=DeterministicWorkflowModel(),
-                model_label="deterministic-workflow",
+            summary = run_declared_budgets(
+                DeterministicWorkflowModel(),
+                "deterministic-workflow",
             )
         elif args.provider == "codex-subscription":
             model_id = args.model or DEFAULT_CODEX_MODEL
@@ -1999,10 +2134,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                     timeout_seconds=args.timeout_seconds,
                 ),
             ) as model:
-                summary = run_full_workflow_evaluation(
-                    **run_kwargs,
-                    model=model,
-                    model_label=f"{model_id} / {args.effort}",
+                summary = run_declared_budgets(
+                    model,
+                    f"{model_id} / {args.effort}",
                 )
         else:
             if args.concurrency != 1:
@@ -2016,12 +2150,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 max_output_tokens=args.max_output_tokens,
                 timeout_seconds=args.timeout_seconds,
             )
-            summary = run_full_workflow_evaluation(
-                **run_kwargs,
-                model=model,
-                model_label=model_id,
-            )
-        print(f"summary: {args.output / 'summary.json'}")
+            summary = run_declared_budgets(model, model_id)
+        if args.budget_sweep:
+            print(f"frontier: {args.output / 'frontier' / 'frontier.md'}")
+        else:
+            print(f"summary: {args.output / 'summary.json'}")
         print(
             f"patients={summary['patient_count']} "
             f"paired={summary['paired_clarifytrial_vs_fixed']['patient_count']}"
@@ -2311,6 +2444,37 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"patient_trial_pairs={result['patient_trial_pair_count']}"
         )
         return 0
+    if args.command == "build-public-protocol-benchmark":
+        result = build_source_benchmark(
+            config_path=args.config,
+            selection_path=args.selection,
+            corpus_path=args.trials,
+            output_dir=args.output,
+        )
+        print(f"trial_set: {result['trial_set']}")
+        print(f"patient_pairs: {result['patient_pairs']}")
+        print(
+            f"groups={result['group_count']} trials={result['trial_count']} "
+            f"criteria={result['criterion_count']} "
+            f"patients={result['patient_count']} "
+            f"confirmed={result['complete_confirmed_candidate_count']} "
+            f"ineligible={result['complete_ineligible_count']}"
+        )
+        return 0
+    if args.command == "audit-public-protocol-benchmark":
+        result = audit_source_benchmark(
+            config_path=args.config,
+            selection_path=args.selection,
+            corpus_path=args.trials,
+            trial_set_path=args.trial_set,
+            patient_pairs_path=args.patient_pairs,
+        )
+        print(
+            f"passed={result['passed']} groups={result['group_count']} "
+            f"trials={result['trial_count']} criteria={result['criterion_count']} "
+            f"patients={result['patient_count']}"
+        )
+        return 0
     if args.command == "build-natural-evaluation-records":
         result = build_natural_evaluation_records(
             patient_pairs_path=args.patient_pairs,
@@ -2405,6 +2569,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             question_policy_path=args.question_policy,
             burden_path=args.burden,
             workflow_path=args.workflow,
+            budget_frontier_path=args.budget_frontier,
             retrieval_paths=args.retrieval,
             split=args.split,
             input_state=args.input_state,

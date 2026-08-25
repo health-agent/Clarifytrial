@@ -129,7 +129,7 @@ def test_broad_case_runs_connected_rescue_metrics_and_readiness_report(
         workflow_summary_path=workflow_dir / "summary.json",
         output_dir=tmp_path / "readiness",
     )
-    assert readiness["software_ready_for_source_anchored_evaluation"] is True
+    assert readiness["software_ready_for_source_anchored_evaluation"] is False
     assert readiness["final_performance_claim_ready"] is False
     failed_gate_ids = {
         item["gate_id"] for item in readiness["gates"] if not item["passed"]

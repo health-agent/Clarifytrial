@@ -7,6 +7,7 @@ import hashlib
 from collections import defaultdict
 from collections.abc import Sequence
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import replace
 from math import comb
 from pathlib import Path
 from statistics import mean
@@ -24,10 +25,12 @@ from ..environment import (
     PublicQuestionCatalog,
     SyntheticInformationTools,
 )
+from ..contracts import TrialSearchRank
 from ..llm import StructuredModel
 from ..io import atomic_write_text
 from ..interactive.burden_contracts import PatientBurdenInput
 from ..preparation import summarize_model_usage
+from ..preparation.team_trials import TeamTrialCandidateSearch
 from ..settings import EpisodeSettings
 from ..trace import TraceRecorder
 from ..ui import build_integrated_ui_fixture
@@ -114,6 +117,90 @@ def _tools(
     )
 
 
+def _apply_broad_search(
+    fixture: Any,
+    searcher: TeamTrialCandidateSearch,
+    *,
+    top_k: int,
+) -> tuple[Any, dict[str, Any]]:
+    """Keep only declared target trials recovered from the broad corpus."""
+
+    hits = searcher.search(fixture.search_conditions, top_k=top_k)
+    rank_by_id = {item.source.trial_id: item for item in hits}
+    expected = list(fixture.expected_candidate_trial_ids)
+    recovered = [trial_id for trial_id in expected if trial_id in rank_by_id]
+    if not recovered:
+        raise ValueError("broad candidate search recovered none of the target trials")
+    recovered_set = set(recovered)
+    screening_trials = [
+        trial
+        for trial in fixture.screening_case.trials
+        if trial.trial_id in recovered_set
+    ]
+    known_criteria = {
+        criterion.criterion_id
+        for trial in screening_trials
+        for criterion in trial.criteria
+    }
+    requests = []
+    for request in fixture.screening_case.evidence_requests:
+        related = [
+            criterion_id
+            for criterion_id in request.related_criterion_ids
+            if criterion_id in known_criteria
+        ]
+        if related:
+            requests.append(
+                request.model_copy(update={"related_criterion_ids": related})
+            )
+    fact_ids = {item.fact_id for item in requests}
+    ranking = [
+        TrialSearchRank(
+            trial_id=trial_id,
+            rank=rank_by_id[trial_id].rank,
+            score=rank_by_id[trial_id].score,
+            retrieval_method=rank_by_id[trial_id].retrieval_method,
+        )
+        for trial_id in recovered
+    ]
+    screening_case = fixture.screening_case.model_copy(
+        update={
+            "trials": screening_trials,
+            "evidence_requests": requests,
+            "acquisition_options": [
+                item
+                for item in fixture.screening_case.acquisition_options
+                if item.fact_id in fact_ids
+            ],
+            "candidate_ranking": ranking,
+        }
+    )
+    search_result = {
+        "corpus_trial_count": searcher.summary.included_trial_count,
+        "top_k": top_k,
+        "target_trial_count": len(expected),
+        "retrieved_target_count": len(recovered),
+        "target_recall": len(recovered) / len(expected),
+        "retrieved_target_trial_ids": recovered,
+        "missed_target_trial_ids": sorted(set(expected) - recovered_set),
+        "target_ranks": {
+            trial_id: rank_by_id[trial_id].rank for trial_id in recovered
+        },
+        "retrieval_method": searcher.retrieval_method,
+    }
+    return (
+        replace(
+            fixture,
+            screening_case=screening_case,
+            candidate_hits=tuple(hits),
+            hidden_answers=tuple(
+                item for item in fixture.hidden_answers if item.fact_id in fact_ids
+            ),
+        ),
+        search_result,
+    )
+
+
 def _decision_map(rows: Sequence[dict[str, Any]]) -> dict[str, tuple[str, str]]:
     return {
         str(item["trial_id"]): (
@@ -163,7 +250,11 @@ def _metrics(
         "candidate_status_accuracy": candidate / len(trial_ids),
         "confirmation_status_accuracy": confirmation / len(trial_ids),
         "false_candidate_removals": sum(
-            final.get(item, (None, None))[0] == "remove" and gold[item][0] == "retain"
+            (
+                item not in final
+                or final.get(item, (None, None))[0] == "remove"
+            )
+            and gold[item][0] == "retain"
             for item in trial_ids
         ),
         "premature_initial_confirmations": sum(
@@ -346,6 +437,36 @@ def _aggregate_by_group(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
     return result
 
 
+def _aggregate_broad_search(rows: Sequence[dict[str, Any]]) -> dict[str, Any] | None:
+    by_patient: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        search = row.get("broad_search")
+        if search is not None and row.get("status") == "completed":
+            by_patient.setdefault(str(row["patient_id"]), search)
+    if not by_patient:
+        return None
+    values = list(by_patient.values())
+    target_count = sum(int(item["target_trial_count"]) for item in values)
+    retrieved_count = sum(int(item["retrieved_target_count"]) for item in values)
+    ranks = [
+        int(rank)
+        for item in values
+        for rank in item["target_ranks"].values()
+    ]
+    return {
+        "patient_count": len(values),
+        "corpus_trial_count": values[0]["corpus_trial_count"],
+        "top_k": values[0]["top_k"],
+        "target_trial_count": target_count,
+        "retrieved_target_count": retrieved_count,
+        "target_recall": retrieved_count / target_count,
+        "mean_retrieved_target_rank": mean(ranks) if ranks else None,
+        "worst_retrieved_target_rank": max(ranks) if ranks else None,
+        "missed_target_trial_count": target_count - retrieved_count,
+        "retrieval_method": values[0]["retrieval_method"],
+    }
+
+
 def _paired(
     rows: Sequence[dict[str, Any]],
     *,
@@ -457,11 +578,15 @@ def run_full_workflow_evaluation(
     include_unavailable_scenario: bool = False,
     include_patient_choice_scenario: bool = False,
     approve_synthetic_actions: bool = False,
+    broad_corpus_path: str | Path | None = None,
+    broad_search_top_k: int = 200,
     resume: bool = False,
     progress: Any = print,
 ) -> dict[str, Any]:
     if concurrency < 1:
         raise ValueError("concurrency must be at least one")
+    if broad_search_top_k < 1:
+        raise ValueError("broad_search_top_k must be at least one")
     pairs_document = json.loads(Path(patient_pairs_path).read_text(encoding="utf-8"))
     group_label_by_id = {
         str(item["group_id"]): str(item["group_label"])
@@ -494,6 +619,9 @@ def run_full_workflow_evaluation(
         "include_unavailable_scenario": include_unavailable_scenario,
         "include_patient_choice_scenario": include_patient_choice_scenario,
         "approve_synthetic_actions": approve_synthetic_actions,
+        "broad_search_top_k": (
+            broad_search_top_k if broad_corpus_path is not None else None
+        ),
         "unavailable_answer_selection": (
             "fewest_connected_trials_then_fact_id"
             if include_unavailable_scenario
@@ -504,6 +632,11 @@ def run_full_workflow_evaluation(
             "trial_set_sha256": _file_sha256(trial_set_path),
             "patient_pairs_sha256": _file_sha256(patient_pairs_path),
             "generation_config_sha256": _file_sha256(generation_config_path),
+            "broad_corpus_sha256": (
+                None
+                if broad_corpus_path is None
+                else _file_sha256(broad_corpus_path)
+            ),
         },
     }
     if resume:
@@ -526,6 +659,11 @@ def run_full_workflow_evaluation(
     completed_keys = {
         key for key, row in row_by_key.items() if row.get("status") == "completed"
     }
+    broad_searcher = (
+        None
+        if broad_corpus_path is None
+        else TeamTrialCandidateSearch(broad_corpus_path)
+    )
 
     def evaluate_pair(pair: dict[str, Any]) -> list[dict[str, Any]]:
         patient_rows = []
@@ -536,6 +674,13 @@ def run_full_workflow_evaluation(
             generation_config_path=generation_config_path,
             patient_id=patient_id,
         )
+        broad_search_result = None
+        if broad_searcher is not None:
+            fixture, broad_search_result = _apply_broad_search(
+                fixture,
+                broad_searcher,
+                top_k=broad_search_top_k,
+            )
         full_gold = pair["sufficient_evidence_episode"]["expected_trial_decisions"]
         initial_gold = pair["insufficient_evidence_episode"][
             "expected_trial_decisions"
@@ -625,6 +770,7 @@ def run_full_workflow_evaluation(
                         "unavailable_fact_ids": sorted(unavailable_fact_ids),
                         "patient_choice_scenario": scenario,
                         "arm": arm,
+                        "broad_search": broad_search_result,
                         "status": "failed",
                         "error_type": type(error).__name__,
                         "error": str(error),
@@ -659,6 +805,7 @@ def run_full_workflow_evaluation(
                         "scenario": scenario,
                         "unavailable_fact_ids": sorted(unavailable_fact_ids),
                         "arm": arm,
+                        "broad_search": broad_search_result,
                         "status": "completed",
                         "stop_reason": result.stop_reason.value,
                         "action_count": len(result.action_history),
@@ -759,6 +906,9 @@ def run_full_workflow_evaluation(
         "include_unavailable_scenario": include_unavailable_scenario,
         "include_patient_choice_scenario": include_patient_choice_scenario,
         "approve_synthetic_actions": approve_synthetic_actions,
+        "broad_search_top_k": (
+            broad_search_top_k if broad_searcher is not None else None
+        ),
         "unavailable_answer_selection": (
             "fewest_connected_trials_then_fact_id"
             if include_unavailable_scenario
@@ -768,10 +918,15 @@ def run_full_workflow_evaluation(
         "case_results": str(case_path),
         "evaluation_scope": {
             "patient_input": "standardized_json",
-            "candidate_selection": "five_declared_same_disease_trials",
-            "includes_broad_corpus_search": False,
+            "candidate_selection": (
+                "broad_corpus_search_then_declared_target_evaluation"
+                if broad_searcher is not None
+                else "five_declared_same_disease_trials"
+            ),
+            "includes_broad_corpus_search": broad_searcher is not None,
             "includes_natural_record_structuring": False,
         },
+        "broad_search_metrics": _aggregate_broad_search(normal_rows),
         "arm_metrics": _aggregate(normal_rows),
         "group_metrics": _aggregate_by_group(normal_rows),
         "unavailable_answer_metrics": (

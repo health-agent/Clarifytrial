@@ -1,0 +1,55 @@
+{
+  "protocol_id": "clarifytrial-public-protocol-benchmark-v1",
+  "as_of": "2026-08-25T09:00:00+09:00",
+  "profiles_per_group": 5,
+  "development_profiles_per_group": 2,
+  "minimum_criteria_per_trial": 2,
+  "maximum_criteria_per_trial": 8,
+  "missing_fact_counts": [1, 2, 3, 5, 5],
+  "value_profile_order": [0, 2, 1, 3, 4],
+  "search_conditions": {
+    "bladder_cancer": ["bladder cancer", "bladder carcinoma", "urothelial carcinoma"],
+    "pulmonary_fibrosis": ["idiopathic pulmonary fibrosis", "pulmonary fibrosis", "interstitial lung disease"],
+    "acute_pancreatitis": ["acute pancreatitis", "pancreatitis, acute", "recurrent acute pancreatitis"],
+    "thyroid_eye_disease": ["thyroid eye disease", "graves ophthalmopathy", "thyroid associated ophthalmopathy"],
+    "nephrotic_syndrome": ["nephrotic syndrome", "minimal change disease", "focal segmental glomerulosclerosis", "membranous nephropathy"],
+    "migraine": ["migraine"],
+    "retinal_detachment": ["retinal detachment", "rhegmatogenous retinal detachment", "proliferative vitreoretinopathy"],
+    "chronic_pancreatitis": ["chronic pancreatitis"],
+    "lung_cancer": ["lung cancer", "non-small cell lung cancer", "small cell lung cancer"],
+    "ovarian_cancer": ["ovarian cancer", "ovarian carcinoma"]
+  },
+  "missing_fact_strata": {
+    "acute_pancreatitis": ["egfr_ml_min_1_73m2"],
+    "lung_cancer": ["hemoglobin_g_l", "hemoglobin_g_dl"]
+  },
+  "logic_groups": [
+    {
+      "trial_id": "NCT06651580",
+      "label": "급성 췌장염 정의에서 세 항목 중 두 항목 충족",
+      "operator": "at_least",
+      "source_line_numbers": [10, 11, 12],
+      "minimum_required": 2
+    },
+    {
+      "trial_id": "NCT05453851",
+      "label": "만성 췌장염 근거 세 항목 중 두 항목 충족",
+      "operator": "at_least",
+      "source_line_numbers": [13, 14, 15],
+      "minimum_required": 2
+    },
+    {
+      "trial_id": "NCT05453851",
+      "label": "두 통증 영향 항목 중 하나 이상 충족",
+      "operator": "any",
+      "source_line_numbers": [21, 22]
+    },
+    {
+      "trial_id": "NCT07698119",
+      "label": "전신 염증 반응 네 항목 중 두 항목 충족",
+      "operator": "at_least",
+      "source_line_numbers": [4, 5, 6, 7],
+      "minimum_required": 2
+    }
+  ]
+}

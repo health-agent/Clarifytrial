@@ -88,6 +88,16 @@ def build_review_payload(
             item.model_dump(mode="json") for item in decision.criterion_assessments
         ],
         "criteria": [item.model_dump(mode="json") for item in trial.criteria],
+        "eligibility_logic": (
+            None
+            if trial.eligibility_logic is None
+            else trial.eligibility_logic.model_dump(mode="json")
+        ),
+        "logic_evaluation": (
+            None
+            if decision.logic_evaluation is None
+            else decision.logic_evaluation.model_dump(mode="json")
+        ),
         "patient_facts": [
             item.model_dump(mode="json")
             for item in patient_state.facts

@@ -78,6 +78,7 @@ def evaluate_policy_view(
                     reason="후보 전체 상태 계산에서는 행동을 별도로 선택한다.",
                 ),
                 available_evidence_ids=visible_ids,
+                eligibility_logic=trial.eligibility_logic,
             )
         )
     return InteractiveSnapshot(patient_state=patient_state, decisions=decisions)

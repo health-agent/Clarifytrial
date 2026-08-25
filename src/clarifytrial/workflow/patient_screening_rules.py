@@ -66,7 +66,11 @@ def build_policy_view(
         case_id=case.case_id,
         disease_group=case.disease_group,
         trials=[
-            InteractiveTrial(trial_id=item.trial_id, criteria=item.criteria)
+            InteractiveTrial(
+                trial_id=item.trial_id,
+                criteria=item.criteria,
+                eligibility_logic=item.eligibility_logic,
+            )
             for item in case.trials
         ],
         available_information=[
@@ -167,6 +171,7 @@ def aggregate_screening_trial(
         assessments=list(assessments.values()),
         pending_information=pending,
         available_evidence_ids=[item.evidence_id for item in patient_state.facts],
+        eligibility_logic=trial.eligibility_logic,
     )
 
 

@@ -15,6 +15,7 @@ from ..concepts import concepts_equivalent, normalized_concept
 from ..contracts import (
     ConfirmationStatus,
     ContractModel,
+    CriterionLogic,
     EvidenceFact,
     NextAction,
     PatientState,
@@ -30,6 +31,7 @@ class InteractiveTrial(ContractModel):
 
     trial_id: str = Field(min_length=1)
     criteria: list[TrialCriterion] = Field(min_length=1)
+    eligibility_logic: CriterionLogic | None = None
 
     @model_validator(mode="after")
     def criterion_references_are_consistent(self) -> "InteractiveTrial":
@@ -40,6 +42,16 @@ class InteractiveTrial(ContractModel):
             raise ValueError("every criterion must belong to trial_id")
         if not any(item.required for item in self.criteria):
             raise ValueError("at least one criterion must be required")
+        if self.eligibility_logic is not None:
+            known = set(criterion_ids)
+            referenced = self.eligibility_logic.referenced_criterion_ids()
+            if not referenced.issubset(known):
+                raise ValueError("eligibility_logic refers to unknown criteria")
+            required = {
+                item.criterion_id for item in self.criteria if item.required
+            }
+            if not required.issubset(referenced):
+                raise ValueError("eligibility_logic must include required criteria")
         return self
 
 

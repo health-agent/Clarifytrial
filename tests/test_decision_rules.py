@@ -8,7 +8,12 @@ from clarifytrial.contracts import (
     ConfirmationStatus,
     CriterionAssessment,
     CriterionKind,
+    CriterionLogic,
+    CriterionLogicOperator,
+    CriterionLogicStatus,
     EvidenceSufficiency,
+    NextAction,
+    NextEvidenceRequest,
     ReviewFlag,
     ReviewReason,
     TrialCriterion,
@@ -61,6 +66,14 @@ def assessment(
         ),
         rationale="Synthetic rationale tied to the cited criterion.",
         review_flags=list(review_flags or []),
+    )
+
+
+def logic_leaf(criterion_id: str, *, label: str | None = None) -> CriterionLogic:
+    return CriterionLogic(
+        operator=CriterionLogicOperator.CRITERION,
+        criterion_id=criterion_id,
+        label=label,
     )
 
 
@@ -284,3 +297,157 @@ def test_unknown_assessment_criterion_fails_closed() -> None:
                 )
             ],
         )
+
+
+def test_any_logic_confirms_when_one_alternative_is_supported() -> None:
+    criteria = [criterion("route-a"), criterion("route-b")]
+    logic = CriterionLogic(
+        operator=CriterionLogicOperator.ANY,
+        label="두 참가 경로 중 하나",
+        children=[logic_leaf("route-a"), logic_leaf("route-b")],
+    )
+    assessments = [
+        assessment(
+            "route-a",
+            status=ClinicalStatus.SUPPORTS,
+            sufficiency=EvidenceSufficiency.SUFFICIENT,
+            evidence_ids=["e-a"],
+        ),
+        assessment(
+            "route-b",
+            status=ClinicalStatus.VIOLATES,
+            sufficiency=EvidenceSufficiency.SUFFICIENT,
+            evidence_ids=["e-b"],
+        ),
+    ]
+
+    decision = aggregate_trial_decision(
+        trial_id="NCT-test",
+        criteria=criteria,
+        assessments=assessments,
+        available_evidence_ids={"e-a", "e-b"},
+        eligibility_logic=logic,
+    )
+
+    assert decision.candidate_status is CandidateStatus.RETAIN
+    assert decision.confirmation_status is ConfirmationStatus.CONFIRMED
+    assert decision.logic_evaluation is not None
+    assert decision.logic_evaluation.status is CriterionLogicStatus.SATISFIED
+
+
+def test_resolved_alternative_logic_discards_irrelevant_pending_question() -> None:
+    criteria = [criterion("route-a"), criterion("route-b")]
+    logic = CriterionLogic(
+        operator=CriterionLogicOperator.ANY,
+        children=[logic_leaf("route-a"), logic_leaf("route-b")],
+    )
+    assessments = [
+        assessment(
+            "route-a",
+            status=ClinicalStatus.SUPPORTS,
+            sufficiency=EvidenceSufficiency.SUFFICIENT,
+            evidence_ids=["e-a"],
+        ),
+        assessment(
+            "route-b",
+            status=ClinicalStatus.UNKNOWN,
+            sufficiency=EvidenceSufficiency.INSUFFICIENT,
+        ),
+    ]
+    pending = NextEvidenceRequest(
+        fact_id="missing-route-b",
+        description="두 번째 참가 경로에 해당하는지 확인한다.",
+        related_criterion_ids=["route-b"],
+        acceptable_actions=[NextAction.ASK_PATIENT],
+        reason="두 번째 경로의 판단 근거가 아직 없다.",
+    )
+
+    decision = aggregate_trial_decision(
+        trial_id="NCT-test",
+        criteria=criteria,
+        assessments=assessments,
+        pending_information=[pending],
+        available_evidence_ids={"e-a"},
+        eligibility_logic=logic,
+    )
+
+    assert decision.confirmation_status is ConfirmationStatus.CONFIRMED
+    assert decision.pending_information == []
+    assert decision.next_action.action is NextAction.NONE
+
+
+def test_any_logic_stays_open_when_one_alternative_is_still_unknown() -> None:
+    criteria = [criterion("route-a"), criterion("route-b")]
+    logic = CriterionLogic(
+        operator=CriterionLogicOperator.ANY,
+        children=[logic_leaf("route-a"), logic_leaf("route-b")],
+    )
+    assessments = [
+        assessment(
+            "route-a",
+            status=ClinicalStatus.VIOLATES,
+            sufficiency=EvidenceSufficiency.SUFFICIENT,
+            evidence_ids=["e-a"],
+        ),
+        assessment(
+            "route-b",
+            status=ClinicalStatus.UNKNOWN,
+            sufficiency=EvidenceSufficiency.INSUFFICIENT,
+        ),
+    ]
+
+    assert aggregate_statuses(criteria, assessments, logic) == (
+        CandidateStatus.RETAIN,
+        ConfirmationStatus.NOT_CONFIRMED,
+    )
+
+
+def test_at_least_logic_handles_two_of_three_without_flattening() -> None:
+    criteria = [criterion("c-1"), criterion("c-2"), criterion("c-3")]
+    logic = CriterionLogic(
+        operator=CriterionLogicOperator.AT_LEAST,
+        minimum_required=2,
+        children=[logic_leaf("c-1"), logic_leaf("c-2"), logic_leaf("c-3")],
+    )
+    assessments = [
+        assessment(
+            "c-1",
+            status=ClinicalStatus.SUPPORTS,
+            sufficiency=EvidenceSufficiency.SUFFICIENT,
+            evidence_ids=["e-1"],
+        ),
+        assessment(
+            "c-2",
+            status=ClinicalStatus.SUPPORTS,
+            sufficiency=EvidenceSufficiency.SUFFICIENT,
+            evidence_ids=["e-2"],
+        ),
+        assessment(
+            "c-3",
+            status=ClinicalStatus.VIOLATES,
+            sufficiency=EvidenceSufficiency.SUFFICIENT,
+            evidence_ids=["e-3"],
+        ),
+    ]
+
+    assert aggregate_statuses(criteria, assessments, logic) == (
+        CandidateStatus.RETAIN,
+        ConfirmationStatus.CONFIRMED,
+    )
+
+
+def test_logic_rejects_unknown_or_omitted_required_criteria() -> None:
+    criteria = [criterion("c-1"), criterion("c-2")]
+    unknown = CriterionLogic(
+        operator=CriterionLogicOperator.ALL,
+        children=[logic_leaf("c-1"), logic_leaf("not-declared")],
+    )
+    omitted = CriterionLogic(
+        operator=CriterionLogicOperator.ALL,
+        children=[logic_leaf("c-1")],
+    )
+
+    with pytest.raises(ValueError, match="unknown criteria"):
+        aggregate_statuses(criteria, [], unknown)
+    with pytest.raises(ValueError, match="omits required"):
+        aggregate_statuses(criteria, [], omitted)

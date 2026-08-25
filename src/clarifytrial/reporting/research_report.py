@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import json
+import shutil
 from html import escape
 from pathlib import Path
 from typing import Any
@@ -88,6 +89,7 @@ def build_research_report(
     question_policy_path: str | Path | None = None,
     burden_path: str | Path | None = None,
     workflow_path: str | Path | None = None,
+    budget_frontier_path: str | Path | None = None,
     retrieval_paths: list[str | Path] | None = None,
     split: str = "heldout",
     input_state: str = "fully_missing",
@@ -232,15 +234,43 @@ def build_research_report(
     if workflow_path is not None:
         workflow = _read(workflow_path)
         normalized["full_workflow"] = workflow
+        broad_search = workflow.get("broad_search_metrics") or {}
+        if broad_search:
+            workflow_scope = (
+                f"모집 중 시험 {broad_search['corpus_trial_count']}건을 먼저 검색한 뒤, "
+                f"평가 대상으로 정한 시험 {broad_search['target_trial_count']}건 중 "
+                f"{broad_search['retrieved_target_count']}건을 검색 결과 상위 "
+                f"{broad_search['top_k']}개 안에서 찾아 조건 판정과 질문 뒤 "
+                "재판정까지 같은 사례로 실행했다."
+            )
+            for name in (
+                "target_recall",
+                "mean_retrieved_target_rank",
+                "worst_retrieved_target_rank",
+            ):
+                metric_rows.append(
+                    {
+                        "section": "broad_search",
+                        "arm": broad_search["retrieval_method"],
+                        "metric": name,
+                        "value": broad_search[name],
+                    }
+                )
+        else:
+            workflow_scope = (
+                "질환별 후보 시험 5개를 미리 정한 뒤 조건 판정과 질문 뒤 "
+                "재판정을 실행했다. 수천 건에서 후보를 찾는 검색 단계는 "
+                "이 결과에 포함하지 않는다."
+            )
         sections.extend(
             [
-                "## 정해진 후보 시험에서 조건 판단부터 질문 뒤 재판정까지 실행한 결과",
+                "## 시험 검색부터 질문 뒤 재판정까지 연결한 결과",
                 "",
-                f"합성 환자 {workflow['patient_count']}명에게 질환별 후보 시험 5개와 같은 처음 환자 자료를 주고, 추가 정보를 확인하지 않는 경우와 세 가지 확인 순서를 비교했다. 추가 확인을 사용하는 방법에는 환자 한 명당 최대 {workflow['action_budget']}번의 기회를 줬다. 이 평가는 수천 건에서 후보를 찾는 검색 단계와 자유 형식 기록 정리를 포함하지 않는다.",
+                f"합성 환자 {workflow['patient_count']}명에게 같은 처음 환자 자료를 주고, 추가 정보를 확인하지 않는 경우와 세 가지 확인 순서를 비교했다. 추가 확인을 사용하는 방법에는 환자 한 명당 최대 {workflow['action_budget']}번의 기회를 줬다. {workflow_scope}",
                 "",
                 "### 판단 결과",
                 "",
-                "| 부족한 정보를 처리한 방법 | 후보 유지·제외와 현재 확정 상태를 모두 맞힌 비율 | 후보 유지·제외를 맞힌 비율 | 현재 자료로 확정 가능한지를 맞힌 비율 | 남겨야 할 시험을 잘못 제외한 수 | 질문 뒤에도 정보가 부족한데 확정한 수 | 질문 뒤 판단이 끝난 시험 수 |",
+                "| 부족한 정보를 처리한 방법 | 후보 유지·제외와 현재 확정 상태를 모두 맞힌 비율 | 후보 유지·제외를 맞힌 비율 | 현재 자료로 확정 가능한지를 맞힌 비율 | 남겨야 할 시험을 잘못 제외한 수 | 질문 뒤에도 정보가 부족한데 확정한 수 | 환자당 질문 뒤 판단이 끝난 시험 수 |",
                 "|---|---:|---:|---:|---:|---:|---:|",
             ]
         )
@@ -280,7 +310,7 @@ def build_research_report(
                     "",
                     "### 추가 확인 후보를 보존하고 실제 후보로 되돌린 결과",
                     "",
-                    "처음 화면에서 현재 확인이 끝난 시험만 보여 주면 보이지 않을 시험 가운데, 모든 정보를 확인했을 때 실제 참가 가능 후보였던 경우를 `되살릴 수 있었던 후보`로 계산했다. 반대로 처음에는 후보로 남았지만 모든 정보를 확인하면 제외되는 시험도 따로 셌다.",
+                    "처음 화면에서 현재 확인이 끝난 시험만 보여 주면 보이지 않을 시험 가운데, 가상 환자를 만들 때 정해 둔 전체 상태에서 실제 참가 가능 후보였던 경우를 `되살릴 수 있었던 후보`로 계산했다. 반대로 처음에는 후보로 남았지만 전체 상태에서는 제외되는 시험도 따로 셌다.",
                     "",
                     "| 부족한 정보를 처리한 방법 | 되살릴 수 있었던 후보 | 추가 확인 후보로 보존 | 질문 뒤 실제 후보로 확정 | 결국 제외될 후보를 처음에 보존 | 질문 뒤 제외로 정리 | 새 검사·추가 방문 |",
                     "|---|---:|---:|---:|---:|---:|---:|",
@@ -328,6 +358,20 @@ def build_research_report(
                             "value": row.get(name, 0),
                         }
                     )
+            current_rescue = next(
+                row
+                for row in workflow["arm_metrics"]
+                if row["arm"] == "clarifytrial"
+            )
+            sections.extend(
+                [
+                    "",
+                    f"현재 확인이 끝난 시험만 보여 주면 사라질 실제 참가 가능 후보 "
+                    f"{current_rescue['rescue_opportunity_count']}개를 모두 추가 확인 후보로 "
+                    f"남겼고, 정해진 확인 횟수 안에 "
+                    f"{current_rescue['confirmed_rescue_count']}개를 실제 후보로 확정했다.",
+                ]
+            )
         sections.extend(
             [
                 "",
@@ -506,6 +550,81 @@ def build_research_report(
                 "저장된 입력·출력 사용량의 합이다."
             )
         sections.extend(["", workflow_execution_note, ""])
+
+    if budget_frontier_path is not None:
+        frontier_source = Path(budget_frontier_path)
+        frontier_file = (
+            frontier_source / "frontier.json"
+            if frontier_source.is_dir()
+            else frontier_source
+        )
+        frontier = _read(frontier_file)
+        normalized["budget_frontier"] = frontier
+        declared_budgets = sorted(
+            {int(row["action_budget"]) for row in frontier["rows"]}
+        )
+        patient_label = (
+            f"같은 합성 환자 {frontier['patient_count']}명에게"
+            if frontier.get("patient_count") is not None
+            else "같은 평가 사례에"
+        )
+        source_dir = frontier_file.parent
+        for name in (
+            "candidate-rescue-by-budget.svg",
+            "false-preservation-cleanup-by-budget.svg",
+        ):
+            source = source_dir / name
+            if not source.is_file():
+                raise ValueError(f"budget frontier is missing figure: {source}")
+            shutil.copyfile(source, output / name)
+        frontier_labels = {
+            "fixed_order": "입력 파일에 적힌 순서",
+            "immediate_coverage": "현재 가장 많은 시험에 연결된 정보 우선",
+            "clarifytrial": "남은 확인 횟수 전체를 고려",
+        }
+        sections.extend(
+            [
+                "## 확인 횟수를 늘렸을 때 후보 확정과 제외 정리가 어떻게 바뀌는가",
+                "",
+                f"{patient_label} 확인 기회를 {declared_budgets[0]}회부터 {declared_budgets[-1]}회까지 차례로 늘렸다. 실제 참가 가능 후보를 확정한 비율과, 처음에는 남았지만 결국 제외되는 후보를 정리한 비율을 따로 계산했다.",
+                "",
+                "| 확인 가능 횟수 | 정보를 고른 방법 | 실제 참가 가능 후보로 확정 | 결국 제외될 후보 정리 | 전체 시험 판단 일치 |",
+                "|---:|---|---:|---:|---:|",
+            ]
+        )
+        for row in frontier["rows"]:
+            if row["arm"] not in frontier_labels:
+                continue
+            sections.append(
+                f"| {row['action_budget']} | {frontier_labels[row['arm']]} | "
+                f"{row['confirmed_rescue_rate']:.1%} | "
+                f"{row['false_preservation_resolution_rate']:.1%} | "
+                f"{row['trial_status_recovery']:.1%} |"
+            )
+            for name in (
+                "confirmed_rescue_rate",
+                "false_preservation_resolution_rate",
+                "trial_status_recovery",
+            ):
+                metric_rows.append(
+                    {
+                        "section": "budget_frontier",
+                        "arm": row["arm"],
+                        "metric": f"budget_{row['action_budget']}_{name}",
+                        "value": row[name],
+                    }
+                )
+        sections.extend(
+            [
+                "",
+                "후보 확정과 제외 정리는 서로 다른 목적이다. 한 비율만 높이면 다른 쪽이 늦어질 수 있으므로 두 결과를 합쳐 한 점수로 만들지 않았다.",
+                "",
+                "![확인 횟수별 실제 후보 확정](candidate-rescue-by-budget.svg)",
+                "",
+                "![확인 횟수별 제외 후보 정리](false-preservation-cleanup-by-budget.svg)",
+                "",
+            ]
+        )
 
     retrieval = []
     for path in retrieval_paths or []:
