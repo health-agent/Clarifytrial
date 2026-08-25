@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-import json
 import hashlib
+import json
+import random
 from collections import defaultdict
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import replace
 from math import comb
@@ -26,7 +27,7 @@ from ..environment import (
     SyntheticInformationTools,
 )
 from ..contracts import TrialSearchRank
-from ..llm import StructuredModel
+from ..llm import DeterministicWorkflowModel, StructuredModel
 from ..io import atomic_write_text
 from ..interactive.burden_contracts import PatientBurdenInput
 from ..preparation import summarize_model_usage
@@ -46,6 +47,15 @@ _ARMS = {
     },
     "clarifytrial": {"actions": 3, "question_policy": "clarifytrial"},
 }
+_AGENT_ARCHITECTURES = frozenset(
+    {
+        "rules_only",
+        "single_judge",
+        "code_routed_agents",
+        "full_agents_no_reviewer",
+        "full_agents",
+    }
+)
 
 
 def _file_sha256(path: str | Path) -> str:
@@ -84,12 +94,32 @@ def _load_case_rows(path: Path) -> dict[tuple[str, str, str], dict[str, Any]]:
     return rows
 
 
-def _agents(model: StructuredModel) -> EpisodeAgents:
+def _agents(
+    model: StructuredModel,
+    *,
+    architecture: str,
+) -> EpisodeAgents:
+    deterministic = DeterministicWorkflowModel()
+    if architecture == "rules_only":
+        coordinator_model = deterministic
+        matcher_model = deterministic
+        next_evidence_model = deterministic
+        reviewer_model = deterministic
+    elif architecture == "single_judge":
+        coordinator_model = deterministic
+        matcher_model = model
+        next_evidence_model = deterministic
+        reviewer_model = deterministic
+    else:
+        coordinator_model = model
+        matcher_model = model
+        next_evidence_model = model
+        reviewer_model = model
     return EpisodeAgents(
-        coordinator=CoordinatorAgent(model),
-        matcher_judge=MatcherJudgeAgent(model),
-        next_evidence=NextEvidenceAgent(model),
-        selective_reviewer=SelectiveReviewerAgent(model),
+        coordinator=CoordinatorAgent(coordinator_model),
+        matcher_judge=MatcherJudgeAgent(matcher_model),
+        next_evidence=NextEvidenceAgent(next_evidence_model),
+        selective_reviewer=SelectiveReviewerAgent(reviewer_model),
     )
 
 
@@ -117,13 +147,57 @@ def _tools(
     )
 
 
+def _role_usage(trace: TraceRecorder) -> dict[str, dict[str, int]]:
+    result: dict[str, dict[str, int]] = {}
+    for event in trace.events:
+        if event.usage is None:
+            continue
+        row = result.setdefault(
+            event.actor,
+            {
+                "call_count": 0,
+                "external_call_count": 0,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "total_tokens": 0,
+            },
+        )
+        row["call_count"] += 1
+        row["external_call_count"] += (
+            event.usage.get("model_id") != "deterministic-workflow"
+        )
+        row["input_tokens"] += int(event.usage.get("input_tokens") or 0)
+        row["output_tokens"] += int(event.usage.get("output_tokens") or 0)
+        row["total_tokens"] += int(event.usage.get("total_tokens") or 0)
+    return dict(sorted(result.items()))
+
+
+def _aggregate_role_usage(items: Sequence[dict[str, Any]]) -> dict[str, dict[str, int]]:
+    result: dict[str, dict[str, int]] = {}
+    for item in items:
+        for role, usage in item.get("role_usage", {}).items():
+            row = result.setdefault(
+                str(role),
+                {
+                    "call_count": 0,
+                    "external_call_count": 0,
+                    "input_tokens": 0,
+                    "output_tokens": 0,
+                    "total_tokens": 0,
+                },
+            )
+            for name in row:
+                row[name] += int(usage.get(name, 0))
+    return dict(sorted(result.items()))
+
+
 def _apply_broad_search(
     fixture: Any,
     searcher: TeamTrialCandidateSearch,
     *,
     top_k: int,
 ) -> tuple[Any, dict[str, Any]]:
-    """Keep only declared target trials recovered from the broad corpus."""
+    """Check target connectivity, then screen only predeclared target trials."""
 
     hits = searcher.search(fixture.search_conditions, top_k=top_k)
     rank_by_id = {item.source.trial_id: item for item in hits}
@@ -178,6 +252,7 @@ def _apply_broad_search(
     search_result = {
         "corpus_trial_count": searcher.summary.included_trial_count,
         "top_k": top_k,
+        "retrieved_candidate_count": len(hits),
         "target_trial_count": len(expected),
         "retrieved_target_count": len(recovered),
         "target_recall": len(recovered) / len(expected),
@@ -187,6 +262,7 @@ def _apply_broad_search(
             trial_id: rank_by_id[trial_id].rank for trial_id in recovered
         },
         "retrieval_method": searcher.retrieval_method,
+        "screens_retrieved_distractors": False,
     }
     return (
         replace(
@@ -294,6 +370,64 @@ def _metrics(
     }
 
 
+def _percentile(values: Sequence[float], probability: float) -> float:
+    ordered = sorted(values)
+    if not ordered:
+        raise ValueError("percentile requires at least one value")
+    position = (len(ordered) - 1) * probability
+    lower = int(position)
+    upper = min(lower + 1, len(ordered) - 1)
+    fraction = position - lower
+    return ordered[lower] * (1 - fraction) + ordered[upper] * fraction
+
+
+def _cluster_rate_summary(
+    items: Sequence[dict[str, Any]],
+    *,
+    numerator: Callable[[dict[str, Any]], int],
+    denominator: Callable[[dict[str, Any]], int],
+    seed: int = 20260825,
+    resamples: int = 2_000,
+) -> dict[str, Any] | None:
+    eligible = [item for item in items if denominator(item) > 0]
+    if not eligible:
+        return None
+    generator = random.Random(seed)
+    samples = []
+    for _ in range(resamples):
+        drawn = [generator.choice(eligible) for _ in eligible]
+        total_denominator = sum(denominator(item) for item in drawn)
+        samples.append(
+            sum(numerator(item) for item in drawn) / total_denominator
+        )
+
+    group_rates = []
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for item in eligible:
+        grouped[str(item.get("group_id", "unspecified"))].append(item)
+    for group_items in grouped.values():
+        group_denominator = sum(denominator(item) for item in group_items)
+        if group_denominator:
+            group_rates.append(
+                sum(numerator(item) for item in group_items) / group_denominator
+            )
+    return {
+        "cluster_unit": "patient",
+        "bootstrap_resamples": resamples,
+        "bootstrap_seed": seed,
+        "bootstrap_95_ci": {
+            "lower": _percentile(samples, 0.025),
+            "upper": _percentile(samples, 0.975),
+        },
+        "disease_group_count": len(group_rates),
+        "disease_group_rate_range": (
+            {"minimum": min(group_rates), "maximum": max(group_rates)}
+            if group_rates
+            else None
+        ),
+    }
+
+
 def _aggregate(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for item in rows:
@@ -321,8 +455,7 @@ def _aggregate(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
             item["metrics"]["false_preservation_resolved_count"]
             for item in items
         )
-        result.append(
-            {
+        arm_result = {
                 "arm": arm,
                 "patient_count": len(items),
                 "trial_count": trial_count,
@@ -393,12 +526,54 @@ def _aggregate(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
                 "patient_choice_action_count": sum(
                     item.get("patient_choice_action_count", 0) for item in items
                 ),
+                "selective_review_count": sum(
+                    item.get("review_count", 0) for item in items
+                ),
+                "mechanical_model_correction_count": sum(
+                    item.get("mechanical_model_correction_count", 0)
+                    for item in items
+                ),
                 "model_call_count": sum(item["usage"]["call_count"] for item in items),
+                "external_model_call_count": sum(
+                    sum(
+                        int(usage.get("external_call_count", 0))
+                        for usage in item.get("role_usage", {}).values()
+                    )
+                    for item in items
+                ),
                 "total_tokens": sum(item["usage"]["total_tokens"] for item in items),
                 "total_latency_ms": sum(item["total_latency_ms"] for item in items),
+                "role_usage": _aggregate_role_usage(items),
                 "failed_patient_count": 0,
+                "cluster_uncertainty": {
+                    "trial_status_recovery": _cluster_rate_summary(
+                        items,
+                        numerator=lambda item: item["metrics"][
+                            "exact_trial_status_count"
+                        ],
+                        denominator=lambda item: item["metrics"]["trial_count"],
+                    ),
+                    "confirmed_rescue_rate": _cluster_rate_summary(
+                        items,
+                        numerator=lambda item: item["metrics"][
+                            "confirmed_rescue_count"
+                        ],
+                        denominator=lambda item: item["metrics"][
+                            "rescue_opportunity_count"
+                        ],
+                    ),
+                    "false_preservation_resolution_rate": _cluster_rate_summary(
+                        items,
+                        numerator=lambda item: item["metrics"][
+                            "false_preservation_resolved_count"
+                        ],
+                        denominator=lambda item: item["metrics"][
+                            "false_preservation_count"
+                        ],
+                    ),
+                },
             }
-        )
+        result.append(arm_result)
     for arm in _ARMS:
         failures = sum(
             item["arm"] == arm and item.get("status") == "failed" for item in rows
@@ -448,6 +623,19 @@ def _aggregate_broad_search(rows: Sequence[dict[str, Any]]) -> dict[str, Any] | 
     values = list(by_patient.values())
     target_count = sum(int(item["target_trial_count"]) for item in values)
     retrieved_count = sum(int(item["retrieved_target_count"]) for item in values)
+    unique_target_ids = {
+        str(trial_id)
+        for item in values
+        for trial_id in (
+            list(item.get("retrieved_target_trial_ids", []))
+            + list(item.get("missed_target_trial_ids", []))
+        )
+    }
+    unique_retrieved_ids = {
+        str(trial_id)
+        for item in values
+        for trial_id in item.get("retrieved_target_trial_ids", [])
+    }
     ranks = [
         int(rank)
         for item in values
@@ -457,13 +645,23 @@ def _aggregate_broad_search(rows: Sequence[dict[str, Any]]) -> dict[str, Any] | 
         "patient_count": len(values),
         "corpus_trial_count": values[0]["corpus_trial_count"],
         "top_k": values[0]["top_k"],
+        "target_patient_trial_count": target_count,
+        "retrieved_target_patient_trial_count": retrieved_count,
         "target_trial_count": target_count,
         "retrieved_target_count": retrieved_count,
         "target_recall": retrieved_count / target_count,
+        "unique_target_trial_count": len(unique_target_ids),
+        "unique_retrieved_target_trial_count": len(unique_retrieved_ids),
+        "unique_target_recall": (
+            len(unique_retrieved_ids) / len(unique_target_ids)
+            if unique_target_ids
+            else None
+        ),
         "mean_retrieved_target_rank": mean(ranks) if ranks else None,
         "worst_retrieved_target_rank": max(ranks) if ranks else None,
         "missed_target_trial_count": target_count - retrieved_count,
         "retrieval_method": values[0]["retrieval_method"],
+        "screens_retrieved_distractors": False,
     }
 
 
@@ -572,8 +770,10 @@ def run_full_workflow_evaluation(
     patient_ids: Sequence[str] = (),
     limit: int | None = None,
     action_budget: int = 3,
+    arms: Sequence[str] = tuple(_ARMS),
     max_selective_reviews: int = 1,
     max_cycles: int = 12,
+    agent_architecture: str = "rules_only",
     concurrency: int = 1,
     include_unavailable_scenario: bool = False,
     include_patient_choice_scenario: bool = False,
@@ -587,6 +787,17 @@ def run_full_workflow_evaluation(
         raise ValueError("concurrency must be at least one")
     if broad_search_top_k < 1:
         raise ValueError("broad_search_top_k must be at least one")
+    if agent_architecture not in _AGENT_ARCHITECTURES:
+        raise ValueError(
+            "agent_architecture must be one of: "
+            + ", ".join(sorted(_AGENT_ARCHITECTURES))
+        )
+    selected_arms = tuple(dict.fromkeys(str(arm) for arm in arms))
+    unknown_arms = set(selected_arms) - set(_ARMS)
+    if not selected_arms or unknown_arms:
+        raise ValueError(
+            "arms must contain one or more of: " + ", ".join(_ARMS)
+        )
     pairs_document = json.loads(Path(patient_pairs_path).read_text(encoding="utf-8"))
     group_label_by_id = {
         str(item["group_id"]): str(item["group_label"])
@@ -609,8 +820,13 @@ def run_full_workflow_evaluation(
     case_path = output_dir / "cases.jsonl"
     manifest_path = output_dir / "run-manifest.json"
     manifest = {
-        "protocol_id": "clarifytrial-full-workflow-evaluation-v3",
-        "model": model_label,
+        "protocol_id": "clarifytrial-full-workflow-evaluation-v4",
+        "model": (
+            "deterministic-workflow"
+            if agent_architecture == "rules_only"
+            else model_label
+        ),
+        "agent_architecture": agent_architecture,
         "split": split,
         "patient_ids": [str(item["patient_id"]) for item in pairs],
         "action_budget": action_budget,
@@ -627,7 +843,7 @@ def run_full_workflow_evaluation(
             if include_unavailable_scenario
             else None
         ),
-        "arms": list(_ARMS),
+        "arms": list(selected_arms),
         "inputs": {
             "trial_set_sha256": _file_sha256(trial_set_path),
             "patient_pairs_sha256": _file_sha256(patient_pairs_path),
@@ -715,16 +931,27 @@ def run_full_workflow_evaluation(
                 )
             )
         for scenario, unavailable_fact_ids, burden_input in scenarios:
-            for arm, arm_spec in _ARMS.items():
+            for arm in selected_arms:
+                arm_spec = _ARMS[arm]
                 key = (patient_id, scenario, arm)
                 if key in completed_keys:
                     continue
                 trace = TraceRecorder(f"{patient_id}:{scenario}:{arm}")
                 settings = EpisodeSettings(
                     max_external_actions=(0 if arm == "no_questions" else action_budget),
-                    max_selective_reviews=max_selective_reviews,
+                    max_selective_reviews=(
+                        0
+                        if agent_architecture
+                        in {
+                            "rules_only",
+                            "single_judge",
+                            "full_agents_no_reviewer",
+                        }
+                        else max_selective_reviews
+                    ),
                     max_cycles=max_cycles,
-                    use_model_coordinator=False,
+                    use_model_coordinator=agent_architecture
+                    in {"full_agents_no_reviewer", "full_agents"},
                     batch_trial_judgments=True,
                     question_policy=arm_spec["question_policy"],
                 )
@@ -732,7 +959,9 @@ def run_full_workflow_evaluation(
                     screening_case = fixture.screening_case.model_copy(
                         update={"patient_burden_input": burden_input}
                     )
-                    result = PatientScreeningRunner(_agents(model), settings).run(
+                    result = PatientScreeningRunner(
+                        _agents(model, architecture=agent_architecture), settings
+                    ).run(
                         screening_case,
                         _tools(
                             fixture,
@@ -770,6 +999,7 @@ def run_full_workflow_evaluation(
                         "unavailable_fact_ids": sorted(unavailable_fact_ids),
                         "patient_choice_scenario": scenario,
                         "arm": arm,
+                        "agent_architecture": agent_architecture,
                         "broad_search": broad_search_result,
                         "status": "failed",
                         "error_type": type(error).__name__,
@@ -805,10 +1035,38 @@ def run_full_workflow_evaluation(
                         "scenario": scenario,
                         "unavailable_fact_ids": sorted(unavailable_fact_ids),
                         "arm": arm,
+                        "agent_architecture": agent_architecture,
                         "broad_search": broad_search_result,
                         "status": "completed",
                         "stop_reason": result.stop_reason.value,
                         "action_count": len(result.action_history),
+                        "review_count": len(result.review_history),
+                        "mechanical_model_correction_count": sum(
+                            len(event.output.get("corrections", []))
+                            for event in trace.events
+                            if event.actor == "mechanical_checks"
+                            and event.event == "model_assessments_replaced"
+                        ),
+                        "review_history": dumped["review_history"],
+                        "initial_review_reasons": {
+                            item["trial_id"]: item["review_reasons"]
+                            for item in initial_rows
+                            if item["review_reasons"]
+                        },
+                        "initial_review_flags": {
+                            item["trial_id"]: {
+                                assessment["criterion_id"]: assessment[
+                                    "review_flags"
+                                ]
+                                for assessment in item["criterion_assessments"]
+                                if assessment["review_flags"]
+                            }
+                            for item in initial_rows
+                            if any(
+                                assessment["review_flags"]
+                                for assessment in item["criterion_assessments"]
+                            )
+                        },
                         "selected_fact_ids": selected_fact_ids,
                         "selected_option_ids": [
                             item.option_id for item in selected_options
@@ -848,6 +1106,7 @@ def run_full_workflow_evaluation(
                             initial_gold_rows=initial_gold,
                         ),
                         "usage": usage,
+                        "role_usage": _role_usage(trace),
                         "total_latency_ms": total_latency,
                     }
                 patient_rows.append(row)
@@ -896,11 +1155,16 @@ def run_full_workflow_evaluation(
         if item.get("scenario") == "patient_declines_new_tests"
     ]
     payload = {
-        "protocol_id": "clarifytrial-full-workflow-evaluation-v3",
-        "model": model_label,
+        "protocol_id": "clarifytrial-full-workflow-evaluation-v4",
+        "model": (
+            "deterministic-workflow"
+            if agent_architecture == "rules_only"
+            else model_label
+        ),
+        "agent_architecture": agent_architecture,
         "split": split,
         "patient_count": len(pairs),
-        "arms": list(_ARMS),
+        "arms": list(selected_arms),
         "action_budget": action_budget,
         "concurrency": concurrency,
         "include_unavailable_scenario": include_unavailable_scenario,
@@ -915,15 +1179,17 @@ def run_full_workflow_evaluation(
             else None
         ),
         "resumed": resume,
-        "case_results": str(case_path),
+        "case_results": "cases.jsonl",
         "evaluation_scope": {
             "patient_input": "standardized_json",
             "candidate_selection": (
-                "broad_corpus_search_then_declared_target_evaluation"
+                "broad_corpus_target_connectivity_then_declared_target_evaluation"
                 if broad_searcher is not None
                 else "five_declared_same_disease_trials"
             ),
             "includes_broad_corpus_search": broad_searcher is not None,
+            "screens_all_retrieved_candidates": False,
+            "retains_search_distractors": False,
             "includes_natural_record_structuring": False,
         },
         "broad_search_metrics": _aggregate_broad_search(normal_rows),
@@ -936,13 +1202,15 @@ def run_full_workflow_evaluation(
             _aggregate(patient_choice_rows) if patient_choice_rows else []
         ),
         "decision_separation": _decision_separation_summary(pairs),
-        "paired_clarifytrial_vs_fixed": _paired(
-            normal_rows,
-            baseline_arm="fixed_order",
+        "paired_clarifytrial_vs_fixed": (
+            _paired(normal_rows, baseline_arm="fixed_order")
+            if {"clarifytrial", "fixed_order"}.issubset(selected_arms)
+            else None
         ),
-        "paired_clarifytrial_vs_immediate_coverage": _paired(
-            normal_rows,
-            baseline_arm="immediate_coverage",
+        "paired_clarifytrial_vs_immediate_coverage": (
+            _paired(normal_rows, baseline_arm="immediate_coverage")
+            if {"clarifytrial", "immediate_coverage"}.issubset(selected_arms)
+            else None
         ),
     }
     summary_path = output_dir / "summary.json"

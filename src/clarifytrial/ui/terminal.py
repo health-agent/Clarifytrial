@@ -36,13 +36,13 @@ _ROLE_LABELS = {
     "patient_record_structurer": "환자 기록 정리",
     "trial_protocol_structurer": "시험 조건 정리",
     "coordinator": "진행 관리",
-    "matcher_judge": "검색·판단",
+    "matcher_judge": "조건 판단",
     "next_evidence": "다음 확인 문장 작성",
     "selective_reviewer": "선택 검토",
 }
 
 _ROUTE_LABELS = {
-    "MATCHER_JUDGE": "확인할 조건을 검색·판단 역할에 전달",
+    "MATCHER_JUDGE": "확인할 조건을 조건 판단 단계에 전달",
     "NEXT_EVIDENCE": "다음에 확인할 정보를 정함",
     "SELECTIVE_REVIEWER": "근거가 약한 결론을 한 번 더 검토",
     "FINISH": "현재 실행을 종료",
@@ -216,7 +216,7 @@ class IntegratedTerminalRenderer:
             for trial_id, count in sorted(counts.items()):
                 verb = "재판정" if trial_id in self.judged_trials else "첫 판단"
                 self.judged_trials.add(trial_id)
-                self.write(f"  검색·판단: {trial_id} 조건 {count}개 {verb} 완료")
+                self.write(f"  조건 판단: {trial_id} 조건 {count}개 {verb} 완료")
             return
         if event.actor == "selective_reviewer" and event.event == "structured_model_completed":
             response = output.get("response", {})
@@ -315,13 +315,24 @@ class IntegratedTerminalRenderer:
 
         usage = result["usage"]
         self.write("")
-        self.write("모델 호출")
-        for role, item in usage["by_role"].items():
+        if self.model_label == "deterministic-workflow":
+            self.write("코드 역할 단계")
+            for role, item in usage["by_role"].items():
+                self.write(
+                    f"  - {_ROLE_LABELS.get(role, role)}: "
+                    f"{item['call_count']}회 실행"
+                )
+            self.write("  외부 모델 호출: 0회, 0토큰")
+        else:
+            self.write("외부 모델 호출")
+            for role, item in usage["by_role"].items():
+                self.write(
+                    f"  - {_ROLE_LABELS.get(role, role)}: "
+                    f"{item['call_count']}회, {item['total_tokens']:,}토큰"
+                )
             self.write(
-                f"  - {_ROLE_LABELS.get(role, role)}: "
-                f"{item['call_count']}회, {item['total_tokens']:,}토큰"
+                f"  전체: {usage['call_count']}회, {usage['total_tokens']:,}토큰"
             )
-        self.write(f"  전체: {usage['call_count']}회, {usage['total_tokens']:,}토큰")
         self.write("")
         self.write(f"결과 파일: {result_path}")
         self.write(f"단계별 기록: {trace_path}")

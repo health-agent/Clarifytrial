@@ -142,7 +142,7 @@ def team_trial_sources(
                 conditions=item.conditions,
                 summary=item.brief_summary,
                 eligibility_text=item.eligibility_text,
-                source_location=f"{source.resolve()}#nct_id={item.nct_id}",
+                source_location=f"{TEAM_TRIALS_URL}#nct_id={item.nct_id}",
             )
         )
     if not converted:

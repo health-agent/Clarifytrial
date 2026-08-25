@@ -1,0 +1,682 @@
+{
+  "protocol_id": "clarifytrial-independent-new-trial-selection-v1:development",
+  "purpose": "development partition of the frozen new-trial benchmark",
+  "corpus": {
+    "source_path": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl",
+    "source_sha256": "95e2551741b82db9e0729e8081af85fe0de559c9cad850b41d849f315bbf889c",
+    "row_count": 1931,
+    "status_counts": {
+      "ACTIVE_NOT_RECRUITING": 121,
+      "COMPLETED": 1221,
+      "ENROLLING_BY_INVITATION": 21,
+      "NOT_YET_RECRUITING": 138,
+      "RECRUITING": 430
+    },
+    "included_statuses": [
+      "ENROLLING_BY_INVITATION",
+      "NOT_YET_RECRUITING",
+      "RECRUITING"
+    ],
+    "included_trial_count": 589
+  },
+  "group_count": 5,
+  "selected_trial_count": 15,
+  "groups": [
+    {
+      "group_id": "mucormycosis",
+      "group_label": "뮤코르진균증",
+      "candidate_count": 3,
+      "selected_trials": [
+        {
+          "nct_id": "NCT07704333",
+          "title": "Assessment of [18F]-Fluorocellobiose ([18F]FCB) Pharmacokinetics in Healthy Volunteers and Subjects With Invasive Mold Infections",
+          "conditions": [
+            "Aspergillos",
+            "Mucormye",
+            "Dimorphic",
+            "Other Molds",
+            "Non-Aspergillos",
+            "Non-Mucormycosis"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 5703,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07704333"
+        },
+        {
+          "nct_id": "NCT07654647",
+          "title": "Clinical Evaluation of Patient-Specific 3D-Printed Titanium Implants for Facial Reconstruction.",
+          "conditions": [
+            "Hemifacial Microsomia",
+            "Mucormycosis",
+            "Oral Squamous Cell Carcinoma",
+            "Microgenia",
+            "Facial Asymmetry",
+            "Fibrous Dysplasia"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "surgery_or_pathology",
+            "patient_answerable"
+          ],
+          "eligibility_text_length": 786,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07654647"
+        },
+        {
+          "nct_id": "NCT07185503",
+          "title": "Liposomal Amphotericin B Plus Posaconazole/Isavuconazole for Mucormycosis in Hematologic Malignancies: Efficacy and Safety",
+          "conditions": [
+            "Mucormycosis in Hematologic Malignancies"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "medication_or_treatment",
+            "pregnancy_or_contraception",
+            "patient_answerable"
+          ],
+          "eligibility_text_length": 1793,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07185503"
+        }
+      ]
+    },
+    {
+      "group_id": "bladder_cancer",
+      "group_label": "방광암",
+      "candidate_count": 3,
+      "selected_trials": [
+        {
+          "nct_id": "NCT06255964",
+          "title": "A Study of IAP0971 in Combination With Bacillus Calmette Guerin in High Risk Non-muscular Invasive Bladder Cancer",
+          "conditions": [
+            "Bladder Cancer"
+          ],
+          "overall_status": "NOT_YET_RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 8129,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06255964"
+        },
+        {
+          "nct_id": "NCT07359235",
+          "title": "Safety, Tolerability, and Preliminary Efficacy of KD01 Via Intravesical Instillation in Bladder Cancer (BC)",
+          "conditions": [
+            "Bladder Cancer (BC)"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 7992,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07359235"
+        },
+        {
+          "nct_id": "NCT07322263",
+          "title": "Intravesical GEM/DOCE for HR BCG-Unresponsive NMIBC",
+          "conditions": [
+            "Bladder Cancer",
+            "Non-Muscle Invasive Bladder Cancer (NMIBC)",
+            "Urothelial Carcinoma",
+            "Carcinoma in Situ (CIS)",
+            "High-Grade Papillary Bladder Tumors",
+            "BCG-Unresponsive Bladder Cancer",
+            "Ta Stage Bladder Cancer",
+            "T1 Stage Bladder Cancer",
+            "BCG-Refractory Bladder Cancer",
+            "High-Risk NMIBC",
+            "Micropapillary Variant Urothelial Carcinoma (Favorable Subtype)"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 7463,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07322263"
+        }
+      ]
+    },
+    {
+      "group_id": "pulmonary_fibrosis",
+      "group_label": "폐섬유증",
+      "candidate_count": 3,
+      "selected_trials": [
+        {
+          "nct_id": "NCT07036523",
+          "title": "A Study to Find Out Whether BI 765423 Has an Effect on Lung Function in People With Idiopathic Pulmonary Fibrosis (IPF) With or Without Standard Treatment",
+          "conditions": [
+            "Idiopathic Pulmonary Fibrosis"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 4837,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07036523"
+        },
+        {
+          "nct_id": "NCT06967805",
+          "title": "WISPer: Evaluation of MTX-463 in Participants With Idiopathic Pulmonary Fibrosis (IPF)",
+          "conditions": [
+            "Idiopathic Pulmonary Fibrosis"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 4509,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06967805"
+        },
+        {
+          "nct_id": "NCT07454291",
+          "title": "A Study to Evaluate Pharmacokinetics and Drug-drug Interactions of ENV-101 (Taladegib) in Healthy Participants",
+          "conditions": [
+            "Idiopathic Pulmonary Fibrosis"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 4267,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07454291"
+        }
+      ]
+    },
+    {
+      "group_id": "acute_pancreatitis",
+      "group_label": "급성 췌장염",
+      "candidate_count": 3,
+      "selected_trials": [
+        {
+          "nct_id": "NCT05878236",
+          "title": "iMmune SignAtures and Clinical outComes in AP",
+          "conditions": [
+            "Acute Pancreatitis"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 2911,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT05878236"
+        },
+        {
+          "nct_id": "NCT06401577",
+          "title": "Diabetes RElated to Acute Pancreatitis and Its Mechanisms: Metabolic Outcomes Using Novel CGM Metrics",
+          "conditions": [
+            "Acute Pancreatitis"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 2784,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06401577"
+        },
+        {
+          "nct_id": "NCT05197920",
+          "title": "Diabetes RElated to Acute Pancreatitis and Its Mechanisms",
+          "conditions": [
+            "Acute Pancreatitis"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 2702,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT05197920"
+        }
+      ]
+    },
+    {
+      "group_id": "graves_disease",
+      "group_label": "그레이브스병",
+      "candidate_count": 3,
+      "selected_trials": [
+        {
+          "nct_id": "NCT07305818",
+          "title": "NEXUS Study: A Study to Test Single and Multiple Doses of MER511 Given to Adults With Graves' Disease",
+          "conditions": [
+            "Graves Disease"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 4304,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07305818"
+        },
+        {
+          "nct_id": "NCT07716397",
+          "title": "Screening, Classification, and Outcome Prediction Ensemble Using Orbital MRI for Thyroid Eye Disease: The TED SCOPE National Multicenter Registry Study",
+          "conditions": [
+            "Graves Ophthalmopathy",
+            "Graves Disease",
+            "Thyroid Associated Ophthalmopathies"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 1412,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07716397"
+        },
+        {
+          "nct_id": "NCT05461820",
+          "title": "Effects of Different Treatment Schemes on the Regulation and Recurrence of Graves' Disease",
+          "conditions": [
+            "Graves Disease",
+            "Relapse",
+            "Treatment",
+            "Drug Withdrawal"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 3093,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT05461820"
+        }
+      ]
+    }
+  ],
+  "selected_trials": [
+    {
+      "group_id": "mucormycosis",
+      "nct_id": "NCT07704333",
+      "title": "Assessment of [18F]-Fluorocellobiose ([18F]FCB) Pharmacokinetics in Healthy Volunteers and Subjects With Invasive Mold Infections",
+      "conditions": [
+        "Aspergillos",
+        "Mucormye",
+        "Dimorphic",
+        "Other Molds",
+        "Non-Aspergillos",
+        "Non-Mucormycosis"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 5703,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07704333"
+    },
+    {
+      "group_id": "mucormycosis",
+      "nct_id": "NCT07654647",
+      "title": "Clinical Evaluation of Patient-Specific 3D-Printed Titanium Implants for Facial Reconstruction.",
+      "conditions": [
+        "Hemifacial Microsomia",
+        "Mucormycosis",
+        "Oral Squamous Cell Carcinoma",
+        "Microgenia",
+        "Facial Asymmetry",
+        "Fibrous Dysplasia"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "surgery_or_pathology",
+        "patient_answerable"
+      ],
+      "eligibility_text_length": 786,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07654647"
+    },
+    {
+      "group_id": "mucormycosis",
+      "nct_id": "NCT07185503",
+      "title": "Liposomal Amphotericin B Plus Posaconazole/Isavuconazole for Mucormycosis in Hematologic Malignancies: Efficacy and Safety",
+      "conditions": [
+        "Mucormycosis in Hematologic Malignancies"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "medication_or_treatment",
+        "pregnancy_or_contraception",
+        "patient_answerable"
+      ],
+      "eligibility_text_length": 1793,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07185503"
+    },
+    {
+      "group_id": "bladder_cancer",
+      "nct_id": "NCT06255964",
+      "title": "A Study of IAP0971 in Combination With Bacillus Calmette Guerin in High Risk Non-muscular Invasive Bladder Cancer",
+      "conditions": [
+        "Bladder Cancer"
+      ],
+      "overall_status": "NOT_YET_RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 8129,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06255964"
+    },
+    {
+      "group_id": "bladder_cancer",
+      "nct_id": "NCT07359235",
+      "title": "Safety, Tolerability, and Preliminary Efficacy of KD01 Via Intravesical Instillation in Bladder Cancer (BC)",
+      "conditions": [
+        "Bladder Cancer (BC)"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 7992,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07359235"
+    },
+    {
+      "group_id": "bladder_cancer",
+      "nct_id": "NCT07322263",
+      "title": "Intravesical GEM/DOCE for HR BCG-Unresponsive NMIBC",
+      "conditions": [
+        "Bladder Cancer",
+        "Non-Muscle Invasive Bladder Cancer (NMIBC)",
+        "Urothelial Carcinoma",
+        "Carcinoma in Situ (CIS)",
+        "High-Grade Papillary Bladder Tumors",
+        "BCG-Unresponsive Bladder Cancer",
+        "Ta Stage Bladder Cancer",
+        "T1 Stage Bladder Cancer",
+        "BCG-Refractory Bladder Cancer",
+        "High-Risk NMIBC",
+        "Micropapillary Variant Urothelial Carcinoma (Favorable Subtype)"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 7463,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07322263"
+    },
+    {
+      "group_id": "pulmonary_fibrosis",
+      "nct_id": "NCT07036523",
+      "title": "A Study to Find Out Whether BI 765423 Has an Effect on Lung Function in People With Idiopathic Pulmonary Fibrosis (IPF) With or Without Standard Treatment",
+      "conditions": [
+        "Idiopathic Pulmonary Fibrosis"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 4837,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07036523"
+    },
+    {
+      "group_id": "pulmonary_fibrosis",
+      "nct_id": "NCT06967805",
+      "title": "WISPer: Evaluation of MTX-463 in Participants With Idiopathic Pulmonary Fibrosis (IPF)",
+      "conditions": [
+        "Idiopathic Pulmonary Fibrosis"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 4509,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06967805"
+    },
+    {
+      "group_id": "pulmonary_fibrosis",
+      "nct_id": "NCT07454291",
+      "title": "A Study to Evaluate Pharmacokinetics and Drug-drug Interactions of ENV-101 (Taladegib) in Healthy Participants",
+      "conditions": [
+        "Idiopathic Pulmonary Fibrosis"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 4267,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07454291"
+    },
+    {
+      "group_id": "acute_pancreatitis",
+      "nct_id": "NCT05878236",
+      "title": "iMmune SignAtures and Clinical outComes in AP",
+      "conditions": [
+        "Acute Pancreatitis"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 2911,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT05878236"
+    },
+    {
+      "group_id": "acute_pancreatitis",
+      "nct_id": "NCT06401577",
+      "title": "Diabetes RElated to Acute Pancreatitis and Its Mechanisms: Metabolic Outcomes Using Novel CGM Metrics",
+      "conditions": [
+        "Acute Pancreatitis"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 2784,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06401577"
+    },
+    {
+      "group_id": "acute_pancreatitis",
+      "nct_id": "NCT05197920",
+      "title": "Diabetes RElated to Acute Pancreatitis and Its Mechanisms",
+      "conditions": [
+        "Acute Pancreatitis"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 2702,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT05197920"
+    },
+    {
+      "group_id": "graves_disease",
+      "nct_id": "NCT07305818",
+      "title": "NEXUS Study: A Study to Test Single and Multiple Doses of MER511 Given to Adults With Graves' Disease",
+      "conditions": [
+        "Graves Disease"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 4304,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07305818"
+    },
+    {
+      "group_id": "graves_disease",
+      "nct_id": "NCT07716397",
+      "title": "Screening, Classification, and Outcome Prediction Ensemble Using Orbital MRI for Thyroid Eye Disease: The TED SCOPE National Multicenter Registry Study",
+      "conditions": [
+        "Graves Ophthalmopathy",
+        "Graves Disease",
+        "Thyroid Associated Ophthalmopathies"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 1412,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07716397"
+    },
+    {
+      "group_id": "graves_disease",
+      "nct_id": "NCT05461820",
+      "title": "Effects of Different Treatment Schemes on the Regulation and Recurrence of Graves' Disease",
+      "conditions": [
+        "Graves Disease",
+        "Relapse",
+        "Treatment",
+        "Drug Withdrawal"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 3093,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT05461820"
+    }
+  ]
+}

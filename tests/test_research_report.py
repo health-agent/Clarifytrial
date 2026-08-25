@@ -287,3 +287,68 @@ def test_report_includes_budget_frontier_and_copies_its_figures(
     assert "합성 환자 10명에게 확인 기회를 1회부터 1회까지" in report
     assert "실제 참가 가능 후보로 확정" in report
     assert (output / "candidate-rescue-by-budget.svg").is_file()
+
+
+def test_report_includes_patient_cluster_uncertainty(tmp_path: Path) -> None:
+    workflow = tmp_path / "workflow.json"
+    uncertainty = {
+        "trial_status_recovery": {
+            "bootstrap_95_ci": {"lower": 0.8, "upper": 1.0},
+            "disease_group_rate_range": {"minimum": 0.75, "maximum": 1.0},
+        },
+        "confirmed_rescue_rate": {
+            "bootstrap_95_ci": {"lower": 0.6, "upper": 0.9},
+            "disease_group_rate_range": {"minimum": 0.5, "maximum": 1.0},
+        },
+        "false_preservation_resolution_rate": {
+            "bootstrap_95_ci": {"lower": 1.0, "upper": 1.0},
+            "disease_group_rate_range": {"minimum": 1.0, "maximum": 1.0},
+        },
+    }
+    workflow.write_text(
+        json.dumps(
+            {
+                "model": "deterministic-workflow",
+                "patient_count": 3,
+                "action_budget": 3,
+                "arm_metrics": [
+                    {
+                        "arm": "clarifytrial",
+                        "patient_count": 3,
+                        "trial_count": 15,
+                        "trial_status_recovery": 0.9,
+                        "candidate_status_accuracy": 1.0,
+                        "confirmation_status_accuracy": 0.9,
+                        "false_candidate_removals": 0,
+                        "premature_initial_confirmations": 0,
+                        "premature_final_confirmations": 0,
+                        "resolved_to_unresolved": 0,
+                        "mean_unresolved_to_resolved": 3.0,
+                        "mean_action_count": 2.0,
+                        "model_call_count": 6,
+                        "total_tokens": 0,
+                        "failed_patient_count": 0,
+                        "rescue_opportunity_count": 10,
+                        "candidate_preservation_count": 10,
+                        "confirmed_rescue_count": 8,
+                        "confirmed_rescue_rate": 0.8,
+                        "false_preservation_count": 5,
+                        "false_preservation_resolved_count": 5,
+                        "false_preservation_resolution_rate": 1.0,
+                        "new_test_count": 0,
+                        "additional_visit_count": 0,
+                        "cluster_uncertainty": uncertainty,
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    output = tmp_path / "report"
+    build_research_report(destination=output, workflow_path=workflow)
+    report = (output / "report.md").read_text(encoding="utf-8")
+
+    assert "같은 환자에서 나온 시험 판단을 묶어 본 결과 범위" in report
+    assert "80.0%~100.0%" in report
+    assert "질환별 범위" in report

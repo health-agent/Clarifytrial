@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import hashlib
+import gzip
 import importlib.metadata
 import json
 import math
-import pickle
 import time
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
@@ -22,6 +22,7 @@ DEFAULT_QUERY_TYPE = "gpt-4-turbo"
 DEFAULT_FUSION_K = 20
 DEFAULT_SEARCH_DEPTH = 2_000
 DEFAULT_METRIC_DEPTHS = (10, 50, 100, 500, 1_000, 2_000)
+BM25_CACHE_FORMAT = "clarifytrial-bm25-token-cache-v1"
 
 
 class TrialGPTCorpusEntry(BaseModel):
@@ -365,6 +366,63 @@ def _tokenizer(word_tokenize: Callable[..., list[str]], text: str) -> list[str]:
         ) from exc
 
 
+def _read_bm25_cache(
+    cache_path: Path,
+    *,
+    manifest: CorpusManifest,
+) -> list[list[str]] | None:
+    """Read inert JSON tokens and reject stale or malformed cache content."""
+
+    try:
+        with gzip.open(cache_path, "rt", encoding="utf-8") as stream:
+            cached = json.load(stream)
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, TypeError):
+        return None
+    if not isinstance(cached, dict):
+        return None
+    if cached.get("format") != BM25_CACHE_FORMAT:
+        return None
+    if cached.get("corpus_sha256") != manifest.sha256:
+        return None
+    trial_ids = cached.get("trial_ids")
+    if not isinstance(trial_ids, list) or tuple(trial_ids) != manifest.ids:
+        return None
+    tokenized = cached.get("tokenized_corpus")
+    if not isinstance(tokenized, list) or len(tokenized) != manifest.rows:
+        return None
+    if any(
+        not isinstance(document, list)
+        or any(not isinstance(token, str) for token in document)
+        for document in tokenized
+    ):
+        return None
+    return tokenized
+
+
+def _write_bm25_cache(
+    cache_path: Path,
+    *,
+    manifest: CorpusManifest,
+    tokenized_corpus: list[list[str]],
+) -> None:
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = cache_path.with_suffix(cache_path.suffix + ".part")
+    with gzip.open(temporary, "wt", encoding="utf-8", newline="\n") as stream:
+        json.dump(
+            {
+                "format": BM25_CACHE_FORMAT,
+                "corpus_sha256": manifest.sha256,
+                "trial_ids": list(manifest.ids),
+                "tokenized_corpus": tokenized_corpus,
+            },
+            stream,
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        stream.write("\n")
+    temporary.replace(cache_path)
+
+
 def build_bm25(
     corpus_path: Path,
     cache_path: Path,
@@ -372,13 +430,8 @@ def build_bm25(
     word_tokenize, BM25Okapi = _optional_bm25_imports()
     manifest = inspect_corpus(corpus_path)
     if cache_path.is_file():
-        with cache_path.open("rb") as stream:
-            cached = pickle.load(stream)
-        if (
-            cached.get("corpus_sha256") == manifest.sha256
-            and tuple(cached.get("trial_ids", ())) == manifest.ids
-        ):
-            tokenized = cached["tokenized_corpus"]
+        tokenized = _read_bm25_cache(cache_path, manifest=manifest)
+        if tokenized is not None:
             return BM25Okapi(tokenized), manifest.ids
 
     tokenized_corpus: list[list[str]] = []
@@ -392,19 +445,11 @@ def build_bm25(
         tokens.extend(_tokenizer(word_tokenize, entry.text))
         tokenized_corpus.append(tokens)
 
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = cache_path.with_suffix(cache_path.suffix + ".part")
-    with temporary.open("wb") as stream:
-        pickle.dump(
-            {
-                "corpus_sha256": manifest.sha256,
-                "trial_ids": manifest.ids,
-                "tokenized_corpus": tokenized_corpus,
-            },
-            stream,
-            protocol=pickle.HIGHEST_PROTOCOL,
-        )
-    temporary.replace(cache_path)
+    _write_bm25_cache(
+        cache_path,
+        manifest=manifest,
+        tokenized_corpus=tokenized_corpus,
+    )
     return BM25Okapi(tokenized_corpus), manifest.ids
 
 
@@ -554,7 +599,7 @@ class TrialGPTRuntimeSearch:
         if config.bm25_weight > 0:
             self._bm25, self._bm25_ids = build_bm25(
                 self.corpus_path,
-                cache / "bm25-tokenized.pkl",
+                cache / "bm25-tokenized.json.gz",
             )
             self._word_tokenize, _ = _optional_bm25_imports()
 
@@ -702,7 +747,7 @@ def run_trialgpt_retrieval(
     if config.bm25_weight > 0:
         bm25, bm25_trial_ids = build_bm25(
             corpus_path,
-            corpus_cache / "bm25-tokenized.pkl",
+            corpus_cache / "bm25-tokenized.json.gz",
         )
         word_tokenize, _ = _optional_bm25_imports()
 

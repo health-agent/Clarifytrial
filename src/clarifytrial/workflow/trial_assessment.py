@@ -126,11 +126,16 @@ def assess_criteria_bundle(
                 if mechanical.evidence_sufficiency is EvidenceSufficiency.SUFFICIENT
                 else related_missing_ids
             )
-            corrected_flags = [
-                item
-                for item in assessment.review_flags
-                if item is not ReviewFlag.CODE_MODEL_MISMATCH
-            ]
+            # The code-authoritative check replaces the model's interpretation
+            # for structured criteria.  A model-supplied defect flag must not
+            # trigger a separate review unless the code itself found conflicting
+            # evidence.  Unstructured criteria keep the model flags below.
+            corrected_flags = (
+                [ReviewFlag.EVIDENCE_CONFLICT]
+                if mechanical.evidence_sufficiency
+                is EvidenceSufficiency.CONFLICTING
+                else []
+            )
             differs = (
                 assessment.clinical_status is not mechanical.clinical_status
                 or assessment.evidence_sufficiency

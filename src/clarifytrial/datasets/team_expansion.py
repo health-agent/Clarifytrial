@@ -13,6 +13,7 @@ from ..contracts import ContractModel
 from ..io import atomic_write_text
 from ..preparation.team_trials import (
     DEFAULT_ENROLLING_STATUSES,
+    TEAM_TRIALS_URL,
     TeamTrialRecord,
     inspect_team_trial_corpus,
     iter_team_trial_records,
@@ -29,12 +30,15 @@ class ExpansionDiseaseGroup(ContractModel):
 class ExpansionSelectionConfig(ContractModel):
     protocol_id: str = Field(min_length=1)
     disease_groups: list[ExpansionDiseaseGroup] = Field(min_length=1)
+    excluded_trial_ids: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def group_ids_are_unique(self) -> "ExpansionSelectionConfig":
         values = [item.group_id for item in self.disease_groups]
         if len(values) != len(set(values)):
             raise ValueError("disease groups must not repeat group_id")
+        if len(self.excluded_trial_ids) != len(set(self.excluded_trial_ids)):
+            raise ValueError("excluded trial IDs must not repeat")
         return self
 
 
@@ -143,10 +147,12 @@ def select_team_evaluation_trials(
     config = ExpansionSelectionConfig.model_validate_json(
         Path(config_path).read_text(encoding="utf-8")
     )
+    excluded_trial_ids = set(config.excluded_trial_ids)
     records = [
         item
         for item in iter_team_trial_records(corpus_path)
         if item.overall_status.upper() in DEFAULT_ENROLLING_STATUSES
+        and item.nct_id not in excluded_trial_ids
     ]
     corpus_summary = inspect_team_trial_corpus(corpus_path)
     used: set[str] = set()
@@ -176,9 +182,7 @@ def select_team_evaluation_trials(
                 "overall_status": record.overall_status,
                 "criterion_categories": list(categories),
                 "eligibility_text_length": len(record.eligibility_text),
-                "source_location": (
-                    f"{Path(corpus_path).resolve()}#nct_id={record.nct_id}"
-                ),
+                "source_location": f"{TEAM_TRIALS_URL}#nct_id={record.nct_id}",
             }
             rows.append(row)
             all_selected.append({"group_id": group.group_id, **row})
@@ -196,9 +200,13 @@ def select_team_evaluation_trials(
             "candidate pool for later criterion structuring and synthetic "
             "interactive evaluation; this file contains no eligibility gold"
         ),
-        "corpus": corpus_summary.model_dump(mode="json"),
+        "corpus": {
+            **corpus_summary.model_dump(mode="json"),
+            "source_path": TEAM_TRIALS_URL,
+        },
         "group_count": len(groups),
         "selected_trial_count": len(all_selected),
+        "excluded_trial_count": len(excluded_trial_ids),
         "criterion_category_counts": dict(sorted(category_counts.items())),
         "groups": groups,
         "selected_trials": all_selected,

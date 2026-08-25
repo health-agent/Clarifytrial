@@ -1,0 +1,11 @@
+# Direct dependencies used for the recorded research environment.
+pydantic==2.13.4
+pytest==8.4.2
+nltk==3.8.1
+rank-bm25==0.2.2
+openai-codex==0.147.0
+faiss-cpu==1.15.0
+numpy==1.26.4
+torch==2.13.0
+tqdm==4.65.0
+transformers==4.39.3

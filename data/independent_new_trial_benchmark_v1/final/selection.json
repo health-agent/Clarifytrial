@@ -1,0 +1,616 @@
+{
+  "protocol_id": "clarifytrial-independent-new-trial-selection-v1:final",
+  "purpose": "final partition of the frozen new-trial benchmark",
+  "corpus": {
+    "source_path": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl",
+    "source_sha256": "95e2551741b82db9e0729e8081af85fe0de559c9cad850b41d849f315bbf889c",
+    "row_count": 1931,
+    "status_counts": {
+      "ACTIVE_NOT_RECRUITING": 121,
+      "COMPLETED": 1221,
+      "ENROLLING_BY_INVITATION": 21,
+      "NOT_YET_RECRUITING": 138,
+      "RECRUITING": 430
+    },
+    "included_statuses": [
+      "ENROLLING_BY_INVITATION",
+      "NOT_YET_RECRUITING",
+      "RECRUITING"
+    ],
+    "included_trial_count": 589
+  },
+  "group_count": 5,
+  "selected_trial_count": 15,
+  "groups": [
+    {
+      "group_id": "mucormycosis",
+      "group_label": "뮤코르진균증",
+      "candidate_count": 3,
+      "selected_trials": [
+        {
+          "nct_id": "NCT06756191",
+          "title": "Antifungal Drugs in Pulmonary Mucormycosis",
+          "conditions": [
+            "Pulmonary Mucormycosis"
+          ],
+          "overall_status": "NOT_YET_RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "medication_or_treatment",
+            "pregnancy_or_contraception"
+          ],
+          "eligibility_text_length": 1023,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06756191"
+        },
+        {
+          "nct_id": "NCT06878144",
+          "title": "Mucormycosis Clinical Core for the MUCOR-ADVANCE P01 Project",
+          "conditions": [
+            "Mucormycosis"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "surgery_or_pathology",
+            "patient_answerable"
+          ],
+          "eligibility_text_length": 473,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06878144"
+        },
+        {
+          "nct_id": "NCT05406037",
+          "title": "Biomarkers for Invasive Mucormycosis",
+          "conditions": [
+            "Mucorales Infection",
+            "Mucormycosis"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "patient_answerable"
+          ],
+          "eligibility_text_length": 1335,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT05406037"
+        }
+      ]
+    },
+    {
+      "group_id": "bladder_cancer",
+      "group_label": "방광암",
+      "candidate_count": 3,
+      "selected_trials": [
+        {
+          "nct_id": "NCT06364904",
+          "title": "A Clinical Trail to Determine the Safety and Efficacy of the Combination of Tislelizumab With Cisplatin and Gemcitabine, With or Without Trilaciclib for Patients With Untreated Unresectable and Metastatic Urothelial Carcinoma.",
+          "conditions": [
+            "Bladder Cancer"
+          ],
+          "overall_status": "NOT_YET_RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 7127,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06364904"
+        },
+        {
+          "nct_id": "NCT06682728",
+          "title": "Adjuvant Sacituzumab Govitecan and Nivolumab in Muscle-Invasive Urothelial Carcinoma at High-Risk Recurrence",
+          "conditions": [
+            "Urothelial Carcinoma",
+            "Muscle-invasive Bladder Cancer"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 6652,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06682728"
+        },
+        {
+          "nct_id": "NCT06732531",
+          "title": "Safety, Tolerability, and Preliminary Efficacy of BH011 in Subjects With Non-Muscle-Invasive Bladder Cancer",
+          "conditions": [
+            "Bladder Cancer",
+            "Non Muscle Invasive"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 6491,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06732531"
+        }
+      ]
+    },
+    {
+      "group_id": "pulmonary_fibrosis",
+      "group_label": "폐섬유증",
+      "candidate_count": 3,
+      "selected_trials": [
+        {
+          "nct_id": "NCT07679893",
+          "title": "Phase 2 Clinical Trial of MNKD-201 (Nintedanib Dry Powder Inhalation) in Patients With Idiopathic Pulmonary Fibrosis",
+          "conditions": [
+            "Idiopathic Pulmonary Fibrosis",
+            "Idiopathic Pulmonary Fibrosis (IPF)"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 2609,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07679893"
+        },
+        {
+          "nct_id": "NCT07121413",
+          "title": "A Clinical Study to Evaluate the Safety, Tolerability, Pharmacokinetics and Immunogenicity of SV001 in Patients With Idiopathic Pulmonary Fibrosis",
+          "conditions": [
+            "Idiopathic Pulmonary Fibrosis(IPF)"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 2109,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07121413"
+        },
+        {
+          "nct_id": "NCT07082842",
+          "title": "Confirmatory Clinical Study of HEC585 Tablets in Patients With IPF",
+          "conditions": [
+            "Idiopathic Pulmonary Fibrosis (IPF)"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "surgery_or_pathology",
+            "pregnancy_or_contraception",
+            "patient_answerable"
+          ],
+          "eligibility_text_length": 5842,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07082842"
+        }
+      ]
+    },
+    {
+      "group_id": "acute_pancreatitis",
+      "group_label": "급성 췌장염",
+      "candidate_count": 3,
+      "selected_trials": [
+        {
+          "nct_id": "NCT06253117",
+          "title": "Evaluation of Pirfenidone as a Novel Therapeutic Strategy Against Recurrent Acute Pancreatitis.",
+          "conditions": [
+            "Recurrent Acute Pancreatitis"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 4556,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06253117"
+        },
+        {
+          "nct_id": "NCT05350371",
+          "title": "Safety and Tolerability of Pirfenidone in Acute Pancreatitis",
+          "conditions": [
+            "Pancreatitis, Acute"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 3033,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT05350371"
+        },
+        {
+          "nct_id": "NCT03684278",
+          "title": "Randomised Treatment of Acute Pancreatitis With Infliximab: Double-blind, Placebo-controlled, Multi-centre Trial (RAPID-I)",
+          "conditions": [
+            "Acute Pancreatitis"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 2509,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT03684278"
+        }
+      ]
+    },
+    {
+      "group_id": "graves_disease",
+      "group_label": "그레이브스병",
+      "candidate_count": 3,
+      "selected_trials": [
+        {
+          "nct_id": "NCT07261345",
+          "title": "Allogeneic Anti-CD19/BCMA CAR-T for Refractory Graves' Disease",
+          "conditions": [
+            "Graves' Disease"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 2673,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07261345"
+        },
+        {
+          "nct_id": "NCT07129642",
+          "title": "Allogeneic Anti-CD19 CAR-T for Refractory Graves' Disease",
+          "conditions": [
+            "Graves Disease"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 2599,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07129642"
+        },
+        {
+          "nct_id": "NCT07333677",
+          "title": "In Vivo CAR-T for Refractory Graves' Disease",
+          "conditions": [
+            "Graves' Disease"
+          ],
+          "overall_status": "RECRUITING",
+          "criterion_categories": [
+            "numeric_threshold",
+            "time_window",
+            "medication_or_treatment",
+            "pregnancy_or_contraception",
+            "patient_answerable",
+            "laboratory_or_imaging"
+          ],
+          "eligibility_text_length": 2555,
+          "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07333677"
+        }
+      ]
+    }
+  ],
+  "selected_trials": [
+    {
+      "group_id": "mucormycosis",
+      "nct_id": "NCT06756191",
+      "title": "Antifungal Drugs in Pulmonary Mucormycosis",
+      "conditions": [
+        "Pulmonary Mucormycosis"
+      ],
+      "overall_status": "NOT_YET_RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "medication_or_treatment",
+        "pregnancy_or_contraception"
+      ],
+      "eligibility_text_length": 1023,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06756191"
+    },
+    {
+      "group_id": "mucormycosis",
+      "nct_id": "NCT06878144",
+      "title": "Mucormycosis Clinical Core for the MUCOR-ADVANCE P01 Project",
+      "conditions": [
+        "Mucormycosis"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "surgery_or_pathology",
+        "patient_answerable"
+      ],
+      "eligibility_text_length": 473,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06878144"
+    },
+    {
+      "group_id": "mucormycosis",
+      "nct_id": "NCT05406037",
+      "title": "Biomarkers for Invasive Mucormycosis",
+      "conditions": [
+        "Mucorales Infection",
+        "Mucormycosis"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "patient_answerable"
+      ],
+      "eligibility_text_length": 1335,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT05406037"
+    },
+    {
+      "group_id": "bladder_cancer",
+      "nct_id": "NCT06364904",
+      "title": "A Clinical Trail to Determine the Safety and Efficacy of the Combination of Tislelizumab With Cisplatin and Gemcitabine, With or Without Trilaciclib for Patients With Untreated Unresectable and Metastatic Urothelial Carcinoma.",
+      "conditions": [
+        "Bladder Cancer"
+      ],
+      "overall_status": "NOT_YET_RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 7127,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06364904"
+    },
+    {
+      "group_id": "bladder_cancer",
+      "nct_id": "NCT06682728",
+      "title": "Adjuvant Sacituzumab Govitecan and Nivolumab in Muscle-Invasive Urothelial Carcinoma at High-Risk Recurrence",
+      "conditions": [
+        "Urothelial Carcinoma",
+        "Muscle-invasive Bladder Cancer"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 6652,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06682728"
+    },
+    {
+      "group_id": "bladder_cancer",
+      "nct_id": "NCT06732531",
+      "title": "Safety, Tolerability, and Preliminary Efficacy of BH011 in Subjects With Non-Muscle-Invasive Bladder Cancer",
+      "conditions": [
+        "Bladder Cancer",
+        "Non Muscle Invasive"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 6491,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06732531"
+    },
+    {
+      "group_id": "pulmonary_fibrosis",
+      "nct_id": "NCT07679893",
+      "title": "Phase 2 Clinical Trial of MNKD-201 (Nintedanib Dry Powder Inhalation) in Patients With Idiopathic Pulmonary Fibrosis",
+      "conditions": [
+        "Idiopathic Pulmonary Fibrosis",
+        "Idiopathic Pulmonary Fibrosis (IPF)"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 2609,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07679893"
+    },
+    {
+      "group_id": "pulmonary_fibrosis",
+      "nct_id": "NCT07121413",
+      "title": "A Clinical Study to Evaluate the Safety, Tolerability, Pharmacokinetics and Immunogenicity of SV001 in Patients With Idiopathic Pulmonary Fibrosis",
+      "conditions": [
+        "Idiopathic Pulmonary Fibrosis(IPF)"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 2109,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07121413"
+    },
+    {
+      "group_id": "pulmonary_fibrosis",
+      "nct_id": "NCT07082842",
+      "title": "Confirmatory Clinical Study of HEC585 Tablets in Patients With IPF",
+      "conditions": [
+        "Idiopathic Pulmonary Fibrosis (IPF)"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "surgery_or_pathology",
+        "pregnancy_or_contraception",
+        "patient_answerable"
+      ],
+      "eligibility_text_length": 5842,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07082842"
+    },
+    {
+      "group_id": "acute_pancreatitis",
+      "nct_id": "NCT06253117",
+      "title": "Evaluation of Pirfenidone as a Novel Therapeutic Strategy Against Recurrent Acute Pancreatitis.",
+      "conditions": [
+        "Recurrent Acute Pancreatitis"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 4556,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT06253117"
+    },
+    {
+      "group_id": "acute_pancreatitis",
+      "nct_id": "NCT05350371",
+      "title": "Safety and Tolerability of Pirfenidone in Acute Pancreatitis",
+      "conditions": [
+        "Pancreatitis, Acute"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 3033,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT05350371"
+    },
+    {
+      "group_id": "acute_pancreatitis",
+      "nct_id": "NCT03684278",
+      "title": "Randomised Treatment of Acute Pancreatitis With Infliximab: Double-blind, Placebo-controlled, Multi-centre Trial (RAPID-I)",
+      "conditions": [
+        "Acute Pancreatitis"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 2509,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT03684278"
+    },
+    {
+      "group_id": "graves_disease",
+      "nct_id": "NCT07261345",
+      "title": "Allogeneic Anti-CD19/BCMA CAR-T for Refractory Graves' Disease",
+      "conditions": [
+        "Graves' Disease"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 2673,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07261345"
+    },
+    {
+      "group_id": "graves_disease",
+      "nct_id": "NCT07129642",
+      "title": "Allogeneic Anti-CD19 CAR-T for Refractory Graves' Disease",
+      "conditions": [
+        "Graves Disease"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 2599,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07129642"
+    },
+    {
+      "group_id": "graves_disease",
+      "nct_id": "NCT07333677",
+      "title": "In Vivo CAR-T for Refractory Graves' Disease",
+      "conditions": [
+        "Graves' Disease"
+      ],
+      "overall_status": "RECRUITING",
+      "criterion_categories": [
+        "numeric_threshold",
+        "time_window",
+        "medication_or_treatment",
+        "pregnancy_or_contraception",
+        "patient_answerable",
+        "laboratory_or_imaging"
+      ],
+      "eligibility_text_length": 2555,
+      "source_location": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl#nct_id=NCT07333677"
+    }
+  ]
+}

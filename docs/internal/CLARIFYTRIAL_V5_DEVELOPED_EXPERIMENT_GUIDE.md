@@ -171,16 +171,56 @@ JSON에서 시작한다.
   --output runs\public-protocol-readiness
 ```
 
-현재 결정론적 실행은 공개 조건, 589건 검색, 후보 보존, 검사·방문, 확인 실패까지 일곱
-항목을 통과한다. 마지막 외부 모델 실행은 별도 항목으로 남는다.
+이 명령은 기존 공개 시험 기반 통합 점검의 자료 범위와 실행 연결 상태를 확인한다. 새
+시험 최종 평가는 아래처럼 별도 자료와 결과로 관리한다.
 
-## 9. 중단 뒤 이어서 실행
+## 9. 새 시험 최종 평가 결과 확인
+
+구조화 규칙만 사용하는 실행은 다음과 같다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-workflow-evaluation `
+  --trial-set data\independent_new_trial_benchmark_v1\final\trial_set.json `
+  --patient-pairs data\independent_new_trial_benchmark_v1\final\patient_pairs.json `
+  --generation-config configs\independent_new_trial_benchmark_v1.json `
+  --provider deterministic `
+  --split heldout `
+  --arm clarifytrial `
+  --agent-architecture rules_only `
+  --action-budget 3 `
+  --concurrency 4 `
+  --output runs\independent-new-trial-final-rules
+```
+
+조건 판단 모델을 사용하는 실행은 아래 옵션을 추가하고 `--agent-architecture`를
+`single_judge` 또는 `code_routed_agents`로 바꾼다. 각 실행은 서로 다른 출력 폴더에
+저장한다.
+
+```text
+--provider codex-subscription --model gpt-5.6-sol --effort medium --confirm-model-run
+```
+
+세 실행이 끝나면 다음 명령으로 한 표에 묶는다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe compare-agent-architectures `
+  --workflow runs\independent-new-trial-final-rules-v2\summary.json `
+  --workflow runs\independent-new-trial-sol-single-judge-v2\summary.json `
+  --workflow runs\independent-new-trial-sol-code-routed-v2\summary.json `
+  --output docs\internal\results\independent-new-trial-agent-evaluation-v1
+```
+
+같은 최종 평가자료에서 구조화 규칙만 사용한 실행, 조건 판단 모델만 부른 실행, 조건
+판단과 질문 문장 역할을 부른 실행을 비교한다. 최종 보고서는 `report.md`, 숫자는
+`summary.json`에 저장된다.
+
+## 10. 중단 뒤 이어서 실행
 
 같은 입력과 설정으로 다시 실행할 때 명령 끝에 `--resume`을 붙인다. 끝난 환자와 비교
 방법은 다시 실행하지 않는다. 입력 파일이나 설정이 달라지면 이전 결과를 재사용하지
 않는다.
 
-## 10. 결과 해석
+## 11. 결과 해석
 
 - 입력 파일 순서보다 높다고 새 질문 알고리즘이 우수하다고 말하지 않는다.
 - 지금 가장 많은 시험에 연결된 정보를 고르는 강한 단순 방법과도 비교한다.
@@ -191,4 +231,7 @@ JSON에서 시작한다.
 
 현재 공개 시험 조건 기반 결과에서 ClarifyTrial과 강한 단순 방법은 30명 모두 같았다.
 핵심 결과는 새 질문 계산의 우월성이 아니라, 보이지 않을 실제 후보 54개를 보존하고
-세 번 안에 47개를 확정하면서 결국 제외될 후보 60개를 모두 정리한 것이다.
+세 번 안에 47개를 확정하면서 결국 제외될 후보 68개를 모두 정리한 것이다.
+
+새 시험 최종 평가에서는 세 모델 호출 구조가 모두 75/75개를 맞혔다. 구조화 조건에서
+모델 호출을 늘려도 결과가 좋아지지 않았으므로 코드를 기본값으로 둔다.

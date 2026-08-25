@@ -116,6 +116,7 @@ from .retrieval import (
     run_trialgpt_retrieval,
 )
 from .reporting import (
+    build_architecture_comparison,
     build_budget_frontier,
     build_final_evaluation_readiness,
     build_research_report,
@@ -890,6 +891,13 @@ def _parser() -> argparse.ArgumentParser:
     workflow_evaluation.add_argument("--timeout-seconds", type=float, default=300)
     workflow_evaluation.add_argument("--action-budget", type=int, default=3)
     workflow_evaluation.add_argument(
+        "--arm",
+        action="append",
+        choices=("no_questions", "fixed_order", "immediate_coverage", "clarifytrial"),
+        default=[],
+        help="run only the named comparison arm; repeat to select several",
+    )
+    workflow_evaluation.add_argument(
         "--budget-sweep",
         action="store_true",
         help="run the same evaluation for every information budget from zero to five",
@@ -898,18 +906,29 @@ def _parser() -> argparse.ArgumentParser:
         "--broad-corpus",
         type=Path,
         help=(
-            "optional 1,931-trial team snapshot; when supplied, target trials "
-            "must first be recovered from the currently enrolling subset"
+            "optional 1,931-trial team snapshot; checks whether predeclared "
+            "target trials remain connected through the enrolling subset"
         ),
     )
     workflow_evaluation.add_argument(
         "--broad-search-top-k",
         type=int,
         default=200,
-        help="number of broad-corpus search results passed to target evaluation",
+        help="search depth used for the predeclared-target connectivity check",
     )
     workflow_evaluation.add_argument("--max-selective-reviews", type=int, default=1)
     workflow_evaluation.add_argument("--max-cycles", type=int, default=12)
+    workflow_evaluation.add_argument(
+        "--agent-architecture",
+        choices=(
+            "rules_only",
+            "single_judge",
+            "code_routed_agents",
+            "full_agents_no_reviewer",
+            "full_agents",
+        ),
+        default="rules_only",
+    )
     workflow_evaluation.add_argument("--concurrency", type=int, default=1)
     workflow_evaluation.add_argument(
         "--include-unavailable-scenario",
@@ -1830,8 +1849,23 @@ def _parser() -> argparse.ArgumentParser:
     report.add_argument("--input-state", default="fully_missing")
     report.add_argument("--action-budget", type=int, default=3)
 
+    architecture_comparison = commands.add_parser(
+        "compare-agent-architectures",
+        help="compare model-call structures on the same patients and trials",
+    )
+    architecture_comparison.add_argument(
+        "--workflow", type=Path, action="append", required=True
+    )
+    architecture_comparison.add_argument(
+        "--arm",
+        choices=("no_questions", "fixed_order", "immediate_coverage", "clarifytrial"),
+        default="clarifytrial",
+    )
+    architecture_comparison.add_argument("--output", type=Path, required=True)
+
     readiness = commands.add_parser(
         "audit-final-evaluation-readiness",
+        aliases=["audit-external-evaluation-readiness"],
         help=(
             "check synthetic breadth, connected rescue behavior, failure "
             "fallback, public criteria, broad search, and model execution"
@@ -2079,8 +2113,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             "split": args.split,
             "patient_ids": args.patient_id,
             "limit": args.limit,
+            "arms": args.arm or (
+                "no_questions",
+                "fixed_order",
+                "immediate_coverage",
+                "clarifytrial",
+            ),
             "max_selective_reviews": args.max_selective_reviews,
             "max_cycles": args.max_cycles,
+            "agent_architecture": args.agent_architecture,
             "concurrency": args.concurrency,
             "include_unavailable_scenario": args.include_unavailable_scenario,
             "include_patient_choice_scenario": (
@@ -2155,9 +2196,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"frontier: {args.output / 'frontier' / 'frontier.md'}")
         else:
             print(f"summary: {args.output / 'summary.json'}")
+        paired = summary.get("paired_clarifytrial_vs_fixed")
         print(
             f"patients={summary['patient_count']} "
-            f"paired={summary['paired_clarifytrial_vs_fixed']['patient_count']}"
+            f"paired={0 if paired is None else paired['patient_count']}"
         )
         return 0
     if args.command == "export-schemas":
@@ -2527,6 +2569,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"tokens={result['token_usage']['total_tokens']}"
         )
         return 0 if result["failed_record_count"] == 0 else 2
+    if args.command == "compare-agent-architectures":
+        result = build_architecture_comparison(
+            workflow_summary_paths=args.workflow,
+            output_dir=args.output,
+            arm=args.arm,
+        )
+        print(f"architectures={len(result['rows'])}")
+        print(f"report: {args.output / 'report.md'}")
+        return 0
     if args.command in {
         "run-natural-question-policy-evaluation",
         "run-json-question-policy-evaluation",
@@ -2578,7 +2629,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"report: {result['report']}")
         print(f"metrics: {result['metric_count']}")
         return 0
-    if args.command == "audit-final-evaluation-readiness":
+    if args.command in {
+        "audit-final-evaluation-readiness",
+        "audit-external-evaluation-readiness",
+    }:
         result = build_final_evaluation_readiness(
             trial_set_path=args.trial_set,
             patient_pairs_path=args.patient_pairs,
@@ -2586,10 +2640,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             output_dir=args.output,
         )
         print(
-            "software_ready="
-            f"{result['software_ready_for_source_anchored_evaluation']} "
-            "final_performance_ready="
-            f"{result['final_performance_claim_ready']}"
+            "external_model_evaluation_ready="
+            f"{result['software_ready_for_external_model_evaluation']} "
+            "independent_performance_ready="
+            f"{result['independent_performance_claim_ready']}"
         )
         print(f"report: {args.output / 'readiness.md'}")
         return 0

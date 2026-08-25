@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import json
+import gzip
 
 import pytest
+
+from clarifytrial.retrieval import trialgpt
 
 from clarifytrial.retrieval.trialgpt import (
     TrialGPTRetrievalConfig,
@@ -12,6 +15,11 @@ from clarifytrial.retrieval.trialgpt import (
     load_query_conditions,
     reciprocal_rank_fusion,
 )
+
+
+class _FakeBM25:
+    def __init__(self, corpus):
+        self.corpus = corpus
 
 
 def test_trialgpt_config_requires_one_retriever() -> None:
@@ -98,3 +106,40 @@ def test_retrieval_metrics_keep_weighted_and_binary_recall_separate() -> None:
 def test_metrics_reject_missing_judged_query() -> None:
     with pytest.raises(ValueError, match="missing judged queries"):
         evaluate_rankings({}, {"q1": {"NCT1": 1}}, depths=(10,))
+
+
+def test_bm25_cache_is_inert_json_and_corrupt_content_is_rebuilt(
+    tmp_path, monkeypatch
+) -> None:
+    corpus = tmp_path / "corpus.jsonl"
+    corpus.write_text(
+        json.dumps(
+            {
+                "_id": "NCT1",
+                "title": "Lung cancer study",
+                "text": "Adults with lung cancer",
+                "metadata": {"diseases_list": ["lung cancer"]},
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    cache = tmp_path / "bm25-tokenized.json.gz"
+    monkeypatch.setattr(
+        trialgpt,
+        "_optional_bm25_imports",
+        lambda: (lambda text: text.split(), _FakeBM25),
+    )
+
+    first, first_ids = trialgpt.build_bm25(corpus, cache)
+    with gzip.open(cache, "rt", encoding="utf-8") as stream:
+        stored = json.load(stream)
+
+    assert stored["format"] == trialgpt.BM25_CACHE_FORMAT
+    assert first_ids == ("NCT1",)
+    assert first.corpus
+
+    cache.write_bytes(b"not executable and not valid gzip")
+    second, second_ids = trialgpt.build_bm25(corpus, cache)
+    assert second_ids == ("NCT1",)
+    assert second.corpus == first.corpus

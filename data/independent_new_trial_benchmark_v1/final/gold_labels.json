@@ -1,0 +1,1558 @@
+{
+  "protocol_id": "clarifytrial-independent-structured-gold-v1",
+  "benchmark_protocol_id": "clarifytrial-independent-new-trial-benchmark-v1",
+  "partition": "final",
+  "frozen_at": "2026-08-25T18:00:00+09:00",
+  "independent_from_runtime_evaluator": true,
+  "frozen_before_final_run": true,
+  "authoring_method": "A separate serialized-operator reference implementation created this table without importing ClarifyTrial's criterion evaluator or trial decision aggregator. The runtime reads the frozen table only.",
+  "trial_ids_sha256": "6eeccbdcfda9388a5227592ac11246d5dc43c2b6babea2919367c8d229d13f84",
+  "patient_ids_sha256": "1c05db3b5f9e61de15c4f57729e81a692a655c290afc7251e8ef35b4abb622e3",
+  "label_count": 150,
+  "labels": [
+    {
+      "patient_id": "source-mucormycosis-01",
+      "episode": "complete",
+      "trial_id": "NCT06756191",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-mucormycosis-01",
+      "episode": "complete",
+      "trial_id": "NCT06878144",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-mucormycosis-01",
+      "episode": "complete",
+      "trial_id": "NCT05406037",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-mucormycosis-01",
+      "episode": "initial",
+      "trial_id": "NCT06756191",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-01",
+      "episode": "initial",
+      "trial_id": "NCT06878144",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-01",
+      "episode": "initial",
+      "trial_id": "NCT05406037",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-02",
+      "episode": "complete",
+      "trial_id": "NCT06756191",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-mucormycosis-02",
+      "episode": "complete",
+      "trial_id": "NCT06878144",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-mucormycosis-02",
+      "episode": "complete",
+      "trial_id": "NCT05406037",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-mucormycosis-02",
+      "episode": "initial",
+      "trial_id": "NCT06756191",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-mucormycosis-02:age_years"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-mucormycosis-02",
+      "episode": "initial",
+      "trial_id": "NCT06878144",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-02:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-02",
+      "episode": "initial",
+      "trial_id": "NCT05406037",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-02:age_years",
+        "source-mucormycosis-02:nct05406037_source_line_6"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-03",
+      "episode": "complete",
+      "trial_id": "NCT06756191",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-mucormycosis-03",
+      "episode": "complete",
+      "trial_id": "NCT06878144",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-mucormycosis-03",
+      "episode": "complete",
+      "trial_id": "NCT05406037",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-mucormycosis-03",
+      "episode": "initial",
+      "trial_id": "NCT06756191",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-03:age_years",
+        "source-mucormycosis-03:nct06756191_source_line_8"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-03",
+      "episode": "initial",
+      "trial_id": "NCT06878144",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-03:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-03",
+      "episode": "initial",
+      "trial_id": "NCT05406037",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-03:age_years",
+        "source-mucormycosis-03:nct05406037_source_line_6"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-04",
+      "episode": "complete",
+      "trial_id": "NCT06756191",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-mucormycosis-04",
+      "episode": "complete",
+      "trial_id": "NCT06878144",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-mucormycosis-04",
+      "episode": "complete",
+      "trial_id": "NCT05406037",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-mucormycosis-04",
+      "episode": "initial",
+      "trial_id": "NCT06756191",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-04:age_years",
+        "source-mucormycosis-04:nct06756191_source_line_8"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-04",
+      "episode": "initial",
+      "trial_id": "NCT06878144",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-04:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-04",
+      "episode": "initial",
+      "trial_id": "NCT05406037",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-04:age_years",
+        "source-mucormycosis-04:nct05406037_source_line_6"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-05",
+      "episode": "complete",
+      "trial_id": "NCT06756191",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-mucormycosis-05",
+      "episode": "complete",
+      "trial_id": "NCT06878144",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-mucormycosis-05",
+      "episode": "complete",
+      "trial_id": "NCT05406037",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-mucormycosis-05",
+      "episode": "initial",
+      "trial_id": "NCT06756191",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-05:age_years",
+        "source-mucormycosis-05:nct06756191_source_line_8"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-05",
+      "episode": "initial",
+      "trial_id": "NCT06878144",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-05:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-mucormycosis-05",
+      "episode": "initial",
+      "trial_id": "NCT05406037",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-mucormycosis-05:age_years",
+        "source-mucormycosis-05:nct05406037_source_line_6"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-bladder_cancer-01",
+      "episode": "complete",
+      "trial_id": "NCT06364904",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-bladder_cancer-01",
+      "episode": "complete",
+      "trial_id": "NCT06682728",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-bladder_cancer-01",
+      "episode": "complete",
+      "trial_id": "NCT06732531",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-bladder_cancer-01",
+      "episode": "initial",
+      "trial_id": "NCT06364904",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-bladder_cancer-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-bladder_cancer-01",
+      "episode": "initial",
+      "trial_id": "NCT06682728",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-bladder_cancer-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-bladder_cancer-01",
+      "episode": "initial",
+      "trial_id": "NCT06732531",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-bladder_cancer-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-bladder_cancer-02",
+      "episode": "complete",
+      "trial_id": "NCT06364904",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-bladder_cancer-02",
+      "episode": "complete",
+      "trial_id": "NCT06682728",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-bladder_cancer-02",
+      "episode": "complete",
+      "trial_id": "NCT06732531",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-bladder_cancer-02",
+      "episode": "initial",
+      "trial_id": "NCT06364904",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-bladder_cancer-02:age_years"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-bladder_cancer-02",
+      "episode": "initial",
+      "trial_id": "NCT06682728",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-bladder_cancer-02:age_years"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-bladder_cancer-02",
+      "episode": "initial",
+      "trial_id": "NCT06732531",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-bladder_cancer-02:age_years",
+        "source-bladder_cancer-02:nct06732531_source_line_8"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-bladder_cancer-03",
+      "episode": "complete",
+      "trial_id": "NCT06364904",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-bladder_cancer-03",
+      "episode": "complete",
+      "trial_id": "NCT06682728",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-bladder_cancer-03",
+      "episode": "complete",
+      "trial_id": "NCT06732531",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-bladder_cancer-03",
+      "episode": "initial",
+      "trial_id": "NCT06364904",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-bladder_cancer-03:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-bladder_cancer-03",
+      "episode": "initial",
+      "trial_id": "NCT06682728",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-bladder_cancer-03:age_years",
+        "source-bladder_cancer-03:pregnancy_or_lactation"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-bladder_cancer-03",
+      "episode": "initial",
+      "trial_id": "NCT06732531",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-bladder_cancer-03:age_years",
+        "source-bladder_cancer-03:nct06732531_source_line_8",
+        "source-bladder_cancer-03:pregnancy_or_lactation"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-bladder_cancer-04",
+      "episode": "complete",
+      "trial_id": "NCT06364904",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-bladder_cancer-04",
+      "episode": "complete",
+      "trial_id": "NCT06682728",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-bladder_cancer-04",
+      "episode": "complete",
+      "trial_id": "NCT06732531",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-bladder_cancer-04",
+      "episode": "initial",
+      "trial_id": "NCT06364904",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-bladder_cancer-04:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-bladder_cancer-04",
+      "episode": "initial",
+      "trial_id": "NCT06682728",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-bladder_cancer-04:age_years",
+        "source-bladder_cancer-04:pregnancy_or_lactation"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-bladder_cancer-04",
+      "episode": "initial",
+      "trial_id": "NCT06732531",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-bladder_cancer-04:age_years",
+        "source-bladder_cancer-04:nct06732531_source_line_8",
+        "source-bladder_cancer-04:pregnancy_or_lactation"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-bladder_cancer-05",
+      "episode": "complete",
+      "trial_id": "NCT06364904",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-bladder_cancer-05",
+      "episode": "complete",
+      "trial_id": "NCT06682728",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-bladder_cancer-05",
+      "episode": "complete",
+      "trial_id": "NCT06732531",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-bladder_cancer-05",
+      "episode": "initial",
+      "trial_id": "NCT06364904",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-bladder_cancer-05:age_years"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-bladder_cancer-05",
+      "episode": "initial",
+      "trial_id": "NCT06682728",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-bladder_cancer-05:age_years",
+        "source-bladder_cancer-05:pregnancy_or_lactation"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-bladder_cancer-05",
+      "episode": "initial",
+      "trial_id": "NCT06732531",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-bladder_cancer-05:age_years",
+        "source-bladder_cancer-05:nct06732531_source_line_8",
+        "source-bladder_cancer-05:pregnancy_or_lactation"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-01",
+      "episode": "complete",
+      "trial_id": "NCT07679893",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-01",
+      "episode": "complete",
+      "trial_id": "NCT07121413",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-01",
+      "episode": "complete",
+      "trial_id": "NCT07082842",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-01",
+      "episode": "initial",
+      "trial_id": "NCT07679893",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-01",
+      "episode": "initial",
+      "trial_id": "NCT07121413",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-01",
+      "episode": "initial",
+      "trial_id": "NCT07082842",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-02",
+      "episode": "complete",
+      "trial_id": "NCT07679893",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-02",
+      "episode": "complete",
+      "trial_id": "NCT07121413",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-02",
+      "episode": "complete",
+      "trial_id": "NCT07082842",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-02",
+      "episode": "initial",
+      "trial_id": "NCT07679893",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-02:age_years",
+        "source-pulmonary_fibrosis-02:nct07679893_source_line_4"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-02",
+      "episode": "initial",
+      "trial_id": "NCT07121413",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-02:age_years"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-02",
+      "episode": "initial",
+      "trial_id": "NCT07082842",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-02:age_years"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-03",
+      "episode": "complete",
+      "trial_id": "NCT07679893",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-03",
+      "episode": "complete",
+      "trial_id": "NCT07121413",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-03",
+      "episode": "complete",
+      "trial_id": "NCT07082842",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-03",
+      "episode": "initial",
+      "trial_id": "NCT07679893",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-03:age_years",
+        "source-pulmonary_fibrosis-03:nct07679893_source_line_4"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-03",
+      "episode": "initial",
+      "trial_id": "NCT07121413",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-03:active_serious_infection",
+        "source-pulmonary_fibrosis-03:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-03",
+      "episode": "initial",
+      "trial_id": "NCT07082842",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-03:active_serious_infection",
+        "source-pulmonary_fibrosis-03:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-04",
+      "episode": "complete",
+      "trial_id": "NCT07679893",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-04",
+      "episode": "complete",
+      "trial_id": "NCT07121413",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-04",
+      "episode": "complete",
+      "trial_id": "NCT07082842",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-04",
+      "episode": "initial",
+      "trial_id": "NCT07679893",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-04:age_years",
+        "source-pulmonary_fibrosis-04:nct07679893_source_line_4"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-04",
+      "episode": "initial",
+      "trial_id": "NCT07121413",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-04:active_serious_infection",
+        "source-pulmonary_fibrosis-04:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-04",
+      "episode": "initial",
+      "trial_id": "NCT07082842",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-04:active_serious_infection",
+        "source-pulmonary_fibrosis-04:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-05",
+      "episode": "complete",
+      "trial_id": "NCT07679893",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-05",
+      "episode": "complete",
+      "trial_id": "NCT07121413",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-05",
+      "episode": "complete",
+      "trial_id": "NCT07082842",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-05",
+      "episode": "initial",
+      "trial_id": "NCT07679893",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-05:age_years",
+        "source-pulmonary_fibrosis-05:nct07679893_source_line_4"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-05",
+      "episode": "initial",
+      "trial_id": "NCT07121413",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-05:active_serious_infection",
+        "source-pulmonary_fibrosis-05:age_years"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-pulmonary_fibrosis-05",
+      "episode": "initial",
+      "trial_id": "NCT07082842",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-pulmonary_fibrosis-05:active_serious_infection",
+        "source-pulmonary_fibrosis-05:age_years"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-01",
+      "episode": "complete",
+      "trial_id": "NCT06253117",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-01",
+      "episode": "complete",
+      "trial_id": "NCT05350371",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-01",
+      "episode": "complete",
+      "trial_id": "NCT03684278",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-01",
+      "episode": "initial",
+      "trial_id": "NCT06253117",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-01",
+      "episode": "initial",
+      "trial_id": "NCT05350371",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-01",
+      "episode": "initial",
+      "trial_id": "NCT03684278",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-02",
+      "episode": "complete",
+      "trial_id": "NCT06253117",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-02",
+      "episode": "complete",
+      "trial_id": "NCT05350371",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-02",
+      "episode": "complete",
+      "trial_id": "NCT03684278",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-02",
+      "episode": "initial",
+      "trial_id": "NCT06253117",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-02:age_years",
+        "source-acute_pancreatitis-02:nct06253117_source_line_3"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-02",
+      "episode": "initial",
+      "trial_id": "NCT05350371",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-02:age_years"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-02",
+      "episode": "initial",
+      "trial_id": "NCT03684278",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-02:age_years"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-03",
+      "episode": "complete",
+      "trial_id": "NCT06253117",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-03",
+      "episode": "complete",
+      "trial_id": "NCT05350371",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-03",
+      "episode": "complete",
+      "trial_id": "NCT03684278",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-03",
+      "episode": "initial",
+      "trial_id": "NCT06253117",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-03:age_years",
+        "source-acute_pancreatitis-03:nct06253117_source_line_3",
+        "source-acute_pancreatitis-03:pregnancy_or_lactation"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-03",
+      "episode": "initial",
+      "trial_id": "NCT05350371",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-03:age_years",
+        "source-acute_pancreatitis-03:pregnancy_or_lactation"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-03",
+      "episode": "initial",
+      "trial_id": "NCT03684278",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-03:age_years",
+        "source-acute_pancreatitis-03:pregnancy_or_lactation"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-04",
+      "episode": "complete",
+      "trial_id": "NCT06253117",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-04",
+      "episode": "complete",
+      "trial_id": "NCT05350371",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-04",
+      "episode": "complete",
+      "trial_id": "NCT03684278",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-04",
+      "episode": "initial",
+      "trial_id": "NCT06253117",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-04:age_years",
+        "source-acute_pancreatitis-04:nct06253117_source_line_3"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-04",
+      "episode": "initial",
+      "trial_id": "NCT05350371",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-04:age_years",
+        "source-acute_pancreatitis-04:nct05350371_source_line_3"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-04",
+      "episode": "initial",
+      "trial_id": "NCT03684278",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-04:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-05",
+      "episode": "complete",
+      "trial_id": "NCT06253117",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-05",
+      "episode": "complete",
+      "trial_id": "NCT05350371",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-05",
+      "episode": "complete",
+      "trial_id": "NCT03684278",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-05",
+      "episode": "initial",
+      "trial_id": "NCT06253117",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-05:age_years",
+        "source-acute_pancreatitis-05:nct06253117_source_line_3"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-05",
+      "episode": "initial",
+      "trial_id": "NCT05350371",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-05:age_years",
+        "source-acute_pancreatitis-05:nct05350371_source_line_3"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-acute_pancreatitis-05",
+      "episode": "initial",
+      "trial_id": "NCT03684278",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-acute_pancreatitis-05:age_years"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-graves_disease-01",
+      "episode": "complete",
+      "trial_id": "NCT07261345",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-graves_disease-01",
+      "episode": "complete",
+      "trial_id": "NCT07129642",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-graves_disease-01",
+      "episode": "complete",
+      "trial_id": "NCT07333677",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-graves_disease-01",
+      "episode": "initial",
+      "trial_id": "NCT07261345",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-01",
+      "episode": "initial",
+      "trial_id": "NCT07129642",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-01",
+      "episode": "initial",
+      "trial_id": "NCT07333677",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-01:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-02",
+      "episode": "complete",
+      "trial_id": "NCT07261345",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-graves_disease-02",
+      "episode": "complete",
+      "trial_id": "NCT07129642",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-graves_disease-02",
+      "episode": "complete",
+      "trial_id": "NCT07333677",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-graves_disease-02",
+      "episode": "initial",
+      "trial_id": "NCT07261345",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-02:age_years",
+        "source-graves_disease-02:nct07261345_source_line_11"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-02",
+      "episode": "initial",
+      "trial_id": "NCT07129642",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [
+        "source-graves_disease-02:age_years"
+      ],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-graves_disease-02",
+      "episode": "initial",
+      "trial_id": "NCT07333677",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-02:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-03",
+      "episode": "complete",
+      "trial_id": "NCT07261345",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-graves_disease-03",
+      "episode": "complete",
+      "trial_id": "NCT07129642",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-graves_disease-03",
+      "episode": "complete",
+      "trial_id": "NCT07333677",
+      "candidate_status": "retain",
+      "confirmation_status": "confirmed",
+      "pending_fact_ids": [],
+      "logic_status": "satisfied"
+    },
+    {
+      "patient_id": "source-graves_disease-03",
+      "episode": "initial",
+      "trial_id": "NCT07261345",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-03:age_years",
+        "source-graves_disease-03:nct07261345_source_line_11",
+        "source-graves_disease-03:pregnancy_or_lactation"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-03",
+      "episode": "initial",
+      "trial_id": "NCT07129642",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-03:age_years",
+        "source-graves_disease-03:pregnancy_or_lactation"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-03",
+      "episode": "initial",
+      "trial_id": "NCT07333677",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-03:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-04",
+      "episode": "complete",
+      "trial_id": "NCT07261345",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-graves_disease-04",
+      "episode": "complete",
+      "trial_id": "NCT07129642",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-graves_disease-04",
+      "episode": "complete",
+      "trial_id": "NCT07333677",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-graves_disease-04",
+      "episode": "initial",
+      "trial_id": "NCT07261345",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-04:age_years",
+        "source-graves_disease-04:nct07261345_source_line_11"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-04",
+      "episode": "initial",
+      "trial_id": "NCT07129642",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-04:age_years",
+        "source-graves_disease-04:nct07129642_source_line_5"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-04",
+      "episode": "initial",
+      "trial_id": "NCT07333677",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-04:age_years"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-05",
+      "episode": "complete",
+      "trial_id": "NCT07261345",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-graves_disease-05",
+      "episode": "complete",
+      "trial_id": "NCT07129642",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-graves_disease-05",
+      "episode": "complete",
+      "trial_id": "NCT07333677",
+      "candidate_status": "remove",
+      "confirmation_status": "ineligible",
+      "pending_fact_ids": [],
+      "logic_status": "violated"
+    },
+    {
+      "patient_id": "source-graves_disease-05",
+      "episode": "initial",
+      "trial_id": "NCT07261345",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-05:age_years",
+        "source-graves_disease-05:nct07261345_source_line_11"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-05",
+      "episode": "initial",
+      "trial_id": "NCT07129642",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-05:age_years",
+        "source-graves_disease-05:nct07129642_source_line_5"
+      ],
+      "logic_status": "unresolved"
+    },
+    {
+      "patient_id": "source-graves_disease-05",
+      "episode": "initial",
+      "trial_id": "NCT07333677",
+      "candidate_status": "retain",
+      "confirmation_status": "not_confirmed",
+      "pending_fact_ids": [
+        "source-graves_disease-05:age_years"
+      ],
+      "logic_status": "unresolved"
+    }
+  ]
+}

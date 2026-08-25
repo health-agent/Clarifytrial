@@ -1,0 +1,88 @@
+{
+  "protocol_id": "clarifytrial-independent-new-trial-selection-v1",
+  "excluded_trial_ids": [
+    "NCT03434392",
+    "NCT03535545",
+    "NCT04649242",
+    "NCT04724018",
+    "NCT04996628",
+    "NCT05000294",
+    "NCT05003986",
+    "NCT05086692",
+    "NCT05296564",
+    "NCT05312671",
+    "NCT05366881",
+    "NCT05453851",
+    "NCT05523869",
+    "NCT05571059",
+    "NCT05706129",
+    "NCT05771675",
+    "NCT05969860",
+    "NCT06033703",
+    "NCT06447064",
+    "NCT06459635",
+    "NCT06440915",
+    "NCT06468397",
+    "NCT06470282",
+    "NCT06566638",
+    "NCT06569758",
+    "NCT06587945",
+    "NCT06651580",
+    "NCT06729996",
+    "NCT06826573",
+    "NCT06972056",
+    "NCT06995898",
+    "NCT07131150",
+    "NCT07305116",
+    "NCT07308392",
+    "NCT07341737",
+    "NCT07414992",
+    "NCT07439757",
+    "NCT07447102",
+    "NCT07462130",
+    "NCT07464912",
+    "NCT07507201",
+    "NCT07586267",
+    "NCT07622368",
+    "NCT07642414",
+    "NCT07667621",
+    "NCT07674147",
+    "NCT07687459",
+    "NCT07698119",
+    "NCT07720635",
+    "NCT07720648",
+    "NCT07732686"
+  ],
+  "disease_groups": [
+    {
+      "group_id": "mucormycosis",
+      "group_label": "뮤코르진균증",
+      "condition_aliases": ["mucormycosis", "mucorales infection"],
+      "target_count": 6
+    },
+    {
+      "group_id": "bladder_cancer",
+      "group_label": "방광암",
+      "condition_aliases": ["bladder cancer", "urothelial carcinoma"],
+      "target_count": 6
+    },
+    {
+      "group_id": "pulmonary_fibrosis",
+      "group_label": "폐섬유증",
+      "condition_aliases": ["idiopathic pulmonary fibrosis", "pulmonary fibrosis"],
+      "target_count": 6
+    },
+    {
+      "group_id": "acute_pancreatitis",
+      "group_label": "급성 췌장염",
+      "condition_aliases": ["acute pancreatitis", "pancreatitis, acute"],
+      "target_count": 6
+    },
+    {
+      "group_id": "graves_disease",
+      "group_label": "그레이브스병",
+      "condition_aliases": ["graves disease", "graves' disease"],
+      "target_count": 6
+    }
+  ]
+}

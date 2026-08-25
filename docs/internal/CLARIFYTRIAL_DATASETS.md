@@ -9,7 +9,8 @@
 | TREC Clinical Trials 2021·2022 | 수만 건에서 관련 시험 검색 | 참가 조건 판단, 질문 순서 |
 | TrialGPT Criterion Annotations | 환자 기록과 시험 조건 하나의 판단 | 질문 뒤 답, 확인 방법과 종료 시점 |
 | 팀 공개 시험 1,931건 | 여러 질환의 현재 후보 검색 | 환자–시험 참가 가능 정답 |
-| 공개 시험 조건 기반 합성 평가자료 | 후보 보존, 정보 선택, 답변 반영과 재판정 | 실제 등록과 치료 결과 |
+| 공개 시험 조건 기반 연결 검사 | 후보 보존, 정보 선택, 답변 반영과 재판정의 코드 연결 | 독립적인 최종 성능 정답 |
+| 새 시험 독립 평가자료 | 기존 시험과 겹치지 않는 조건에서 전체 흐름 확인 | 각 시험의 전체 참가 조건 |
 | 환자 부담 합성 상황 | 이동·비용·시간에 따른 확인 방법 | 실제 금액과 실제 환자 선호 |
 
 검색 자료의 관련성 정답을 참가 조건 정답으로 사용하지 않는다. TrialGPT 조건 답을
@@ -46,6 +47,10 @@
 | 별도 평가 환자 | 30명 |
 | 가상 환자 전체 상태에서 참가 가능 | 98개 |
 | 가상 환자 전체 상태에서 참가 조건 불충족 | 152개 |
+
+이 자료의 기대 결과는 현재 구조화 판정 규칙으로 만들었다. 질문 수, 후보 보존, 답변
+반영과 재판정이 정해진 규칙대로 연결되는지 확인하는 자료이며, 모델이나 임상 판단의
+독립 성능 정답으로 사용하지 않는다.
 
 ### 구조화한 조건
 
@@ -88,6 +93,9 @@
 질문 선택 코드에는 가려 둔 답을 전달하지 않는다. 확인 행동이 실행된 뒤에만 저장된
 답을 공개한다. 답에 없는 수치, 날짜, 검사와 생활 정보를 새로 만들지 않는다.
 
+합성 나이가 12세 미만이거나 55세를 넘으면 임신·수유 값은 거짓으로 고정하고 질문으로
+가리지 않는다. 나이 8세나 90세 환자에게 임신 여부를 묻던 조합은 제거했다.
+
 ### 두 파일의 역할
 
 | 파일 | 내용 |
@@ -97,7 +105,32 @@
 
 같은 공개 원본과 설정으로 자료를 다시 만들고 두 파일 전체가 같은지 검사한다.
 
-## 4. TREC Clinical Trials 2021·2022
+## 4. 기존 평가와 겹치지 않는 새 시험 자료
+
+저장 위치: `data/independent_new_trial_benchmark_v1/`
+
+| 항목 | 개발용 | 최종 평가용 |
+|---|---:|---:|
+| 질환 | 5개 | 5개 |
+| 공개 임상시험 | 15건 | 15건 |
+| 구조화 조건 | 63개 | 53개 |
+| 합성 환자 | 25명 | 25명 |
+| 환자–시험 조합 | 75개 | 75개 |
+
+30개 시험은 기존 공개 평가의 50개 시험과 겹치지 않는다. 각 질환에서 먼저 고른 3개
+시험은 개발용, 나머지 3개는 최종 평가용으로 고정했으며 두 목록도 겹치지 않는다.
+점액진균증을 새 질환으로 넣고 방광암, 폐섬유증, 급성 췌장염, 그레이브스병에서
+새 시험을 골랐다.
+
+최종 상태 정답은 ClarifyTrial의 조건 판정기와 시험 결과 합치기 코드를 부르지 않는
+별도 계산표로 만들었다. 이 계산표는 JSON에 저장한 비교 방향과 합성 수치만 직접
+비교하며, 외부 모델 최종 실행 전에 `gold_labels.json`으로 고정했다. 현재 실행기는
+이 파일을 읽어 채점만 한다.
+
+이 정답은 자료에 넣은 객관적 조건 부분에만 해당한다. 각 시험의 전체 참가 조건을
+판단했다는 뜻은 아니다.
+
+## 5. TREC Clinical Trials 2021·2022
 
 TREC에는 환자 설명, 시험 ID와 전문가 관련성 등급이 있다. TrialGPT 공개 방식의 BM25와
 MedCPT 검색 순위를 합쳐 관련 시험이 상위 500개 안에 남는지 평가했다.
@@ -111,7 +144,7 @@ MedCPT 검색 순위를 합쳐 관련 시험이 상위 500개 안에 남는지 �
 TREC에는 처음에는 가려졌다가 질문 뒤 나오는 환자 정보, 알맞은 질문과 종료 시점 정답이
 없다.
 
-## 5. TrialGPT 조건 판단 자료
+## 6. TrialGPT 조건 판단 자료
 
 - 조건: 1,015개
 - 환자: 53명
@@ -125,7 +158,7 @@ TREC에는 처음에는 가려졌다가 질문 뒤 나오는 환자 정보, 알�
 공개 답과 전문가 답의 경계가 애매한 사례가 있어, ClarifyTrial의 중심 평가는 조건 답
 이름만 아니라 후보 유지·현재 확인·질문 뒤 변화로 분리한다.
 
-## 6. 환자 부담 합성 상황
+## 7. 환자 부담 합성 상황
 
 기존 합성 환자의 임상값은 유지하고 환자 상황과 자료 가용성만 바꾼다.
 
@@ -137,13 +170,13 @@ TREC에는 처음에는 가려졌다가 질문 뒤 나오는 환자 정보, 알�
 실제 금액이나 환자 선호를 만들어내지 않는다. 이 자료는 확인 방법 선택 코드가 입력된
 제약을 지키는지 검사한다.
 
-## 7. 과거 자료의 역할
+## 8. 과거 자료의 역할
 
 `data/broad_rescue_maturity_v1`의 합성 시험 50건과 합성 환자 50명은 전체 프로그램과
 지표를 먼저 점검한 자료다. 현재 성능 수치에는 사용하지 않는다. 기존 3개 질환·15개
 시험 자료도 기능 회귀 검사와 과거 비교를 위해 보존한다.
 
-## 8. 재생성 순서
+## 9. 재생성 순서
 
 ```powershell
 .\.venv\Scripts\clarifytrial.exe prepare-team-trials
@@ -153,6 +186,17 @@ TREC에는 처음에는 가려졌다가 질문 뒤 나오는 환자 정보, 알�
 .\.venv\Scripts\clarifytrial.exe build-public-protocol-benchmark `
   --output runs\public-protocol-benchmark-rebuild
 .\.venv\Scripts\clarifytrial.exe audit-public-protocol-benchmark
+
+.\.venv\Scripts\clarifytrial.exe select-team-evaluation-trials `
+  --trials .research-cache\team-trials\trials.jsonl `
+  --config configs\independent_new_trial_selection_v1.json `
+  --output runs\independent-new-trial-preparation\selection.json
+.\.venv\Scripts\python.exe scripts\build_independent_new_trial_benchmark.py `
+  --config configs\independent_new_trial_benchmark_v1.json `
+  --selection runs\independent-new-trial-preparation\selection.json `
+  --corpus .research-cache\team-trials\trials.jsonl `
+  --output runs\independent-new-trial-rebuild `
+  --frozen-at 2026-08-25T18:00:00+09:00
 ```
 
 외부 자료의 원본, 받은 날짜와 이용 조건은 [DATA_SOURCES.md](../../DATA_SOURCES.md)에 있다.

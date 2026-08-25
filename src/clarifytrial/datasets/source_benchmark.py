@@ -65,6 +65,9 @@ class SourceBenchmarkConfig(_ConfigModel):
     search_conditions: dict[str, list[str]] = Field(min_length=1)
     missing_fact_strata: dict[str, list[str]] = Field(default_factory=dict)
     logic_groups: list[ExplicitLogicGroup] = Field(default_factory=list)
+    enforce_demographic_consistency: bool = True
+    reproductive_age_min_years: float = Field(default=12.0, ge=0)
+    reproductive_age_max_years: float = Field(default=55.0, gt=0)
 
     @model_validator(mode="after")
     def declared_shape_is_consistent(self) -> "SourceBenchmarkConfig":
@@ -76,10 +79,12 @@ class SourceBenchmarkConfig(_ConfigModel):
             raise ValueError("missing_fact_counts must define every profile")
         if sorted(self.value_profile_order) != list(range(self.profiles_per_group)):
             raise ValueError("value_profile_order must be a profile-index permutation")
-        if not {1, 2, 3, 5}.issubset(self.missing_fact_counts):
-            raise ValueError("missing fact counts must cover 1, 2, 3, and 5")
+        if not {1, 2, 3}.issubset(self.missing_fact_counts):
+            raise ValueError("missing fact counts must cover 1, 2, and 3")
         if self.minimum_criteria_per_trial > self.maximum_criteria_per_trial:
             raise ValueError("minimum criteria exceeds maximum criteria")
+        if self.reproductive_age_min_years >= self.reproductive_age_max_years:
+            raise ValueError("reproductive age minimum must be below maximum")
         if any(not values for values in self.search_conditions.values()):
             raise ValueError("every disease group needs a search condition")
         unknown_strata = set(self.missing_fact_strata) - set(self.search_conditions)
@@ -472,7 +477,41 @@ def _build_documents(
         for profile_index in range(config.profiles_per_group):
             patient_id = f"source-{group_id}-{profile_index + 1:02d}"
             missing_count = config.missing_fact_counts[profile_index]
-            missing_codes = set(missing_priority[:missing_count])
+            profile_values = {
+                str(spec["fact_code"]): _profile_value(
+                    values=spec["values"],
+                    profile_index=profile_index,
+                    value_profile_order=config.value_profile_order,
+                )
+                for spec in specs
+            }
+            age_value = profile_values.get("age_years")
+            pregnancy_applicable = (
+                age_value is None
+                or config.reproductive_age_min_years
+                <= age_value
+                <= config.reproductive_age_max_years
+            )
+            if (
+                config.enforce_demographic_consistency
+                and not pregnancy_applicable
+                and "pregnancy_or_lactation" in profile_values
+            ):
+                profile_values["pregnancy_or_lactation"] = 0.0
+            eligible_missing_priority = [
+                fact_code
+                for fact_code in missing_priority
+                if not (
+                    config.enforce_demographic_consistency
+                    and fact_code == "pregnancy_or_lactation"
+                    and not pregnancy_applicable
+                )
+            ]
+            if len(eligible_missing_priority) < missing_count:
+                raise ValueError(
+                    f"group {group_id} has too few demographically applicable facts"
+                )
+            missing_codes = set(eligible_missing_priority[:missing_count])
             all_facts = []
             initial_facts = []
             requests = []
@@ -481,11 +520,7 @@ def _build_documents(
             for spec in specs:
                 fact_code = str(spec["fact_code"])
                 mode = str(spec["mode"])
-                value = _profile_value(
-                    values=spec["values"],
-                    profile_index=profile_index,
-                    value_profile_order=config.value_profile_order,
-                )
+                value = profile_values[fact_code]
                 fact = synthetic_fact(
                     patient_id=patient_id,
                     group_id=group_id,
@@ -572,6 +607,13 @@ def _build_documents(
                         if item["fact_code"] in missing_codes
                     ],
                     "clinical_values": clinical_values,
+                    "demographic_consistency": {
+                        "age_years": age_value,
+                        "pregnancy_question_applicable": pregnancy_applicable,
+                        "pregnancy_fact_withheld": (
+                            "pregnancy_or_lactation" in missing_codes
+                        ),
+                    },
                     "sufficient_evidence_episode": {
                         "episode_id": f"{patient_id}:complete",
                         "evidence": [item.model_dump(mode="json") for item in all_facts],
@@ -680,6 +722,10 @@ def _build_documents(
         "protocol_id": config.protocol_id,
         "as_of": config.as_of.isoformat(),
         "synthetic_value_assignment": "declared_profile_value_order",
+        "demographic_consistency_rule": (
+            "Pregnancy or lactation is fixed to false and is not withheld when "
+            "synthetic age is outside the configured reproductive-age interval."
+        ),
         "value_profile_order": list(config.value_profile_order),
         "selected_trial_ids_sha256": selection_hash,
         "patient_count": len(pairs),

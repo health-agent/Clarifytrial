@@ -25,28 +25,28 @@
 <line x1="1002.0" y1="105" x2="1002.0" y2="510" stroke="#EDF1F5" stroke-width="1"/>
 <text x="1002.0" y="540" text-anchor="middle" font-family="Pretendard, Noto Sans KR, Malgun Gothic, Arial, sans-serif" font-size="14" fill="#52606D">5</text>
 <text x="546.0" y="568" text-anchor="middle" font-family="Pretendard, Noto Sans KR, Malgun Gothic, Arial, sans-serif" font-size="15" fill="#34495E">확인할 수 있는 정보 수</text>
-<polyline points="90.0,510.0 272.4,397.5 454.8,300.0 637.2,217.5 819.6,112.5 1002.0,105.0" fill="none" stroke="#8B95A1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="90.0,510.0 272.4,390.0 454.8,270.0 637.2,172.5 819.6,112.5 1002.0,105.0" fill="none" stroke="#8B95A1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
 <circle cx="90.0" cy="510.0" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
-<circle cx="272.4" cy="397.5" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
-<circle cx="454.8" cy="300.0" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
-<circle cx="637.2" cy="217.5" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
+<circle cx="272.4" cy="390.0" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
+<circle cx="454.8" cy="270.0" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
+<circle cx="637.2" cy="172.5" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
 <circle cx="819.6" cy="112.5" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
 <circle cx="1002.0" cy="105.0" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
 <line x1="90" y1="538" x2="116" y2="538" stroke="#8B95A1" stroke-width="4"/>
 <text x="124" y="543" font-family="Pretendard, Noto Sans KR, Malgun Gothic, Arial, sans-serif" font-size="13" fill="#34495E">입력 파일에 적힌 순서</text>
-<polyline points="90.0,510.0 272.4,390.0 454.8,255.0 637.2,157.5 819.6,112.5 1002.0,105.0" fill="none" stroke="#4F6B95" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="90.0,510.0 272.4,367.5 454.8,247.5 637.2,157.5 819.6,112.5 1002.0,105.0" fill="none" stroke="#4F6B95" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
 <circle cx="90.0" cy="510.0" r="5" fill="#F7F9FC" stroke="#4F6B95" stroke-width="3"/>
-<circle cx="272.4" cy="390.0" r="5" fill="#F7F9FC" stroke="#4F6B95" stroke-width="3"/>
-<circle cx="454.8" cy="255.0" r="5" fill="#F7F9FC" stroke="#4F6B95" stroke-width="3"/>
+<circle cx="272.4" cy="367.5" r="5" fill="#F7F9FC" stroke="#4F6B95" stroke-width="3"/>
+<circle cx="454.8" cy="247.5" r="5" fill="#F7F9FC" stroke="#4F6B95" stroke-width="3"/>
 <circle cx="637.2" cy="157.5" r="5" fill="#F7F9FC" stroke="#4F6B95" stroke-width="3"/>
 <circle cx="819.6" cy="112.5" r="5" fill="#F7F9FC" stroke="#4F6B95" stroke-width="3"/>
 <circle cx="1002.0" cy="105.0" r="5" fill="#F7F9FC" stroke="#4F6B95" stroke-width="3"/>
 <line x1="390" y1="538" x2="416" y2="538" stroke="#4F6B95" stroke-width="4"/>
 <text x="424" y="543" font-family="Pretendard, Noto Sans KR, Malgun Gothic, Arial, sans-serif" font-size="13" fill="#34495E">현재 가장 많은 시험에 연결된 정보 우선</text>
-<polyline points="90.0,510.0 272.4,390.0 454.8,255.0 637.2,157.5 819.6,112.5 1002.0,105.0" fill="none" stroke="#173B63" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="90.0,510.0 272.4,367.5 454.8,240.0 637.2,157.5 819.6,112.5 1002.0,105.0" fill="none" stroke="#173B63" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
 <circle cx="90.0" cy="510.0" r="5" fill="#F7F9FC" stroke="#173B63" stroke-width="3"/>
-<circle cx="272.4" cy="390.0" r="5" fill="#F7F9FC" stroke="#173B63" stroke-width="3"/>
-<circle cx="454.8" cy="255.0" r="5" fill="#F7F9FC" stroke="#173B63" stroke-width="3"/>
+<circle cx="272.4" cy="367.5" r="5" fill="#F7F9FC" stroke="#173B63" stroke-width="3"/>
+<circle cx="454.8" cy="240.0" r="5" fill="#F7F9FC" stroke="#173B63" stroke-width="3"/>
 <circle cx="637.2" cy="157.5" r="5" fill="#F7F9FC" stroke="#173B63" stroke-width="3"/>
 <circle cx="819.6" cy="112.5" r="5" fill="#F7F9FC" stroke="#173B63" stroke-width="3"/>
 <circle cx="1002.0" cy="105.0" r="5" fill="#F7F9FC" stroke="#173B63" stroke-width="3"/>

@@ -19,6 +19,10 @@ clarifytrial = "clarifytrial.cli:main"
 codex-subscription = [
     "openai-codex==0.147.0",
 ]
+retrieval-bm25 = [
+    "nltk==3.8.1",
+    "rank-bm25==0.2.2",
+]
 retrieval = [
     "faiss-cpu==1.15.0",
     "nltk==3.8.1",

@@ -1,0 +1,191 @@
+{
+  "protocol_id": "clarifytrial-agent-architecture-comparison-v1",
+  "arm": "clarifytrial",
+  "same_input_files": true,
+  "same_patients": true,
+  "same_evaluation_settings": true,
+  "evaluation_settings": {
+    "split": "heldout",
+    "patient_ids": [
+      "source-mucormycosis-01",
+      "source-mucormycosis-02",
+      "source-mucormycosis-03",
+      "source-mucormycosis-04",
+      "source-mucormycosis-05",
+      "source-bladder_cancer-01",
+      "source-bladder_cancer-02",
+      "source-bladder_cancer-03",
+      "source-bladder_cancer-04",
+      "source-bladder_cancer-05",
+      "source-pulmonary_fibrosis-01",
+      "source-pulmonary_fibrosis-02",
+      "source-pulmonary_fibrosis-03",
+      "source-pulmonary_fibrosis-04",
+      "source-pulmonary_fibrosis-05",
+      "source-acute_pancreatitis-01",
+      "source-acute_pancreatitis-02",
+      "source-acute_pancreatitis-03",
+      "source-acute_pancreatitis-04",
+      "source-acute_pancreatitis-05",
+      "source-graves_disease-01",
+      "source-graves_disease-02",
+      "source-graves_disease-03",
+      "source-graves_disease-04",
+      "source-graves_disease-05"
+    ],
+    "action_budget": 3,
+    "max_selective_reviews": 1,
+    "max_cycles": 12,
+    "include_unavailable_scenario": false,
+    "include_patient_choice_scenario": false,
+    "approve_synthetic_actions": false,
+    "broad_search_top_k": null,
+    "unavailable_answer_selection": null,
+    "arms": [
+      "clarifytrial"
+    ],
+    "inputs": {
+      "trial_set_sha256": "adf8baeb13956efd9f4f5768e5341a7246f756d634dd073e9b275689c39e01b0",
+      "patient_pairs_sha256": "d47283c7dbc27484d1fc2625d86d888331143dea7a0727aae8937ec6f67bdb10",
+      "generation_config_sha256": "f54e63665489a4d71f53d7819d73efd2d232fedc1f583d7158b3735cfb436c33",
+      "broad_corpus_sha256": null
+    }
+  },
+  "evaluation_scope": {
+    "patient_input": "standardized_json",
+    "criteria": "objective_structured_subset",
+    "gold": "frozen_separate_reference_implementation",
+    "measures_complete_trial_eligibility": false
+  },
+  "rows": [
+    {
+      "agent_architecture": "rules_only",
+      "architecture_label": "구조화 규칙만 사용",
+      "model": "deterministic-workflow",
+      "arm": "clarifytrial",
+      "patient_count": 25,
+      "trial_count": 75,
+      "trial_status_recovery": 1.0,
+      "patient_cluster_bootstrap_95_ci": {
+        "lower": 1.0,
+        "upper": 1.0
+      },
+      "confirmed_rescue_count": 36,
+      "rescue_opportunity_count": 36,
+      "false_preservation_resolved_count": 23,
+      "false_preservation_count": 23,
+      "false_candidate_removals": 0,
+      "premature_final_confirmations": 0,
+      "runtime_failure_count": 0,
+      "selective_review_count": 0,
+      "mechanical_model_correction_count": 0,
+      "unrecovered_trial_status_count": 0,
+      "role_execution_count": 105,
+      "external_model_call_count": 0,
+      "total_tokens": 0,
+      "total_latency_ms": 0,
+      "role_usage": {
+        "matcher_judge": {
+          "call_count": 65,
+          "external_call_count": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        },
+        "next_evidence": {
+          "call_count": 40,
+          "external_call_count": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        }
+      }
+    },
+    {
+      "agent_architecture": "single_judge",
+      "architecture_label": "조건 판단 모델만 사용",
+      "model": "gpt-5.6-sol / medium",
+      "arm": "clarifytrial",
+      "patient_count": 25,
+      "trial_count": 75,
+      "trial_status_recovery": 1.0,
+      "patient_cluster_bootstrap_95_ci": {
+        "lower": 1.0,
+        "upper": 1.0
+      },
+      "confirmed_rescue_count": 36,
+      "rescue_opportunity_count": 36,
+      "false_preservation_resolved_count": 23,
+      "false_preservation_count": 23,
+      "false_candidate_removals": 0,
+      "premature_final_confirmations": 0,
+      "runtime_failure_count": 0,
+      "selective_review_count": 0,
+      "mechanical_model_correction_count": 65,
+      "unrecovered_trial_status_count": 0,
+      "role_execution_count": 105,
+      "external_model_call_count": 65,
+      "total_tokens": 1033320,
+      "total_latency_ms": 1480024,
+      "role_usage": {
+        "matcher_judge": {
+          "call_count": 65,
+          "external_call_count": 65,
+          "input_tokens": 971182,
+          "output_tokens": 62138,
+          "total_tokens": 1033320
+        },
+        "next_evidence": {
+          "call_count": 40,
+          "external_call_count": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0
+        }
+      }
+    },
+    {
+      "agent_architecture": "code_routed_agents",
+      "architecture_label": "코드가 순서를 통제하고 필요한 역할만 호출",
+      "model": "gpt-5.6-sol / medium",
+      "arm": "clarifytrial",
+      "patient_count": 25,
+      "trial_count": 75,
+      "trial_status_recovery": 1.0,
+      "patient_cluster_bootstrap_95_ci": {
+        "lower": 1.0,
+        "upper": 1.0
+      },
+      "confirmed_rescue_count": 36,
+      "rescue_opportunity_count": 36,
+      "false_preservation_resolved_count": 23,
+      "false_preservation_count": 23,
+      "false_candidate_removals": 0,
+      "premature_final_confirmations": 0,
+      "runtime_failure_count": 0,
+      "selective_review_count": 0,
+      "mechanical_model_correction_count": 59,
+      "unrecovered_trial_status_count": 0,
+      "role_execution_count": 105,
+      "external_model_call_count": 105,
+      "total_tokens": 1565829,
+      "total_latency_ms": 1797848,
+      "role_usage": {
+        "matcher_judge": {
+          "call_count": 65,
+          "external_call_count": 65,
+          "input_tokens": 971164,
+          "output_tokens": 64287,
+          "total_tokens": 1035451
+        },
+        "next_evidence": {
+          "call_count": 40,
+          "external_call_count": 40,
+          "input_tokens": 525234,
+          "output_tokens": 5144,
+          "total_tokens": 530378
+        }
+      }
+    }
+  ]
+}

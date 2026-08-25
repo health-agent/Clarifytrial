@@ -25,9 +25,9 @@
 <line x1="1002.0" y1="105" x2="1002.0" y2="510" stroke="#EDF1F5" stroke-width="1"/>
 <text x="1002.0" y="540" text-anchor="middle" font-family="Pretendard, Noto Sans KR, Malgun Gothic, Arial, sans-serif" font-size="14" fill="#52606D">5</text>
 <text x="546.0" y="568" text-anchor="middle" font-family="Pretendard, Noto Sans KR, Malgun Gothic, Arial, sans-serif" font-size="15" fill="#34495E">확인할 수 있는 정보 수</text>
-<polyline points="90.0,510.0 272.4,186.0 454.8,105.0 637.2,105.0 819.6,105.0 1002.0,105.0" fill="none" stroke="#8B95A1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="90.0,510.0 272.4,212.2 454.8,105.0 637.2,105.0 819.6,105.0 1002.0,105.0" fill="none" stroke="#8B95A1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
 <circle cx="90.0" cy="510.0" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
-<circle cx="272.4" cy="186.0" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
+<circle cx="272.4" cy="212.2" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
 <circle cx="454.8" cy="105.0" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
 <circle cx="637.2" cy="105.0" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>
 <circle cx="819.6" cy="105.0" r="5" fill="#F7F9FC" stroke="#8B95A1" stroke-width="3"/>

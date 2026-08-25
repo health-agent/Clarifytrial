@@ -237,11 +237,11 @@ def build_research_report(
         broad_search = workflow.get("broad_search_metrics") or {}
         if broad_search:
             workflow_scope = (
-                f"모집 중 시험 {broad_search['corpus_trial_count']}건을 먼저 검색한 뒤, "
-                f"평가 대상으로 정한 시험 {broad_search['target_trial_count']}건 중 "
-                f"{broad_search['retrieved_target_count']}건을 검색 결과 상위 "
-                f"{broad_search['top_k']}개 안에서 찾아 조건 판정과 질문 뒤 "
-                "재판정까지 같은 사례로 실행했다."
+                f"모집 중 시험 {broad_search['corpus_trial_count']}건에서, 미리 정한 "
+                f"서로 다른 평가 시험 {broad_search.get('unique_target_trial_count')}건을 "
+                f"환자별로 반복한 {broad_search.get('target_patient_trial_count')}개 연결을 "
+                f"모두 상위 {broad_search['top_k']}개 안에서 찾았다. 검색된 다른 시험은 "
+                "조건 판정에 넣지 않았으므로 이 부분은 검색 연결 검사다."
             )
             for name in (
                 "target_recall",
@@ -262,9 +262,14 @@ def build_research_report(
                 "재판정을 실행했다. 수천 건에서 후보를 찾는 검색 단계는 "
                 "이 결과에 포함하지 않는다."
             )
+        workflow_heading = (
+            "## 정해진 규칙이 검색부터 재판정까지 이어지는지 확인한 결과"
+            if workflow.get("model") == "deterministic-workflow"
+            else "## 외부 모델을 사용한 질문 뒤 재판정 결과"
+        )
         sections.extend(
             [
-                "## 시험 검색부터 질문 뒤 재판정까지 연결한 결과",
+                workflow_heading,
                 "",
                 f"합성 환자 {workflow['patient_count']}명에게 같은 처음 환자 자료를 주고, 추가 정보를 확인하지 않는 경우와 세 가지 확인 순서를 비교했다. 추가 확인을 사용하는 방법에는 환자 한 명당 최대 {workflow['action_budget']}번의 기회를 줬다. {workflow_scope}",
                 "",
@@ -277,7 +282,7 @@ def build_research_report(
         arm_labels = {
             "no_questions": "추가 정보를 확인하지 않고 처음 환자 자료만 사용",
             "fixed_order": f"처음 빠진 정보 목록에 적힌 순서대로 최대 {workflow['action_budget']}개를 확인",
-            "immediate_coverage": f"현재 가장 많은 미완료 시험에 연결된 정보를 최대 {workflow['action_budget']}개 확인",
+            "immediate_coverage": f"환자 선택을 보지 않고 현재 가장 많은 미완료 시험에 연결된 정보를 최대 {workflow['action_budget']}개 확인",
             "clarifytrial": f"남은 {workflow['action_budget']}번 안에 가장 많은 시험 판단을 끝낼 정보를 매번 다시 계산",
         }
         for row in workflow["arm_metrics"]:
@@ -372,6 +377,61 @@ def build_research_report(
                     f"{current_rescue['confirmed_rescue_count']}개를 실제 후보로 확정했다.",
                 ]
             )
+            uncertainty = current_rescue.get("cluster_uncertainty")
+            if isinstance(uncertainty, dict):
+                uncertainty_rows = [
+                    (
+                        "최종 상태 일치",
+                        current_rescue["trial_status_recovery"],
+                        uncertainty.get("trial_status_recovery"),
+                    ),
+                    (
+                        "실제 후보 확정",
+                        current_rescue["confirmed_rescue_rate"],
+                        uncertainty.get("confirmed_rescue_rate"),
+                    ),
+                    (
+                        "제외 후보 정리",
+                        current_rescue["false_preservation_resolution_rate"],
+                        uncertainty.get("false_preservation_resolution_rate"),
+                    ),
+                ]
+                if all(isinstance(item[2], dict) for item in uncertainty_rows):
+                    sections.extend(
+                        [
+                            "",
+                            "### 같은 환자에서 나온 시험 판단을 묶어 본 결과 범위",
+                            "",
+                            "한 환자에게 연결된 여러 시험을 서로 독립인 사례로 세지 않았다. 환자를 단위로 2,000번 다시 뽑아 95% 범위를 계산하고 질환별 결과 범위도 함께 표시했다.",
+                            "",
+                            "| 지표 | 결과 | 환자 단위 95% 범위 | 질환별 범위 |",
+                            "|---|---:|---:|---:|",
+                        ]
+                    )
+                    for label, value, detail in uncertainty_rows:
+                        interval = detail["bootstrap_95_ci"]
+                        group_range = detail["disease_group_rate_range"]
+                        sections.append(
+                            f"| {label} | {value:.1%} | "
+                            f"{interval['lower']:.1%}~{interval['upper']:.1%} | "
+                            f"{group_range['minimum']:.1%}~{group_range['maximum']:.1%} |"
+                        )
+                        metric_rows.extend(
+                            [
+                                {
+                                    "section": "patient_cluster_uncertainty",
+                                    "arm": "clarifytrial",
+                                    "metric": f"{label}_bootstrap_95_lower",
+                                    "value": interval["lower"],
+                                },
+                                {
+                                    "section": "patient_cluster_uncertainty",
+                                    "arm": "clarifytrial",
+                                    "metric": f"{label}_bootstrap_95_upper",
+                                    "value": interval["upper"],
+                                },
+                            ]
+                        )
         sections.extend(
             [
                 "",
@@ -544,10 +604,15 @@ def build_research_report(
                 "토큰 사용량은 0이다."
             )
         else:
+            correction_count = sum(
+                row.get("mechanical_model_correction_count", 0)
+                for row in workflow["arm_metrics"]
+            )
             workflow_execution_note = (
                 "이 실행은 외부 언어모델을 사용했다. 표의 단계 실행 횟수는 조건 판단과 "
                 "질문 작성 과정이 몇 번 작동했는지를 센 값이며, 토큰 수는 실행 기록에 "
-                "저장된 입력·출력 사용량의 합이다."
+                f"저장된 입력·출력 사용량의 합이다. 구조화된 수치·날짜 규칙과 다른 모델 "
+                f"판단은 코드가 {correction_count}건 바로잡았다."
             )
         sections.extend(["", workflow_execution_note, ""])
 

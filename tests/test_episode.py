@@ -254,7 +254,7 @@ def test_stale_lab_is_retained_then_confirmed_after_official_result() -> None:
     )
 
 
-def test_selective_reviewer_is_called_once_for_a_structural_defect() -> None:
+def test_code_authoritative_criterion_does_not_review_model_only_flag() -> None:
     case = _case(with_request=False)
 
     def coordinate(payload: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -305,11 +305,11 @@ def test_selective_reviewer_is_called_once_for_a_structural_defect() -> None:
     ).run(case, _tools())
 
     assert result.stop_reason is EpisodeStopReason.NO_PENDING_INFORMATION
-    assert len(result.review_history) == 1
+    assert len(result.review_history) == 0
     review_flags = result.decision_history[0].criterion_assessments[0].review_flags
-    assert [flag.value for flag in review_flags] == ["unsupported_rationale"]
+    assert review_flags == []
     assert not result.final_decision.review_required
-    assert model.call_count["selective_reviewer"] == 1
+    assert model.call_count.get("selective_reviewer", 0) == 0
 
 
 def test_numeric_code_result_replaces_a_conflicting_model_answer() -> None:

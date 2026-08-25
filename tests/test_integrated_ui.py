@@ -256,7 +256,7 @@ def test_terminal_renderer_shows_every_stage_without_private_reasoning(
     assert "전체 15개 중 후보 5개" in text
     assert "시험의 모든 참가 조건을 옮긴 자료는 아닙니다" in text
     assert "진행 관리:" in text
-    assert "검색·판단:" in text
+    assert "조건 판단:" in text
     assert "판정 변화 요약" in text
     assert "전체: 2회, 1,234토큰" in text
     assert "chain of thought" not in text.casefold()
@@ -348,6 +348,7 @@ def test_full_ui_live_model_requires_confirmation() -> None:
 
 def test_full_ui_default_runs_offline_on_current_public_dataset(
     tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
     exit_code = main(
         [
@@ -362,3 +363,7 @@ def test_full_ui_default_runs_offline_on_current_public_dataset(
     result = (tmp_path / "result.json").read_text(encoding="utf-8")
     assert '"run_mode": "integrated_terminal_ui_synthetic_evaluation"' in result
     assert '"patient_id": "source-chronic_pancreatitis-04"' in result
+    output = capsys.readouterr().out
+    assert "코드 역할 단계" in output
+    assert "외부 모델 호출: 0회, 0토큰" in output
+    assert "모델 호출\n" not in output

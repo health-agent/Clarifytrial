@@ -254,4 +254,8 @@ def test_broad_search_and_downstream_decisions_use_the_same_patient(
     assert broad["target_trial_count"] == 5
     assert broad["retrieved_target_count"] == 5
     assert broad["target_recall"] == 1.0
+    assert broad["unique_target_trial_count"] == 5
+    assert broad["unique_retrieved_target_trial_count"] == 5
+    assert broad["screens_retrieved_distractors"] is False
     assert result["evaluation_scope"]["includes_broad_corpus_search"] is True
+    assert result["evaluation_scope"]["screens_all_retrieved_candidates"] is False

@@ -93,10 +93,14 @@ def test_broad_case_runs_connected_rescue_metrics_and_readiness_report(
         approve_synthetic_actions=True,
         progress=lambda _: None,
     )
-    assert summary["protocol_id"] == "clarifytrial-full-workflow-evaluation-v3"
+    assert summary["protocol_id"] == "clarifytrial-full-workflow-evaluation-v4"
+    assert summary["agent_architecture"] == "rules_only"
     current = next(
         item for item in summary["arm_metrics"] if item["arm"] == "clarifytrial"
     )
+    uncertainty = current["cluster_uncertainty"]["trial_status_recovery"]
+    assert uncertainty["cluster_unit"] == "patient"
+    assert uncertainty["disease_group_count"] == 10
     assert current["rescue_opportunity_count"] > 0
     assert current["candidate_preservation_count"] == current[
         "rescue_opportunity_count"
@@ -129,9 +133,9 @@ def test_broad_case_runs_connected_rescue_metrics_and_readiness_report(
         workflow_summary_path=workflow_dir / "summary.json",
         output_dir=tmp_path / "readiness",
     )
-    assert readiness["software_ready_for_source_anchored_evaluation"] is False
-    assert readiness["final_performance_claim_ready"] is False
+    assert readiness["software_ready_for_external_model_evaluation"] is False
+    assert readiness["independent_performance_claim_ready"] is False
     failed_gate_ids = {
         item["gate_id"] for item in readiness["gates"] if not item["passed"]
     }
-    assert failed_gate_ids == {"G6", "G7", "G8"}
+    assert failed_gate_ids == {"G6", "G7", "G8", "G9"}
