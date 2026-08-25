@@ -125,7 +125,7 @@ def test_broad_case_runs_connected_rescue_metrics_and_readiness_report(
         workflow_path=workflow_dir / "summary.json",
     )
     report_text = Path(report["report"]).read_text(encoding="utf-8")
-    assert "추가 확인 후보를 보존하고 실제 후보로 되돌린 결과" in report_text
+    assert "처음에는 보이지 않던 실제 후보를 추가 확인으로 확정한 결과" in report_text
 
     readiness = build_final_evaluation_readiness(
         trial_set_path=paths["trial_set"],

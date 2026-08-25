@@ -186,10 +186,10 @@ def build_final_evaluation_readiness(
         ),
         _gate(
             "G3",
-            "후보 보존과 실제 회복을 따로 측정할 수 있는가",
+            "처음에는 정보가 부족했던 실제 후보의 보존과 최종 확정을 따로 측정할 수 있는가",
             rescue_is_measurable,
             (
-                f"되살릴 수 있었던 후보 {current.get('rescue_opportunity_count')}개, "
+                f"처음에는 추가 확인이 필요했던 실제 후보 {current.get('rescue_opportunity_count')}개, "
                 f"실제 확정 {current.get('confirmed_rescue_count')}개, 결국 제외될 "
                 f"후보 정리 {current.get('false_preservation_resolved_count')}개"
             ),

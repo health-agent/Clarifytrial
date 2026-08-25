@@ -249,7 +249,7 @@ def build_budget_frontier(
     atomic_write_text(
         destination / "false-preservation-cleanup-by-budget.svg",
         _line_svg(
-            title="확인 횟수에 따른 불필요한 후보 정리",
+            title="확인 횟수에 따른 부적합 후보 제외",
             subtitle="처음에는 후보로 남았지만 가상 환자 전체 상태에서는 제외되는 시험",
             rows=rows,
             metric="false_preservation_resolution_rate",
@@ -257,7 +257,7 @@ def build_budget_frontier(
     )
 
     lines = [
-        "# 확인 횟수에 따른 후보 회복과 정리",
+        "# 확인 횟수에 따른 실제 후보 확정과 부적합 후보 제외",
         "",
         (
             "같은 환자와 시험에 확인 기회를 0회부터 늘려 가며, 실제 참가 가능 "
@@ -288,7 +288,7 @@ def build_budget_frontier(
             "",
             "![실제 후보 확정](candidate-rescue-by-budget.svg)",
             "",
-            "![불필요한 후보 정리](false-preservation-cleanup-by-budget.svg)",
+            "![부적합 후보 제외](false-preservation-cleanup-by-budget.svg)",
             "",
         ]
     )

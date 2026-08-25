@@ -1,51 +1,86 @@
-# 에이전트 프롬프트
+# 언어모델 지시문
 
-이 폴더에는 ClarifyTrial v5 실행 중 모델에 전달하는 역할별 지시문을 둔다. 각
-지시문은 역할, 입력, 허용 도구, 반드시 지킬 규칙과 출력의 같은 순서로 작성한다.
-연구자는 파일과 출력 자료형을 함께 읽어 모델이 받은 정보와 맡은 판단 범위를 확인할
-수 있다.
+이 폴더에는 언어모델을 부를 때 사용하는 역할별 지시문이 있다. 정해진 형식의 JSON을
+코드로 실행하는 기본 경로에서는 외부 모델을 부르지 않는다. 자유 문장 해석이나 코드로
+계산할 수 없는 조건이 있을 때만 필요한 지시문을 사용한다.
 
-| 파일 | 맡은 일 | 출력 |
+지시문마다 다음 내용을 분명히 적는다.
+
+- 모델이 맡은 일
+- 모델이 받는 정보
+- 사용할 수 있는 도구
+- 바꾸면 안 되는 값과 근거
+- 반환할 JSON 형식
+
+표의 `출력 형식`은 코드에 정의된 JSON 구조의 이름이다.
+
+## 1. 현재 전체 실행에서 선택적으로 쓰는 지시문
+
+| 파일 | 모델이 맡는 일 | 출력 형식 |
 |---|---|---|
-| [coordinator.md](coordinator.md) | 현재 상태와 남은 횟수를 보고 다음 단계 하나를 선택 | `CoordinatorDecision` |
-| [matcher_judge.md](matcher_judge.md) | 환자 사실과 한 시험의 관련 조건 묶음을 연결해 조건 상태와 자료 충분성을 판단 | `CriterionAssessmentBatch` |
-| [next_evidence.md](next_evidence.md) | 부족한 사실 하나와 확인 경로 하나를 선택 | `AgentAction` |
-| [selective_reviewer.md](selective_reviewer.md) | 표시된 중요 결론을 원문으로 독립 검사 | `ReviewDecision` |
-| [trialgpt_criterion_judge.md](trialgpt_criterion_judge.md) | TrialGPT 예비실행에서 한 환자-시험 조합의 선정 또는 제외 조건을 묶어 판정 | `TrialGPTPredictionBatch` |
-| [trialgpt_criterion_judge_faithful.md](trialgpt_criterion_judge_faithful.md) | 공식 TrialGPT의 조건 판단 순서와 기록 부재 처리 원칙을 재현 | 요청에 지정된 구조화 자료형 |
-| [trialgpt_criterion_judge_calibrated.md](trialgpt_criterion_judge_calibrated.md) | 실제 정보 부족과 기록 부재 추론을 네 단계 기준으로 구분 | 요청에 지정된 구조화 자료형 |
-| [trialgpt_criterion_judge_balanced.md](trialgpt_criterion_judge_balanced.md) | 제외 조건의 기록 부재와 선정 조건의 미확인을 비대칭으로 처리하고 수치·기간 예외를 보존 | 요청에 지정된 구조화 자료형 |
-| [trialgpt_criterion_reviewer.md](trialgpt_criterion_reviewer.md) | 최초 정보 부족 판정만 기존 근거로 제한 재검토 | 요청에 지정된 구조화 자료형 |
-| [trialgpt_architecture_single.md](trialgpt_architecture_single.md) | Sol 구조 비교의 강한 단일 판단 | `ArchitectureSingleResponse` |
-| [trialgpt_architecture_matcher_judge_v2.md](trialgpt_architecture_matcher_judge_v2.md) | Sol 구조 비교에서 근거와 조건 상태 판단 | `ArchitectureMatcherResponse` |
-| [trialgpt_architecture_reviewer_v2.md](trialgpt_architecture_reviewer_v2.md) | 최초 정보 부족 조건만 다시 판단 | `ArchitectureReviewerResponse` |
-| [trialgpt_strong_single_v1.md](trialgpt_strong_single_v1.md) | 선정·제외를 나누어 가장 강한 규칙으로 한 번 판단 | `ArchitectureMatcherResponse` |
-| [trialgpt_strong_reviewer_no_web_v1.md](trialgpt_strong_reviewer_no_web_v1.md) | 강한 단일 판단의 정보 부족 결과만 같은 자료로 재검토 | `ArchitectureReviewerResponse` |
-| [trialgpt_strong_reviewer_web_v1.md](trialgpt_strong_reviewer_web_v1.md) | 일반 의학 개념 검색을 허용해 같은 결과를 재검토 | `ArchitectureReviewerResponse` |
-| [trialgpt_strong_reviewer_no_web_v2.md](trialgpt_strong_reviewer_no_web_v2.md) | 최초 판단이 경계 사례로 표시한 정보 부족만 집중 재검토 | `ArchitectureReviewerResponse` |
-| [trialgpt_strong_reviewer_web_v2.md](trialgpt_strong_reviewer_web_v2.md) | 같은 경계 사례에서 일반 의학 검색을 실제 사용해 재검토 | `ArchitectureReviewerResponse` |
-| [interactive_question_selector.md](interactive_question_selector.md) | 여러 후보 임상시험 중 현재 판정을 가장 많이 진전시킬 확인 항목 하나를 선택 | `AgentAction` |
-| [natural_criterion_ai_review.md](natural_criterion_ai_review.md) | 새 공개 시험 원문에서 객관적으로 옮길 수 있는 조건의 AI 예비 초안 작성 | `AiCriterionReviewBatch` |
-| [natural_criterion_ai_audit.md](natural_criterion_ai_audit.md) | 초안을 원문과 다시 대조하고 조건 방향·수치·복합 관계를 보수적으로 재검토 | `AiCriterionReviewBatch` |
-| [natural_evaluation_record_extractor.md](natural_evaluation_record_extractor.md) | 합성 환자 기록에서 값·단위·자료 출처·확인 상태를 읽음 | `ExtractedNaturalRecord` |
+| [patient_record_structurer.md](patient_record_structurer.md) | 자유 문장 환자 기록에서 검색 질환, 환자 사실과 근거 문구를 정리 | `PreparedPatientRecord` |
+| [trial_protocol_structurer.md](trial_protocol_structurer.md) | 시험 원문에서 선정·제외 조건과 필요한 환자 사실을 정리 | `PreparedTrialProtocol` |
+| [matcher_judge.md](matcher_judge.md) | 코드로 계산할 수 없는 조건의 상태와 현재 자료의 충분성을 판단 | `CriterionAssessmentBatch` |
+| [next_evidence.md](next_evidence.md) | 코드가 고른 사실과 확인 방법을 사람이 읽을 질문이나 요청문으로 작성 | `AgentAction` |
+| [selective_reviewer.md](selective_reviewer.md) | 실제 근거 충돌이나 구조화하지 못한 중요 조건을 원문과 대조 | `ReviewDecision` |
 
-## 같은 모델을 사용할 때의 기록 분리
+`next_evidence.md`는 질문 대상을 새로 고르는 지시문이 아니다. 코드가 이미 고른 사실과
+방법을 자연스러운 문장으로 바꾸며, 다른 사실을 선택하면 출력이 거부된다.
 
-네 역할이 같은 모델을 사용하더라도 하나의 대화방을 이어 쓰지 않는다. 호출마다 해당
-역할의 지시문과 필요한 구조화 입력만 새로 전달한다. 다른 역할의 대화 기록, 자유
-형식 설명과 숨은 사고 과정은 다음 역할의 입력이 아니다.
+## 2. 비교 실험에만 쓰는 지시문
 
-환자 사실, 후보 목록, 조건 판단, 부족한 정보, 남은 행동 횟수와 검토 결과는 모델의
-대화 기억이 아니라 코드가 관리하는 공통 상태에 저장한다. 진행 관리는 그 상태의
-요약만 보고 다음 단계를 고른다. 따라서 같은 모델을 여러 번 호출해도 각 판단의 입력,
-출력과 책임 범위를 실행 기록에서 따로 확인할 수 있다.
+| 파일 | 실험 목적 |
+|---|---|
+| [coordinator.md](coordinator.md) | 코드 진행 관리 대신 모델이 다음 단계를 고르는 비교 |
+| [interactive_question_selector.md](interactive_question_selector.md) | 정보 선택 규칙 대신 모델이 다음 확인을 고르는 비교 |
 
-## 공통 원칙
+현재 기본 실행에서는 진행 순서와 다음 정보를 코드가 고른다. 위 지시문은 모델 진행
+관리의 비용과 결과를 비교할 때만 사용한다.
 
-- 모델은 입력에 없는 환자 사실이나 근거 식별자를 만들지 않는다.
-- 최종 후보 유지와 현재 확인은 조건별 출력에서 코드가 집계한다.
-- 날짜·수치·단위와 행동 횟수는 코드가 검사한다.
-- 합성 사례의 숨은 답과 평가 정답은 어떤 프롬프트에도 전달하지 않는다.
-- 출력은 지정된 자료형만 사용하며 객체 밖의 자유 형식 설명은 저장하지 않는다.
-- 역할을 인격처럼 설정하거나 에이전트 사이의 자유 토론을 요구하지 않는다.
-- 내부 사고 과정을 요구하거나 실행 기록에 저장하지 않는다.
+## 3. 평가자료 준비 지시문
+
+| 파일 | 용도 |
+|---|---|
+| [natural_criterion_ai_review.md](natural_criterion_ai_review.md) | 공개 시험 원문에서 객관적으로 구조화할 수 있는 조건의 예비 초안 작성 |
+| [natural_criterion_ai_audit.md](natural_criterion_ai_audit.md) | 초안을 원문과 대조해 방향, 수치와 복합 관계 재검사 |
+| [natural_evaluation_record_extractor.md](natural_evaluation_record_extractor.md) | 합성 자유 문장 기록에서 값, 단위, 자료 출처와 확인 상태 읽기 |
+
+이 지시문으로 만든 조건은 평가자료 제작 단계의 입력이다. 언어모델이 만든 답을 그대로
+최종 성능 정답으로 사용하지 않는다.
+
+## 4. TrialGPT 조건 판단 예비실험 지시문
+
+다음 파일은 질문 전 한 번의 조건 판단과 반복 검토 방식을 비교한 과거 예비실험에
+사용했다. 현재 전체 실행의 기본 지시문은 아니다.
+
+| 파일 묶음 | 비교한 내용 |
+|---|---|
+| `trialgpt_criterion_judge*.md` | 기록 부재, 선정 조건과 제외 조건의 답 이름을 다르게 처리한 여러 판정 규칙 |
+| `trialgpt_criterion_reviewer.md` | 첫 판단에서 정보 부족으로 남긴 조건의 제한된 재검토 |
+| `trialgpt_architecture_*.md` | 단일 판단, 역할 분리와 검토 호출 구조 비교 |
+| `trialgpt_strong_single_v1.md` | 개발 단계에서 가장 나았던 한 번 판단 규칙 |
+| `trialgpt_strong_reviewer_no_web_*.md` | 외부 검색 없이 경계 사례 재검토 |
+| `trialgpt_strong_reviewer_web_*.md` | 일반 의학 검색을 허용한 경계 사례 재검토 |
+
+예비실험 결과는 [검증 결과](../docs/internal/CLARIFYTRIAL_VALIDATION_RESULTS.md)의
+`질문 전 한 번의 조건 판단`에서 요약한다.
+
+## 5. 역할 사이의 정보 전달
+
+같은 모델을 여러 역할에 사용해도 하나의 대화를 이어 쓰지 않는다. 호출마다 그 역할에
+필요한 지시문과 입력만 새로 보낸다. 다른 역할의 대화 내용이나 숨은 사고 과정은 다음
+역할에 전달하지 않는다.
+
+환자 사실, 후보 목록, 조건 판단, 부족 정보, 남은 확인 횟수와 검토 결과는 모델 기억이
+아니라 코드가 관리하는 상태에 저장한다. 실행 기록에는 역할 이름, 입력 식별자, 구조화
+출력, 호출 시간, 토큰과 오류를 따로 남긴다.
+
+## 6. 모든 지시문이 지켜야 하는 규칙
+
+- 입력에 없는 환자 사실이나 근거 식별자를 만들지 않는다.
+- 합성 사례의 숨긴 답과 평가 정답을 모델 입력에 넣지 않는다.
+- 날짜, 수치, 단위와 확인 횟수는 코드가 다시 검사한다.
+- 후보 유지 여부와 현재 자료의 충분성은 조건별 결과에서 코드가 집계한다.
+- 지정된 JSON 형식 밖의 설명은 실행 결과로 사용하지 않는다.
+- 역할을 인격처럼 설정하거나 역할 사이의 자유 토론을 요구하지 않는다.
+- 내부 사고 과정을 요구하거나 저장하지 않는다.

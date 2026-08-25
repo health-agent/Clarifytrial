@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1040" height="590" viewBox="0 0 1040 590">
 <rect width="100%" height="100%" rx="18" fill="#F7F9FC"/>
-<text x="90" y="42" font-family="Pretendard, Noto Sans KR, Malgun Gothic, Arial, sans-serif" font-size="25" font-weight="700" fill="#152536">확인 횟수에 따른 불필요한 후보 정리</text>
+<text x="90" y="42" font-family="Pretendard, Noto Sans KR, Malgun Gothic, Arial, sans-serif" font-size="25" font-weight="700" fill="#152536">확인 횟수에 따른 부적합 후보 제외</text>
 <text x="90" y="70" font-family="Pretendard, Noto Sans KR, Malgun Gothic, Arial, sans-serif" font-size="15" fill="#52606D">처음에는 후보로 남았지만 가상 환자 전체 상태에서는 제외되는 시험</text>
 <line x1="90" y1="510.0" x2="1002" y2="510.0" stroke="#DCE3EA" stroke-width="1"/>
 <text x="76" y="515.0" text-anchor="end" font-family="Pretendard, Noto Sans KR, Malgun Gothic, Arial, sans-serif" font-size="13" fill="#697887">0%</text>

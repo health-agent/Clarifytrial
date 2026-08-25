@@ -79,7 +79,7 @@ def svg_document(height: int, body: list[str], title_value: str) -> str:
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{height}" '
             f'viewBox="0 0 {WIDTH} {height}" role="img" aria-labelledby="title desc">',
             f"<title id=\"title\">{escape(title_value)}</title>",
-            '<desc id="desc">ClarifyTrial 연구 결과를 보여 주는 코드 기반 그림</desc>',
+            f'<desc id="desc">ClarifyTrial {escape(title_value)}</desc>',
             f'<rect width="{WIDTH}" height="{height}" fill="{BACKGROUND}"/>',
             *body,
             "</svg>",
@@ -89,9 +89,9 @@ def svg_document(height: int, body: list[str], title_value: str) -> str:
 
 
 def render_question_policy_results() -> str:
-    height = 700
+    height = 760
     body = [
-        text(70, 82, "질문 세 번 안에 판단을 끝낸 시험", size=36, weight=700),
+        text(70, 82, "추가 정보를 최대 세 번 확인한 뒤 최종 상태가 맞은 시험", size=34, weight=700),
         text(
             70,
             124,
@@ -99,18 +99,19 @@ def render_question_policy_results() -> str:
             size=20,
             fill=MUTED,
         ),
-        rect(55, 165, 1090, 450),
+        rect(55, 165, 1090, 500),
     ]
 
     rows = [
-        ("추가 정보를 확인하지 않고\n처음 환자 자료만 사용", 42, False),
-        ("처음 빠진 정보 목록의 앞 3개를\n적힌 순서대로 확인", 66, False),
-        ("3번 안에 가장 많은 시험 판단을 끝낼\n정보 조합을 계산", 77, True),
+        ("추가 정보를 확인하지 않고\n처음 환자 자료만 사용", 18.7, False),
+        ("입력 파일에 적힌 순서대로\n최대 3개를 확인", 94.0, False),
+        ("현재 가장 많은 미완료 시험에\n연결된 정보부터 확인", 95.3, False),
+        ("남은 3번 안에 사용할 정보 조합을\n매번 다시 계산", 95.3, True),
     ]
-    bar_x = 590
-    max_width = 450
+    bar_x = 610
+    max_width = 420
     for index, (label, value, current) in enumerate(rows):
-        y = 220 + index * 92
+        y = 205 + index * 100
         body.append(
             multiline(
                 95,
@@ -136,7 +137,7 @@ def render_question_policy_results() -> str:
             text(
                 bar_x + round(max_width * value / 100) - 14,
                 y + 32,
-                f"{value}%",
+                f"{value:.1f}%",
                 size=21,
                 weight=700,
                 fill="#FFFFFF",
@@ -146,11 +147,11 @@ def render_question_policy_results() -> str:
 
     body.extend(
         [
-            text(70, 659, "해석", size=19, weight=700, fill=BLUE),
+            text(70, 716, "결과", size=19, weight=700, fill=BLUE),
             text(
                 132,
-                659,
-                "판단 완료: 질문 없음 63개 · 입력 순서 99개 · 현재 방법 115개",
+                716,
+                "28개 · 141개 · 143개 · 143개. 마지막 두 방법의 최종 결과는 같았다.",
                 size=19,
             ),
         ]
@@ -161,11 +162,11 @@ def render_question_policy_results() -> str:
 def render_patient_burden_results() -> str:
     height = 720
     body = [
-        text(70, 82, "새 검사·추가 방문을 피해야 할 때 확인 방법 선택 결과", size=36, weight=700),
+        text(70, 82, "이동·비용 제한이 있을 때 확인 방법 선택 결과", size=36, weight=700),
         text(
             70,
             124,
-            "개발에 쓰지 않은 합성 환자의 이동·비용 제한 상황 80회",
+            "합성 환자·자료 상황 360개 · 확인 방법 선택 1,800회",
             size=20,
             fill=MUTED,
         ),
@@ -174,7 +175,7 @@ def render_patient_burden_results() -> str:
         multiline(
             90,
             220,
-            ["환자가 실제로 이용할 수 있는 방법만 사용해", "판단을 끝낸 시험"],
+            ["입력된 이동·비용 제한을 지키면서", "최종 판단까지 끝낸 시험 비율"],
             size=21,
             weight=650,
             line_height=34,
@@ -234,12 +235,16 @@ def render_patient_burden_results() -> str:
 
     body.extend(
         [
-            text(70, 665, "0회의 뜻", size=19, weight=700, fill=BLUE),
-            text(
-                165,
-                665,
-                "환자 제한을 반영한 방식은 기존 기록·환자 답변을 먼저 쓰고, 다른 방법이 없으면 판단을 보류했다.",
-                size=19,
+            text(70, 665, "제안이 0회였던 이유", size=19, weight=700, fill=BLUE),
+            multiline(
+                265,
+                657,
+                [
+                    "기존 기록과 환자 답변을 먼저 사용했고,",
+                    "허용된 방법이 없으면 판단을 보류했다.",
+                ],
+                size=17,
+                line_height=24,
             ),
         ]
     )
@@ -265,7 +270,7 @@ def render_representative_case() -> str:
     steps = [
         (155, "시작", ["2 / 5", "판단 완료"]),
         (450, "1. 나이 확인", ["3 / 5", "판단 완료"]),
-        (745, "2. 보정 혈청 칼슘 확인", ["4 / 5", "판단 완료"]),
+        (745, "2. 알부민 보정 혈중 칼슘 확인", ["4 / 5", "판단 완료"]),
         (1040, "3. 이전 전신치료 횟수 확인", ["5 / 5", "판단 완료"]),
     ]
     for index, (x, label, values) in enumerate(steps):
@@ -290,7 +295,7 @@ def render_representative_case() -> str:
             text(
                 165,
                 693,
-                "한 항목이 몇 개 시험에 닿는지만 보지 않고, 남은 횟수 안에 끝낼 수 있는 시험 수를 계산했다.",
+                "한 정보를 확인했을 때 바뀌는 시험 수와, 남은 횟수 안에 끝낼 수 있는 시험 수를 함께 계산했다.",
                 size=19,
             ),
             text(

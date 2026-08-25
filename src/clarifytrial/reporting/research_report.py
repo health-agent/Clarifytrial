@@ -107,7 +107,7 @@ def build_research_report(
         "# ClarifyTrial 실험 결과: 부족한 환자 정보를 어떤 순서와 방법으로 확인했는가",
         "",
         "평가 대상은 부족한 환자 정보의 확인 순서, 환자의 이동·비용·시간 제한에 따른 확인 방법, 질문 뒤 끝난 임상시험 판단이다.",
-        "수치 출처는 저장된 평가 JSON이다.",
+        "모든 수치는 실행이 끝난 뒤 저장된 결과 파일에서 계산했다.",
         "",
     ]
 
@@ -196,8 +196,8 @@ def build_research_report(
             )
         (output / "patient-burden.svg").write_text(
             _bar_svg(
-                "환자가 이용할 수 있는 방법만 사용해 판단을 끝낸 시험",
-                "이동·비용 부담 때문에 새 검사나 추가 방문을 피해야 하는 합성 상황",
+                "환자 제한을 지키면서 최종 판단까지 끝낸 시험",
+                "이동·비용 제한이 있거나 새 검사·추가 방문을 피해야 하는 합성 상황",
                 [
                     (
                         "모든 환자에게 같은 비용표를 적용해\n확인 방법을 선택",
@@ -220,7 +220,7 @@ def build_research_report(
                 "| 무엇을 측정했는가 | 모든 환자에게 같은 비용표를 적용해 확인 방법을 선택 | 환자의 이동·비용·시간 제한을 반영해 확인 방법을 선택 |",
                 "|---|---:|---:|",
                 f"| 이동·비용 제한이 없는 상황까지 모두 합쳤을 때 판단을 끝낸 시험 비율 | {comparison['baseline_recovery']:.1%} | {comparison['candidate_recovery']:.1%} |",
-                f"| 환자가 실제로 이용할 수 있는 방법만 사용해 판단을 끝낸 시험 비율 | {comparison['constrained_baseline_feasible_recovery']:.1%} | {comparison['constrained_candidate_feasible_recovery']:.1%} |",
+                f"| 이동·비용 제한이 있는 합성 환자에게 허용된 확인 방법만 사용하고도 최종 판단까지 끝낸 시험 비율 | {comparison['constrained_baseline_feasible_recovery']:.1%} | {comparison['constrained_candidate_feasible_recovery']:.1%} |",
                 f"| 환자가 새 검사나 추가 방문을 피해야 한다고 입력했는데도 그런 방법을 선택한 횟수 | {comparison['constrained_new_test_visit_baseline']}회 | {comparison['constrained_new_test_visit_candidate']}회 |",
                 f"| 시간이 급하다고 입력한 환자에게 선택한 확인 방법의 예상 대기시간 합계 | {comparison['urgent_mean_delay_baseline']:.2f}시간 | {comparison['urgent_mean_delay_candidate']:.2f}시간 |",
                 "",
@@ -263,7 +263,7 @@ def build_research_report(
                 "이 결과에 포함하지 않는다."
             )
         workflow_heading = (
-            "## 정해진 규칙이 검색부터 재판정까지 이어지는지 확인한 결과"
+            "## 검색부터 질문 뒤 재판정까지 전체 프로그램을 점검한 결과"
             if workflow.get("model") == "deterministic-workflow"
             else "## 외부 모델을 사용한 질문 뒤 재판정 결과"
         )
@@ -313,11 +313,11 @@ def build_research_report(
             sections.extend(
                 [
                     "",
-                    "### 추가 확인 후보를 보존하고 실제 후보로 되돌린 결과",
+                    "### 처음에는 보이지 않던 실제 후보를 추가 확인으로 확정한 결과",
                     "",
-                    "처음 화면에서 현재 확인이 끝난 시험만 보여 주면 보이지 않을 시험 가운데, 가상 환자를 만들 때 정해 둔 전체 상태에서 실제 참가 가능 후보였던 경우를 `되살릴 수 있었던 후보`로 계산했다. 반대로 처음에는 후보로 남았지만 전체 상태에서는 제외되는 시험도 따로 셌다.",
+                    "처음 화면에서 현재 확인이 끝난 시험만 보여 주면 보이지 않지만, 가상 환자의 숨겨 둔 전체 상태에서는 참가 가능한 시험을 따로 셌다. 반대로 처음에는 정보 부족으로 후보에 남았지만 전체 상태에서는 제외되는 시험도 함께 계산했다.",
                     "",
-                    "| 부족한 정보를 처리한 방법 | 되살릴 수 있었던 후보 | 추가 확인 후보로 보존 | 질문 뒤 실제 후보로 확정 | 결국 제외될 후보를 처음에 보존 | 질문 뒤 제외로 정리 | 새 검사·추가 방문 |",
+                    "| 부족한 정보를 처리한 방법 | 처음에는 보이지 않던 실제 후보 | 추가 확인 후보로 보존 | 질문 뒤 실제 후보로 확정 | 처음에는 정보 부족으로 남은 부적합 후보 | 질문 뒤 제외 | 새 검사·추가 방문 |",
                     "|---|---:|---:|---:|---:|---:|---:|",
                 ]
             )
@@ -509,7 +509,7 @@ def build_research_report(
                     "",
                     "### 질환별 판단 완료",
                     "",
-                    "| 합성 환자 질환 | 현재 영향이 큰 정보부터 확인 | 남은 횟수 전체를 계산 |",
+                    "| 합성 환자 질환 | 현재 가장 많은 미완료 시험에 연결된 정보부터 확인 | 남은 확인 횟수 전체를 계산 |",
                     "|---|---:|---:|",
                 ]
             )
@@ -592,7 +592,7 @@ def build_research_report(
                     f"| 새 검사를 허용 | {normal_current['confirmed_rescue_count']}/{normal_current['rescue_opportunity_count']}개 | {normal_current['false_preservation_resolved_count']}/{normal_current['false_preservation_count']}개 | {normal_current['new_test_count']}회 | {normal_current['additional_visit_count']}회 |",
                     f"| 새 검사와 추가 방문을 거절 | {declined_current['confirmed_rescue_count']}/{declined_current['rescue_opportunity_count']}개 | {declined_current['false_preservation_resolved_count']}/{declined_current['false_preservation_count']}개 | {declined_current['new_test_count']}회 | {declined_current['additional_visit_count']}회 |",
                     "",
-                    "환자가 허용하지 않은 확인 방법을 사용해 회복률을 높이지 않는다. 확인하지 못한 정보가 남아 실제 후보 확정 수가 낮아질 수 있으므로 두 결과를 함께 표시한다.",
+                    "환자가 허용하지 않은 확인 방법으로 실제 후보 확정 수를 높이지 않는다. 확인하지 못한 정보가 남아 확정 수가 낮아질 수 있으므로 피한 검사와 방문을 함께 표시한다.",
                 ]
             )
         workflow_total_tokens = sum(row["total_tokens"] for row in workflow["arm_metrics"])
