@@ -2,7 +2,7 @@
   "status": "synthetic_maturity_benchmark",
   "authority": "Deterministic synthetic trial criteria for software maturity testing; not ClinicalTrials.gov eligibility text",
   "medical_data_notice": "All trial criteria and patient records are synthetic.",
-  "medical_disclaimer": "학생 과제용 실험 결과입니다.",
+  "medical_disclaimer": "이 결과는 의학적 조언이 아닌 참고용입니다. 임상시험 참가 가능성은 해당 시험의 최신 기준과 전체 자료를 바탕으로 다시 확인해야 합니다.",
   "protocol_id": "clarifytrial-broad-rescue-maturity-v1",
   "config_sha256": "2bf221394b54f8bebc7cf73d1113e2d7720f9ae955aa26a9b27c62e40e1ddf0f",
   "group_count": 10,

@@ -26,6 +26,7 @@ from ..contracts import (
     TrialCriterion,
 )
 from ..decision_rules import aggregate_trial_decision
+from ..disclaimer import DEFAULT_MEDICAL_DISCLAIMER
 from ..io import atomic_write_text
 from ..mechanical_checks import evaluate_criterion
 from ..preparation.team_trials import (
@@ -44,7 +45,7 @@ from .source_criteria import (
 from .synthetic_evidence import acquisition_option, source_policy, synthetic_fact
 
 
-_MEDICAL_DISCLAIMER = "학생 과제용 실험 결과입니다."
+_MEDICAL_DISCLAIMER = DEFAULT_MEDICAL_DISCLAIMER
 
 
 class _ConfigModel(BaseModel):

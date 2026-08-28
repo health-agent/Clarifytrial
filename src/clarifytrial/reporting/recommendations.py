@@ -70,8 +70,7 @@ def _confirmed_summary(
         trial_id=decision.trial_id,
         status_label="현재 자료로 조건 확인 완료",
         explanation=(
-            "현재 제공된 자료에서는 이 사전 검토 범위의 필수 조건이 확인되었습니다. "
-            "실제 등록 가능 여부는 시험 연구진이 전체 자료로 다시 확인해야 합니다."
+            "현재 제공된 자료에서 이 목록에 반영된 필수 조건이 확인되었습니다."
         ),
         missing_information=[],
         search_rank=search_rank,

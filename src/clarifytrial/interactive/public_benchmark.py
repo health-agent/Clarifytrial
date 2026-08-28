@@ -28,6 +28,7 @@ from ..contracts import (
     VerificationStatus,
 )
 from ..datasets import CLARIFYTRIAL_V5_NCT_IDS
+from ..disclaimer import DEFAULT_MEDICAL_DISCLAIMER
 from ..environment import HiddenFactAnswer, PublicFactRequest
 from .contracts import (
     ExactPolicyObjective,
@@ -719,9 +720,7 @@ def run_public_interactive_benchmark(
         "action_budget": action_budget,
         "model_calls": 0,
         "scope": spec.scope,
-        "medical_disclaimer": (
-            "학생 과제용 실험 결과입니다."
-        ),
+        "medical_disclaimer": DEFAULT_MEDICAL_DISCLAIMER,
     }
     _write_json(destination / "plan.json", plan)
     _write_json(destination / "source-audit.json", source_audit)

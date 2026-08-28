@@ -2,7 +2,7 @@
   "status": "independent_new_trial_synthetic_patients",
   "authority": "Frozen answers for the declared structured criteria and synthetic values; not a label for each trial's complete clinical eligibility protocol.",
   "medical_data_notice": "All patient records in this file are synthetic.",
-  "medical_disclaimer": "학생 과제용 실험 결과입니다.",
+  "medical_disclaimer": "이 결과는 의학적 조언이 아닌 참고용입니다. 임상시험 참가 가능성은 해당 시험의 최신 기준과 전체 자료를 바탕으로 다시 확인해야 합니다.",
   "protocol_id": "clarifytrial-independent-new-trial-benchmark-v1",
   "as_of": "2026-08-25T09:00:00+09:00",
   "synthetic_value_assignment": "declared_profile_value_order",

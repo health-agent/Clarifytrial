@@ -11,6 +11,7 @@ from ..retrieval import (
     SearchDocument,
     TrialGPTRuntimeSearch,
 )
+from ..retrieval.bm25 import tokenize
 from .contracts import CandidateSearchHit, TrialProtocolSource
 
 
@@ -41,6 +42,12 @@ class InMemoryCandidateSearch:
         if len(by_id) != len(ordered):
             raise ValueError("trial sources must not repeat trial_id")
         self._sources = by_id
+        self._search_tokens = {
+            item.trial_id: set(
+                tokenize("\n".join([item.title, *item.conditions]))
+            )
+            for item in ordered
+        }
         documents = [
             SearchDocument(
                 document_id=f"trial:{item.trial_id}",
@@ -77,16 +84,21 @@ class InMemoryCandidateSearch:
             raise ValueError("at least one non-empty search condition is required")
         depth = len(self._sources)
         scores: dict[str, float] = {}
-        has_positive_match = False
         for condition_index, condition in enumerate(conditions):
             condition_weight = 1 / (condition_index + 1)
+            condition_tokens = set(tokenize(condition))
             for hit in self._retriever.search(condition, top_k=max(1, depth)):
-                if hit.score > 0:
-                    has_positive_match = True
-                    scores[hit.document.trial_id] = scores.get(
-                        hit.document.trial_id, 0.0
-                    ) + condition_weight / (20 + hit.rank)
-        if not has_positive_match:
+                trial_id = hit.document.trial_id
+                if (
+                    hit.score <= 0
+                    or not condition_tokens
+                    or not condition_tokens.issubset(self._search_tokens[trial_id])
+                ):
+                    continue
+                scores[trial_id] = scores.get(trial_id, 0.0) + (
+                    condition_weight * hit.score
+                )
+        if not scores:
             return []
         ranked = sorted(scores.items(), key=lambda item: (-item[1], item[0]))
         return [

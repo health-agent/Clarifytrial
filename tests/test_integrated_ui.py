@@ -258,7 +258,7 @@ def test_terminal_renderer_shows_every_stage_without_private_reasoning(
     assert "진행 관리:" in text
     assert "조건 판단:" in text
     assert "판정 변화 요약" in text
-    assert "전체: 2회, 1,234토큰" in text
+    assert "전체 외부 모델 호출: 2회, 1,234토큰" in text
     assert "chain of thought" not in text.casefold()
 
 

@@ -5,6 +5,11 @@ from .candidate_search import (
     InMemoryCandidateSearch,
     TrialGPTCandidateSearch,
 )
+from .clinicaltrials_search import (
+    CLINICALTRIALS_API_ROOT,
+    CLINICALTRIALS_STUDY_ROOT,
+    ClinicalTrialsGovCandidateSearch,
+)
 from .contracts import (
     CandidateSearchHit,
     NaturalScreeningRequest,
@@ -16,6 +21,7 @@ from .contracts import (
 from .pipeline import (
     NaturalScreeningPipeline,
     NaturalScreeningResult,
+    NoCandidateTrialsFound,
     summarize_model_usage,
 )
 from .trial_cache import TrialProtocolCache, TrialProtocolCacheStats
@@ -37,12 +43,16 @@ from .team_trials import (
 __all__ = [
     "CandidateSearch",
     "CandidateSearchHit",
+    "CLINICALTRIALS_API_ROOT",
+    "CLINICALTRIALS_STUDY_ROOT",
+    "ClinicalTrialsGovCandidateSearch",
     "DEFAULT_ENROLLING_STATUSES",
     "InMemoryCandidateSearch",
     "NaturalScreeningPipeline",
     "NaturalHiddenFactAnswer",
     "NaturalScreeningRequest",
     "NaturalScreeningResult",
+    "NoCandidateTrialsFound",
     "PreparedScreeningCase",
     "RawPatientRecord",
     "TEAM_TRIALS_COMMIT",

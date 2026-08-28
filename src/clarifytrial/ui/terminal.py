@@ -25,21 +25,13 @@ from ..environment import (
 )
 from ..llm import StructuredModel
 from ..preparation import summarize_model_usage
+from ..reporting import build_terminal_summary_lines
 from ..settings import EpisodeSettings
 from ..trace import TraceEvent, TraceRecorder
 from ..workflow import EpisodeAgents, PatientScreeningRunner
 from ..workflow.patient_screening_contracts import InformationTools
 from .fixtures import IntegratedUIFixture
 
-
-_ROLE_LABELS = {
-    "patient_record_structurer": "환자 기록 정리",
-    "trial_protocol_structurer": "시험 조건 정리",
-    "coordinator": "진행 관리",
-    "matcher_judge": "조건 판단",
-    "next_evidence": "다음 확인 문장 작성",
-    "selective_reviewer": "선택 검토",
-}
 
 _ROUTE_LABELS = {
     "MATCHER_JUDGE": "확인할 조건을 조건 판단 단계에 전달",
@@ -54,34 +46,8 @@ _ACTION_LABELS = {
     "REQUEST_VERIFICATION": "기존 공식 결과 확인",
 }
 
-_DECISION_LABELS = {
-    ("retain", "confirmed"): "후보 유지 / 현재 자료로 조건 확인 완료",
-    ("retain", "not_confirmed"): "후보 유지 / 추가 확인 필요",
-    ("retain", "uncertain"): "후보 유지 / 판단 보류",
-    ("remove", "ineligible"): "후보 제외 / 참가 조건 불충족",
-    ("uncertain", "uncertain"): "후보 판단 보류",
-}
-
-_STOP_LABELS = {
-    "all_trials_resolved": "모든 후보 시험의 현재 판단이 끝남",
-    "no_pending_information": "현재 방법으로 더 확인할 정보가 없음",
-    "action_limit": "정해 둔 확인 횟수를 모두 사용함",
-    "awaiting_patient_choice": "환자의 선택을 기다림",
-    "awaiting_clinician_authorization": "담당자의 승인을 기다림",
-    "deferred": "지금 확인할 수 없어 보류함",
-    "human_review": "사람이 다시 볼 결론이 남음",
-    "tool_returned_no_information": "선택한 경로에서 정보를 얻지 못함",
-    "cycle_limit": "정해 둔 진행 횟수에 도달함",
-}
-
-
 def _line(char: str = "=") -> str:
     return char * 72
-
-
-def _decision_label(decision: Mapping[str, Any]) -> str:
-    key = (str(decision["candidate_status"]), str(decision["confirmation_status"]))
-    return _DECISION_LABELS.get(key, f"{key[0]} / {key[1]}")
 
 
 def _action_message_parts(message: str) -> tuple[str, str | None]:
@@ -265,74 +231,13 @@ class IntegratedTerminalRenderer:
             self.write("[5/6] 부족한 정보 확인")
             self.write("  추가로 확인할 정보가 없었습니다.")
             self.write("")
-        self.write("판정 변화 요약")
-        previous: dict[str, str] = {}
-        for snapshot in screening["decision_history"]:
-            current = {
-                str(item["trial_id"]): _decision_label(item)
-                for item in snapshot["decisions"]
-            }
-            changes = [
-                (trial_id, previous.get(trial_id), label)
-                for trial_id, label in current.items()
-                if previous.get(trial_id) != label
-            ]
-            if changes:
-                self.write(f"  {snapshot['reason']}")
-                for trial_id, before, after in changes:
-                    if before is None:
-                        self.write(f"  - {trial_id}: {after}")
-                    else:
-                        self.write(f"  - {trial_id}: {before} → {after}")
-            previous = current
-
-        self.write("")
-        self.write("[6/6] 최종 결과")
-        stop_reason = str(screening["stop_reason"])
-        self.write(f"  종료 이유: {_STOP_LABELS.get(stop_reason, stop_reason)}")
-        revealed_fact_ids = {
-            str(item["tool_result"].get("target_fact_id"))
-            for item in screening.get("action_history", [])
-            if item["tool_result"].get("status") == "revealed"
-        }
-        if screening.get("action_history"):
-            self.write(f"  실행한 확인: {len(screening['action_history'])}개")
-        for decision in screening["final_decisions"]:
-            trial_id = str(decision["trial_id"])
-            self.write(f"  - {trial_id} · {self.titles.get(trial_id, trial_id)}")
-            self.write(f"    {_decision_label(decision)}")
-            if decision["candidate_status"] == "remove":
-                continue
-            pending = list(decision.get("pending_information", []))
-            for item in pending:
-                if str(item["fact_id"]) in revealed_fact_ids:
-                    self.write(
-                        "    확인했지만 판단이 끝나지 않은 정보: "
-                        f"{item['description']}"
-                    )
-                else:
-                    self.write(f"    아직 확인하지 못한 정보: {item['description']}")
-
-        usage = result["usage"]
-        self.write("")
-        if self.model_label == "deterministic-workflow":
-            self.write("코드 역할 단계")
-            for role, item in usage["by_role"].items():
-                self.write(
-                    f"  - {_ROLE_LABELS.get(role, role)}: "
-                    f"{item['call_count']}회 실행"
-                )
-            self.write("  외부 모델 호출: 0회, 0토큰")
-        else:
-            self.write("외부 모델 호출")
-            for role, item in usage["by_role"].items():
-                self.write(
-                    f"  - {_ROLE_LABELS.get(role, role)}: "
-                    f"{item['call_count']}회, {item['total_tokens']:,}토큰"
-                )
-            self.write(
-                f"  전체: {usage['call_count']}회, {usage['total_tokens']:,}토큰"
-            )
+        for line in build_terminal_summary_lines(
+            result,
+            titles=self.titles,
+            model_label=self.model_label,
+            heading="[6/6] 최종 결과",
+        ):
+            self.write(line)
         self.write("")
         self.write(f"결과 파일: {result_path}")
         self.write(f"단계별 기록: {trace_path}")

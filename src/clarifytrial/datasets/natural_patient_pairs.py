@@ -28,6 +28,7 @@ from ..contracts import (
     VerificationStatus,
 )
 from ..decision_rules import aggregate_trial_decision
+from ..disclaimer import DEFAULT_MEDICAL_DISCLAIMER
 from ..mechanical_checks import evaluate_criterion
 from ..measurements import normalized_unit
 from .integrity import portable_text_sha256
@@ -35,9 +36,7 @@ from .integrity import portable_text_sha256
 
 _TRUE_STATES = {"present", "diagnosed", "true"}
 _FALSE_STATES = {"absent", "not_diagnosed", "false"}
-_MEDICAL_DISCLAIMER = (
-    "학생 과제용 실험 결과입니다."
-)
+_MEDICAL_DISCLAIMER = DEFAULT_MEDICAL_DISCLAIMER
 _PATIENT_ANSWER_TOKENS = (
     "willing",
     "access",

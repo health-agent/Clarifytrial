@@ -64,6 +64,7 @@ from .datasets.broad_rescue import (
     audit_broad_rescue_dataset,
     build_broad_rescue_dataset,
 )
+from .disclaimer import read_medical_disclaimer
 from .datasets.source_benchmark import (
     audit_source_benchmark,
     build_source_benchmark,
@@ -170,10 +171,6 @@ def _configure_utf8_stdio() -> None:
         _configure_utf8_stream(stream)
 
 
-_DISCLAIMER_FALLBACK = (
-    "학생 과제용 실험 결과입니다."
-)
-
 _TRIALGPT_VARIANTS: dict[str, tuple[str, str | None]] = {
     "current": ("prompts/trialgpt_criterion_judge.md", None),
     "current-review": (
@@ -203,20 +200,7 @@ def _write_json(path: Path, value: Mapping[str, Any]) -> None:
 
 
 def _read_disclaimer() -> str:
-    candidates = (
-        Path.cwd() / "MEDICAL_DISCLAIMER.md",
-        Path(__file__).resolve().parents[2] / "MEDICAL_DISCLAIMER.md",
-    )
-    for path in candidates:
-        if path.is_file():
-            lines = [
-                line.strip()
-                for line in path.read_text(encoding="utf-8").splitlines()
-                if line.strip() and not line.lstrip().startswith("#")
-            ]
-            if lines:
-                return " ".join(lines)
-    return _DISCLAIMER_FALLBACK
+    return read_medical_disclaimer()
 
 
 def _build_trialgpt_candidate_search(

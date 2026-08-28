@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .datasets.natural_policy_evaluation import run_natural_policy_evaluation
+from .disclaimer import read_medical_disclaimer
 
 
 _CANDIDATE_LABELS = {
@@ -235,7 +236,7 @@ def run_natural_text_demo(
     )
     render_natural_question_run(
         run=run,
-        patient={**patient, "medical_disclaimer": document["medical_disclaimer"]},
+        patient={**patient, "medical_disclaimer": read_medical_disclaimer()},
         auto_advance=auto_advance,
         read=read,
         write=write,

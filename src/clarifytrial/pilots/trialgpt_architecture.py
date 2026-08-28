@@ -25,6 +25,7 @@ from ..datasets.trialgpt import (
     TrialGPTPatientSplit,
     split_trialgpt_pairs_by_patient,
 )
+from ..disclaimer import DEFAULT_MEDICAL_DISCLAIMER
 from ..llm.base import ModelCall, ModelUsage, StructuredModel
 from ..retrieval.bm25 import BM25Retriever
 from ..retrieval.models import SearchDocument
@@ -70,9 +71,7 @@ SINGLE_PROMPT_ID = "prompts/trialgpt_architecture_single.md"
 MATCHER_PROMPT_ID = "prompts/trialgpt_architecture_matcher_judge_v2.md"
 REVIEWER_PROMPT_ID = "prompts/trialgpt_architecture_reviewer_v2.md"
 
-MEDICAL_DISCLAIMER = (
-    "학생 과제용 실험 결과입니다."
-)
+MEDICAL_DISCLAIMER = DEFAULT_MEDICAL_DISCLAIMER
 
 MISSINGNESS_RULES = (
     "Use not applicable only when the criterion premise clearly does not apply.",

@@ -8,7 +8,7 @@
 Python 3.11 이상이 필요하다.
 
 ```powershell
-py -3.12 -m venv .venv
+python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -c constraints\research.txt -e ".[dev,retrieval-bm25,codex-subscription]"
 .\.venv\Scripts\python.exe -m nltk.downloader punkt
 .\.venv\Scripts\python.exe -m pytest -q
@@ -44,6 +44,40 @@ py -3.12 -m venv .venv
   --broad-search-top-k 200 `
   --auto
 ```
+
+### 공식 대회 환자 파일 실행
+
+`topics` 배열 안에 `num`과 `title`이 있는 공식 환자 파일은 `run-challenge`로 읽는다.
+기본 검색은 ClinicalTrials.gov 공식 API를 사용하므로 TrialGPT 자료나 팀 시험 파일을
+따로 내려받을 필요가 없다.
+
+```powershell
+New-Item -ItemType Directory -Force runs | Out-Null
+Invoke-WebRequest `
+  -Uri "https://raw.githubusercontent.com/skku-aihclab/aihc-lab/main/files/notice/healthcare-agentic-ai-challenge-2026/synthetic-patients.json" `
+  -OutFile runs\official-synthetic-patients.json
+
+.\.venv\Scripts\clarifytrial.exe run-challenge `
+  --topics runs\official-synthetic-patients.json `
+  --topic-id S001 `
+  --topic-settings examples\challenge\topic-settings.json `
+  --output runs\challenge-S001 `
+  --confirm-model-run
+```
+
+한 번에 모두 실행하려면 `--topic-id S001` 대신 `--all-topics`를 쓴다. 공식 검색 응답은
+`runs\clinicaltrials-search-cache`에 저장해 같은 질환 검색을 재사용한다. 최신 검색을 다시
+받으려면 `--refresh-trial-search`를 붙인다.
+
+환자별 이동, 비용, 새 검사와 방문 제한은 원본 환자 파일에 섞지 않고
+`--topic-settings` 파일에 적는다. 입력이 없으면 일반적인 확인 경로를 허용하는 중립
+설정을 사용한다. 특정 정보의 확인 방법까지 지정할 때는 `acquisition_paths`에 사실 이름,
+기존 기록·환자 답변·공식 결과·새 검사 가운데 가능한 경로, 예상 대기, 방문과 비용을
+적는다. 사실 이름은 첫 실행의 `prepared-input.json`에 기록된 항목과 같아야 한다.
+
+관련 모집 시험을 찾지 못하면 무관한 시험으로 후보 수를 채우지 않는다. 이 경우에도
+`result.json`, `trace.jsonl`, `session.json`을 남기며 결과 상태는
+`no_related_enrolling_trials`이다.
 
 ## 3. 별도 환자와 시험 파일 실행
 

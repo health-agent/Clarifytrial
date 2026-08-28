@@ -1,0 +1,16 @@
+{
+  "topic_settings": [
+    {
+      "num": "S001",
+      "patient_burden_input": {
+        "travel_constraint_0_to_3": 2,
+        "cost_sensitivity_0_to_3": 2,
+        "preference_mode": "least_extra_burden",
+        "stated_limits": {
+          "max_additional_visits": 0,
+          "allow_new_tests": false
+        }
+      }
+    }
+  ]
+}

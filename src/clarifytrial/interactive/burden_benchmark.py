@@ -10,6 +10,7 @@ from statistics import mean
 from typing import Any
 
 from ..contracts import CandidateStatus, ConfirmationStatus
+from ..disclaimer import DEFAULT_MEDICAL_DISCLAIMER
 from ..reporting import build_recommendation_views
 from .burden_contracts import (
     AcquisitionDecision,
@@ -50,9 +51,7 @@ from .public_benchmark import (
 )
 
 
-_MEDICAL_DISCLAIMER = (
-    "학생 과제용 실험 결과입니다."
-)
+_MEDICAL_DISCLAIMER = DEFAULT_MEDICAL_DISCLAIMER
 _POLICY_IDS = tuple(AcquisitionPolicyId)
 _AVAILABILITY_STRUCTURES = tuple(AvailabilityStructure)
 _COST_LABELS = {

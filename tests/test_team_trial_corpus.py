@@ -73,3 +73,18 @@ def test_team_corpus_rejects_repeated_trial_ids(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="repeats"):
         inspect_team_trial_corpus(path)
+
+
+def test_local_search_does_not_keep_a_trial_for_one_shared_word(tmp_path: Path) -> None:
+    path = tmp_path / "trials.jsonl"
+    _write(
+        path,
+        [
+            _row("NCT-LYMPHOMA", "RECRUITING", "Follicular Lymphoma"),
+            _row("NCT-BLADDER", "RECRUITING", "Bladder Cancer"),
+        ],
+    )
+
+    hits = TeamTrialCandidateSearch(path).search(["pyloric stenosis"], top_k=5)
+
+    assert hits == []

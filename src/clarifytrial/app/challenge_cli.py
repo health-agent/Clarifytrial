@@ -18,6 +18,7 @@ from ..llm import (
 )
 from ..preparation import (
     CandidateSearch,
+    ClinicalTrialsGovCandidateSearch,
     DEFAULT_ENROLLING_STATUSES,
     InMemoryCandidateSearch,
     TeamTrialCandidateSearch,
@@ -51,6 +52,14 @@ def add_challenge_parser(commands: Any) -> argparse.ArgumentParser:
         ),
     )
     challenge.add_argument("--topics", required=True, type=Path)
+    challenge.add_argument(
+        "--topic-settings",
+        type=Path,
+        help=(
+            "optional JSON with patient limits and available confirmation "
+            "routes keyed by topic num"
+        ),
+    )
     selection = challenge.add_mutually_exclusive_group(required=True)
     selection.add_argument(
         "--topic-id",
@@ -73,8 +82,19 @@ def add_challenge_parser(commands: Any) -> argparse.ArgumentParser:
     challenge.add_argument("--output", required=True, type=Path)
     challenge.add_argument(
         "--candidate-search",
-        choices=("team-jsonl", "trialgpt", "local-bm25"),
-        default="trialgpt",
+        choices=("clinicaltrials", "team-jsonl", "trialgpt", "local-bm25"),
+        default="clinicaltrials",
+    )
+    challenge.add_argument(
+        "--clinicaltrials-cache",
+        type=Path,
+        default=Path("runs") / "clinicaltrials-search-cache",
+        help="directory that reuses unchanged ClinicalTrials.gov search responses",
+    )
+    challenge.add_argument(
+        "--refresh-trial-search",
+        action="store_true",
+        help="ignore saved ClinicalTrials.gov search responses for this run",
     )
     challenge.add_argument("--trial-sources", type=Path)
     challenge.add_argument(
@@ -87,8 +107,8 @@ def add_challenge_parser(commands: Any) -> argparse.ArgumentParser:
         action="append",
         default=[],
         help=(
-            "recruitment status admitted by team-jsonl search; repeat to add "
-            "statuses, or omit to use the current enrolling statuses"
+            "recruitment status admitted by ClinicalTrials.gov or team-jsonl "
+            "search; repeat to add statuses, or omit to use enrolling statuses"
         ),
     )
     challenge.add_argument("--trialgpt-corpus", type=Path)
@@ -169,6 +189,14 @@ def _candidate_search(
         return None
     if args.candidate_search == "trialgpt":
         return dependencies.build_trialgpt_candidate_search(args, parser)
+    if args.candidate_search == "clinicaltrials":
+        statuses = args.trial_status or sorted(DEFAULT_ENROLLING_STATUSES)
+        return ClinicalTrialsGovCandidateSearch(
+            args.clinicaltrials_cache,
+            included_statuses=statuses,
+            timeout_seconds=args.timeout_seconds,
+            force_refresh=args.refresh_trial_search,
+        )
     if args.candidate_search == "team-jsonl":
         if args.team_trials is None:
             parser.error("team-jsonl requires --team-trials")
@@ -214,6 +242,7 @@ def run_challenge_command(
         candidate_count=args.candidate_count,
         settings=settings,
         trial_protocol_cache_dir=args.trial_protocol_cache,
+        topic_settings_path=args.topic_settings,
         resume_path=args.resume,
         retry_unavailable=args.retry_unavailable,
         approve_patient_choice=args.approve_patient_choice,

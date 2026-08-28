@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Callable
 from pathlib import Path
 
@@ -12,10 +13,13 @@ from ..agents import (
     SelectiveReviewerAgent,
 )
 from ..llm import StructuredModel
+from ..io import atomic_write_text
 from ..preparation import (
     CandidateSearch,
     NaturalScreeningPipeline,
+    NoCandidateTrialsFound,
     TrialProtocolCache,
+    summarize_model_usage,
 )
 from ..preparation.patient_record import PatientRecordStructurerAgent
 from ..preparation.trial_protocol import TrialProtocolStructurerAgent
@@ -25,10 +29,12 @@ from .challenge_contracts import (
     ChallengeRunOptions,
     ChallengeRunOutcome,
     ChallengeTopic,
+    ChallengeTopicSettings,
 )
 from .challenge_input import (
     add_direct_input_options,
     challenge_topic_request,
+    load_challenge_topic_settings,
     load_challenge_topics,
     materialize_prepared_topic,
     select_challenge_topics,
@@ -43,6 +49,75 @@ def _episode_agents(model: StructuredModel) -> EpisodeAgents:
         matcher_judge=MatcherJudgeAgent(model),
         next_evidence=NextEvidenceAgent(model),
         selective_reviewer=SelectiveReviewerAgent(model),
+    )
+
+
+def _finish_without_candidates(
+    *,
+    options: ChallengeRunOptions,
+    topic: ChallengeTopic,
+    topic_dir: Path,
+    model_label: str,
+    search_method: str,
+    error: NoCandidateTrialsFound,
+    trace: TraceRecorder,
+    medical_disclaimer: str,
+    write: Callable[[str], None],
+) -> GeneralRunOutcome:
+    """Save a normal, inspectable result when related enrolling trials are absent."""
+
+    result_path = topic_dir / "result.json"
+    trace_path = topic_dir / "trace.jsonl"
+    session_path = topic_dir / "session.json"
+    message = "현재 검색 조건과 관련된 모집 중 임상시험을 찾지 못했습니다."
+    usage = summarize_model_usage(trace)
+    result = {
+        "run_mode": "challenge_topic_no_candidates",
+        "model": model_label,
+        "status": "no_related_enrolling_trials",
+        "message": message,
+        "input": {
+            "challenge_topics_path": str(options.topics_path),
+            "challenge_topic_id": topic.num,
+            "search_conditions": list(error.search_conditions),
+            "candidate_search_method": search_method,
+            "candidate_hits": [],
+        },
+        "usage": usage.model_dump(mode="json"),
+        "medical_disclaimer": medical_disclaimer,
+    }
+    session = ScreeningSession(
+        case_id=topic.num,
+        patient_state=error.patient_state,
+        completed=True,
+        metadata={
+            "status": "no_related_enrolling_trials",
+            "challenge_topics_path": str(options.topics_path),
+            "challenge_topic_id": topic.num,
+            "search_conditions": list(error.search_conditions),
+            "candidate_search_method": search_method,
+        },
+    )
+    atomic_write_text(
+        result_path,
+        json.dumps(result, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    atomic_write_text(
+        session_path,
+        session.model_dump_json(indent=2) + "\n",
+        encoding="utf-8",
+    )
+    trace.write_jsonl(trace_path)
+    write("찾은 질환·상태: " + " / ".join(error.search_conditions))
+    write(message)
+    write(f"결과 파일: {result_path}")
+    write(medical_disclaimer)
+    return GeneralRunOutcome(
+        result_path=result_path,
+        trace_path=trace_path,
+        session_path=session_path,
+        paused=False,
     )
 
 
@@ -95,6 +170,7 @@ def _run_new_topic(
     model: StructuredModel,
     model_label: str,
     candidate_search: CandidateSearch,
+    topic_settings: ChallengeTopicSettings | None,
     medical_disclaimer: str,
     read: Callable[[str], str],
     write: Callable[[str], None],
@@ -111,6 +187,7 @@ def _run_new_topic(
         source_path=options.topics_path,
         as_of=options.as_of,
         candidate_count=options.candidate_count,
+        topic_settings=topic_settings,
     )
     trial_cache = TrialProtocolCache(
         options.trial_protocol_cache_dir,
@@ -128,7 +205,22 @@ def _run_new_topic(
     )
     write("")
     write(f"입력 {topic.num} 준비")
-    prepared = add_direct_input_options(pipeline.prepare(request, trace=trace))
+    try:
+        prepared = add_direct_input_options(pipeline.prepare(request, trace=trace))
+    except NoCandidateTrialsFound as error:
+        return _finish_without_candidates(
+            options=options,
+            topic=topic,
+            topic_dir=topic_dir,
+            model_label=model_label,
+            search_method=str(
+                getattr(candidate_search, "retrieval_method", type(candidate_search).__name__)
+            ),
+            error=error,
+            trace=trace,
+            medical_disclaimer=medical_disclaimer,
+            write=write,
+        )
     write("찾은 질환·상태: " + " / ".join(prepared.search_conditions))
     write(f"환자 기록에서 확인한 사실: {len(prepared.patient_state.facts)}개")
     write(f"검토할 임상시험: {len(prepared.candidate_hits)}개")
@@ -157,6 +249,11 @@ def _run_new_topic(
                 "challenge_topic_id": topic.num,
                 "trial_protocol_cache_dir": str(options.trial_protocol_cache_dir),
                 "trial_protocol_cache": cache_summary,
+                "topic_settings_path": (
+                    None
+                    if options.topic_settings_path is None
+                    else str(options.topic_settings_path)
+                ),
             },
         ),
         model=model,
@@ -186,6 +283,22 @@ def run_challenge_screening(
         topic_ids=options.topic_ids,
         all_topics=options.all_topics,
     )
+    topic_settings_by_id: dict[str, ChallengeTopicSettings] = {}
+    if options.topic_settings_path is not None:
+        settings_document = load_challenge_topic_settings(options.topic_settings_path)
+        declared_topic_ids = {item.num for item in document.topics}
+        unknown = [
+            item.num
+            for item in settings_document.topic_settings
+            if item.num not in declared_topic_ids
+        ]
+        if unknown:
+            raise ValueError(
+                "topic settings refer to unknown topic num: " + ", ".join(unknown)
+            )
+        topic_settings_by_id = {
+            item.num: item for item in settings_document.topic_settings
+        }
     outcomes: list[GeneralRunOutcome] = []
     for topic in topics:
         if options.resume_path is not None:
@@ -208,6 +321,7 @@ def run_challenge_screening(
                 model=model,
                 model_label=model_label,
                 candidate_search=candidate_search,
+                topic_settings=topic_settings_by_id.get(topic.num),
                 medical_disclaimer=medical_disclaimer,
                 read=read,
                 write=write,

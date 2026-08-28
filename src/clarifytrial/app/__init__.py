@@ -5,6 +5,8 @@ from .challenge import (
     ChallengeRunOptions,
     ChallengeRunOutcome,
     ChallengeTopic,
+    ChallengeTopicSettings,
+    ChallengeTopicSettingsInput,
     ChallengeTopicsInput,
     run_challenge_screening,
 )
@@ -19,6 +21,8 @@ __all__ = [
     "ChallengeRunOptions",
     "ChallengeRunOutcome",
     "ChallengeTopic",
+    "ChallengeTopicSettings",
+    "ChallengeTopicSettingsInput",
     "ChallengeTopicsInput",
     "run_challenge_screening",
     "run_general_screening",

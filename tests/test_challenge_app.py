@@ -11,12 +11,13 @@ from clarifytrial.app.challenge import (
     ChallengeTopic,
     add_direct_input_options,
     challenge_topic_request,
+    load_challenge_topic_settings,
     load_challenge_topics,
     materialize_prepared_topic,
     run_challenge_screening,
 )
 from clarifytrial.app.loaders import load_general_patient, load_structured_trials
-from clarifytrial.cli import main
+from clarifytrial.cli import _parser, main
 from clarifytrial.contracts import (
     AgentAction,
     CandidateStatus,
@@ -185,6 +186,62 @@ def test_competition_topics_json_is_read_without_changing_its_shape(
     assert request.candidate_count == 10
 
 
+def test_optional_topic_settings_add_patient_limits_without_changing_topics(
+    tmp_path: Path,
+) -> None:
+    settings_path = tmp_path / "topic-settings.json"
+    settings_path.write_text(
+        json.dumps(
+            {
+                "topic_settings": [
+                    {
+                        "num": "S001",
+                        "patient_burden_input": {
+                            "travel_constraint_0_to_3": 3,
+                            "preference_mode": "least_extra_burden",
+                            "stated_limits": {
+                                "max_additional_visits": 0,
+                                "allow_new_tests": False,
+                            },
+                        },
+                        "acquisition_paths": [
+                            {
+                                "fact_key": "recent_hba1c",
+                                "fact_description": "최근 HbA1c 결과",
+                                "path_key": "outside-record",
+                                "action": "LOOKUP_RECORD",
+                                "acquisition_mode": "outside_record",
+                                "available_now": True,
+                                "expected_delay_hours": 2,
+                                "visit_required": False,
+                                "direct_cost_band": "none",
+                                "new_test_required": False,
+                                "source_note": "기존 외부 기록을 가져오는 경로",
+                            }
+                        ],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    settings = load_challenge_topic_settings(settings_path).topic_settings[0]
+    request = challenge_topic_request(
+        ChallengeTopic(num="S001", title="A synthetic patient has diabetes."),
+        source_path=tmp_path / "topics.json",
+        as_of=datetime(2026, 8, 24, tzinfo=timezone.utc),
+        candidate_count=10,
+        topic_settings=settings,
+    )
+
+    assert request.patient_burden_input is not None
+    assert request.patient_burden_input.travel_constraint_0_to_3 == 3
+    assert request.patient_burden_input.stated_limits is not None
+    assert request.patient_burden_input.stated_limits.allow_new_tests is False
+    assert request.acquisition_paths[0].fact_key == "recent_hba1c"
+
+
 def test_direct_input_paths_never_invent_a_new_test() -> None:
     prepared = add_direct_input_options(_prepared_case())
 
@@ -275,6 +332,25 @@ def test_challenge_command_requires_live_model_confirmation(tmp_path: Path) -> N
             ]
         )
     assert error.value.code == 2
+
+
+def test_challenge_default_search_needs_no_trialgpt_cache(tmp_path: Path) -> None:
+    args = _parser().parse_args(
+        [
+            "run-challenge",
+            "--topics",
+            str(tmp_path / "topics.json"),
+            "--topic-id",
+            "S001",
+            "--output",
+            str(tmp_path / "output"),
+            "--confirm-model-run",
+        ]
+    )
+
+    assert args.candidate_search == "clinicaltrials"
+    assert args.trialgpt_corpus is None
+    assert args.trialgpt_cache is None
 
 
 def test_one_topic_runs_from_free_text_to_ranked_result(tmp_path: Path) -> None:
@@ -443,3 +519,74 @@ def test_one_topic_runs_from_free_text_to_ranked_result(tmp_path: Path) -> None:
         "cache_write_failure_count": 0,
     }
     assert model.call_count["trial_protocol_structurer"] == 1
+
+
+def test_no_related_trial_is_saved_as_a_completed_result(tmp_path: Path) -> None:
+    patient_text = "The synthetic patient has pyloric stenosis."
+    topics_path = tmp_path / "topics.json"
+    topics_path.write_text(
+        json.dumps({"topics": [{"num": "S001", "title": patient_text}]}),
+        encoding="utf-8",
+    )
+    search = InMemoryCandidateSearch(
+        [
+            TrialProtocolSource(
+                trial_id="T-LYMPHOMA",
+                title="Follicular lymphoma study",
+                conditions=["follicular lymphoma"],
+                eligibility_text="Adults with lymphoma may participate.",
+                source_location="synthetic:T-LYMPHOMA",
+            )
+        ]
+    )
+    model = ScriptedStructuredModel(
+        {
+            "patient_record_structurer": lambda _: {
+                "search_conditions": [
+                    {
+                        "condition": "pyloric stenosis",
+                        "source_quote": "pyloric stenosis",
+                    }
+                ],
+                "facts": [
+                    {
+                        "fact_key": "diagnosis",
+                        "statement": "The synthetic patient has pyloric stenosis.",
+                        "source_quote": "The synthetic patient has pyloric stenosis.",
+                    }
+                ],
+            }
+        }
+    )
+    output = tmp_path / "output"
+    lines: list[str] = []
+
+    outcome = run_challenge_screening(
+        options=ChallengeRunOptions(
+            topics_path=topics_path,
+            output_dir=output,
+            topic_ids=("S001",),
+            all_topics=False,
+            as_of=datetime(2026, 8, 24, tzinfo=timezone.utc),
+            candidate_count=5,
+            settings=EpisodeSettings(
+                max_external_actions=1,
+                max_selective_reviews=0,
+                max_cycles=3,
+            ),
+            trial_protocol_cache_dir=tmp_path / "trial-cache",
+        ),
+        model=model,
+        model_label="scripted-local",
+        candidate_search=search,
+        medical_disclaimer="참고용 결과입니다.",
+        write=lines.append,
+    )
+
+    result = json.loads(outcome.runs[0].result_path.read_text(encoding="utf-8"))
+    session = json.loads((output / "session.json").read_text(encoding="utf-8"))
+    assert result["status"] == "no_related_enrolling_trials"
+    assert result["input"]["candidate_hits"] == []
+    assert session["completed"] is True
+    assert "관련된 모집 중 임상시험을 찾지 못했습니다" in "\n".join(lines)
+    assert model.call_count == {"patient_record_structurer": 1}

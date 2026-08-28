@@ -2,7 +2,7 @@
   "status": "independent_new_trial_benchmark",
   "authority": "Selected criteria are copied or conservatively structured from a pinned public ClinicalTrials.gov snapshot; they are not the complete eligibility protocol.",
   "medical_data_notice": "Trial sources are public; every patient is synthetic.",
-  "medical_disclaimer": "학생 과제용 실험 결과입니다.",
+  "medical_disclaimer": "이 결과는 의학적 조언이 아닌 참고용입니다. 임상시험 참가 가능성은 해당 시험의 최신 기준과 전체 자료를 바탕으로 다시 확인해야 합니다.",
   "protocol_id": "clarifytrial-independent-new-trial-benchmark-v1",
   "source_snapshot": {
     "url": "https://raw.githubusercontent.com/Seohvvan/Healthcare/01b3dd9ee6ca65acd485fa686edda0a08eecc50e/data/trials.jsonl",

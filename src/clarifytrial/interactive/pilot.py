@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
+from ..disclaimer import read_medical_disclaimer
 from ..llm import CodexSubscriptionModelPool, CodexSubscriptionStructuredModel
 from .contracts import ExactPolicyObjective, InteractivePolicyRun
 from .exact_policy import ExactDecisionTreePolicy, build_uniform_binary_scenarios
@@ -25,13 +26,7 @@ from .runner import run_interactive_policy, summarize_interactive_runs
 
 
 def _medical_disclaimer() -> str:
-    source = Path(__file__).resolve().parents[3] / "MEDICAL_DISCLAIMER.md"
-    text = source.read_text(encoding="utf-8")
-    return " ".join(
-        line.strip()
-        for line in text.splitlines()
-        if line.strip() and not line.lstrip().startswith("#")
-    )
+    return read_medical_disclaimer()
 
 
 def _write_json(path: Path, value: Any) -> None:

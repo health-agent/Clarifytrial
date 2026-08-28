@@ -14,6 +14,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from ..datasets.trialgpt import CriterionType, TrialGPTCriterionRow, TrialGPTPair
+from ..disclaimer import DEFAULT_MEDICAL_DISCLAIMER
 from ..llm.base import ModelCall, ModelUsage, StructuredModel
 from ..usage import UsageCostSummary, summarize_usage
 from .trialgpt_metrics import compute_trialgpt_diagnostics
@@ -33,9 +34,7 @@ ROLE = "trialgpt_criterion_judge"
 REVIEW_PROMPT_ID = "prompts/trialgpt_criterion_reviewer.md"
 REVIEW_ROLE = "trialgpt_criterion_reviewer"
 
-_DISCLAIMER = (
-    "학생 과제용 실험 결과입니다."
-)
+_DISCLAIMER = DEFAULT_MEDICAL_DISCLAIMER
 
 
 class _StrictModel(BaseModel):

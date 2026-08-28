@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from ..contracts import ContractModel, TrialSearchRank
+from ..contracts import ContractModel, PatientState, TrialSearchRank
 from ..trace import TraceRecorder
 from ..workflow import (
     PatientScreeningCase,
@@ -34,6 +34,20 @@ class InformationToolFactory(Protocol):
     """Build tools after deterministic missing-fact IDs have been assigned."""
 
     def __call__(self, prepared: PreparedScreeningCase) -> InformationTools: ...
+
+
+class NoCandidateTrialsFound(ValueError):
+    """The patient was structured successfully but search found no usable trial."""
+
+    def __init__(
+        self,
+        *,
+        patient_state: PatientState,
+        search_conditions: list[str],
+    ) -> None:
+        super().__init__("candidate search returned no related enrolling trial")
+        self.patient_state = patient_state
+        self.search_conditions = tuple(search_conditions)
 
 
 class NaturalScreeningResult(ContractModel):
@@ -150,7 +164,21 @@ class NaturalScreeningPipeline:
             top_k=request.candidate_count,
         )
         if not candidate_hits:
-            raise ValueError("candidate search returned no trial with a positive match")
+            recorder.record(
+                cycle=0,
+                actor="candidate_trial_search",
+                event="no_candidate_trials_found",
+                input_refs=[request.patient_record.source_id],
+                output={
+                    "search_conditions": search_conditions,
+                    "trial_ids": [],
+                    "scores": [],
+                },
+            )
+            raise NoCandidateTrialsFound(
+                patient_state=patient_state,
+                search_conditions=search_conditions,
+            )
         recorder.record(
             cycle=0,
             actor="candidate_trial_search",

@@ -27,6 +27,7 @@ from ..contracts import (
     TrialCriterion,
     VerificationStatus,
 )
+from ..disclaimer import DEFAULT_MEDICAL_DISCLAIMER
 from ..environment import HiddenFactAnswer, PublicFactRequest
 from .contracts import (
     ExactPolicyObjective,
@@ -697,9 +698,7 @@ def run_interactive_stress(
         ],
         "model_calls": 0,
         "scope": "질문 정책의 구조적 가치만 보는 합성 진단이며 임상 성능이 아니다.",
-        "medical_disclaimer": (
-            "학생 과제용 실험 결과입니다."
-        ),
+        "medical_disclaimer": DEFAULT_MEDICAL_DISCLAIMER,
     }
     _write_json(destination / "plan.json", plan)
 

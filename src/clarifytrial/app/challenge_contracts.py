@@ -9,6 +9,8 @@ from pathlib import Path
 from pydantic import Field, model_validator
 
 from ..contracts import ContractModel
+from ..interactive.burden_contracts import PatientBurdenInput
+from ..preparation.contracts import AcquisitionPathInput
 from ..settings import EpisodeSettings
 from .runner import GeneralRunOutcome
 
@@ -33,6 +35,27 @@ class ChallengeTopicsInput(ContractModel):
         return self
 
 
+class ChallengeTopicSettings(ContractModel):
+    """Optional patient limits and available confirmation routes for one topic."""
+
+    num: str = Field(min_length=1)
+    patient_burden_input: PatientBurdenInput | None = None
+    acquisition_paths: list[AcquisitionPathInput] = Field(default_factory=list)
+
+
+class ChallengeTopicSettingsInput(ContractModel):
+    """Settings kept separate so the supplied competition file stays unchanged."""
+
+    topic_settings: list[ChallengeTopicSettings] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def topic_numbers_are_unique(self) -> "ChallengeTopicSettingsInput":
+        values = [item.num for item in self.topic_settings]
+        if len(values) != len(set(values)):
+            raise ValueError("topic_settings must not repeat num")
+        return self
+
+
 @dataclass(frozen=True, slots=True)
 class ChallengeRunOptions:
     topics_path: Path
@@ -43,6 +66,7 @@ class ChallengeRunOptions:
     candidate_count: int
     settings: EpisodeSettings
     trial_protocol_cache_dir: Path = Path("runs") / "trial-protocol-cache"
+    topic_settings_path: Path | None = None
     resume_path: Path | None = None
     retry_unavailable: bool = False
     approve_patient_choice: bool = False
@@ -67,5 +91,7 @@ __all__ = [
     "ChallengeRunOptions",
     "ChallengeRunOutcome",
     "ChallengeTopic",
+    "ChallengeTopicSettings",
+    "ChallengeTopicSettingsInput",
     "ChallengeTopicsInput",
 ]

@@ -322,7 +322,9 @@ def test_pilot_writer_keeps_plan_runs_and_summary_separate(tmp_path) -> None:
     rows = (tmp_path / "runs.jsonl").read_text(encoding="utf-8").splitlines()
     assert plan["case_count"] == 12
     assert plan["hidden_facts_per_case"] == 5
-    assert plan["medical_disclaimer"] == "학생 과제용 실험 결과입니다."
+    assert plan["medical_disclaimer"].startswith(
+        "이 결과는 의학적 조언이 아닌 참고용입니다."
+    )
     assert summary["run_count"] == 96
-    assert summary["medical_disclaimer"] == "학생 과제용 실험 결과입니다."
+    assert summary["medical_disclaimer"] == plan["medical_disclaimer"]
     assert len(rows) == 96

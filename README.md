@@ -54,7 +54,7 @@ ClarifyTrial은 이 두 실수를 줄이기 위해 시험마다 서로 다른 �
 
 | 부분 | 구현된 내용 |
 |---|---|
-| 시험 검색 | 모집 상태를 거른 뒤 같은 단어와 비슷한 의학적 표현으로 후보 검색 |
+| 시험 검색 | 기본 실행은 ClinicalTrials.gov 공식 API에서 모집 중·모집 예정 시험을 바로 검색. 고정 자료 재현에는 로컬 BM25와 TrialGPT 검색 사용 |
 | 조건 판단 | 수치, 날짜, 예·아니오, `모두`, `하나 이상`, `일정 개수 이상` 관계 계산 |
 | 부족 정보 확인 | 기존 기록 조회, 환자 질문, 기존 공식 결과 확인, 새 검사·평가 |
 | 질문 순서 | 지금 영향이 큰 정보 또는 남은 확인 횟수 전체를 고려한 정보 조합 선택 |
@@ -76,7 +76,7 @@ ClarifyTrial은 이 두 실수를 줄이기 위해 시험마다 서로 다른 �
 
 ### 전체 흐름 연결 점검
 
-- 모집 중이거나 모집 예정인 공개 임상시험 589건을 검색했다.
+- 고정된 공개 시험 589건에서 평가 대상으로 정한 시험이 검색 결과에 연결되는지 점검했다.
 - 10개 질환의 공개 시험 50건에서 조건 202개를 구조화했다.
 - 개발에 사용하지 않은 합성 환자 30명과 시험 5개씩을 연결해 150개 판단을 만들었다.
 - 환자마다 추가 정보를 최대 세 번 확인했다.
@@ -126,7 +126,7 @@ ClarifyTrial은 54개를 추가 확인 후보로 남겼고 세 번 안에 47개�
 Python 3.11 이상이 필요하다.
 
 ```powershell
-py -3.12 -m venv .venv
+python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -c constraints\research.txt -e ".[dev,retrieval-bm25,codex-subscription]"
 .\.venv\Scripts\python.exe -m nltk.downloader punkt
 .\.venv\Scripts\python.exe -m pytest -q
@@ -138,6 +138,29 @@ py -3.12 -m venv .venv
 ```powershell
 .\.venv\Scripts\clarifytrial.exe run-full-ui --auto
 ```
+
+공식 대회 형식의 `topics[num, title]` 파일을 자유 문장부터 실행하려면 다음과 같이
+사용한다. 기본 검색기는 별도 시험 말뭉치를 요구하지 않고 ClinicalTrials.gov에서 현재
+모집 중이거나 모집 예정인 시험을 찾는다. 이 명령은 외부 언어모델을 사용한다.
+
+```powershell
+New-Item -ItemType Directory -Force runs | Out-Null
+Invoke-WebRequest `
+  -Uri "https://raw.githubusercontent.com/skku-aihclab/aihc-lab/main/files/notice/healthcare-agentic-ai-challenge-2026/synthetic-patients.json" `
+  -OutFile runs\official-synthetic-patients.json
+
+.\.venv\Scripts\clarifytrial.exe run-challenge `
+  --topics runs\official-synthetic-patients.json `
+  --topic-id S001 `
+  --topic-settings examples\challenge\topic-settings.json `
+  --output runs\challenge-S001 `
+  --confirm-model-run
+```
+
+`--topic-settings`는 선택 사항이다. 원본 환자 파일은 그대로 두고, 환자가 추가 방문을
+할 수 있는지, 새 검사를 원하지 않는지, 빠른 확인과 부담 최소화 중 무엇을 더 중시하는지
+같은 실행 조건만 별도 파일로 넣는다. 검색 결과가 비면 프로그램은 무관한 시험을 억지로
+채우지 않고 `no_related_enrolling_trials` 결과를 저장한다.
 
 별도 환자와 시험 파일을 넣는 방법, 평가자료 재생성, 일괄 평가와 보고서 생성 명령은
 [실행과 실험 안내](docs/internal/CLARIFYTRIAL_V5_DEVELOPED_EXPERIMENT_GUIDE.md)에 있다.

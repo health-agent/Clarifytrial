@@ -29,6 +29,7 @@ from ..environment import (
 from ..llm import StructuredModel
 from ..io import atomic_write_text
 from ..preparation import CandidateSearch, summarize_model_usage
+from ..reporting import build_terminal_summary_lines
 from ..settings import EpisodeSettings
 from ..trace import TraceRecorder
 from ..workflow import (
@@ -126,29 +127,23 @@ def _agents(model: StructuredModel) -> EpisodeAgents:
     )
 
 
-def _show_final(result: dict, write: Callable[[str], None]) -> None:
-    screening = result["screening"]
-    views = screening["guidance"]["recommendation_views"]
+def _show_final(
+    result: dict,
+    write: Callable[[str], None],
+    *,
+    model_label: str,
+) -> None:
+    titles = {
+        str(item["source"]["trial_id"]): str(item["source"]["title"])
+        for item in result["input"].get("candidate_hits", [])
+    }
     write("")
-    write("최종 결과")
-    for key in ("current_evidence", "broader_review"):
-        view = views[key]
-        write(f"- {view['title']}: {len(view['trials'])}개")
-        for trial in view["trials"]:
-            rank = trial.get("recommendation_rank")
-            prefix = f"{rank}." if rank is not None else "·"
-            write(f"  {prefix} {trial['trial_id']}: {trial['status_label']}")
-            if trial.get("ranking_explanation"):
-                write(f"     {trial['ranking_explanation']}")
-    removed = [
-        item
-        for item in screening["final_decisions"]
-        if item["candidate_status"] == "remove"
-    ]
-    write(f"- 현재 제외되는 시험: {len(removed)}개")
-    write(f"- 종료 이유: {screening['stop_reason']}")
-    usage = result["usage"]
-    write(f"- 모델 호출: {usage['call_count']}회, {usage['total_tokens']:,}토큰")
+    for line in build_terminal_summary_lines(
+        result,
+        titles=titles,
+        model_label=model_label,
+    ):
+        write(line)
 
 
 def _candidate_metadata(prepared: PreparedGeneralCase) -> dict[str, object]:
@@ -439,7 +434,7 @@ def run_general_screening(
         screening=screening,
         previous_action_count=previous_action_count,
     )
-    _show_final(result_document, write)
+    _show_final(result_document, write, model_label=model_label)
     write(f"결과 파일: {result_path}")
     write(medical_disclaimer)
     return GeneralRunOutcome(

@@ -23,7 +23,12 @@ from ..preparation import (
     PreparedScreeningCase,
     RawPatientRecord,
 )
-from .challenge_contracts import ChallengeTopic, ChallengeTopicsInput
+from .challenge_contracts import (
+    ChallengeTopic,
+    ChallengeTopicSettings,
+    ChallengeTopicSettingsInput,
+    ChallengeTopicsInput,
+)
 from .contracts import GeneralPatientInput, StructuredTrialSource
 
 
@@ -32,6 +37,15 @@ def load_challenge_topics(path: str | Path) -> ChallengeTopicsInput:
 
     source = Path(path)
     return ChallengeTopicsInput.model_validate_json(
+        source.read_text(encoding="utf-8")
+    )
+
+
+def load_challenge_topic_settings(path: str | Path) -> ChallengeTopicSettingsInput:
+    """Read optional per-topic limits and information-acquisition routes."""
+
+    source = Path(path)
+    return ChallengeTopicSettingsInput.model_validate_json(
         source.read_text(encoding="utf-8")
     )
 
@@ -61,8 +75,12 @@ def challenge_topic_request(
     source_path: Path,
     as_of: datetime,
     candidate_count: int,
+    topic_settings: ChallengeTopicSettings | None = None,
 ) -> NaturalScreeningRequest:
     """Turn one topic into the existing cited natural-record request."""
+
+    if topic_settings is not None and topic_settings.num != topic.num:
+        raise ValueError("topic settings num must match the selected topic")
 
     return NaturalScreeningRequest(
         case_id=topic.num,
@@ -78,6 +96,12 @@ def challenge_topic_request(
             verification_status=VerificationStatus.VERIFIED,
         ),
         candidate_count=candidate_count,
+        patient_burden_input=(
+            None if topic_settings is None else topic_settings.patient_burden_input
+        ),
+        acquisition_paths=(
+            [] if topic_settings is None else topic_settings.acquisition_paths
+        ),
     )
 
 
@@ -220,6 +244,7 @@ def materialize_prepared_topic(
 __all__ = [
     "add_direct_input_options",
     "challenge_topic_request",
+    "load_challenge_topic_settings",
     "load_challenge_topics",
     "materialize_prepared_topic",
     "select_challenge_topics",
