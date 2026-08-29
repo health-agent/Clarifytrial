@@ -268,7 +268,31 @@ def test_report_includes_budget_frontier_and_copies_its_figures(
             }
         )
     (frontier / "frontier.json").write_text(
-        json.dumps({"patient_count": 10, "rows": rows}),
+        json.dumps(
+            {
+                "patient_count": 10,
+                "rows": rows,
+                "tight_budget_comparison": {
+                    "action_budget": 1,
+                    "baseline_arm": "fixed_order",
+                    "baseline_trial_status_recovery": 0.63,
+                    "clarifytrial_trial_status_recovery": 0.77,
+                    "trial_status_recovery_difference": 0.14,
+                    "baseline_resolved_trials_per_action": 2.2,
+                    "clarifytrial_resolved_trials_per_action": 2.9,
+                    "paired_clarifytrial_vs_fixed": {
+                        "baseline_arm": "fixed_order",
+                        "patient_count": 10,
+                        "mean_recovery_difference": 0.14,
+                        "clarifytrial_better_patient_count": 4,
+                        "equal_patient_count": 6,
+                        "clarifytrial_worse_patient_count": 0,
+                        "two_sided_exact_sign_test_p": 0.125,
+                    },
+                    "paired_clarifytrial_vs_immediate_coverage": None,
+                },
+            }
+        ),
         encoding="utf-8",
     )
     for name in (
@@ -286,6 +310,10 @@ def test_report_includes_budget_frontier_and_copies_its_figures(
     report = (output / "report.md").read_text(encoding="utf-8")
     assert "합성 환자 10명에게 확인 기회를 1회부터 1회까지" in report
     assert "실제 참가 가능 후보로 확정" in report
+    assert "확인 기회가 1번뿐일 때" in report
+    assert "추가 정보 한 건당 보류 상태를 끝낸 시험" in report
+    assert "63.0%" in report
+    assert "77.0%" in report
     assert (output / "candidate-rescue-by-budget.svg").is_file()
 
 

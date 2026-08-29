@@ -3,7 +3,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from clarifytrial.app.evaluation import _metrics, run_full_workflow_evaluation
+from clarifytrial.app.evaluation import (
+    _aggregate,
+    _metrics,
+    run_full_workflow_evaluation,
+)
 from clarifytrial.llm import DeterministicWorkflowModel
 
 
@@ -63,6 +67,18 @@ def test_full_workflow_evaluation_uses_four_arms_and_batched_calls(
         for item in case_rows
         if item["scenario"] == "all_answers_available"
     }
+    normal_rows = [
+        item for item in case_rows if item["scenario"] == "all_answers_available"
+    ]
+    assert _aggregate(normal_rows) == _aggregate(list(reversed(normal_rows)))
+    current_metrics = next(
+        item for item in result["arm_metrics"] if item["arm"] == "clarifytrial"
+    )
+    if current_metrics["total_action_count"]:
+        assert current_metrics["resolved_trials_per_action"] == (
+            current_metrics["resolved_trial_count"]
+            / current_metrics["total_action_count"]
+        )
     unavailable_rows = [
         item
         for item in case_rows

@@ -435,10 +435,21 @@ def _aggregate(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
             grouped[item["arm"]].append(item)
     result = []
     for arm in _ARMS:
-        items = grouped.get(arm, [])
+        items = sorted(
+            grouped.get(arm, []),
+            key=lambda item: (
+                str(item.get("patient_id", "")),
+                str(item.get("scenario", "")),
+                str(item.get("group_id", "")),
+            ),
+        )
         if not items:
             continue
         trial_count = sum(item["metrics"]["trial_count"] for item in items)
+        total_action_count = sum(int(item["action_count"]) for item in items)
+        resolved_trial_count = sum(
+            int(item["metrics"]["unresolved_to_resolved"]) for item in items
+        )
         rescue_opportunities = sum(
             item["metrics"]["rescue_opportunity_count"] for item in items
         )
@@ -475,6 +486,7 @@ def _aggregate(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
                     for item in items
                 )
                 / trial_count,
+                "total_action_count": total_action_count,
                 "mean_action_count": mean(item["action_count"] for item in items),
                 "unavailable_action_count": sum(
                     item["unavailable_action_count"] for item in items
@@ -484,6 +496,12 @@ def _aggregate(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
                 ),
                 "mean_unresolved_to_resolved": mean(
                     item["metrics"]["unresolved_to_resolved"] for item in items
+                ),
+                "resolved_trial_count": resolved_trial_count,
+                "resolved_trials_per_action": (
+                    resolved_trial_count / total_action_count
+                    if total_action_count
+                    else None
                 ),
                 "false_candidate_removals": sum(
                     item["metrics"]["false_candidate_removals"] for item in items

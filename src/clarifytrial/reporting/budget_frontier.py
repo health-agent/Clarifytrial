@@ -61,6 +61,36 @@ def _auc(rows: list[dict[str, Any]], metric: str) -> float | None:
     return area / (points[-1][0] - points[0][0])
 
 
+def _resolved_trials_per_action(metrics: dict[str, Any]) -> float | None:
+    stored = metrics.get("resolved_trials_per_action")
+    if stored is not None:
+        return float(stored)
+    action_count = float(metrics.get("mean_action_count", 0))
+    if action_count <= 0:
+        return None
+    return float(metrics.get("mean_unresolved_to_resolved", 0)) / action_count
+
+
+def _paired_comparisons(
+    summaries: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    rows = []
+    for summary in summaries:
+        budget = int(summary["action_budget"])
+        for key in (
+            "paired_clarifytrial_vs_fixed",
+            "paired_clarifytrial_vs_immediate_coverage",
+        ):
+            comparison = summary.get(key)
+            if not isinstance(comparison, dict):
+                continue
+            rows.append({"action_budget": budget, **comparison})
+    return sorted(
+        rows,
+        key=lambda item: (int(item["action_budget"]), str(item["baseline_arm"])),
+    )
+
+
 def _line_svg(
     *,
     title: str,
@@ -165,6 +195,7 @@ def build_budget_frontier(
         budget = int(summary["action_budget"])
         for metrics in summary["arm_metrics"]:
             row = {"action_budget": budget, **metrics}
+            row["resolved_trials_per_action"] = _resolved_trials_per_action(metrics)
             row["confirmed_rescue_rate_ci95"] = _wilson(
                 int(metrics.get("confirmed_rescue_count", 0)),
                 int(metrics.get("rescue_opportunity_count", 0)),
@@ -197,6 +228,67 @@ def build_budget_frontier(
             }
         )
 
+    paired_comparisons = _paired_comparisons(summaries)
+    positive_budgets = sorted(item for item in budgets if item > 0)
+    tight_budget_comparison = None
+    if positive_budgets:
+        tight_budget = positive_budgets[0]
+        tight_rows = {
+            str(item["arm"]): item
+            for item in rows
+            if int(item["action_budget"]) == tight_budget
+        }
+        fixed = tight_rows.get("fixed_order")
+        current = tight_rows.get("clarifytrial")
+        immediate = tight_rows.get("immediate_coverage")
+        paired_fixed = next(
+            (
+                item
+                for item in paired_comparisons
+                if int(item["action_budget"]) == tight_budget
+                and item["baseline_arm"] == "fixed_order"
+            ),
+            None,
+        )
+        paired_immediate = next(
+            (
+                item
+                for item in paired_comparisons
+                if int(item["action_budget"]) == tight_budget
+                and item["baseline_arm"] == "immediate_coverage"
+            ),
+            None,
+        )
+        if fixed is not None and current is not None:
+            tight_budget_comparison = {
+                "action_budget": tight_budget,
+                "baseline_arm": "fixed_order",
+                "baseline_trial_status_recovery": fixed["trial_status_recovery"],
+                "clarifytrial_trial_status_recovery": current[
+                    "trial_status_recovery"
+                ],
+                "trial_status_recovery_difference": (
+                    current["trial_status_recovery"]
+                    - fixed["trial_status_recovery"]
+                ),
+                "baseline_resolved_trials_per_action": fixed.get(
+                    "resolved_trials_per_action"
+                ),
+                "clarifytrial_resolved_trials_per_action": current.get(
+                    "resolved_trials_per_action"
+                ),
+                "paired_clarifytrial_vs_fixed": paired_fixed,
+                "immediate_coverage_trial_status_recovery": (
+                    None if immediate is None else immediate["trial_status_recovery"]
+                ),
+                "immediate_coverage_resolved_trials_per_action": (
+                    None
+                    if immediate is None
+                    else immediate.get("resolved_trials_per_action")
+                ),
+                "paired_clarifytrial_vs_immediate_coverage": paired_immediate,
+            }
+
     payload = {
         "protocol_id": "clarifytrial-budget-frontier-v1",
         "model": first["model"],
@@ -207,6 +299,8 @@ def build_budget_frontier(
         "broad_search_metrics": first.get("broad_search_metrics"),
         "rows": sorted(rows, key=lambda row: (row["action_budget"], row["arm"])),
         "arm_summaries": arm_summaries,
+        "paired_comparisons": paired_comparisons,
+        "tight_budget_comparison": tight_budget_comparison,
     }
     destination = Path(output_dir)
     destination.mkdir(parents=True, exist_ok=True)
@@ -230,6 +324,8 @@ def build_budget_frontier(
             "false_preservation_resolution_rate",
             "trial_status_recovery",
             "mean_action_count",
+            "resolved_trial_count",
+            "resolved_trials_per_action",
             "new_test_count",
             "additional_visit_count",
         ]
@@ -265,20 +361,68 @@ def build_budget_frontier(
             "함께 계산했다."
         ),
         "",
-        "| 확인 가능 횟수 | 정보 선택 방법 | 실제 후보로 확정 | 결국 제외될 후보 정리 | 전체 시험 판단 일치 | 실제 사용한 확인 수 |",
-        "|---:|---|---:|---:|---:|---:|",
+        "| 확인 가능 횟수 | 정보 선택 방법 | 실제 후보로 확정 | 결국 제외될 후보 정리 | 전체 시험 판단 일치 | 실제 사용한 확인 수 | 정보 한 건당 판단을 끝낸 시험 |",
+        "|---:|---|---:|---:|---:|---:|---:|",
     ]
     for row in payload["rows"]:
         if row["arm"] == "no_questions" and row["action_budget"] != min(budgets):
             continue
         rescue = row.get("confirmed_rescue_rate")
         cleanup = row.get("false_preservation_resolution_rate")
+        efficiency = row.get("resolved_trials_per_action")
+        efficiency_text = "해당 없음" if efficiency is None else f"{efficiency:.2f}개"
         lines.append(
             f"| {row['action_budget']} | {_ARM_LABELS.get(row['arm'], row['arm'])} | "
             f"{'해당 없음' if rescue is None else f'{rescue:.1%}'} | "
             f"{'해당 없음' if cleanup is None else f'{cleanup:.1%}'} | "
-            f"{row['trial_status_recovery']:.1%} | {row['mean_action_count']:.2f}회 |"
+            f"{row['trial_status_recovery']:.1%} | {row['mean_action_count']:.2f}회 | "
+            f"{efficiency_text} |"
         )
+    tight = payload["tight_budget_comparison"]
+    if isinstance(tight, dict):
+        paired_fixed = tight.get("paired_clarifytrial_vs_fixed")
+        lines.extend(
+            [
+                "",
+                f"## 확인 기회가 {tight['action_budget']}번뿐일 때",
+                "",
+                (
+                    "입력 파일에 적힌 순서대로 확인한 경우와, 여러 시험에 영향을 주는 "
+                    "정보를 먼저 확인한 경우를 같은 환자에서 비교했다."
+                ),
+                "",
+                "| 정보 선택 방법 | 전체 시험 판단 일치 | 정보 한 건당 판단을 끝낸 시험 |",
+                "|---|---:|---:|",
+                f"| 입력 파일에 적힌 순서 | {tight['baseline_trial_status_recovery']:.1%} | {tight['baseline_resolved_trials_per_action']:.2f}개 |",
+                f"| 여러 시험에 영향을 주는 정보 우선 | {tight['clarifytrial_trial_status_recovery']:.1%} | {tight['clarifytrial_resolved_trials_per_action']:.2f}개 |",
+            ]
+        )
+        if isinstance(paired_fixed, dict):
+            lines.extend(
+                [
+                    "",
+                    (
+                        f"환자 {paired_fixed['patient_count']}명 가운데 정보 영향도를 반영한 "
+                        f"방법이 더 좋았던 환자는 {paired_fixed['clarifytrial_better_patient_count']}명, "
+                        f"같았던 환자는 {paired_fixed['equal_patient_count']}명, 더 낮았던 환자는 "
+                        f"{paired_fixed['clarifytrial_worse_patient_count']}명이었다. 차이가 없는 환자를 "
+                        "제외한 양측 정확 부호 검정의 p값은 "
+                        f"{paired_fixed['two_sided_exact_sign_test_p']:.6f}이었다."
+                    ),
+                ]
+            )
+        paired_immediate = tight.get("paired_clarifytrial_vs_immediate_coverage")
+        if (
+            isinstance(paired_immediate, dict)
+            and paired_immediate["clarifytrial_better_patient_count"] == 0
+            and paired_immediate["clarifytrial_worse_patient_count"] == 0
+        ):
+            lines.extend(
+                [
+                    "",
+                    "이 조건에서는 남은 확인 횟수 전체를 계산한 방법과 현재 영향이 가장 큰 정보를 바로 고른 방법의 결과가 같았다.",
+                ]
+            )
     lines.extend(
         [
             "",

@@ -679,6 +679,91 @@ def build_research_report(
                         "value": row[name],
                     }
                 )
+        tight = frontier.get("tight_budget_comparison")
+        if isinstance(tight, dict):
+            paired_fixed = tight.get("paired_clarifytrial_vs_fixed")
+            sections.extend(
+                [
+                    "",
+                    f"### 확인 기회가 {tight['action_budget']}번뿐일 때",
+                    "",
+                    (
+                        "질문 순서의 차이가 가장 잘 드러나는 제한된 상황을 따로 봤다. "
+                        "입력 파일에 적힌 순서와, 여러 시험에 영향을 주는 정보를 먼저 "
+                        "확인하는 방법을 같은 환자에서 비교했다."
+                    ),
+                    "",
+                    "| 정보를 고른 방법 | 전체 시험 판단 일치 | 추가 정보 한 건당 보류 상태를 끝낸 시험 |",
+                    "|---|---:|---:|",
+                    f"| 입력 파일에 적힌 순서 | {tight['baseline_trial_status_recovery']:.1%} | {tight['baseline_resolved_trials_per_action']:.2f}개 |",
+                    f"| 여러 시험에 영향을 주는 정보 우선 | {tight['clarifytrial_trial_status_recovery']:.1%} | {tight['clarifytrial_resolved_trials_per_action']:.2f}개 |",
+                ]
+            )
+            metric_rows.extend(
+                [
+                    {
+                        "section": "tight_budget_comparison",
+                        "arm": "fixed_order",
+                        "metric": "trial_status_recovery",
+                        "value": tight["baseline_trial_status_recovery"],
+                    },
+                    {
+                        "section": "tight_budget_comparison",
+                        "arm": "clarifytrial",
+                        "metric": "trial_status_recovery",
+                        "value": tight["clarifytrial_trial_status_recovery"],
+                    },
+                    {
+                        "section": "tight_budget_comparison",
+                        "arm": "fixed_order",
+                        "metric": "resolved_trials_per_action",
+                        "value": tight["baseline_resolved_trials_per_action"],
+                    },
+                    {
+                        "section": "tight_budget_comparison",
+                        "arm": "clarifytrial",
+                        "metric": "resolved_trials_per_action",
+                        "value": tight["clarifytrial_resolved_trials_per_action"],
+                    },
+                ]
+            )
+            if isinstance(paired_fixed, dict):
+                sections.extend(
+                    [
+                        "",
+                        (
+                            f"환자 {paired_fixed['patient_count']}명 중 여러 시험에 영향을 주는 "
+                            f"정보를 먼저 확인한 방법이 더 좋았던 환자는 "
+                            f"{paired_fixed['clarifytrial_better_patient_count']}명, 같았던 환자는 "
+                            f"{paired_fixed['equal_patient_count']}명, 더 낮았던 환자는 "
+                            f"{paired_fixed['clarifytrial_worse_patient_count']}명이었다. 차이가 없는 "
+                            "환자를 제외한 양측 정확 부호 검정의 p값은 "
+                            f"{paired_fixed['two_sided_exact_sign_test_p']:.6f}이었다."
+                        ),
+                    ]
+                )
+                metric_rows.append(
+                    {
+                        "section": "tight_budget_comparison",
+                        "arm": "clarifytrial_vs_fixed_order",
+                        "metric": "two_sided_exact_sign_test_p",
+                        "value": paired_fixed["two_sided_exact_sign_test_p"],
+                    }
+                )
+            paired_immediate = tight.get(
+                "paired_clarifytrial_vs_immediate_coverage"
+            )
+            if (
+                isinstance(paired_immediate, dict)
+                and paired_immediate["clarifytrial_better_patient_count"] == 0
+                and paired_immediate["clarifytrial_worse_patient_count"] == 0
+            ):
+                sections.extend(
+                    [
+                        "",
+                        "이 조건에서는 남은 확인 횟수 전체를 계산한 방법과 현재 영향이 가장 큰 정보를 바로 고른 방법의 결과가 같았다.",
+                    ]
+                )
         sections.extend(
             [
                 "",
