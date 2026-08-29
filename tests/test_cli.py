@@ -57,7 +57,6 @@ def test_stale_lab_cli_runs_real_episode_without_external_api(tmp_path: Path) ->
     assert payload["initial_state_score"]["action_acceptable"] is True
     assert payload["model_calls_by_role"] == {
         "coordinator": 4,
-        "matcher_judge": 2,
         "next_evidence": 1,
     }
 
@@ -68,6 +67,10 @@ def test_stale_lab_cli_runs_real_episode_without_external_api(tmp_path: Path) ->
     )
     assert any(event["actor"] == "decision_rules" for event in events)
     assert any(event["actor"] == "mechanical_checks" for event in events)
+    assert any(
+        event["event"] == "structured_criteria_applied_without_model"
+        for event in events
+    )
     assert any(event["actor"] == "synthetic_information_tools" for event in events)
 
 

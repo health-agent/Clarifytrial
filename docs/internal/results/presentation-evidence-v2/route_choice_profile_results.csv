@@ -1,0 +1,4 @@
+﻿patient_profile_id,masked_case_count,base_patient_count,mean_trial_status_recovery,mean_action_count,new_test_total,additional_visit_total,mean_summed_route_delay_hours,mean_cumulative_cost_rank,existing_official_result_count,new_noninvasive_test_count,scope,same_final_judgment_masked_case_count
+low_extra_burden,40,20,0.835,2.125,0,0,153.0,2.125,85,0,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다.",40
+mobility_cost_constrained,40,20,0.835,2.125,0,0,153.0,2.125,85,0,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다.",40
+time_urgent,40,20,0.835,2.125,85,85,17.0,4.25,0,85,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다.",40

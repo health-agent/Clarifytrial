@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import json
-from collections import defaultdict
+from collections import Counter, defaultdict
 from collections.abc import Iterable, Mapping, Sequence
+from datetime import datetime, timezone
 from pathlib import Path
 from statistics import mean
+from time import perf_counter
 from typing import Any
 
 from ..contracts import CandidateStatus, ConfirmationStatus
@@ -36,6 +38,7 @@ from .burden_contracts import (
 from .burden_policy import (
     benchmark_patient_profiles,
     build_acquisition_catalog,
+    build_route_choice_catalog,
     current_fact_impacts,
     explicit_limit_violations,
     option_cost_rank,
@@ -49,6 +52,7 @@ from .public_benchmark import (
     build_public_case,
     load_public_benchmark_spec,
 )
+from .statistics import stratified_bootstrap_mean
 
 
 _MEDICAL_DISCLAIMER = DEFAULT_MEDICAL_DISCLAIMER
@@ -416,11 +420,18 @@ def run_burden_policy(
     patient_profile: PatientBurdenProfile,
     availability: AvailabilityStructure,
     policy_id: AcquisitionPolicyId,
+    acquisition_catalog: Mapping[
+        str, Sequence[AcquisitionOption]
+    ] | None = None,
 ) -> BurdenPolicyRun:
     """Replay one policy; approvals are explicit synthetic benchmark events."""
 
     view = case.public_policy_view()
-    catalog = build_acquisition_catalog(view, availability)
+    catalog = (
+        build_acquisition_catalog(view, availability)
+        if acquisition_catalog is None
+        else acquisition_catalog
+    )
     state = case.initial_patient_state()
     snapshot = evaluate_interactive_case(case, state)
     full = evaluate_interactive_case(case, case.full_patient_state)
@@ -786,6 +797,7 @@ def _adoption_gate(runs: Sequence[BurdenPolicyRun]) -> dict[str, Any]:
         "development_and_heldout_direction_consistent": direction_gate,
     }
     return {
+        "interpretation_status": "legacy_mixed_effect_do_not_use_as_single_policy_effect",
         "candidate_policy_id": AcquisitionPolicyId.PATIENT_ADAPTIVE.value,
         "baseline_policy_id": AcquisitionPolicyId.FIXED_ROUTE_COST.value,
         "development": development,
@@ -793,6 +805,448 @@ def _adoption_gate(runs: Sequence[BurdenPolicyRun]) -> dict[str, Any]:
         "gates": gates,
         "adoption_gate_passed": all(gates.values()),
     }
+
+
+def _mechanism_ablation(runs: Sequence[BurdenPolicyRun]) -> dict[str, Any]:
+    """Separate hard path limits from ranking among the remaining paths."""
+
+    heldout = [item for item in runs if item.split == "heldout"]
+    by_key = {
+        (
+            item.base_profile_id,
+            item.mask_id,
+            item.patient_profile_id,
+            item.availability_structure.value,
+            item.policy_id.value,
+        ): item
+        for item in heldout
+    }
+
+    def compare(
+        *,
+        candidate: AcquisitionPolicyId,
+        baseline: AcquisitionPolicyId,
+        patient_profile_id: str,
+    ) -> dict[str, Any]:
+        pairs = []
+        for item in heldout:
+            if (
+                item.patient_profile_id != patient_profile_id
+                or item.policy_id is not candidate
+            ):
+                continue
+            baseline_run = by_key[
+                (
+                    item.base_profile_id,
+                    item.mask_id,
+                    item.patient_profile_id,
+                    item.availability_structure.value,
+                    baseline.value,
+                )
+            ]
+            pairs.append((item, baseline_run))
+        by_patient: dict[str, list[tuple[BurdenPolicyRun, BurdenPolicyRun]]] = (
+            defaultdict(list)
+        )
+        disease_by_patient = {}
+        for candidate_run, baseline_run in pairs:
+            by_patient[candidate_run.base_profile_id].append(
+                (candidate_run, baseline_run)
+            )
+            disease_by_patient[candidate_run.base_profile_id] = (
+                candidate_run.disease_group
+            )
+        paired_differences: dict[str, dict[str, list[float]]] = {
+            metric: defaultdict(list)
+            for metric in (
+                "trial_status_recovery",
+                "burden_feasible_trial_status_recovery",
+                "cumulative_delay_hours",
+                "pending_trial_count",
+                "fully_resolved_setting",
+            )
+        }
+
+        def metric_value(run: BurdenPolicyRun, metric: str) -> float:
+            if metric == "pending_trial_count":
+                return float(len(run.final_trial_groups.pending_trial_ids))
+            if metric == "fully_resolved_setting":
+                return float(not run.final_trial_groups.pending_trial_ids)
+            return float(getattr(run.metrics, metric))
+
+        for patient_id, patient_pairs in sorted(by_patient.items()):
+            for metric, differences_by_disease in paired_differences.items():
+                differences_by_disease[disease_by_patient[patient_id]].append(
+                    mean(
+                        metric_value(candidate_run, metric)
+                        - metric_value(baseline_run, metric)
+                        for candidate_run, baseline_run in patient_pairs
+                    )
+                )
+
+        def average(
+            policy_position: int,
+            metric: str,
+            selected_pairs: Sequence[
+                tuple[BurdenPolicyRun, BurdenPolicyRun]
+            ] = pairs,
+        ) -> float:
+            return mean(
+                metric_value(pair[policy_position], metric)
+                for pair in selected_pairs
+            )
+
+        metrics = (
+            "trial_status_recovery",
+            "burden_feasible_trial_status_recovery",
+            "cumulative_delay_hours",
+            "cumulative_cost_rank",
+            "cumulative_physical_burden",
+            "new_test_count",
+            "additional_visit_count",
+            "explicit_limit_violations",
+            "action_count",
+            "pending_trial_count",
+            "fully_resolved_setting",
+        )
+        count_metrics = (
+            "new_test_count",
+            "additional_visit_count",
+            "explicit_limit_violations",
+            "action_count",
+            "pending_trial_count",
+            "fully_resolved_setting",
+        )
+        return {
+            "candidate_policy_id": candidate.value,
+            "baseline_policy_id": baseline.value,
+            "patient_profile_id": patient_profile_id,
+            "base_patient_count": len(by_patient),
+            "setting_pair_count": len(pairs),
+            "metric_means": {
+                metric: {
+                    "candidate": average(0, metric),
+                    "baseline": average(1, metric),
+                    "difference": average(0, metric) - average(1, metric),
+                }
+                for metric in metrics
+            },
+            "metric_totals": {
+                metric: {
+                    "candidate": sum(
+                        metric_value(pair[0], metric) for pair in pairs
+                    ),
+                    "baseline": sum(
+                        metric_value(pair[1], metric) for pair in pairs
+                    ),
+                }
+                for metric in count_metrics
+            },
+            "paired_inference": {
+                metric: stratified_bootstrap_mean(
+                    differences_by_disease,
+                    cluster_unit="base_patient",
+                )
+                for metric, differences_by_disease in paired_differences.items()
+            },
+            "by_availability_structure": {
+                availability.value: {
+                    "setting_pair_count": len(selected_pairs),
+                    "metric_means": {
+                        metric: {
+                            "candidate": average(0, metric, selected_pairs),
+                            "baseline": average(1, metric, selected_pairs),
+                            "difference": (
+                                average(0, metric, selected_pairs)
+                                - average(1, metric, selected_pairs)
+                            ),
+                        }
+                        for metric in metrics
+                    },
+                }
+                for availability in AvailabilityStructure
+                for selected_pairs in (
+                    [
+                        pair
+                        for pair in pairs
+                        if pair[0].availability_structure is availability
+                    ],
+                )
+            },
+        }
+
+    ranking_comparisons = []
+    for profile_id in (
+        "low_extra_burden",
+        "mobility_cost_constrained",
+        "time_urgent",
+    ):
+        comparison = compare(
+            candidate=AcquisitionPolicyId.PATIENT_LIMITS_ONLY,
+            baseline=AcquisitionPolicyId.PATIENT_LIMITS_ONLY,
+            patient_profile_id=profile_id,
+        )
+        comparison.update(
+            {
+                "candidate_policy_id": (
+                    "patient_preference_ranking_not_identified"
+                ),
+                "baseline_policy_id": "patient_limits_only",
+                "comparison_status": "not_identified",
+                "question_order_control": (
+                    "patient_limits_only on both sides"
+                ),
+            }
+        )
+        ranking_comparisons.append(comparison)
+    return {
+        "disallowed_path_filter": {
+            "description": "환자가 명시적으로 금지한 확인 경로만 먼저 제거",
+            **compare(
+            candidate=AcquisitionPolicyId.PATIENT_LIMITS_ONLY,
+            baseline=AcquisitionPolicyId.EXACT_FIXED_ROUTE,
+            patient_profile_id="mobility_cost_constrained",
+            ),
+        },
+        "remaining_feasible_path_ranking": {
+            "effect_identification": "not_identified_in_current_route_catalog",
+            "reason": (
+                "영향도가 같은 사실마다 비교 가능한 복수 경로가 남지 않아 "
+                "환자 성향 순서가 선택을 바꿀 기회가 없었다."
+            ),
+            "comparisons": ranking_comparisons,
+        },
+        "interpretation_limit": (
+            "금지 경로 제거와 남은 경로의 환자 성향 순서는 합성 경로 선택 "
+            "효과다. 임상 정확도나 금전적 비용-효용 분석이 아니다."
+        ),
+    }
+
+
+def _route_choice_evaluation(spec) -> tuple[list[BurdenPolicyRun], dict[str, Any]]:
+    """Exercise a controlled speed-versus-burden choice on heldout patients."""
+
+    patient_profiles = benchmark_patient_profiles()
+    runs: list[BurdenPolicyRun] = []
+    for group in spec.groups:
+        for base_profile in group.profiles:
+            if base_profile.split != "heldout":
+                continue
+            for mask in group.masks:
+                case = build_public_case(group, base_profile, mask, action_budget=3)
+                catalog = build_route_choice_catalog(case.public_policy_view())
+                for patient_profile in patient_profiles:
+                    runs.append(
+                        run_burden_policy(
+                            case=case,
+                            base_profile_id=base_profile.profile_id,
+                            split=base_profile.split,
+                            mask_id=mask.mask_id,
+                            patient_profile=patient_profile,
+                            availability=(
+                                AvailabilityStructure.EXISTING_DATA_CENTERED
+                            ),
+                            policy_id=AcquisitionPolicyId.PATIENT_ADAPTIVE,
+                            acquisition_catalog=catalog,
+                        )
+                    )
+
+    def selected_modes(run: BurdenPolicyRun) -> list[str]:
+        return [
+            record.decision.selected_option.acquisition_mode.value
+            for record in run.action_history
+            if record.decision.selected_option is not None
+        ]
+
+    profile_metrics = []
+    for profile in patient_profiles:
+        selected = [
+            item for item in runs if item.patient_profile_id == profile.profile_id
+        ]
+        mode_counts = Counter(
+            mode for item in selected for mode in selected_modes(item)
+        )
+        profile_metrics.append(
+            {
+                "patient_profile_id": profile.profile_id,
+                "masked_case_count": len(selected),
+                "base_patient_count": len(
+                    {item.base_profile_id for item in selected}
+                ),
+                "mean_trial_status_recovery": mean(
+                    item.metrics.trial_status_recovery for item in selected
+                ),
+                "mean_action_count": mean(
+                    item.metrics.action_count for item in selected
+                ),
+                "new_test_total": sum(
+                    item.metrics.new_test_count for item in selected
+                ),
+                "additional_visit_total": sum(
+                    item.metrics.additional_visit_count for item in selected
+                ),
+                "mean_summed_route_delay_hours": mean(
+                    item.metrics.cumulative_delay_hours for item in selected
+                ),
+                "mean_cumulative_cost_rank": mean(
+                    item.metrics.cumulative_cost_rank for item in selected
+                ),
+                "selected_mode_counts": dict(sorted(mode_counts.items())),
+            }
+        )
+
+    by_setting: dict[
+        tuple[str, str], dict[str, BurdenPolicyRun]
+    ] = defaultdict(dict)
+    for run in runs:
+        by_setting[(run.base_profile_id, run.mask_id)][
+            run.patient_profile_id
+        ] = run
+    same_final = 0
+    same_facts = 0
+    for profile_runs in by_setting.values():
+        signatures = {
+            (
+                tuple(item.final_trial_groups.confirmed_trial_ids),
+                tuple(item.final_trial_groups.pending_trial_ids),
+                tuple(item.final_trial_groups.removed_trial_ids),
+            )
+            for item in profile_runs.values()
+        }
+        same_final += len(signatures) == 1
+        same_facts += len(
+            {tuple(item.selected_fact_ids) for item in profile_runs.values()}
+        ) == 1
+
+    profile_by_id = {item.profile_id: item for item in patient_profiles}
+    comparisons = []
+    metric_names = (
+        "trial_status_recovery",
+        "cumulative_delay_hours",
+        "new_test_count",
+        "additional_visit_count",
+        "cumulative_cost_rank",
+    )
+    for candidate_id in ("mobility_cost_constrained", "time_urgent"):
+        metric_inference = {}
+        for metric_name in metric_names:
+            differences_by_disease: dict[str, list[float]] = defaultdict(list)
+            for base_profile_id in sorted(
+                {item.base_profile_id for item in runs}
+            ):
+                profile_runs = [
+                    item for item in runs if item.base_profile_id == base_profile_id
+                ]
+                disease = profile_runs[0].disease_group
+                candidate = mean(
+                    getattr(item.metrics, metric_name)
+                    for item in profile_runs
+                    if item.patient_profile_id == candidate_id
+                )
+                baseline = mean(
+                    getattr(item.metrics, metric_name)
+                    for item in profile_runs
+                    if item.patient_profile_id == "low_extra_burden"
+                )
+                differences_by_disease[disease].append(candidate - baseline)
+            metric_inference[metric_name] = stratified_bootstrap_mean(
+                differences_by_disease,
+                cluster_unit="base_patient",
+            )
+        comparisons.append(
+            {
+                "candidate_patient_profile_id": candidate_id,
+                "baseline_patient_profile_id": "low_extra_burden",
+                "candidate_preference_mode": profile_by_id[
+                    candidate_id
+                ].preference_mode.value,
+                "paired_inference": metric_inference,
+            }
+        )
+
+    return runs, {
+        "protocol_id": "clarifytrial-controlled-route-choice-v1",
+        "scope": (
+            "합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 "
+            "성능이 아니다."
+        ),
+        "base_patient_count": 20,
+        "masks_per_patient": 2,
+        "masked_case_count": 40,
+        "patient_profile_count": 3,
+        "route_choice_run_count": len(runs),
+        "options_per_missing_fact": 2,
+        "route_pair": {
+            "existing_outside_result": {
+                "delay_hours": 72,
+                "visit_required": False,
+                "direct_cost_band": "low",
+                "new_test_required": False,
+            },
+            "repeat_noninvasive_test": {
+                "delay_hours": 8,
+                "visit_required": True,
+                "direct_cost_band": "medium",
+                "new_test_required": True,
+            },
+            "answer_equivalence": (
+                "both routes release the same predeclared synthetic fact"
+            ),
+        },
+        "profile_metrics": profile_metrics,
+        "same_final_judgment_masked_case_count": same_final,
+        "same_selected_fact_order_masked_case_count": same_facts,
+        "paired_comparisons": comparisons,
+    }
+
+
+def run_public_route_choice_benchmark(
+    config_path: str | Path,
+    source_cache: str | Path,
+    output_dir: str | Path,
+) -> Path:
+    """Write the controlled heldout route-choice evaluation as its own run."""
+
+    started_at = datetime.now(timezone.utc)
+    started = perf_counter()
+    spec = load_public_benchmark_spec(config_path)
+    source_audit = audit_public_sources(spec, source_cache)
+    runs, evaluation = _route_choice_evaluation(spec)
+    plan = {
+        "protocol_id": evaluation["protocol_id"],
+        "source_protocol_id": spec.protocol_id,
+        "config_path": str(config_path),
+        "base_patient_count": evaluation["base_patient_count"],
+        "masks_per_patient": evaluation["masks_per_patient"],
+        "masked_case_count": evaluation["masked_case_count"],
+        "route_choice_run_count": len(runs),
+        "model_calls": 0,
+        "model_tokens": 0,
+        "estimated_api_cost_usd": 0.0,
+        "started_at": started_at.isoformat(),
+        "scope": evaluation["scope"],
+    }
+    destination = Path(output_dir)
+    destination.mkdir(parents=True, exist_ok=True)
+    _write_json(destination / "plan.json", plan)
+    _write_json(destination / "source-audit.json", source_audit)
+    (destination / "case-results.jsonl").write_text(
+        "".join(
+            json.dumps(item.model_dump(mode="json"), ensure_ascii=False) + "\n"
+            for item in runs
+        ),
+        encoding="utf-8",
+    )
+    summary = {
+        **plan,
+        **evaluation,
+        "finished_at": datetime.now(timezone.utc).isoformat(),
+        "runtime_seconds": perf_counter() - started,
+        "source_audit_criterion_count": len(source_audit),
+    }
+    summary_path = destination / "summary.json"
+    _write_json(summary_path, summary)
+    return summary_path
 
 
 def run_public_burden_benchmark(
@@ -836,6 +1290,8 @@ def run_public_burden_benchmark(
                         if progress is not None and setting_count % 60 == 0:
                             progress(f"completed {setting_count}/360 patient settings")
 
+    route_choice_runs, route_choice_summary = _route_choice_evaluation(spec)
+
     destination = Path(output_dir)
     destination.mkdir(parents=True, exist_ok=True)
     plan = {
@@ -848,6 +1304,7 @@ def run_public_burden_benchmark(
         "patient_setting_count": 360,
         "policy_count": len(_POLICY_IDS),
         "policy_run_count": len(runs),
+        "route_choice_run_count": len(route_choice_runs),
         "action_budget": action_budget,
         "all_information_action_budget": 5,
         "model_calls": 0,
@@ -875,6 +1332,17 @@ def run_public_burden_benchmark(
         ),
         encoding="utf-8",
     )
+    (destination / "route-choice-results.jsonl").write_text(
+        "".join(
+            json.dumps(item.model_dump(mode="json"), ensure_ascii=False) + "\n"
+            for item in route_choice_runs
+        ),
+        encoding="utf-8",
+    )
+    _write_json(
+        destination / "route-choice-summary.json",
+        route_choice_summary,
+    )
     samples = [
         item.guidance.model_dump(mode="json")
         for item in runs
@@ -887,6 +1355,7 @@ def run_public_burden_benchmark(
     _write_json(destination / "guidance-samples.json", samples)
     summary = {
         **plan,
+        "primary_burden_evaluation": "mechanism_ablation",
         "policy_metrics": _aggregate(runs, ("split", "policy_id")),
         "patient_profile_metrics": _aggregate(
             runs, ("split", "patient_profile_id", "policy_id")
@@ -894,6 +1363,8 @@ def run_public_burden_benchmark(
         "availability_metrics": _aggregate(
             runs, ("split", "availability_structure", "policy_id")
         ),
+        "mechanism_ablation": _mechanism_ablation(runs),
+        "route_choice_evaluation": route_choice_summary,
         "adoption_comparison": _adoption_gate(runs),
         "source_audit_criterion_count": len(source_audit),
     }

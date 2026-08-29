@@ -1,0 +1,4 @@
+﻿stage,feasible_information_status_match_rate,mean_pending_trial_count,pending_trial_total,fully_resolved_setting_fraction,fully_resolved_setting_count,mean_summed_route_delay_hours,mean_cost_rank,mean_physical_burden,new_test_total,additional_visit_total,explicit_limit_violation_total,action_total,base_patient_count,setting_pair_count
+1_exact_fixed_route,0.795,0.875,70.0,0.525,42.0,58.30625,0.925,0.2625,21.0,56.0,56.0,178.0,20,80
+2_apply_explicit_patient_limits,0.9125,1.2375,99.0,0.4,32.0,67.6125,0.85,0.0,0.0,0.0,0.0,160.0,20,80
+3_rank_remaining_paths_by_patient_preferences,0.9125,1.2375,99.0,0.4,32.0,67.6125,0.85,0.0,0.0,0.0,0.0,160.0,20,80

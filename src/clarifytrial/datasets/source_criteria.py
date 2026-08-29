@@ -78,6 +78,12 @@ _INFECTION_RE = re.compile(
     r"\binfection\b.{0,45}\b(?:active|severe|uncontrolled)\b)",
     re.I,
 )
+_EXPLICIT_AGE_LINE_RE = re.compile(
+    r"(?:\b(?:adults?|children)\b.{0,80}\b(?:\d+|eighteen)\b|"
+    r"\b(?:\d+|eighteen)\b.{0,35}\b(?:years?\s+old|years?\s+of\s+age)\b|"
+    r"\bages?\s+(?:\d+|eighteen)\b)",
+    re.I,
+)
 
 
 def _normalize_comparators(text: str) -> str:
@@ -541,10 +547,15 @@ def structure_trial_criteria(
         or row["source_field"] != "eligibility_text"
     ]
     ordinary_limit = max(0, maximum_criteria - len(logic_rows))
+    has_structured_age = any(row["fact_code"] == "age_years" for row in candidates)
     fallback_candidates = [
         row
         for row in _fallback_predicate_rows(record, group_id)
-        if (
+        if not (
+            has_structured_age
+            and _EXPLICIT_AGE_LINE_RE.search(str(row["source_text"]))
+        )
+        and (
             row["source_field"],
             int(row["line_number"]),
         )

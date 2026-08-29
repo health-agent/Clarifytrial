@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">공개 시험 질문 순서 결과의 입력 민감도</title>
+<desc id="desc">나이와 기본 문진 항목을 시작 자료에 넣을수록 질문 순서 차이가 36.5%포인트에서 0.44%포인트로 줄어든 결과다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#98A2B3"/></marker>
+</defs>
+<rect width="1200" height="675" fill="#F7F9FC"/>
+<text x="70.0" y="72.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="32" font-weight="700" fill="#182533" text-anchor="start">36.5%포인트의 대부분은 기본 문진을 가린 설정에서 나왔다</text>
+<text x="70.0" y="112.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="400" fill="#64748B" text-anchor="start">같은 합성 환자 30명 · 확인 기회 1회 · 두 질문 순서를 같은 정답으로 비교</text>
+<text x="655.0" y="170.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="600" fill="#64748B" text-anchor="middle">가능한 순서 전체 평균</text>
+<text x="850.0" y="170.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="600" fill="#64748B" text-anchor="middle">정보 영향 우선</text>
+<text x="1055.0" y="170.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="600" fill="#64748B" text-anchor="middle">차이</text>
+<text x="70.0" y="237.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="23" font-weight="700" fill="#17324D" text-anchor="start">처음 평가</text>
+<text x="70.0" y="271.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">나이를 포함한 기본 문진도 가림 · 첫 선택 29/30명 나이</text>
+<text x="655.0" y="253.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="31" font-weight="700" fill="#98A2B3" text-anchor="middle">40.2%</text>
+<line x1="720.0" y1="243.0" x2="785.0" y2="243.0" stroke="#7AA2F7" stroke-width="3.0" marker-end="url(#arrow)"/>
+<text x="850.0" y="253.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="31" font-weight="700" fill="#2F6FED" text-anchor="middle">76.7%</text>
+<text x="1055.0" y="253.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="29" font-weight="700" fill="#17324D" text-anchor="middle">+36.50%p</text>
+<line x1="70.0" y1="319.0" x2="1130.0" y2="319.0" stroke="#D8DEE8" stroke-width="1.5"/>
+<text x="70.0" y="387.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="23" font-weight="700" fill="#17324D" text-anchor="start">나이를 시작 자료에 넣음</text>
+<text x="70.0" y="421.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">개선 5명 · 동일 25명 · 악화 0명</text>
+<text x="655.0" y="403.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="31" font-weight="700" fill="#98A2B3" text-anchor="middle">84.6%</text>
+<line x1="720.0" y1="393.0" x2="785.0" y2="393.0" stroke="#7AA2F7" stroke-width="3.0" marker-end="url(#arrow)"/>
+<text x="850.0" y="403.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="31" font-weight="700" fill="#2F6FED" text-anchor="middle">88.0%</text>
+<text x="1055.0" y="403.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="29" font-weight="700" fill="#17324D" text-anchor="middle">+3.44%p</text>
+<text x="1055.0" y="433.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="15" font-weight="400" fill="#64748B" text-anchor="middle">95% 범위 +1.1~+6.1%p</text>
+<line x1="70.0" y1="469.0" x2="1130.0" y2="469.0" stroke="#D8DEE8" stroke-width="1.5"/>
+<text x="70.0" y="537.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="23" font-weight="700" fill="#17324D" text-anchor="start">세 기본 항목을 시작 자료에 넣음</text>
+<text x="70.0" y="571.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">나이·임신/수유·활동성 감염 · 개선 1명 · 동일 29명 · 악화 0명</text>
+<text x="655.0" y="553.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="31" font-weight="700" fill="#98A2B3" text-anchor="middle">94.2%</text>
+<line x1="720.0" y1="543.0" x2="785.0" y2="543.0" stroke="#7AA2F7" stroke-width="3.0" marker-end="url(#arrow)"/>
+<text x="850.0" y="553.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="31" font-weight="700" fill="#2F6FED" text-anchor="middle">94.7%</text>
+<text x="1055.0" y="553.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="29" font-weight="700" fill="#17324D" text-anchor="middle">+0.44%p</text>
+<text x="1055.0" y="583.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="15" font-weight="400" fill="#64748B" text-anchor="middle">95% 범위 +0.0~+1.3%p</text>
+<text x="70.0" y="650.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">세 기본 항목을 넣은 뒤의 +0.44%p는 1명에서만 생겼다. 현재 공개 시험 묶음의 실사용 질문 절감 효과로 넓혀 말하지 않는다.</text>
+</svg>

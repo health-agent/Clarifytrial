@@ -10,6 +10,7 @@ from clarifytrial.interactive import (
     AvailabilityStructure,
     benchmark_patient_profiles,
     build_acquisition_catalog,
+    build_route_choice_catalog,
     build_guidance_output,
     build_patient_burden_profile,
     build_public_case,
@@ -24,8 +25,13 @@ from clarifytrial.interactive.burden_contracts import (
     PatientInputStatus,
     PreferenceMode,
 )
+from clarifytrial.interactive.burden_policy import (
+    current_fact_impacts,
+    explicit_limit_violations,
+)
 from clarifytrial.contracts import NextAction
 from clarifytrial.interactive.oracle import evaluate_interactive_case
+from clarifytrial.interactive.stress import build_stress_case
 
 
 CONFIG_PATH = Path("configs/interactive_public_benchmark_v1.json")
@@ -106,18 +112,13 @@ def test_existing_result_is_selected_before_a_new_test_for_the_same_fact() -> No
         existing_choice.selected_option.acquisition_mode
         is AcquisitionMode.EXISTING_OFFICIAL_RESULT
     )
-    assert any(
+    assert not any(
         "기존 자료 경로 우선" in item.reason
         for item in existing_choice.decision_trace.removed_options
     )
-    assert all(
-        item.acquisition_mode
-        in {
-            AcquisitionMode.INTERNAL_RECORD,
-            AcquisitionMode.OUTSIDE_RECORD,
-            AcquisitionMode.EXISTING_OFFICIAL_RESULT,
-        }
-        for item in existing_choice.alternative_options
+    assert any(
+        "다른 경로보다 모든 부담" in item.reason
+        for item in existing_choice.decision_trace.removed_options
     )
 
     new_needed = build_acquisition_catalog(
@@ -134,6 +135,205 @@ def test_existing_result_is_selected_before_a_new_test_for_the_same_fact() -> No
     assert new_choice.selected_option is not None
     assert new_choice.selected_option.new_test_required is True
     assert new_choice.action_status is ActionStatus.AWAITING_CLINICIAN_AUTHORIZATION
+
+
+def test_controlled_route_choice_uses_patient_preferences_after_impact() -> None:
+    _, _, _, case = _first_case()
+    full_view = case.public_policy_view()
+    target = full_view.available_information[0]
+    view = full_view.model_copy(update={"available_information": [target]})
+    snapshot = evaluate_interactive_case(case, case.initial_patient_state())
+    catalog = build_route_choice_catalog(view)
+    profiles = {item.profile_id: item for item in benchmark_patient_profiles()}
+
+    choices = {
+        profile_id: select_acquisition_option(
+            view=view,
+            snapshot=snapshot,
+            revealed_fact_ids=frozenset(),
+            catalog=catalog,
+            profile=profile,
+            policy_id=AcquisitionPolicyId.PATIENT_ADAPTIVE,
+        )
+        for profile_id, profile in profiles.items()
+    }
+
+    assert (
+        choices["low_extra_burden"].selected_option.acquisition_mode
+        is AcquisitionMode.EXISTING_OFFICIAL_RESULT
+    )
+    assert (
+        choices["mobility_cost_constrained"].selected_option.acquisition_mode
+        is AcquisitionMode.EXISTING_OFFICIAL_RESULT
+    )
+    assert (
+        choices["time_urgent"].selected_option.acquisition_mode
+        is AcquisitionMode.NEW_NONINVASIVE_TEST
+    )
+    assert choices["time_urgent"].selected_option.expected_delay_hours == 8
+    assert choices["low_extra_burden"].selected_option.expected_delay_hours == 72
+
+
+def test_default_patient_policy_uses_current_impact_before_route_preference() -> None:
+    case = build_stress_case(
+        "fully_separated",
+        0,
+        seed=20260830,
+        action_budget=3,
+    )
+    view = case.public_policy_view()
+    snapshot = evaluate_interactive_case(case, case.initial_patient_state())
+    catalog = build_acquisition_catalog(
+        view,
+        AvailabilityStructure.EXISTING_DATA_CENTERED,
+    )
+    profile = benchmark_patient_profiles()[0]
+
+    current = select_acquisition_option(
+        view=view,
+        snapshot=snapshot,
+        revealed_fact_ids=frozenset(),
+        catalog=catalog,
+        profile=profile,
+        policy_id=AcquisitionPolicyId.PATIENT_ADAPTIVE,
+    )
+    impact = select_acquisition_option(
+        view=view,
+        snapshot=snapshot,
+        revealed_fact_ids=frozenset(),
+        catalog=catalog,
+        profile=profile,
+        policy_id=AcquisitionPolicyId.IMPACT_ONLY,
+    )
+    exact = select_acquisition_option(
+        view=view,
+        snapshot=snapshot,
+        revealed_fact_ids=frozenset(),
+        catalog=catalog,
+        profile=profile,
+        policy_id=AcquisitionPolicyId.EXACT_FIXED_ROUTE,
+    )
+
+    assert current.selected_option is not None
+    assert impact.selected_option is not None
+    assert exact.selected_option is not None
+    assert "시험" in current.selection_reason
+    assert "조건" in current.selection_reason
+    current_impact = current_fact_impacts(
+        view,
+        snapshot,
+        frozenset(),
+    )[current.selected_option.fact_id]
+    impact_impact = current_fact_impacts(
+        view,
+        snapshot,
+        frozenset(),
+    )[impact.selected_option.fact_id]
+
+    # The current policy may use route burden to break a tie between facts with
+    # the same reach.  It must not sacrifice reach to imitate the exact planner.
+    assert current_impact[:2] == impact_impact[:2]
+    assert current.selected_option.fact_id != exact.selected_option.fact_id
+
+
+def test_limit_only_ablation_changes_filtering_not_the_unconstrained_order() -> None:
+    _, _, _, case = _first_case()
+    view = case.public_policy_view()
+    snapshot = evaluate_interactive_case(case, case.initial_patient_state())
+    catalog = build_acquisition_catalog(
+        view, AvailabilityStructure.NEW_CONFIRMATION_NEEDED
+    )
+    no_limits = benchmark_patient_profiles()[0]
+
+    fixed = select_acquisition_option(
+        view=view,
+        snapshot=snapshot,
+        revealed_fact_ids=frozenset(),
+        catalog=catalog,
+        profile=no_limits,
+        policy_id=AcquisitionPolicyId.EXACT_FIXED_ROUTE,
+    )
+    limits_only_without_limits = select_acquisition_option(
+        view=view,
+        snapshot=snapshot,
+        revealed_fact_ids=frozenset(),
+        catalog=catalog,
+        profile=no_limits,
+        policy_id=AcquisitionPolicyId.PATIENT_LIMITS_ONLY,
+    )
+
+    assert fixed.selected_option == limits_only_without_limits.selected_option
+
+    constrained = benchmark_patient_profiles()[1]
+    limits_only = select_acquisition_option(
+        view=view,
+        snapshot=snapshot,
+        revealed_fact_ids=frozenset(),
+        catalog=catalog,
+        profile=constrained,
+        policy_id=AcquisitionPolicyId.PATIENT_LIMITS_ONLY,
+    )
+    assert limits_only.selected_option is None or not explicit_limit_violations(
+        limits_only.selected_option, constrained
+    )
+
+
+def test_limit_ablation_uses_the_same_order_and_changes_only_forbidden_paths() -> None:
+    group, base, mask, case = _first_case()
+
+    def run(profile_index, availability, policy):
+        return run_burden_policy(
+            case=case,
+            base_profile_id=base.profile_id,
+            split=base.split,
+            mask_id=mask.mask_id,
+            patient_profile=benchmark_patient_profiles()[profile_index],
+            availability=availability,
+            policy_id=policy,
+        )
+
+    for profile_index, availability in (
+        (0, AvailabilityStructure.EXISTING_DATA_CENTERED),
+        (0, AvailabilityStructure.NEW_CONFIRMATION_NEEDED),
+        (1, AvailabilityStructure.EXISTING_DATA_CENTERED),
+    ):
+        fixed = run(
+            profile_index,
+            availability,
+            AcquisitionPolicyId.EXACT_FIXED_ROUTE,
+        )
+        limits = run(
+            profile_index,
+            availability,
+            AcquisitionPolicyId.PATIENT_LIMITS_ONLY,
+        )
+        assert fixed.selected_fact_ids == limits.selected_fact_ids
+        assert fixed.selected_option_ids == limits.selected_option_ids
+        assert fixed.metrics == limits.metrics
+
+    fixed = run(
+        1,
+        AvailabilityStructure.NEW_CONFIRMATION_NEEDED,
+        AcquisitionPolicyId.EXACT_FIXED_ROUTE,
+    )
+    limits = run(
+        1,
+        AvailabilityStructure.NEW_CONFIRMATION_NEEDED,
+        AcquisitionPolicyId.PATIENT_LIMITS_ONLY,
+    )
+    assert fixed.metrics.explicit_limit_violations > 0
+    assert fixed.metrics.new_test_count > 0
+    assert fixed.metrics.additional_visit_count > 0
+    assert limits.metrics.explicit_limit_violations == 0
+    assert limits.metrics.new_test_count == 0
+    assert limits.metrics.additional_visit_count == 0
+    assert {
+        tuple(item.decision.decision_trace.applied_ordering_rule)
+        for item in fixed.action_history
+    } == {
+        tuple(item.decision.decision_trace.applied_ordering_rule)
+        for item in limits.action_history
+    }
 
 
 def test_unknown_cost_against_an_explicit_limit_requires_patient_choice() -> None:
@@ -167,6 +367,47 @@ def test_unknown_cost_against_an_explicit_limit_requires_patient_choice() -> Non
     assert choice.selected_option.acquisition_mode is AcquisitionMode.OUTSIDE_RECORD
     assert choice.action_status is ActionStatus.AWAITING_PATIENT_CHOICE
     assert "direct_cost_band" in choice.decision_trace.unresolved_unknown_fields
+
+
+def test_patient_adaptive_uses_current_impact_before_route_preferences() -> None:
+    _, _, _, case = _first_case()
+    view = case.public_policy_view()
+    snapshot = evaluate_interactive_case(case, case.initial_patient_state())
+    profile = benchmark_patient_profiles()[0]
+    catalog = build_acquisition_catalog(
+        view, AvailabilityStructure.EXISTING_DATA_CENTERED
+    )
+
+    adaptive = select_acquisition_option(
+        view=view,
+        snapshot=snapshot,
+        revealed_fact_ids=frozenset(),
+        catalog=catalog,
+        profile=profile,
+        policy_id=AcquisitionPolicyId.PATIENT_ADAPTIVE,
+    )
+    exact_comparator = select_acquisition_option(
+        view=view,
+        snapshot=snapshot,
+        revealed_fact_ids=frozenset(),
+        catalog=catalog,
+        profile=profile,
+        policy_id=AcquisitionPolicyId.EXACT_FIXED_ROUTE,
+    )
+
+    assert adaptive.decision_trace.applied_ordering_rule[:2] == [
+        "affected_trials:max",
+        "affected_criteria:max",
+    ]
+    assert (
+        "exact_coverage_choice:max"
+        not in adaptive.decision_trace.applied_ordering_rule
+    )
+    assert exact_comparator.decision_trace.applied_ordering_rule[:3] == [
+        "exact_coverage_choice:max",
+        "affected_trials:max",
+        "affected_criteria:max",
+    ]
 
 
 def test_guidance_uses_the_same_fact_and_trial_ids_in_both_views() -> None:
@@ -348,7 +589,9 @@ def test_synthetic_runner_records_approval_before_releasing_new_results() -> Non
     assert run.metrics.unauthorized_auto_actions == 0
 
 
-def test_full_benchmark_writes_360_settings_and_1800_policy_runs(tmp_path) -> None:
+def test_full_benchmark_separates_limit_filtering_from_feasible_ranking(
+    tmp_path,
+) -> None:
     cache = _fake_source_cache(tmp_path / "source-cache")
     summary_path = run_public_burden_benchmark(
         CONFIG_PATH, cache, tmp_path / "run"
@@ -356,12 +599,55 @@ def test_full_benchmark_writes_360_settings_and_1800_policy_runs(tmp_path) -> No
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
 
     assert summary["patient_setting_count"] == 360
-    assert summary["policy_count"] == 5
-    assert summary["policy_run_count"] == 1800
+    assert summary["policy_count"] == 7
+    assert summary["policy_run_count"] == 2520
+    assert summary["route_choice_run_count"] == 120
     assert summary["model_calls"] == 0
     assert summary["model_tokens"] == 0
     assert summary["source_audit_criterion_count"] == 80
-    assert len(summary["policy_metrics"]) == 2 * 5
+    assert len(summary["policy_metrics"]) == 2 * 7
+    route_choice = summary["route_choice_evaluation"]
+    assert route_choice["same_final_judgment_masked_case_count"] == 40
+    assert route_choice["same_selected_fact_order_masked_case_count"] == 40
+    assert route_choice["route_choice_run_count"] == 120
+    route_profiles = {
+        item["patient_profile_id"]: item
+        for item in route_choice["profile_metrics"]
+    }
+    assert route_profiles["low_extra_burden"]["new_test_total"] == 0
+    assert route_profiles["mobility_cost_constrained"]["new_test_total"] == 0
+    assert route_profiles["time_urgent"]["new_test_total"] > 0
+    mechanisms = summary["mechanism_ablation"]
+    hard_filter = mechanisms["disallowed_path_filter"]
+    ranking = mechanisms["remaining_feasible_path_ranking"]
+    assert hard_filter["base_patient_count"] == 20
+    assert len(ranking["comparisons"]) == 3
+    assert (
+        ranking["effect_identification"]
+        == "not_identified_in_current_route_catalog"
+    )
+    assert all(
+        item["comparison_status"] == "not_identified"
+        and item["question_order_control"]
+        == "patient_limits_only on both sides"
+        and item["metric_means"]["pending_trial_count"]["difference"] == 0
+        and item["metric_means"][
+            "burden_feasible_trial_status_recovery"
+        ]["difference"]
+        == 0
+        for item in ranking["comparisons"]
+    )
+    assert (
+        hard_filter["paired_inference"]["trial_status_recovery"]["cluster_unit"]
+        == "base_patient"
+    )
+    assert hard_filter["metric_means"]["pending_trial_count"]["candidate"] >= 0
+    assert hard_filter["metric_means"]["fully_resolved_setting"]["candidate"] >= 0
+    assert hard_filter["metric_totals"]["pending_trial_count"]["candidate"] >= 0
+    assert (
+        hard_filter["paired_inference"]["pending_trial_count"]["cluster_unit"]
+        == "base_patient"
+    )
     assert set(summary["adoption_comparison"]["gates"]) == {
         "unauthorized_auto_actions_zero",
         "explicit_limit_violations_zero",
@@ -375,4 +661,4 @@ def test_full_benchmark_writes_360_settings_and_1800_policy_runs(tmp_path) -> No
         (tmp_path / "run" / "case-results.jsonl")
         .read_text(encoding="utf-8")
         .splitlines()
-    ) == 1800
+    ) == 2520

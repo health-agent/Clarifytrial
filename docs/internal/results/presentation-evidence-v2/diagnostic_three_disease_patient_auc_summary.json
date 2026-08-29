@@ -1,0 +1,116 @@
+{
+  "metric": "normalized trapezoid AUC over budgets 0 to 3",
+  "independent_unit": "base_patient",
+  "base_patient_count": 20,
+  "masks_per_patient": 2,
+  "comparisons": [
+    {
+      "candidate_policy_id": "widest_impact",
+      "baseline_policy_id": "random_order_expectation",
+      "base_patient_count": 20,
+      "masks_per_patient": 2,
+      "candidate_mean_normalized_auc": 0.6525,
+      "baseline_mean_normalized_auc": 0.611111111111111,
+      "cluster_unit": "base_patient",
+      "strata": [
+        "breast_cancer",
+        "major_depressive_disorder",
+        "type_2_diabetes"
+      ],
+      "pair_count": 20,
+      "bootstrap_seed": 20260830,
+      "bootstrap_resamples": 5000,
+      "mean_difference": 0.04138888888888889,
+      "bootstrap_95_ci": {
+        "lower": -0.002492361111111097,
+        "upper": 0.08786631944444435
+      },
+      "wins": 12,
+      "ties": 0,
+      "losses": 8,
+      "two_sided_exact_sign_test_p": 0.5034446716308594,
+      "calculation": "average two masks within each patient at each budget; trapezoid AUC over budgets 0,1,2,3; normalize by 3; then bootstrap patients within disease"
+    },
+    {
+      "candidate_policy_id": "clarifytrial_rule_v1",
+      "baseline_policy_id": "random_order_expectation",
+      "base_patient_count": 20,
+      "masks_per_patient": 2,
+      "candidate_mean_normalized_auc": 0.6383333333333333,
+      "baseline_mean_normalized_auc": 0.611111111111111,
+      "cluster_unit": "base_patient",
+      "strata": [
+        "breast_cancer",
+        "major_depressive_disorder",
+        "type_2_diabetes"
+      ],
+      "pair_count": 20,
+      "bootstrap_seed": 20260830,
+      "bootstrap_resamples": 5000,
+      "mean_difference": 0.02722222222222221,
+      "bootstrap_95_ci": {
+        "lower": -0.010252777777777786,
+        "upper": 0.06756041666666657
+      },
+      "wins": 12,
+      "ties": 0,
+      "losses": 8,
+      "two_sided_exact_sign_test_p": 0.5034446716308594,
+      "calculation": "average two masks within each patient at each budget; trapezoid AUC over budgets 0,1,2,3; normalize by 3; then bootstrap patients within disease"
+    },
+    {
+      "candidate_policy_id": "clarifytrial_exact_coverage_v3",
+      "baseline_policy_id": "random_order_expectation",
+      "base_patient_count": 20,
+      "masks_per_patient": 2,
+      "candidate_mean_normalized_auc": 0.6175,
+      "baseline_mean_normalized_auc": 0.611111111111111,
+      "cluster_unit": "base_patient",
+      "strata": [
+        "breast_cancer",
+        "major_depressive_disorder",
+        "type_2_diabetes"
+      ],
+      "pair_count": 20,
+      "bootstrap_seed": 20260830,
+      "bootstrap_resamples": 5000,
+      "mean_difference": 0.0063888888888889,
+      "bootstrap_95_ci": {
+        "lower": -0.032431944444444444,
+        "upper": 0.047874999999999994
+      },
+      "wins": 10,
+      "ties": 0,
+      "losses": 10,
+      "two_sided_exact_sign_test_p": 1.0,
+      "calculation": "average two masks within each patient at each budget; trapezoid AUC over budgets 0,1,2,3; normalize by 3; then bootstrap patients within disease"
+    },
+    {
+      "candidate_policy_id": "exact_decision_tree_expected_horizon_1_v1",
+      "baseline_policy_id": "random_order_expectation",
+      "base_patient_count": 20,
+      "masks_per_patient": 2,
+      "candidate_mean_normalized_auc": 0.6566666666666666,
+      "baseline_mean_normalized_auc": 0.611111111111111,
+      "cluster_unit": "base_patient",
+      "strata": [
+        "breast_cancer",
+        "major_depressive_disorder",
+        "type_2_diabetes"
+      ],
+      "pair_count": 20,
+      "bootstrap_seed": 20260830,
+      "bootstrap_resamples": 5000,
+      "mean_difference": 0.045555555555555564,
+      "bootstrap_95_ci": {
+        "lower": 0.011039236111111128,
+        "upper": 0.07989374999999994
+      },
+      "wins": 12,
+      "ties": 0,
+      "losses": 8,
+      "two_sided_exact_sign_test_p": 0.5034446716308594,
+      "calculation": "average two masks within each patient at each budget; trapezoid AUC over budgets 0,1,2,3; normalize by 3; then bootstrap patients within disease"
+    }
+  ]
+}

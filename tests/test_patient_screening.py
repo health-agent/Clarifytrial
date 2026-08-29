@@ -320,9 +320,9 @@ def test_patient_workflow_connects_agents_burden_rules_and_two_output_views() ->
     assert "기준보다 1 score 낮습니다" in boundary.explanation
     assert any(item.actor == "information_planning_rules" for item in trace.events)
     assert model.call_count == {
-        "matcher_judge": 2,
         "next_evidence": 2,
     }
+    assert model.call_count.get("matcher_judge", 0) == 0
     assert sum(item.actor == "coordinator_rules" for item in trace.events) == 5
 
 
@@ -379,6 +379,12 @@ def test_unavailable_answer_does_not_block_other_missing_facts() -> None:
     by_trial = {item.trial_id: item for item in result.final_decisions}
     assert by_trial["TRIAL-D"].confirmation_status.value == "confirmed"
     assert result.stop_reason is PatientScreeningStopReason.DEFERRED
+    assert result.guidance.selected_option is None
+    assert any(
+        item.option_id.startswith("recent-b")
+        and "얻지 못한" in item.reason
+        for item in result.guidance.decision_trace.removed_options
+    )
 
 
 def test_large_action_runs_only_after_both_approvals() -> None:
@@ -439,7 +445,24 @@ def test_message_agent_cannot_replace_the_code_selected_fact() -> None:
 
 
 def test_large_criterion_bundle_is_chunked_and_missing_rows_are_retried() -> None:
-    case = _case()
+    base_case = _case()
+    case = base_case.model_copy(
+        update={
+            "trials": [
+                trial.model_copy(
+                    update={
+                        "criteria": [
+                            criterion.model_copy(
+                                update={"numeric_constraint": None}
+                            )
+                            for criterion in trial.criteria
+                        ]
+                    }
+                )
+                for trial in base_case.trials
+            ]
+        }
+    )
     model = _model(return_one_assessment_per_call=True)
     result = PatientScreeningRunner(
         _agents(model),

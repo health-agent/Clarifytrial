@@ -45,12 +45,14 @@ def test_text_demo_shows_questions_answers_and_decision_changes(tmp_path) -> Non
 
     text = "\n".join(lines)
     assert result["action_count"] == 3
+    assert result["question_policy_id"] == "clarifytrial_rule_v1"
     assert "핵심 값 다섯 개가 입력에서 모두 빠진 상태" in text
     assert "1번째 확인" in text
     assert "선택 이유:" in text
     assert "검증용 합성 답변:" in text
     assert "답변 뒤 바뀐 판정" in text
     assert "질문 선택 점검" in text
+    assert "정보 확인 순서: 여러 시험에 함께 필요한 정보부터 확인" in text
     assert "결과 개선에 필요하지 않았던 확인: 0개" in text
     assert "이 결과는 의학적 조언이 아닌 참고용입니다." in text
     assert len(prompts) == 3

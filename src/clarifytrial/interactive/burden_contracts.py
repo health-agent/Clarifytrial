@@ -48,6 +48,8 @@ class PreferenceMode(StrEnum):
 class AcquisitionPolicyId(StrEnum):
     IMPACT_ONLY = "impact_only"
     FIXED_ROUTE_COST = "fixed_route_cost"
+    EXACT_FIXED_ROUTE = "exact_fixed_route"
+    PATIENT_LIMITS_ONLY = "patient_limits_only"
     LEAST_EXTRA_BURDEN = "least_extra_burden"
     PATIENT_ADAPTIVE = "patient_adaptive"
     ALL_INFORMATION = "all_information"

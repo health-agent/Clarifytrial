@@ -35,6 +35,7 @@ from .burden_benchmark import (
     build_guidance_output,
     run_burden_policy,
     run_public_burden_benchmark,
+    run_public_route_choice_benchmark,
     trial_groups,
 )
 from .burden_contracts import (
@@ -51,6 +52,7 @@ from .burden_contracts import (
 from .burden_policy import (
     benchmark_patient_profiles,
     build_acquisition_catalog,
+    build_route_choice_catalog,
     build_patient_burden_profile,
     select_acquisition_option,
 )
@@ -103,6 +105,7 @@ __all__ = [
     "build_interactive_pilot_cases",
     "benchmark_patient_profiles",
     "build_acquisition_catalog",
+    "build_route_choice_catalog",
     "build_guidance_output",
     "build_patient_burden_profile",
     "build_public_case",
@@ -119,6 +122,7 @@ __all__ = [
     "run_interactive_stress",
     "run_public_interactive_benchmark",
     "run_public_burden_benchmark",
+    "run_public_route_choice_benchmark",
     "run_public_grid_stress",
     "build_uniform_binary_scenarios",
     "build_binary_scenarios",

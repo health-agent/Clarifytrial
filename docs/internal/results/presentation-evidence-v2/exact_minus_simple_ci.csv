@@ -1,0 +1,55 @@
+﻿suite,evaluation_distribution,budget,baseline_policy_id,mean_difference,ci_95_lower,ci_95_upper,exact_sign_p,wins,ties,losses,cluster_unit,cluster_count,inference_scope
+public_patient_profiles,heldout,1,authored_order,-0.03499999999999999,-0.07999999999999999,0.01000000000000002,0.2890625,2,12,6,base_patient,20,synthetic base-patient composition
+public_patient_profiles,heldout,1,random_order_expectation,0.017583333333333347,-0.04167291666666666,0.08283333333333334,1.0,10,1,9,base_patient,20,synthetic base-patient composition
+public_patient_profiles,heldout,1,widest_impact,-0.039999999999999994,-0.13,0.04000000000000001,1.0,2,15,3,base_patient,20,synthetic base-patient composition
+public_patient_profiles,heldout,1,clarifytrial_rule_v1,-0.014999999999999984,-0.07999999999999999,0.05000000000000002,1.0,3,14,3,base_patient,20,synthetic base-patient composition
+synthetic_graph_stress,similar_heldout,1,authored_order,0.12184924796009192,0.11566434206449927,0.12792383068549829,2.514051407199581e-130,1054,525,221,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,similar_heldout,1,random,0.12511013207135463,0.11924592654978247,0.13091623052582035,9.203954896329633e-128,1061,509,230,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,similar_heldout,1,widest_impact,0.004845954803187852,0.0015544680852596394,0.008038143448376122,0.01602562655776591,386,1093,321,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,similar_heldout,1,clarifytrial_rule_v1,0.006772111299241921,0.0034619852344079413,0.00999074488586108,0.0019625375155725372,393,1097,310,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,shifted_heldout,1,authored_order,0.11228380897012605,0.10614510927774222,0.11833823797028896,1.730344829153438e-141,1070,525,205,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,shifted_heldout,1,random,0.1197346380179545,0.11361285984395322,0.1256879431512774,1.648915747116429e-141,1081,509,210,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,shifted_heldout,1,widest_impact,0.009620898486171606,0.006078736058600232,0.013122791413505148,0.0004000426679597125,401,1093,306,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,shifted_heldout,1,clarifytrial_rule_v1,0.012173785128419712,0.00869223568518427,0.01559176494213408,7.72354794824407e-08,423,1097,280,synthetic_structure,1800,declared synthetic graph generator
+public_declared_value_grid,heldout_kernel,1,authored_order,-0.00595947696208111,,,,3,2,1,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,heldout_kernel,1,widest_impact,-0.020159777336860658,,,,2,0,4,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,heldout_kernel,1,clarifytrial_rule_v1,-0.0077006999559082745,,,,3,0,3,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,uniform_grid,1,authored_order,0.016625000000000018,,,,3,2,1,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,uniform_grid,1,widest_impact,-0.0025740740740740806,,,,2,2,2,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,uniform_grid,1,clarifytrial_rule_v1,0.0008425925925925984,,,,3,1,2,group_mask_cell,6,none_exhaustive_declared_grid
+public_patient_profiles,heldout,2,authored_order,-0.04999999999999999,-0.11512499999999995,0.01500000000000001,0.7265625,3,12,5,base_patient,20,synthetic base-patient composition
+public_patient_profiles,heldout,2,random_order_expectation,-0.019583333333333296,-0.07766666666666659,0.041674999999999914,0.359283447265625,7,1,12,base_patient,20,synthetic base-patient composition
+public_patient_profiles,heldout,2,widest_impact,-0.05999999999999999,-0.13499999999999998,0.009999999999999998,0.548828125,4,9,7,base_patient,20,synthetic base-patient composition
+public_patient_profiles,heldout,2,clarifytrial_rule_v1,-0.03999999999999999,-0.10999999999999999,0.020000000000000014,0.75390625,4,10,6,base_patient,20,synthetic base-patient composition
+synthetic_graph_stress,similar_heldout,2,authored_order,0.13175415981057756,0.12521195019497905,0.13822876489041835,6.019931679189356e-211,1221,432,147,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,similar_heldout,2,random,0.1346158838994439,0.12808270088892443,0.14106266861255262,3.3034451213270024e-201,1226,410,164,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,similar_heldout,2,widest_impact,0.01204127041725825,0.009387809648942912,0.014701089876347117,5.4095787088672e-18,601,862,337,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,similar_heldout,2,clarifytrial_rule_v1,0.011914543227625841,0.009503096696157697,0.014336483760883997,9.851238948064277e-24,612,879,309,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,shifted_heldout,2,authored_order,0.12515519104975392,0.11873916493706342,0.13140138266661466,4.547790245454909e-194,1202,432,166,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,shifted_heldout,2,random,0.13132167878563683,0.12473120970986011,0.13769564201364481,9.922757582684872e-214,1240,410,150,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,shifted_heldout,2,widest_impact,0.01808415988697679,0.015030904525281946,0.02109344050149899,1.830645478926498e-23,621,862,317,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,shifted_heldout,2,clarifytrial_rule_v1,0.01638413223933907,0.013651293380012116,0.019145323114280438,4.094397667436918e-29,629,879,292,synthetic_structure,1800,declared synthetic graph generator
+public_declared_value_grid,heldout_kernel,2,authored_order,0.0019356174906305368,,,,2,2,2,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,heldout_kernel,2,widest_impact,-0.021436576829805987,,,,2,1,3,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,heldout_kernel,2,clarifytrial_rule_v1,-0.01524025676532185,,,,2,1,3,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,uniform_grid,2,authored_order,0.027493055555555552,,,,2,3,1,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,uniform_grid,2,widest_impact,0.00169212962962965,,,,3,2,1,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,uniform_grid,2,clarifytrial_rule_v1,0.003955555555555583,,,,2,3,1,group_mask_cell,6,none_exhaustive_declared_grid
+public_patient_profiles,heldout,3,authored_order,-0.009999999999999998,-0.04999999999999999,0.030000000000000006,0.625,1,16,3,base_patient,20,synthetic base-patient composition
+public_patient_profiles,heldout,3,random_order_expectation,0.04233333333333332,0.00991249999999998,0.07574999999999998,0.0308837890625,14,2,4,base_patient,20,synthetic base-patient composition
+public_patient_profiles,heldout,3,widest_impact,-0.009999999999999998,-0.05499999999999999,0.04,0.6875,2,14,4,base_patient,20,synthetic base-patient composition
+public_patient_profiles,heldout,3,clarifytrial_rule_v1,-0.014999999999999996,-0.039999999999999994,0.009999999999999998,1.0,1,17,2,base_patient,20,synthetic base-patient composition
+synthetic_graph_stress,similar_heldout,3,authored_order,0.1240433081513864,0.11788356999581444,0.13022953691307876,0.0,1282,486,32,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,similar_heldout,3,random,0.12228603537016544,0.11617755329075799,0.1284955689018575,0.0,1292,478,30,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,similar_heldout,3,widest_impact,0.016111635611325784,0.014558006206895733,0.017667148154712115,4.417401609369168e-59,607,1025,168,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,similar_heldout,3,clarifytrial_rule_v1,0.016757845319529594,0.015201889150360519,0.0182891422351009,1.422485891286189e-60,609,1026,165,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,shifted_heldout,3,authored_order,0.12296554286455903,0.11673983657314073,0.1291769368212292,5e-324,1277,486,37,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,shifted_heldout,3,random,0.12434589983453405,0.11801802871071074,0.13074652983801321,3.368e-320,1281,478,41,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,shifted_heldout,3,widest_impact,0.02007457272847742,0.01826885776578235,0.021835125283286082,4.665216369790596e-69,624,1025,151,synthetic_structure,1800,declared synthetic graph generator
+synthetic_graph_stress,shifted_heldout,3,clarifytrial_rule_v1,0.020016634888225776,0.018195087336718666,0.021815287219617986,3.2059766776592486e-65,617,1026,157,synthetic_structure,1800,declared synthetic graph generator
+public_declared_value_grid,heldout_kernel,3,authored_order,0.011799001865286022,,,,2,2,2,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,heldout_kernel,3,widest_impact,-0.0018384824256067467,,,,4,0,2,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,heldout_kernel,3,clarifytrial_rule_v1,-0.004051711004527447,,,,2,1,3,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,uniform_grid,3,authored_order,0.01850555555555557,,,,3,3,0,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,uniform_grid,3,widest_impact,0.004907523148148167,,,,4,1,1,group_mask_cell,6,none_exhaustive_declared_grid
+public_declared_value_grid,uniform_grid,3,clarifytrial_rule_v1,0.0006167824074074235,,,,3,2,1,group_mask_cell,6,none_exhaustive_declared_grid

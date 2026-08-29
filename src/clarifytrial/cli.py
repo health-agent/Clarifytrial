@@ -101,6 +101,7 @@ from .interactive import (
     run_interactive_pilot,
     run_interactive_stress,
     run_public_burden_benchmark,
+    run_public_route_choice_benchmark,
     run_public_grid_stress,
     run_public_interactive_benchmark,
 )
@@ -1772,6 +1773,10 @@ def _parser() -> argparse.ArgumentParser:
     stress.add_argument("--output", required=True, type=Path)
     stress.add_argument("--structures-per-topology", type=int, default=100)
     stress.add_argument("--seed", type=int, default=20_260_821)
+    stress.add_argument("--policy-seed", type=int)
+    stress.add_argument(
+        "--action-budget", type=int, choices=(1, 2, 3), default=3
+    )
 
     public_benchmark = commands.add_parser(
         "run-public-interactive-benchmark",
@@ -1818,6 +1823,18 @@ def _parser() -> argparse.ArgumentParser:
     burden.add_argument(
         "--action-budget", type=int, choices=(3,), default=3
     )
+
+    route_choice = commands.add_parser(
+        "run-public-route-choice-benchmark",
+        help="compare a controlled fast-test versus low-burden record route",
+    )
+    route_choice.add_argument(
+        "--config",
+        type=Path,
+        default=Path("configs") / "interactive_public_benchmark_v1.json",
+    )
+    route_choice.add_argument("--source-cache", required=True, type=Path)
+    route_choice.add_argument("--output", required=True, type=Path)
 
     report = commands.add_parser(
         "build-report",
@@ -2642,6 +2659,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             api_key_name=args.api_key_name,
             limit=args.limit,
             seed=args.seed,
+            policy_seed=args.policy_seed,
             model_id=args.model,
             max_output_tokens=args.max_output_tokens,
             timeout_seconds=args.timeout_seconds,
@@ -2807,6 +2825,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.output,
             structures_per_topology=args.structures_per_topology,
             seed=args.seed,
+            action_budget=args.action_budget,
             progress=print,
         )
         summary = _read_json(summary_path)
@@ -2869,20 +2888,40 @@ def main(argv: Sequence[str] | None = None) -> int:
             progress=lambda message: print(message, flush=True),
         )
         summary = _read_json(summary_path)
-        comparison = summary["adoption_comparison"]
+        hard_filter = summary["mechanism_ablation"]["disallowed_path_filter"]
         print(f"summary: {summary_path}")
         print(f"patient_settings: {summary['patient_setting_count']}")
         print(f"policy_runs: {summary['policy_run_count']}")
-        print(f"adoption_gate_passed: {comparison['adoption_gate_passed']}")
         print(
-            "heldout: "
-            f"adaptive_full_recovery={comparison['heldout']['candidate_recovery']:.3f} "
-            f"baseline_full_recovery={comparison['heldout']['baseline_recovery']:.3f} "
-            f"adaptive_feasible_recovery="
-            f"{comparison['heldout']['candidate_burden_feasible_recovery']:.3f} "
-            f"baseline_feasible_recovery="
-            f"{comparison['heldout']['baseline_burden_feasible_recovery']:.3f} "
-            f"burden_reduction={comparison['heldout']['constrained_burden_reduction']:.3f}"
+            "explicit_limit_filter: "
+            f"feasible_recovery_difference="
+            f"{hard_filter['metric_means']['burden_feasible_trial_status_recovery']['difference']:.3f} "
+            f"pending_trials="
+            f"{hard_filter['metric_totals']['pending_trial_count']['baseline']}->"
+            f"{hard_filter['metric_totals']['pending_trial_count']['candidate']} "
+            f"fully_resolved_settings="
+            f"{hard_filter['metric_totals']['fully_resolved_setting']['baseline']}->"
+            f"{hard_filter['metric_totals']['fully_resolved_setting']['candidate']} "
+            f"new_tests="
+            f"{hard_filter['metric_totals']['new_test_count']['baseline']}->"
+            f"{hard_filter['metric_totals']['new_test_count']['candidate']} "
+            f"additional_visits="
+            f"{hard_filter['metric_totals']['additional_visit_count']['baseline']}->"
+            f"{hard_filter['metric_totals']['additional_visit_count']['candidate']}"
+        )
+        return 0
+    if args.command == "run-public-route-choice-benchmark":
+        summary_path = run_public_route_choice_benchmark(
+            args.config,
+            args.source_cache,
+            args.output,
+        )
+        summary = _read_json(summary_path)
+        print(f"summary: {summary_path}")
+        print(
+            "same_final_judgments: "
+            f"{summary['same_final_judgment_masked_case_count']}/"
+            f"{summary['masked_case_count']}"
         )
         return 0
     raise AssertionError(f"unhandled command: {args.command}")

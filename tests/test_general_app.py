@@ -65,7 +65,7 @@ def test_general_files_search_and_run_without_fixed_fixture(tmp_path: Path) -> N
     assert outcome.paused is False
     result = json.loads(outcome.result_path.read_text(encoding="utf-8"))
     assert result["screening"]["stop_reason"] == "all_trials_resolved"
-    assert result["usage"]["call_count"] == 3
+    assert result["usage"]["call_count"] == 1
     assert all(
         item["confirmation_status"] == "confirmed"
         for item in result["screening"]["final_decisions"]
@@ -76,6 +76,43 @@ def test_general_files_search_and_run_without_fixed_fixture(tmp_path: Path) -> N
     }
     assert provenance_by_id["historical-hba1c"] == "imported_json_file"
     assert provenance_by_id["recent-official-hba1c"] == "synthetic_environment"
+
+
+def test_presentation_answer_updates_two_trials_from_one_fact(
+    tmp_path: Path,
+) -> None:
+    options = GeneralRunOptions(
+        patient_path=EXAMPLE / "patient.json",
+        trials_path=EXAMPLE / "trials.jsonl",
+        answers_path=EXAMPLE / "presentation-answers.json",
+        output_dir=tmp_path,
+        settings=EpisodeSettings(
+            max_external_actions=3,
+            max_selective_reviews=1,
+            max_cycles=12,
+        ),
+    )
+
+    outcome = run_general_screening(
+        options=options,
+        model=DeterministicWorkflowModel(),
+        model_label="deterministic-workflow",
+        medical_disclaimer="학생 과제용 실험 결과입니다.",
+        write=lambda _: None,
+    )
+
+    result = json.loads(outcome.result_path.read_text(encoding="utf-8"))
+    decisions = {
+        item["trial_id"]: item
+        for item in result["screening"]["final_decisions"]
+    }
+    assert decisions["NCT-SYNTH-A"]["confirmation_status"] == "ineligible"
+    assert decisions["NCT-SYNTH-B"]["confirmation_status"] == "confirmed"
+    assert sum(
+        item["concept"] == "hba1c"
+        and item["evidence_id"] == "presentation-official-hba1c"
+        for item in result["screening"]["final_patient_state"]["facts"]
+    ) == 1
 
 
 def test_general_search_accepts_a_new_condition_without_code_change(

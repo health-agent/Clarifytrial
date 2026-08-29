@@ -1,0 +1,31 @@
+﻿patient_id,group_id,disease_group,trial_count,initial_unresolved_trial_count,question_count,newly_matched_trial_count,trial_status_match_rate_difference,confirmed_after_one_question_count,excluded_after_one_question_count,unsafe_new_decision_count
+source-acute_pancreatitis-03,acute_pancreatitis,급성 췌장염,5,1,1,1.0,0.19999999999999996,1,0,0
+source-acute_pancreatitis-04,acute_pancreatitis,급성 췌장염,5,0,0,0.0,0.0,0,0,0
+source-acute_pancreatitis-05,acute_pancreatitis,급성 췌장염,5,0,0,0.0,0.0,0,0,0
+source-bladder_cancer-03,bladder_cancer,방광암,5,1,1,1.0,0.19999999999999996,1,0,0
+source-bladder_cancer-04,bladder_cancer,방광암,5,2,1,1.0,0.20000000000000007,1,0,0
+source-bladder_cancer-05,bladder_cancer,방광암,5,0,0,0.0,0.0,0,0,0
+source-chronic_pancreatitis-03,chronic_pancreatitis,만성 췌장염,5,0,0,0.0,0.0,0,0,0
+source-chronic_pancreatitis-04,chronic_pancreatitis,만성 췌장염,5,1,1,1.0,0.19999999999999996,1,0,0
+source-chronic_pancreatitis-05,chronic_pancreatitis,만성 췌장염,5,0,0,0.0,0.0,0,0,0
+source-lung_cancer-03,lung_cancer,폐암,5,1,1,1.0,0.19999999999999996,1,0,0
+source-lung_cancer-04,lung_cancer,폐암,5,2,1,1.0,0.20000000000000007,1,0,0
+source-lung_cancer-05,lung_cancer,폐암,5,0,0,0.0,0.0,0,0,0
+source-migraine-03,migraine,편두통,5,0,0,0.0,0.0,0,0,0
+source-migraine-04,migraine,편두통,5,2,1,1.0,0.20000000000000007,1,0,0
+source-migraine-05,migraine,편두통,5,0,0,0.0,0.0,0,0,0
+source-nephrotic_syndrome-03,nephrotic_syndrome,신증후군,5,0,0,0.0,0.0,0,0,0
+source-nephrotic_syndrome-04,nephrotic_syndrome,신증후군,5,1,1,1.0,0.19999999999999996,1,0,0
+source-nephrotic_syndrome-05,nephrotic_syndrome,신증후군,5,0,0,0.0,0.0,0,0,0
+source-ovarian_cancer-03,ovarian_cancer,난소암,5,1,1,1.0,0.19999999999999996,1,0,0
+source-ovarian_cancer-04,ovarian_cancer,난소암,5,2,1,1.0,0.20000000000000007,1,0,0
+source-ovarian_cancer-05,ovarian_cancer,난소암,5,0,0,0.0,0.0,0,0,0
+source-pulmonary_fibrosis-03,pulmonary_fibrosis,폐섬유증,5,0,0,0.0,0.0,0,0,0
+source-pulmonary_fibrosis-04,pulmonary_fibrosis,폐섬유증,5,2,1,1.0,0.20000000000000007,1,0,0
+source-pulmonary_fibrosis-05,pulmonary_fibrosis,폐섬유증,5,0,0,0.0,0.0,0,0,0
+source-retinal_detachment-03,retinal_detachment,망막박리,5,1,1,1.0,0.19999999999999996,1,0,0
+source-retinal_detachment-04,retinal_detachment,망막박리,5,4,1,1.0,0.2,1,0,0
+source-retinal_detachment-05,retinal_detachment,망막박리,5,0,0,0.0,0.0,0,0,0
+source-thyroid_eye_disease-03,thyroid_eye_disease,갑상선 안병증,5,1,1,1.0,0.19999999999999996,1,0,0
+source-thyroid_eye_disease-04,thyroid_eye_disease,갑상선 안병증,5,0,0,0.0,0.0,0,0,0
+source-thyroid_eye_disease-05,thyroid_eye_disease,갑상선 안병증,5,0,0,0.0,0.0,0,0,0

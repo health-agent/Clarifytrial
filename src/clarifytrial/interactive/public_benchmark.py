@@ -8,9 +8,10 @@ import re
 from collections import defaultdict
 from collections.abc import Iterable, Sequence
 from datetime import date, datetime, timedelta, timezone
-from itertools import product
+from itertools import permutations, product
 from pathlib import Path
 from statistics import mean
+from time import perf_counter
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -41,13 +42,16 @@ from .contracts import (
 )
 from .exact_policy import ExactDecisionTreePolicy
 from .policies import (
+    AuthoredOrderPolicy,
+    ClarifyTrialExactCoveragePolicy,
     ClarifyTrialRulePolicy,
+    DeclaredFactOrderPolicy,
     ImpactCostPolicy,
     NoQuestionPolicy,
     OutcomeEntropyPolicy,
-    RandomQuestionPolicy,
     WidestImpactPolicy,
 )
+from .statistics import stratified_bootstrap_mean
 from .stress import _simulate, _weighted_metrics
 
 
@@ -498,10 +502,11 @@ def _policy_rows(
     distribution = build_public_planning_distribution(group, case, profile, mask)
     policies = [
         NoQuestionPolicy(),
-        RandomQuestionPolicy(seed),
+        AuthoredOrderPolicy(),
         WidestImpactPolicy(),
         ImpactCostPolicy(),
         ClarifyTrialRulePolicy(),
+        ClarifyTrialExactCoveragePolicy(),
         OutcomeEntropyPolicy(view, distribution),
         ExactDecisionTreePolicy(
             view,
@@ -520,6 +525,12 @@ def _policy_rows(
     ]
     actual = _actual_scenario(case)
     rows = []
+    no_question_result = _simulate(
+        view,
+        initial,
+        actual,
+        NoQuestionPolicy(),
+    )
     for policy in policies:
         result = _simulate(view, initial, actual, policy)
         rows.append(
@@ -542,8 +553,60 @@ def _policy_rows(
                 "mismatched_trial_ids": list(result.mismatched_trial_ids),
                 "planning_scenario_count": len(distribution.scenarios),
                 "action_budget": action_budget,
+                "incremental_recovered_trial_count": (
+                    result.trial_recovery - no_question_result.trial_recovery
+                )
+                * len(view.trials),
             }
         )
+    random_results = [
+        _simulate(
+            view,
+            initial,
+            actual,
+            DeclaredFactOrderPolicy(
+                order,
+                policy_id=f"random_permutation_{index:03d}",
+            ),
+        )
+        for index, order in enumerate(
+            permutations(item.fact_id for item in view.available_information)
+        )
+    ]
+    rows.append(
+        {
+            "group_id": group.group_id,
+            "disease_group": group.label,
+            "profile_id": profile.profile_id,
+            "split": profile.split,
+            "mask_id": mask.mask_id,
+            "case_id": case.case_id,
+            "policy_id": "random_order_expectation",
+            "trial_recovery": mean(item.trial_recovery for item in random_results),
+            "candidate_recovery": mean(
+                item.candidate_recovery for item in random_results
+            ),
+            "confirmation_recovery": mean(
+                item.confirmation_recovery for item in random_results
+            ),
+            "unsafe_decisions": mean(
+                item.unsafe_decisions for item in random_results
+            ),
+            "actions": mean(item.actions for item in random_results),
+            "route_cost": mean(item.route_cost for item in random_results),
+            "selected_fact_ids": [],
+            "selected_actions": [],
+            "mismatched_trial_ids": [],
+            "planning_scenario_count": len(distribution.scenarios),
+            "random_permutation_count": len(random_results),
+            "action_budget": action_budget,
+            "incremental_recovered_trial_count": (
+                mean(item.trial_recovery for item in random_results)
+                - no_question_result.trial_recovery
+            )
+            * len(view.trials),
+        }
+    )
     return rows
 
 
@@ -556,11 +619,27 @@ def _aggregate(
         groups[tuple(row[key] for key in keys)].append(row)
     result = []
     for key_values, items in sorted(groups.items()):
+        total_actions = sum(float(item["actions"]) for item in items)
+        total_incremental = sum(
+            float(item.get("incremental_recovered_trial_count", 0.0))
+            for item in items
+        )
+        mean_recovery = mean(item["trial_recovery"] for item in items)
         result.append(
             {
                 **dict(zip(keys, key_values, strict=True)),
                 "run_count": len(items),
-                "mean_trial_recovery": mean(item["trial_recovery"] for item in items),
+                "mean_trial_recovery": mean_recovery,
+                "mean_final_status_matches_out_of_five": mean_recovery * 5,
+                "mean_incremental_status_matches_out_of_five": mean(
+                    float(item.get("incremental_recovered_trial_count", 0.0))
+                    for item in items
+                ),
+                "incremental_status_matches_per_action": (
+                    total_incremental / total_actions
+                    if total_actions > 0
+                    else None
+                ),
                 "mean_candidate_recovery": mean(
                     item["candidate_recovery"] for item in items
                 ),
@@ -596,7 +675,7 @@ def _paired_summary(rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
     heldout = [item for item in rows if item["split"] == "heldout"]
     profile_rows = _aggregate(
         heldout,
-        ("profile_id", "policy_id"),
+        ("group_id", "profile_id", "policy_id"),
     )
     by_key = {
         (item["profile_id"], item["policy_id"]): item for item in profile_rows
@@ -648,6 +727,104 @@ def _paired_summary(rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
                 ),
             }
         )
+    core_policy_comparisons = []
+    for baseline_policy_id in (
+        "authored_order",
+        "random_order_expectation",
+        "widest_impact",
+        "clarifytrial_rule_v1",
+    ):
+        differences_by_group: dict[str, list[float]] = defaultdict(list)
+        for profile_id in profile_ids:
+            candidate = by_key[
+                (profile_id, "clarifytrial_exact_coverage_v3")
+            ]["mean_trial_recovery"]
+            baseline_value = by_key[
+                (profile_id, baseline_policy_id)
+            ]["mean_trial_recovery"]
+            group_id = next(
+                item["group_id"]
+                for item in profile_rows
+                if item["profile_id"] == profile_id
+                and item["policy_id"] == baseline_policy_id
+            )
+            differences_by_group[str(group_id)].append(candidate - baseline_value)
+        inference = stratified_bootstrap_mean(
+            differences_by_group,
+            cluster_unit="base_patient",
+        )
+        core_policy_comparisons.append(
+            {
+                "candidate_policy_id": "clarifytrial_exact_coverage_v3",
+                "baseline_policy_id": baseline_policy_id,
+                "base_patient_count": len(profile_ids),
+                **inference,
+            }
+        )
+    primary_simple_comparisons = []
+    for candidate_policy_id in dict.fromkeys(
+        ("widest_impact", "clarifytrial_rule_v1", baseline_id)
+    ):
+        differences_by_group: dict[str, list[float]] = defaultdict(list)
+        for profile_id in profile_ids:
+            candidate = by_key[
+                (profile_id, candidate_policy_id)
+            ]["mean_trial_recovery"]
+            random_expectation = by_key[
+                (profile_id, "random_order_expectation")
+            ]["mean_trial_recovery"]
+            group_id = next(
+                item["group_id"]
+                for item in profile_rows
+                if item["profile_id"] == profile_id
+                and item["policy_id"] == candidate_policy_id
+            )
+            differences_by_group[str(group_id)].append(
+                candidate - random_expectation
+            )
+        primary_simple_comparisons.append(
+            {
+                "candidate_policy_id": candidate_policy_id,
+                "baseline_policy_id": "random_order_expectation",
+                "base_patient_count": len(profile_ids),
+                **stratified_bootstrap_mean(
+                    differences_by_group,
+                    cluster_unit="base_patient",
+                ),
+            }
+        )
+    planning_vs_random_comparisons = []
+    for candidate_policy_id in (
+        "exact_decision_tree_expected_horizon_1_v1",
+    ):
+        differences_by_group: dict[str, list[float]] = defaultdict(list)
+        for profile_id in profile_ids:
+            candidate = by_key[
+                (profile_id, candidate_policy_id)
+            ]["mean_trial_recovery"]
+            random_expectation = by_key[
+                (profile_id, "random_order_expectation")
+            ]["mean_trial_recovery"]
+            group_id = next(
+                item["group_id"]
+                for item in profile_rows
+                if item["profile_id"] == profile_id
+                and item["policy_id"] == candidate_policy_id
+            )
+            differences_by_group[str(group_id)].append(
+                candidate - random_expectation
+            )
+        planning_vs_random_comparisons.append(
+            {
+                "candidate_policy_id": candidate_policy_id,
+                "baseline_policy_id": "random_order_expectation",
+                "base_patient_count": len(profile_ids),
+                **stratified_bootstrap_mean(
+                    differences_by_group,
+                    cluster_unit="base_patient",
+                ),
+            }
+        )
     primary = next(
         item
         for item in comparisons
@@ -658,6 +835,9 @@ def _paired_summary(rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
         "baseline_selected_on_development": baseline_id,
         "primary_candidate": primary["candidate_policy_id"],
         "comparisons": comparisons,
+        "core_policy_comparisons": core_policy_comparisons,
+        "primary_simple_vs_random_comparisons": primary_simple_comparisons,
+        "planning_vs_random_comparisons": planning_vs_random_comparisons,
         "primary_gate_passed": primary["recovery_gate"] or primary["burden_gate"],
     }
 
@@ -683,6 +863,8 @@ def run_public_interactive_benchmark(
 
     if action_budget not in {1, 2, 3}:
         raise ValueError("action_budget must be 1, 2, or 3")
+    started_at = datetime.now(timezone.utc)
+    started = perf_counter()
     spec = load_public_benchmark_spec(config_path)
     source_audit = audit_public_sources(spec, source_cache)
     rows = []
@@ -718,7 +900,20 @@ def run_public_interactive_benchmark(
         "candidate_trials_per_case": 5,
         "hidden_facts_per_case": 5,
         "action_budget": action_budget,
+        "policy_count": len({item["policy_id"] for item in rows}),
+        "random_order_count_per_masked_case": 120,
+        "random_order_policy_run_count": case_count * 120,
+        "random_order_evaluation": (
+            "exact mean over all 120 initial orders of five hidden facts; "
+            "facts with no remaining decision impact are skipped"
+        ),
         "model_calls": 0,
+        "estimated_api_cost_usd": 0.0,
+        "started_at": started_at.isoformat(),
+        "answer_access_boundary": (
+            "Planning probabilities use development profiles only; each heldout "
+            "patient answer is revealed only after a policy selects that fact."
+        ),
         "scope": spec.scope,
         "medical_disclaimer": DEFAULT_MEDICAL_DISCLAIMER,
     }
@@ -730,6 +925,8 @@ def run_public_interactive_benchmark(
     )
     summary = {
         **plan,
+        "finished_at": datetime.now(timezone.utc).isoformat(),
+        "runtime_seconds": perf_counter() - started,
         "policy_metrics": _aggregate(rows, ("split", "policy_id")),
         "disease_metrics": _aggregate(
             rows, ("split", "group_id", "policy_id")
@@ -810,6 +1007,35 @@ def _grid_metric_rows(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
                 },
             }
         )
+    no_question = {
+        (
+            item["evaluation_distribution"],
+            item["group_id"],
+            item["mask_id"],
+        ): item["expected_trial_recovery"]
+        for item in result
+        if item["policy_id"] == "no_questions"
+    }
+    for item in result:
+        baseline = no_question[
+            (
+                item["evaluation_distribution"],
+                item["group_id"],
+                item["mask_id"],
+            )
+        ]
+        item["mean_final_status_matches_out_of_five"] = (
+            item["expected_trial_recovery"] * 5
+        )
+        item["incremental_status_matches_out_of_five"] = (
+            item["expected_trial_recovery"] - baseline
+        ) * 5
+        item["incremental_status_matches_per_action"] = (
+            item["incremental_status_matches_out_of_five"]
+            / item["expected_actions"]
+            if item["expected_actions"] > 0
+            else None
+        )
     return result
 
 
@@ -819,6 +1045,10 @@ def _grid_policy_metrics(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]
         groups[(row["evaluation_distribution"], row["policy_id"])].append(row)
     result = []
     for (distribution, policy_id), items in sorted(groups.items()):
+        total_actions = sum(item["expected_actions"] for item in items)
+        total_incremental = sum(
+            item["incremental_status_matches_out_of_five"] for item in items
+        )
         result.append(
             {
                 "evaluation_distribution": distribution,
@@ -826,6 +1056,19 @@ def _grid_policy_metrics(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]
                 "group_mask_count": len(items),
                 "mean_trial_recovery": mean(
                     item["expected_trial_recovery"] for item in items
+                ),
+                "mean_final_status_matches_out_of_five": mean(
+                    item["mean_final_status_matches_out_of_five"]
+                    for item in items
+                ),
+                "mean_incremental_status_matches_out_of_five": mean(
+                    item["incremental_status_matches_out_of_five"]
+                    for item in items
+                ),
+                "incremental_status_matches_per_action": (
+                    total_incremental / total_actions
+                    if total_actions > 0
+                    else None
                 ),
                 "mean_worst_trial_recovery": mean(
                     item["worst_trial_recovery"] for item in items
@@ -932,6 +1175,40 @@ def _grid_comparison(
                     "gate_passed": recovery_gate or burden_gate,
                 }
             )
+    core_policy_comparisons = []
+    for distribution in ("heldout_kernel", "uniform_grid"):
+        for baseline_policy_id in (
+            "authored_order",
+            "widest_impact",
+            "clarifytrial_rule_v1",
+        ):
+            differences = [
+                by_group_mask[
+                    (
+                        distribution,
+                        group_id,
+                        mask_id,
+                        "clarifytrial_exact_coverage_v3",
+                    )
+                ]["expected_trial_recovery"]
+                - by_group_mask[
+                    (distribution, group_id, mask_id, baseline_policy_id)
+                ]["expected_trial_recovery"]
+                for group_id, mask_id in group_masks
+            ]
+            core_policy_comparisons.append(
+                {
+                    "evaluation_distribution": distribution,
+                    "candidate_policy_id": "clarifytrial_exact_coverage_v3",
+                    "baseline_policy_id": baseline_policy_id,
+                    "group_mask_count": len(group_masks),
+                    "mean_recovery_difference": mean(differences),
+                    "wins": sum(item > 1e-12 for item in differences),
+                    "ties": sum(abs(item) <= 1e-12 for item in differences),
+                    "losses": sum(item < -1e-12 for item in differences),
+                    "inference": "none_exhaustive_declared_grid",
+                }
+            )
     primary = next(
         item
         for item in comparisons
@@ -942,6 +1219,7 @@ def _grid_comparison(
     return {
         "baseline_selected_on_development": baseline_id,
         "comparisons": comparisons,
+        "core_policy_comparisons": core_policy_comparisons,
         "primary_candidate": primary["candidate_policy_id"],
         "primary_gate_passed": primary["gate_passed"],
     }
@@ -959,11 +1237,14 @@ def run_public_grid_stress(
 
     if action_budget not in {1, 2, 3}:
         raise ValueError("action_budget must be 1, 2, or 3")
+    started_at = datetime.now(timezone.utc)
+    started = perf_counter()
     spec = load_public_benchmark_spec(config_path)
     source_audit = audit_public_sources(spec, source_cache)
     rows = []
     context_count = 0
     scenario_evaluations = 0
+    hidden_value_combination_count = 0
     total_context_count = 0
     for group in spec.groups:
         fact_by_code = {item.code: item for item in group.facts}
@@ -1016,11 +1297,14 @@ def run_public_grid_stress(
                     reference_profiles=heldout,
                 )
                 uniform_distribution = _uniform_distribution(planning)
+                hidden_value_combination_count += len(planning.scenarios)
                 policies = [
                     NoQuestionPolicy(),
+                    AuthoredOrderPolicy(),
                     WidestImpactPolicy(),
                     ImpactCostPolicy(),
                     ClarifyTrialRulePolicy(),
+                    ClarifyTrialExactCoveragePolicy(),
                     OutcomeEntropyPolicy(view, planning),
                     ExactDecisionTreePolicy(
                         view,
@@ -1096,8 +1380,15 @@ def run_public_grid_stress(
         "action_budget": action_budget,
         "visible_context_count": context_count,
         "scenario_policy_evaluations": scenario_evaluations,
-        "policy_count": 7,
+        "hidden_value_combination_count": hidden_value_combination_count,
+        "policy_count": len({item["policy_id"] for item in rows}),
         "model_calls": 0,
+        "estimated_api_cost_usd": 0.0,
+        "started_at": started_at.isoformat(),
+        "answer_access_boundary": (
+            "Policies never receive the evaluated hidden value combination; "
+            "learned planning policies use development-profile weights only."
+        ),
         "scope": (
             "공개 조건의 선언된 값 조합을 전수 계산한 구조 민감도이며 임상 성능이 아니다."
         ),
@@ -1110,6 +1401,8 @@ def run_public_grid_stress(
     )
     summary = {
         **plan,
+        "finished_at": datetime.now(timezone.utc).isoformat(),
+        "runtime_seconds": perf_counter() - started,
         "group_mask_metrics": group_mask_metrics,
         "policy_metrics": policy_metrics,
         "comparison": _grid_comparison(group_mask_metrics, policy_metrics),

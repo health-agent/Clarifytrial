@@ -1,9 +1,14 @@
 # ClarifyTrial 실행과 실험 안내
 
-모든 명령은 저장소 최상위 폴더에서 PowerShell로 실행한다. 결과는 별도로 지정한
-`runs` 폴더에 저장되며, 큰 외부 원본은 `.research-cache`에 저장된다.
+저장소를 처음 받은 팀원은 아래 순서로 프로그램을 실행하고, 현재 발표에 쓰는 결과표와
+그림까지 다시 만들 수 있다. 모든 명령은 저장소 최상위 폴더에서 PowerShell로
+실행한다.
 
-## 1. 설치와 자동 검사
+실행 결과는 `runs`에 저장한다. 내려받은 공개 원본과 검색용 임시 파일은
+`.research-cache`에 둔다. 두 폴더의 파일을 지우지 않으면 같은 자료를 다시 내려받거나
+처음부터 계산하지 않아도 된다.
+
+## 1. 설치
 
 Python 3.11 이상이 필요하다.
 
@@ -11,45 +16,339 @@ Python 3.11 이상이 필요하다.
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -c constraints\research.txt -e ".[dev,retrieval-bm25,codex-subscription]"
 .\.venv\Scripts\python.exe -m nltk.downloader punkt
+```
+
+아래의 합성자료 실행과 주 평가는 API 키 없이 돌아간다. `deterministic` 제공자는
+구조화한 수치·날짜와 미리 저장한 합성 답을 코드로 처리한다. 외부 모델을 사용하는
+실행에는 별도의 확인 옵션과 제공자 설정이 필요하다.
+
+설치가 제대로 됐는지 확인한다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe --help
+```
+
+## 2. 한 번의 전체 실행
+
+가장 빠른 확인 방법은 준비된 합성 환자 한 명을 처음부터 끝까지 실행하는 것이다.
+환자 정보, 후보 시험, 조건 판정, 다음 질문, 답변 반영과 최종 결과가 한 화면에
+차례대로 나온다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-full-ui `
+  --auto `
+  --output runs\full-ui
+```
+
+`--auto`는 평가자료에 따로 저장한 합성 답을 자동으로 공개한다. 외부 모델은 부르지
+않는다. 실행이 끝나면 `runs\full-ui`에서 최종 결과와 각 단계의 기록을 확인할 수 있다.
+
+| 파일 | 내용 |
+|---|---|
+| `result.json` | 시험별 최종 상태, 근거와 남은 정보 |
+| `trace.jsonl` | 검색부터 재판정까지 시간순 기록 |
+
+## 3. 터미널에서 직접 답하기
+
+아래 명령은 예제 환자와 시험을 읽고 필요한 정보를 터미널에서 묻는다. 실험용 답
+파일을 지정하지 않았으므로 사용자가 직접 답한다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-screening `
+  --patient examples\general_screening\patient.json `
+  --trials examples\general_screening\trials.jsonl `
+  --provider deterministic `
+  --output runs\manual-screening
+```
+
+간단한 사실은 평소 문장으로 입력해도 된다. 공식 검사 결과처럼 값, 날짜와 출처를
+함께 남겨야 할 때는 한 줄짜리 JSON을 입력한다.
+
+```json
+{"statement":"공식 HbA1c 결과는 6.4%였다.","concept":"hba1c","value":6.4,"unit":"%","event_date":"2026-08-20","recorded_date":"2026-08-20","source_type":"official_verification","source_location":"official-result#hba1c","verification_status":"verified"}
+```
+
+- 답을 모르면 `unknown`을 입력한다. 프로그램은 다음 정보나 다른 확인 방법을 찾는다.
+- `quit`을 입력하면 현재 상태를 `session.json`에 저장하고 끝낸다.
+- 같은 환자와 시험으로 이어서 실행할 때는 `--resume`에 저장한 세션을 지정한다.
+
+`run-screening` 결과 폴더에는 `result.json`, `trace.jsonl`, `session.json`이 함께 생긴다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-screening `
+  --patient examples\general_screening\patient.json `
+  --trials examples\general_screening\trials.jsonl `
+  --resume runs\manual-screening\session.json `
+  --provider deterministic `
+  --output runs\manual-screening-resumed
+```
+
+발표용 터미널 장면은 같은 실행에 준비된 합성 답을 넣어 재현한다. 최근 HbA1c 값
+하나가 서로 다른 기준을 가진 두 시험에 함께 반영되는 예제다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-screening `
+  --patient examples\general_screening\patient.json `
+  --trials examples\general_screening\trials.jsonl `
+  --answers examples\general_screening\presentation-answers.json `
+  --provider deterministic `
+  --output runs\presentation-demo-interactive-20260830
+
+.\.venv\Scripts\python.exe scripts\render_presentation_terminal_demo.py `
+  --input runs\presentation-demo-interactive-20260830\result.json `
+  --output docs\internal\diagrams\clarifytrial-terminal-demo.svg
+```
+
+## 4. 공개 조건에서 질문 전후 변화 확인
+
+공개 임상시험 50건의 조건 202개와 합성 환자 50명을 사용한다. 자료 제작과 조정에 쓴
+환자 20명은 최종 통계에서 제외하고, 나머지 30명에게 같은 질환의 시험을 다섯 건씩
+연결한다.
+
+### 기본 문진 뒤 남은 시험
+
+나이, 임신·수유 여부와 활동성 중증 감염을 처음부터 제공한 상태에서 질문을 한 번까지
+허용한다.
+
+```powershell
+.\.venv\Scripts\python.exe scripts\run_public_protocol_common_facts_known.py `
+  --trial-set data\public_protocol_benchmark_v1\trial_set.json `
+  --patient-pairs data\public_protocol_benchmark_v1\patient_pairs.json `
+  --output runs\public-protocol-common-facts-known-v1
+```
+
+환자-시험 조합 150개 가운데 28개는 처음 자료만으로 상태가 정리돼 있다. 세 기본 정보를 넣으면
+제외되는 시험 68건과 참가 가능 후보 32건이 추가로 정리된다. 질문 전에 상태가 정해진
+조합은 128개이고, 남은 미확정 조합은 22개다. 실제 질문은 14번 나왔고, 답을 받은 뒤
+14건이 확인 완료로 바뀌었다. 8건은 확인 대기로 남았다. `direct-transition-summary.csv`에는 이
+변화가, `question-category-counts.csv`에는 진단·병리, 과거 수술·치료, 검사 수치처럼
+실제로 물은 정보의 종류가 저장된다.
+
+### 질문 순서 민감도
+
+아래 실행은 시작 정보와 질문 순서를 바꾸어 같은 환자 결과가 얼마나 달라지는지
+확인한다.
+
+```powershell
+.\.venv\Scripts\python.exe scripts\run_public_protocol_policy_scale.py `
+  --trial-set data\public_protocol_benchmark_v1\trial_set.json `
+  --patient-pairs data\public_protocol_benchmark_v1\patient_pairs.json `
+  --output runs\public-protocol-policy-scale-20260830
+```
+
+환자마다 가린 정보의 가능한 순서를 전부 계산한다. 정보가 3개면 6가지, 5개면 120가지
+순서를 실행한다. 세 기본 정보를 먼저 제공했을 때 가능한 순서의 평균은 94.22%, 현재
+규칙은 94.67%의 시험 상태가 합성 정답과 같았다. 차이는 0.44%포인트였다. 외부 모델
+호출과 토큰 사용은 0이다.
+
+주요 결과 파일은 다음과 같다.
+
+| 파일 | 내용 |
+|---|---|
+| `policy-metrics.csv` | 확인한 정보 수 0~5개에서 각 방법의 시험 상태 일치율 |
+| `paired-comparisons.csv` | 같은 환자에게 두 방법을 적용한 차이와 95% 범위 |
+| `budget-auc.csv` | 확인 수 0~5의 전체 곡선을 한 값으로 묶은 결과 |
+| `paired-budget-auc-comparisons.csv` | 환자별 전체 곡선 차이 |
+| `disease-level-sensitivity-summary.csv` | 선택한 10개 질환에서 결과 방향이 같았는지 확인 |
+| `known-age-policy-metrics.csv` | 나이를 시작부터 알고 있을 때의 민감도 점검 |
+| `interpretation.md` | 표를 평이한 문장으로 정리한 결과 |
+
+여러 시험이 같은 환자 정보를 얼마나 함께 쓰는지도 같은 시험 자료에서 계산한다.
+
+```powershell
+.\.venv\Scripts\python.exe scripts\build_public_shared_fact_report.py `
+  --trial-set data\public_protocol_benchmark_v1\trial_set.json `
+  --output-dir runs\public-protocol-shared-facts-v1
+```
+
+## 5. 환자 상황에 따른 확인 방법 평가
+
+이 평가는 공개 조건 원본을 한 번 내려받아 사용한다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe prepare-clinicaltrials-v5 `
+  --cache .research-cache\clinicaltrials-v5
+```
+
+### 같은 답을 얻는 경로 선택
+
+기존 공식 결과를 받아 오는 경로와 빠른 새 검사를 비교한다. 두 경로가 내놓는 합성
+답은 같고, 대기시간·새 검사·추가 방문 조건만 다르다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-public-route-choice-benchmark `
+  --source-cache .research-cache\clinicaltrials-v5 `
+  --output runs\policy-scale-20260830\route-choice-controlled
+```
+
+결과는 `summary.json`에 저장된다. `profile_metrics`에는 환자 상황별 경로 선택 횟수가,
+`same_final_judgment_masked_case_count`에는 경로만 바꿨을 때 최종 판단이 유지됐는지가
+기록된다.
+
+부담과 이동·비용을 줄이는 설정은 기존 공식 결과를 각각 85회 모두 골랐다. 시간이
+급한 설정은 빠른 새 검사를 85회 모두 골랐다. 어떤 정보를 확인했는지와 최종 시험
+상태는 40개 비교에서 같았다.
+
+### 환자가 허용하지 않은 검사와 방문 제외
+
+다음 실행은 모든 확인 방법을 남긴 경우와 환자가 허용하지 않은 새 검사·추가 방문을 먼저
+제거한 경우를 같은 합성 상황에서 비교한다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-public-burden-benchmark `
+  --source-cache .research-cache\clinicaltrials-v5 `
+  --action-budget 3 `
+  --output runs\policy-scale-20260830\burden-ablation-final
+```
+
+`summary.json`의 `mechanism_ablation`에서 새 검사, 추가 방문, 남은 확인 대기 시험,
+사용할 수 있는 정보 안에서의 상태 일치와 합성 대기시간을 함께 확인한다. 새 검사와
+추가 방문이 한 행동에 겹칠 수 있으므로 두 횟수를 더해 하나의 행동 수로 쓰지 않는다.
+
+현재 결과에서는 새 검사 제안이 21회에서 0회, 추가 방문 제안이 56회에서 0회로 줄었다.
+설정마다 남은 확인 대기 시험은 평균 0.88건에서 1.24건으로 늘었고, 시험 다섯 건을 모두
+정리한 설정은 80개 중 42개에서 32개로 줄었다.
+
+## 6. 발표 근거 묶음과 그림 만들기
+
+발표 근거 묶음에는 주 평가, 확인 방법 평가와 여러 합성 연결 모양에서 규칙이 움직이는
+방식이 들어간다. 아래 명령은 확인 횟수 1회, 2회, 3회를 세 작업으로 나눠 동시에
+실행한다. PowerShell 7 이상이 필요하다.
+
+```powershell
+$repoRoot = (Get-Location).Path
+
+1..3 | ForEach-Object -Parallel {
+  Set-Location $using:repoRoot
+  $checkCount = $_
+
+  .\.venv\Scripts\clarifytrial.exe run-public-interactive-benchmark `
+    --source-cache .research-cache\clinicaltrials-v5 `
+    --action-budget $checkCount `
+    --output "runs\policy-scale-20260830\budget-$checkCount\public-patients"
+
+  .\.venv\Scripts\clarifytrial.exe run-public-grid-stress `
+    --source-cache .research-cache\clinicaltrials-v5 `
+    --action-budget $checkCount `
+    --output "runs\policy-scale-20260830\budget-$checkCount\public-grid"
+
+  .\.venv\Scripts\clarifytrial.exe run-interactive-stress `
+    --structures-per-topology 200 `
+    --seed 20260830 `
+    --policy-seed 20260830 `
+    --action-budget $checkCount `
+    --output "runs\policy-scale-20260830\budget-$checkCount\structural-1800"
+} -ThrottleLimit 3
+```
+
+구조 실험은 연결 모양 9종을 각각 200개씩 만든다. 확인 횟수마다 1,800개 구조의 가능한
+정보 상태 57,600개를 계산하고, 12개 방법을 적용해 691,200회 비교한다. 세 확인 횟수를
+합친 선택 방법 계산은 2,073,600회다.
+
+현재 기본 규칙은 미확정 시험 수, 연결된 조건 수와 확인 부담을 차례로 본다. 가장
+넓게 연결된 정보만 고르는 방법과 비교한 결과는 다음과 같다.
+
+| 확인 횟수 | 공개 합성 환자에서 정리한 시험 차이 | 공개 합성 환자에서 확인 부담 차이 | 1,800개 연결 구조에서 정리한 시험 차이 | 연결 구조에서 확인 부담 차이 |
+|---:|---:|---:|---:|---:|
+| 1회 | -1.25%p | -8.4% | -0.19%p | -16.5% |
+| 2회 | -0.62%p | -5.4% | +0.01%p | -23.6% |
+| 3회 | +0.22%p | -3.7% | -0.06%p | -16.0% |
+
+앞으로 확인할 정보 조합을 계산한 방법은 두 답 분포의 연결 구조에서 현재
+규칙보다 전체 평균 1.2~2.0%포인트, 사슬 구조에서는 3.2~4.3%포인트 더 많은 시험 상태를
+정리했다. 공개 조건의 가능한 값 조합에서는 기본 규칙보다 낮았다.
+학습한 결정 순서는 익숙한 정보 분포에서 좋아졌으나 분포를 바꾼 1회 확인 실험에서는
+순위가 뒤집혔다. 현재 기본 규칙은 정리 성능이 비슷하고 계산 근거가 그대로 보이며,
+미리 정한 답의 분포를 사용하지 않는다.
+
+필요한 실행이 모두 끝나면 발표에 쓰는 표를 한 폴더로 모은다.
+
+```powershell
+.\.venv\Scripts\python.exe scripts\build_policy_scale_tables.py `
+  --run-root runs\policy-scale-20260830 `
+  --burden-summary runs\policy-scale-20260830\burden-ablation-final\summary.json `
+  --route-choice-summary runs\policy-scale-20260830\route-choice-controlled\summary.json `
+  --public-protocol-scale runs\public-protocol-policy-scale-20260830 `
+  --common-facts-known runs\public-protocol-common-facts-known-rebuild-v2 `
+  --shared-fact-report runs\public-protocol-shared-facts-v1\shared-fact-report.json `
+  --live-model-smoke-before-result runs\presentation-live-model-smoke-fixed-20260830\result.json `
+  --live-model-smoke-after-result runs\presentation-live-model-smoke-code-routed-20260830\result.json `
+  --deterministic-smoke-before-result runs\presentation-deterministic-smoke-20260830\result.json `
+  --deterministic-smoke-after-result runs\presentation-deterministic-smoke-code-routed-20260830\result.json `
+  --output docs\internal\results\presentation-evidence-v2
+```
+
+생성된 CSV를 발표용 SVG 그림으로 바꾼다.
+
+```powershell
+.\.venv\Scripts\python.exe scripts\render_presentation_evidence_figures.py `
+  --input-dir docs\internal\results\presentation-evidence-v2 `
+  --output-dir docs\internal\diagrams
+```
+
+그림 생성기는 필요한 표가 빠졌거나 열 이름이 맞지 않으면 파일을 만들기 전에 오류를
+낸다. 정상 종료되면 다음 파일 여덟 개가 `docs\internal\diagrams`에 생긴다.
+
+- `clarifytrial-shared-information-coverage.svg`
+- `clarifytrial-gray-zone-rescue.svg`
+- `clarifytrial-public-budget-curves.svg`
+- `clarifytrial-public-input-sensitivity.svg`
+- `clarifytrial-structural-topology-budget1.svg`
+- `clarifytrial-patient-limit-tradeoff.svg`
+- `clarifytrial-route-choice.svg`
+- `clarifytrial-compact-architecture.svg`
+
+## 7. 테스트
+
+평가와 발표 파일을 바꾼 뒤에는 관련 검사를 먼저 실행한다.
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest `
+  tests\test_public_protocol_policy_scale.py `
+  tests\test_public_protocol_common_facts_known.py `
+  tests\test_interactive_stress.py `
+  tests\test_interactive_statistics.py `
+  tests\test_burden_benchmark.py `
+  tests\test_burden_preference_routing.py `
+  tests\test_shared_fact_report.py `
+  tests\test_presentation_evidence_packaging.py `
+  tests\test_presentation_figures.py `
+  tests\test_presentation_terminal_demo.py `
+  tests\test_presentation_workflow_integration.py `
+  -q
+```
+
+저장소 전체를 확인하는 명령은 다음과 같다.
+
+```powershell
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-의학적 의미 검색까지 다시 실행하려면 큰 기계학습 패키지가 포함된 `retrieval` 선택
-항목을 추가한다.
+테스트 개수는 코드와 함께 달라진다. 실행이 끝났을 때 실패가 0인지 확인한다.
 
-```powershell
-.\.venv\Scripts\python.exe -m pip install -c constraints\research.txt -e ".[dev,retrieval,codex-subscription]"
-```
+## 8. 결과를 읽을 때 지킬 기준
 
-## 2. 가장 빠른 전체 화면 실행
+- 주 평가의 통계 단위는 최종 평가 환자 30명이다. 환자 한 명에게 연결된 시험 5건과
+  가능한 정보 순서 120개를 새 환자로 세지 않는다.
+- 질문 순서 결과는 선택한 공개 조건과 합성 환자에서 측정한 값이다. 실제 환자 모집
+  성과나 전체 임상시험 조건의 판정 정확도로 옮겨 쓰지 않는다.
+- 나이를 시작부터 알고 있는 민감도 결과를 주 결과와 함께 확인한다. 기본 평가의 큰
+  차이에는 여러 시험이 공통으로 요구한 나이를 먼저 확인한 효과가 많이 들어 있다.
+- 환자 경로 실험의 시간, 비용과 부담은 프로그램 동작을 보기 위해 정한 합성값이다.
+- `deterministic` 실행의 외부 모델 호출과 토큰 사용은 0이 정상이다.
+- TREC 검색, TrialGPT 개별 조건 판정과 위 질문 순서 평가는 서로 다른 문제를 다룬다.
+  한 점수로 합치지 않는다.
 
-준비된 합성 환자에서 관련 시험 검색, 조건 판단, 부족 정보 선택, 합성 답 공개,
-재판정과 최종 목록을 한 화면에 보여 준다.
+수치와 표본 범위는 [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md), 입력자료의 구성은
+[실험자료](CLARIFYTRIAL_DATASETS.md)에 정리돼 있다.
 
-```powershell
-.\.venv\Scripts\clarifytrial.exe run-full-ui --auto
-```
+## 9. 다른 입력으로 실행
 
-`--auto`를 빼면 각 합성 답을 공개하기 전에 Enter 입력을 기다린다. 기본값은 수치와
-날짜를 코드로 계산하므로 외부 언어모델을 부르지 않는다.
+### 공식 대회 형식
 
-공개 시험 1,931건을 준비한 뒤 모집 중·모집 예정 시험 589건 검색부터 연결하려면 다음
-명령을 사용한다.
-
-```powershell
-.\.venv\Scripts\clarifytrial.exe prepare-team-trials
-
-.\.venv\Scripts\clarifytrial.exe run-full-ui `
-  --broad-corpus .research-cache\team-trials\trials.jsonl `
-  --broad-search-top-k 200 `
-  --auto
-```
-
-### 공식 대회 환자 파일 실행
-
-`topics` 배열 안에 `num`과 `title`이 있는 공식 환자 파일은 `run-challenge`로 읽는다.
-기본 검색은 ClinicalTrials.gov 공식 API를 사용하므로 TrialGPT 자료나 팀 시험 파일을
-따로 내려받을 필요가 없다.
+`topics` 배열에 `num`과 `title`이 있는 환자 파일은 `run-challenge`로 읽는다. 기본
+검색은 ClinicalTrials.gov 공식 API를 사용한다. 아래 실행은 외부 모델을 부르므로 모델
+사용을 확인하는 옵션이 필요하다.
 
 ```powershell
 New-Item -ItemType Directory -Force runs | Out-Null
@@ -65,67 +364,14 @@ Invoke-WebRequest `
   --confirm-model-run
 ```
 
-한 번에 모두 실행하려면 `--topic-id S001` 대신 `--all-topics`를 쓴다. 공식 검색 응답은
-`runs\clinicaltrials-search-cache`에 저장해 같은 질환 검색을 재사용한다. 최신 검색을 다시
-받으려면 `--refresh-trial-search`를 붙인다.
+여러 환자를 한꺼번에 실행하려면 `--topic-id S001`을 `--all-topics`로 바꾼다. 검색
+응답은 `runs\clinicaltrials-search-cache`에서 재사용한다. 최신 검색을 다시 받으려면
+`--refresh-trial-search`를 붙인다. 환자별 이동, 비용, 새 검사와 방문 제한은
+`--topic-settings` 파일에 따로 적는다.
 
-환자별 이동, 비용, 새 검사와 방문 제한은 원본 환자 파일에 섞지 않고
-`--topic-settings` 파일에 적는다. 입력이 없으면 일반적인 확인 경로를 허용하는 중립
-설정을 사용한다. 특정 정보의 확인 방법까지 지정할 때는 `acquisition_paths`에 사실 이름,
-기존 기록·환자 답변·공식 결과·새 검사 가운데 가능한 경로, 예상 대기, 방문과 비용을
-적는다. 사실 이름은 첫 실행의 `prepared-input.json`에 기록된 항목과 같아야 한다.
+### 공개 평가자료 다시 만들기
 
-관련 모집 시험을 찾지 못하면 무관한 시험으로 후보 수를 채우지 않는다. 이 경우에도
-`result.json`, `trace.jsonl`, `session.json`을 남기며 결과 상태는
-`no_related_enrolling_trials`이다.
-
-여러 환자 실행이 끝난 뒤 검색 수, 판정한 시험 수, 조건 수, 모델 사용량과 원문 위치를
-한 번에 점검하려면 다음 명령을 쓴다.
-
-```powershell
-.\.venv\Scripts\python.exe scripts\audit_official_challenge_run.py runs\challenge-all
-```
-
-같은 폴더에 `audit-summary.json`과 `audit-summary.md`가 만들어진다.
-
-## 3. 별도 환자와 시험 파일 실행
-
-기본 예제 파일을 사용한 일반 실행은 다음과 같다.
-
-```powershell
-.\.venv\Scripts\clarifytrial.exe run-screening `
-  --patient examples\general_screening\patient.json `
-  --trials examples\general_screening\trials.jsonl `
-  --answers examples\general_screening\answers.json `
-  --provider deterministic `
-  --output runs\general-screening
-```
-
-입력 파일의 역할은 다음과 같다.
-
-| 파일 | 내용 |
-|---|---|
-| `patient.json` | 현재 확인된 환자 사실, 아직 필요한 정보와 환자 상황 |
-| `trials.jsonl` | 한 줄에 한 시험씩 저장한 구조화 조건 |
-| `answers.json` | 실험용으로 미리 정한 숨은 답; 실제 대화에서는 생략 가능 |
-
-`--answers`를 생략하면 터미널에서 답을 직접 입력한다. 실행 폴더에는 최종 결과,
-단계별 기록과 이어서 실행할 수 있는 세션 파일이 생긴다.
-
-중단된 실행은 이전 세션 파일을 지정해 이어서 진행한다.
-
-```powershell
-.\.venv\Scripts\clarifytrial.exe run-screening `
-  --patient examples\general_screening\patient.json `
-  --trials examples\general_screening\trials.jsonl `
-  --resume runs\general-screening\session.json `
-  --provider deterministic `
-  --output runs\general-screening-resumed
-```
-
-입력과 설정이 달라지면 이전 세션을 재사용하지 않는다.
-
-## 4. 공개 시험 기반 평가자료 다시 만들기
+현재 저장된 시험 조건과 합성 환자를 같은 원본에서 다시 만들고 비교한다.
 
 ```powershell
 .\.venv\Scripts\clarifytrial.exe prepare-team-trials
@@ -140,170 +386,5 @@ Invoke-WebRequest `
 .\.venv\Scripts\clarifytrial.exe audit-public-protocol-benchmark
 ```
 
-마지막 명령은 같은 원본과 설정으로 다시 만든 시험 조건과 합성 환자가 저장소의
-평가자료와 같은지 확인한다. 현재 자료는 10개 질환, 공개 시험 50건, 구조화 조건
-202개와 합성 환자 50명으로 구성된다.
-
-## 5. 전체 흐름 평가
-
-다음 명령은 개발에 사용하지 않은 합성 환자 30명에게 네 가지 정보 선택 방법을 같은
-조건으로 실행한다. 외부 언어모델은 사용하지 않는다.
-
-```powershell
-.\.venv\Scripts\clarifytrial.exe run-workflow-evaluation `
-  --trial-set data\public_protocol_benchmark_v1\trial_set.json `
-  --patient-pairs data\public_protocol_benchmark_v1\patient_pairs.json `
-  --generation-config configs\natural_evaluation_patient_generation_v2.json `
-  --broad-corpus .research-cache\team-trials\trials.jsonl `
-  --broad-search-top-k 200 `
-  --provider deterministic `
-  --split heldout `
-  --action-budget 3 `
-  --concurrency 4 `
-  --include-unavailable-scenario `
-  --include-patient-choice-scenario `
-  --approve-synthetic-actions `
-  --output runs\public-protocol-evaluation
-```
-
-프로그램 안에서 비교하는 네 방법은 다음과 같다. 명령줄의 `--arm`은 이 가운데 실행할
-방법 하나를 고르는 선택 항목이다.
-
-| 명령줄 이름 | 실제 뜻 |
-|---|---|
-| `no_questions` | 추가 정보를 확인하지 않음 |
-| `fixed_order` | 입력 파일에 적힌 순서대로 확인 |
-| `immediate_coverage` | 현재 가장 많은 미완료 시험에 연결된 정보부터 확인 |
-| `clarifytrial` | 남은 확인 횟수 안의 정보 조합을 계산 |
-
-`--include-unavailable-scenario`는 각 정보 선택 방법이 첫 번째로 고른 답을 얻지 못하게
-한 실행을 추가한다. 방법마다 첫 선택이 다르면 실제로 고른 답을 각각 막는다.
-`--include-patient-choice-scenario`는 새 검사와 추가 방문을 거절한 실행을 추가한다.
-`--approve-synthetic-actions`는 평가자료에 미리 선언된 합성 선택만 자동으로 적용한다.
-
-## 6. 확인 횟수 0회부터 5회까지 비교
-
-앞 명령의 `--action-budget 3`을 `--budget-sweep`으로 바꾼다.
-
-```powershell
-.\.venv\Scripts\clarifytrial.exe run-workflow-evaluation `
-  --trial-set data\public_protocol_benchmark_v1\trial_set.json `
-  --patient-pairs data\public_protocol_benchmark_v1\patient_pairs.json `
-  --generation-config configs\natural_evaluation_patient_generation_v2.json `
-  --broad-corpus .research-cache\team-trials\trials.jsonl `
-  --broad-search-top-k 200 `
-  --provider deterministic `
-  --split heldout `
-  --budget-sweep `
-  --concurrency 4 `
-  --include-unavailable-scenario `
-  --include-patient-choice-scenario `
-  --approve-synthetic-actions `
-  --output runs\public-protocol-budget-sweep
-```
-
-각 확인 횟수의 결과 폴더와 `frontier` 폴더가 생긴다. `frontier`에는 실제 후보 확정,
-제외 후보 정리와 최종 상태 일치가 JSON, CSV, Markdown과 그림으로 저장된다.
-
-이미 끝난 환자와 비교 방법을 건너뛰려면 같은 명령에 `--resume`을 붙인다.
-
-## 7. 연구 보고서 만들기
-
-```powershell
-.\.venv\Scripts\clarifytrial.exe build-report `
-  --workflow runs\public-protocol-budget-sweep\budget-3\summary.json `
-  --budget-frontier runs\public-protocol-budget-sweep\frontier `
-  --output runs\public-protocol-report
-```
-
-보고서에는 다음 내용이 들어간다.
-
-- 질문 전후 최종 상태 변화
-- 처음에는 보이지 않을 실제 참가 가능 후보 수
-- 추가 확인 후보로 남긴 수와 질문 뒤 확정한 수
-- 처음에는 남았지만 결국 제외된 후보 수
-- 답을 얻지 못한 횟수와 같은 정보 반복
-- 새 검사, 추가 방문과 환자 선택
-- 외부 언어모델 호출, 토큰과 실행 오류
-
-## 8. 새 시험 최종 평가
-
-기존 평가와 겹치지 않는 최종 시험 15건과 합성 환자 25명을 구조화 규칙만으로
-실행한다.
-
-```powershell
-.\.venv\Scripts\clarifytrial.exe run-workflow-evaluation `
-  --trial-set data\independent_new_trial_benchmark_v1\final\trial_set.json `
-  --patient-pairs data\independent_new_trial_benchmark_v1\final\patient_pairs.json `
-  --generation-config configs\independent_new_trial_benchmark_v1.json `
-  --provider deterministic `
-  --split heldout `
-  --arm clarifytrial `
-  --agent-architecture rules_only `
-  --action-budget 3 `
-  --concurrency 4 `
-  --output runs\independent-new-trial-final-rules
-```
-
-언어모델을 쓰는 비교에는 제공자, 모델과 생각량을 지정하고 비용이 발생하는 실행을
-확인하는 옵션을 붙인다.
-
-```text
---provider codex-subscription --model gpt-5.6-sol --effort medium --confirm-model-run
-```
-
-조건 판단 모델만 사용할 때는 `--agent-architecture single_judge`, 조건 판단과 질문
-문장 역할을 코드가 나누어 부를 때는 `--agent-architecture code_routed_agents`를 쓴다.
-각 실행은 서로 다른 출력 폴더에 저장한다.
-
-세 결과를 한 표로 묶는 명령은 다음과 같다.
-
-```powershell
-.\.venv\Scripts\clarifytrial.exe compare-agent-architectures `
-  --workflow runs\independent-new-trial-final-rules-v2\summary.json `
-  --workflow runs\independent-new-trial-sol-single-judge-v2\summary.json `
-  --workflow runs\independent-new-trial-sol-code-routed-v2\summary.json `
-  --output docs\internal\results\independent-new-trial-agent-evaluation-v1
-```
-
-## 9. TREC 검색 다시 실행
-
-TREC와 TrialGPT 공개 검색 파일을 먼저 준비한 뒤 각 연도에 대해 실행한다.
-
-```powershell
-.\.venv\Scripts\clarifytrial.exe run-trialgpt-retrieval `
-  --dataset .research-cache\TrialGPT\dataset\trec_2021 `
-  --cache .research-cache\TrialGPT\retrieval-cache `
-  --corpus trec_2021 `
-  --output runs\trialgpt-retrieval-2021
-```
-
-2022년은 경로와 `--corpus`를 `trec_2022`로 바꾼다. 의학적 의미 검색은 큰 모델 파일과
-연산 장치가 필요할 수 있다. 같은 단어 검색만 연결을 확인하려면 `--bm25-only`를 쓴다.
-두 실행은 같은 성능 결과가 아니므로 구분해 기록한다.
-
-## 10. 실행 전 상태 확인
-
-전체 흐름 자료, 합성 환자와 저장된 결과가 서로 맞는지 확인한다.
-
-```powershell
-.\.venv\Scripts\clarifytrial.exe audit-final-evaluation-readiness `
-  --trial-set data\public_protocol_benchmark_v1\trial_set.json `
-  --patient-pairs data\public_protocol_benchmark_v1\patient_pairs.json `
-  --workflow runs\public-protocol-budget-sweep\budget-3\summary.json `
-  --output runs\public-protocol-readiness
-```
-
-이 확인은 입력 파일, 식별자와 결과 연결 상태를 검사한다. 임상 정확도를 새로 측정하는
-명령은 아니다.
-
-## 11. 결과를 읽는 기준
-
-- `deterministic` 제공자는 합성 답과 구조화 규칙을 사용하는 코드 실행이다. 토큰이
-  0인 것이 정상이다.
-- 95.3%는 추가 정보를 세 번 확인했을 때 프로그램이 합성 환자의 기대 상태에 도달한
-  비율이다.
-- 589건 검색의 150/150은 미리 정한 평가 시험 연결 점검이다.
-- 새 시험 75/75는 객관적으로 구조화한 일부 조건의 결과다.
-- 실제 후보 확정과 제외 후보 정리를 항상 함께 본다.
-- 외부 언어모델을 실행했다면 호출 수, 토큰, 실패와 다시 시도한 횟수를 함께 기록한다.
+마지막 명령은 10개 질환, 공개 시험 50건, 구조화 조건 202개와 합성 환자 50명이 저장된
+평가자료와 같은지 확인한다. 새 임상 성능을 측정하는 명령은 아니다.

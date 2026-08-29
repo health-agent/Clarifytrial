@@ -200,6 +200,39 @@ def test_recent_numeric_threshold_failure_violates_with_sufficient_evidence() ->
 
 
 @pytest.mark.parametrize(
+    ("value", "expected_status"),
+    [
+        (126, ClinicalStatus.VIOLATES),
+        (82, ClinicalStatus.SUPPORTS),
+    ],
+)
+def test_exclusion_status_is_reported_from_eligibility_direction(
+    value: float,
+    expected_status: ClinicalStatus,
+) -> None:
+    exclusion = _criterion().model_copy(
+        update={
+            "kind": CriterionKind.EXCLUSION,
+            "statement": "Exclude patients with platelets at least 100 x10^9/L.",
+        }
+    )
+
+    result = evaluate_criterion(
+        exclusion,
+        _state(
+            _fact(
+                evidence_id=f"exclusion-platelets-{value}",
+                value=value,
+                event_date=date(2026, 8, 18),
+            )
+        ),
+    )
+
+    assert result.clinical_status is expected_status
+    assert result.evidence_sufficiency is EvidenceSufficiency.SUFFICIENT
+
+
+@pytest.mark.parametrize(
     ("operator", "value", "threshold"),
     [
         (ComparisonOperator.GT, 101, 100),

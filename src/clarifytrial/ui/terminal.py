@@ -30,6 +30,10 @@ from ..settings import EpisodeSettings
 from ..trace import TraceEvent, TraceRecorder
 from ..workflow import EpisodeAgents, PatientScreeningRunner
 from ..workflow.patient_screening_contracts import InformationTools
+from .failure_artifacts import (
+    persist_terminal_run_failure,
+    prepare_terminal_run_output,
+)
 from .fixtures import IntegratedUIFixture
 
 
@@ -168,6 +172,26 @@ class IntegratedTerminalRenderer:
                     self.write("[4/6] 조건별 판단")
                     self.judgment_started = True
                 self.write(f"  진행 규칙: {_ROUTE_LABELS.get(route, route)}")
+            return
+        if (
+            event.actor == "mechanical_checks"
+            and event.event == "structured_criteria_applied_without_model"
+        ):
+            criterion_ids = [
+                str(item)
+                for item in output.get("criterion_ids", event.input_refs)
+            ]
+            count = int(output.get("criterion_count", len(criterion_ids)))
+            if not self.judgment_started:
+                self.write("")
+                self.write("[4/6] 조건별 판단")
+                self.judgment_started = True
+            self.judged_trials.update(
+                criterion_id.split(":", 1)[0] for criterion_id in criterion_ids
+            )
+            self.write(
+                f"  코드 판단: 구조화 조건 {count}개 처리 · 모델 호출 없음"
+            )
             return
         if event.actor == "matcher_judge" and event.event == "structured_model_completed":
             response = output.get("response", {})
@@ -376,15 +400,24 @@ def run_integrated_terminal_ui(
         auto_advance=auto_advance,
         read=read,
     )
-    screening = PatientScreeningRunner(agents, settings).run(
-        case,
-        tools,
-        trace=trace,
-    )
-    destination = Path(output_dir)
-    destination.mkdir(parents=True, exist_ok=True)
+    destination = prepare_terminal_run_output(output_dir)
     result_path = destination / "result.json"
     trace_path = destination / "trace.jsonl"
+    try:
+        screening = PatientScreeningRunner(agents, settings).run(
+            case,
+            tools,
+            trace=trace,
+        )
+    except Exception as error:
+        persist_terminal_run_failure(
+            output_dir=destination,
+            trace=trace,
+            case_id=case.case_id,
+            model_label=model_label,
+            error=error,
+        )
+        raise
     result_document = {
         "prepared": {
             "search_conditions": list(fixture.search_conditions),

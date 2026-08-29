@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">여러 임상시험에서 함께 쓰이는 환자 정보</title>
+<desc id="desc">전체 조건 202개 중 130개, 64.4%가 다른 시험과 환자 정보를 공유했다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#98A2B3"/></marker>
+</defs>
+<rect width="1200" height="675" fill="#F7F9FC"/>
+<text x="70.0" y="78.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="34" font-weight="700" fill="#182533" text-anchor="start">환자 정보 하나를 확인하면 여러 시험이 함께 바뀔 수 있다</text>
+<text x="70.0" y="118.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="20" font-weight="400" fill="#64748B" text-anchor="start">공개 임상시험 50건에서 구조화한 참가 조건 202개를 살펴봤다</text>
+<text x="70.0" y="220.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="72" font-weight="700" fill="#17324D" text-anchor="start">64.4%</text>
+<text x="350.0" y="205.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="27" font-weight="600" fill="#182533" text-anchor="start">참가 조건이 다른 시험과</text>
+<text x="350.0" y="240.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="27" font-weight="600" fill="#182533" text-anchor="start">같은 환자 정보를 함께 썼다</text>
+<rect x="90.0" y="300.0" width="1020.0" height="94.0" rx="18.0" fill="#EEF2F6" stroke="none" stroke-width="1.0"/>
+<rect x="90.0" y="300.0" width="656.4" height="94.0" rx="18.0" fill="#2F6FED" stroke="none" stroke-width="1.0"/>
+<text x="418.2" y="358.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">공통 정보가 쓰인 조건  130개</text>
+<text x="928.2" y="358.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="22" font-weight="600" fill="#182533" text-anchor="middle">한 시험에서만 쓴 조건  72개</text>
+<rect x="90.0" y="470.0" width="1020.0" height="105.0" rx="16.0" fill="#FFFFFF" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="125.0" y="505.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="400" fill="#182533" text-anchor="start"><tspan x="125.0" dy="0">130개 중 126개는 나이 72개, 임신·수유 36개, 활동성 감염 18개였다.</tspan><tspan x="125.0" dy="34">공통 정보는 분명했지만, 여러 검사값까지 폭넓게 공유됐다고 보기는 어렵다.</tspan></text>
+<text x="70.0" y="630.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="start">선택한 50개 시험과 202개 구조화 조건의 구성만 보여 주는 값이다.</text>
+</svg>

@@ -1,0 +1,12 @@
+﻿suite,budget,independent_unit,independent_unit_count,total_synthetic_patient_count,trial_set_path,patient_pairs_path,missing_fact_count_distribution,disease_group_count,expanded_case_or_state_count,policy_count,random_order_enumeration,random_order_policy_run_count_per_budget,model_calls,model_tokens,runtime_seconds,api_cost_usd,scope,preprovided_fact_codes,preprovided_fact_count_distribution,remaining_hidden_fact_count_distribution,total_masked_case_count,random_order_count_per_masked_case,random_order_policy_run_count,scenario_policy_evaluation_count
+public_protocol_patient_profiles,0-5,heldout_base_patient,30,50,data\public_protocol_benchmark_v1\trial_set.json,data\public_protocol_benchmark_v1\patient_pairs.json,"{""1"": 10, ""2"": 10, ""3"": 10, ""5"": 20}",10,150,5,10 patients x 6 orders; 20 patients x 120 orders,2460,0,0,60.10743870000442,0.0,Question-order evaluation on selected structured public trial criteria and deterministic synthetic patients; not clinical performance.,,,,,,,
+public_protocol_common_facts_known_sensitivity,0-5,heldout_base_patient,30,,,,,10,150,,,,0,0,,,Deterministic heldout sensitivity on selected structured public trial criteria and synthetic patients; not clinical performance.,age_years; pregnancy_or_lactation; active_serious_infection,"{""1"": 12, ""2"": 17, ""3"": 1}","{""1"": 6, ""2"": 5, ""3"": 11, ""4"": 8}",,,,
+public_patient_profiles,1,base_patient,20,,,,,,40,10,,,,,469.2882335000031,0.0,,,,,60,120,7200,
+public_declared_value_grid,1,exhaustive_declared_grid,92,,,,,,77792,9,,,,,4563.729444599994,0.0,,,,,,,,700128
+synthetic_graph_stress,1,synthetic_structure,1800,,,,,,57600,12,,,,,683.0130692000021,0.0,,,,,,,,691200
+public_patient_profiles,2,base_patient,20,,,,,,40,10,,,,,481.5458318000019,0.0,,,,,60,120,7200,
+public_declared_value_grid,2,exhaustive_declared_grid,92,,,,,,77792,9,,,,,5475.232364000003,0.0,,,,,,,,700128
+synthetic_graph_stress,2,synthetic_structure,1800,,,,,,57600,12,,,,,956.5203339,0.0,,,,,,,,691200
+public_patient_profiles,3,base_patient,20,,,,,,40,10,,,,,493.3557703000042,0.0,,,,,60,120,7200,
+public_declared_value_grid,3,exhaustive_declared_grid,92,,,,,,77792,9,,,,,6363.676085799998,0.0,,,,,,,,700128
+synthetic_graph_stress,3,synthetic_structure,1800,,,,,,57600,12,,,,,1053.852570899995,0.0,,,,,,,,691200

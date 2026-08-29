@@ -1,0 +1,11 @@
+﻿candidate_patient_profile_id,baseline_patient_profile_id,candidate_preference_mode,metric,mean_difference,ci_95_lower,ci_95_upper,wins,ties,losses,exact_sign_p,cluster_unit,cluster_count,scope
+mobility_cost_constrained,low_extra_burden,least_extra_burden,trial_status_recovery,0.0,0.0,0.0,0,20,0,1.0,base_patient,20,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다."
+mobility_cost_constrained,low_extra_burden,least_extra_burden,cumulative_delay_hours,0.0,0.0,0.0,0,20,0,1.0,base_patient,20,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다."
+mobility_cost_constrained,low_extra_burden,least_extra_burden,new_test_count,0.0,0.0,0.0,0,20,0,1.0,base_patient,20,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다."
+mobility_cost_constrained,low_extra_burden,least_extra_burden,additional_visit_count,0.0,0.0,0.0,0,20,0,1.0,base_patient,20,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다."
+mobility_cost_constrained,low_extra_burden,least_extra_burden,cumulative_cost_rank,0.0,0.0,0.0,0,20,0,1.0,base_patient,20,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다."
+time_urgent,low_extra_burden,fastest,trial_status_recovery,0.0,0.0,0.0,0,20,0,1.0,base_patient,20,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다."
+time_urgent,low_extra_burden,fastest,cumulative_delay_hours,-136.0,-161.6,-108.8,0,0,20,1.9073486328125e-06,base_patient,20,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다."
+time_urgent,low_extra_burden,fastest,new_test_count,2.125,1.7,2.525,20,0,0,1.9073486328125e-06,base_patient,20,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다."
+time_urgent,low_extra_burden,fastest,additional_visit_count,2.125,1.7,2.525,20,0,0,1.9073486328125e-06,base_patient,20,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다."
+time_urgent,low_extra_burden,fastest,cumulative_cost_rank,2.125,1.7,2.525,20,0,0,1.9073486328125e-06,base_patient,20,"합성 경로 선택 동작 점검이며 실제 환자 효용, 비용 또는 임상 성능이 아니다."

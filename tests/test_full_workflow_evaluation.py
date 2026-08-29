@@ -40,7 +40,7 @@ def test_full_workflow_evaluation_uses_four_arms_and_batched_calls(
     ]
     assert all(item["failed_patient_count"] == 0 for item in result["arm_metrics"])
     no_questions, fixed, immediate, current = result["arm_metrics"]
-    assert no_questions["model_call_count"] == 2
+    assert no_questions["model_call_count"] == 0
     assert fixed["model_call_count"] <= 14
     assert immediate["model_call_count"] <= 14
     assert current["model_call_count"] <= 14

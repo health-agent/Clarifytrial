@@ -322,6 +322,55 @@ def build_acquisition_catalog(
     return catalog
 
 
+def build_route_choice_catalog(
+    view: InteractivePolicyView,
+) -> dict[str, tuple[AcquisitionOption, ...]]:
+    """Give every missing fact the same explicit speed-versus-burden choice.
+
+    Both routes release the same synthetic answer.  The catalog exists to test
+    the acquisition selector, not to estimate real turnaround times or costs.
+    """
+
+    catalog: dict[str, tuple[AcquisitionOption, ...]] = {}
+    for fact in view.available_information:
+        existing = _option(
+            fact.fact_id,
+            AcquisitionMode.EXISTING_OFFICIAL_RESULT,
+            NextAction.REQUEST_VERIFICATION,
+            available=True,
+            delay=72,
+            visit=False,
+            cost=DirectCostBand.LOW,
+            physical=0,
+            emotional=1,
+            risk=0,
+            treatment=0,
+            source_note=(
+                "합성 경로 선택 평가의 외부 공식 결과 회수 경로"
+            ),
+        )
+        repeat_test = _option(
+            fact.fact_id,
+            AcquisitionMode.NEW_NONINVASIVE_TEST,
+            NextAction.REQUEST_VERIFICATION,
+            available=True,
+            delay=8,
+            visit=True,
+            cost=DirectCostBand.MEDIUM,
+            physical=1,
+            emotional=1,
+            risk=1,
+            treatment=0,
+            patient_choice=True,
+            clinician_authorization=True,
+            source_note=(
+                "합성 경로 선택 평가의 같은 검사 재실시 경로"
+            ),
+        )
+        catalog[fact.fact_id] = (existing, repeat_test)
+    return catalog
+
+
 def current_fact_impacts(
     view: InteractivePolicyView,
     snapshot: InteractiveSnapshot,
@@ -477,10 +526,15 @@ def _dimension_value(
 def _ordering(
     policy_id: AcquisitionPolicyId, profile: PatientBurdenProfile
 ) -> list[tuple[str, str]]:
-    impact = [
-        ("exact_coverage_choice", "max"),
+    current_impact = [
         ("affected_trials", "max"),
         ("affected_criteria", "max"),
+    ]
+    # The default uses only current observable impact.  Exact look-ahead stays
+    # available through the explicitly named research comparators below.
+    exact_plan_impact = [
+        ("exact_coverage_choice", "max"),
+        *current_impact,
     ]
     least = [
         ("new_test", "min"),
@@ -493,18 +547,23 @@ def _ordering(
         ("delay", "min"),
     ]
     if policy_id is AcquisitionPolicyId.IMPACT_ONLY:
-        return impact
+        return current_impact
     if policy_id is AcquisitionPolicyId.FIXED_ROUTE_COST:
-        return [*impact, ("legacy_route_cost", "min")]
+        return [*current_impact, ("legacy_route_cost", "min")]
+    if policy_id in {
+        AcquisitionPolicyId.EXACT_FIXED_ROUTE,
+        AcquisitionPolicyId.PATIENT_LIMITS_ONLY,
+    }:
+        return [*exact_plan_impact, ("legacy_route_cost", "min")]
     if policy_id is AcquisitionPolicyId.LEAST_EXTRA_BURDEN:
-        return [*least, *impact]
+        return [*least, *current_impact]
     if policy_id is AcquisitionPolicyId.ALL_INFORMATION:
-        return impact
+        return current_impact
     if profile.preference_mode is PreferenceMode.FASTEST or (
         profile.time_urgency_0_to_3 is not None
         and profile.time_urgency_0_to_3 >= 2
     ):
-        return [*impact, ("delay", "min"), *least[:-1]]
+        return [*current_impact, ("delay", "min"), *least[:-1]]
     if profile.preference_mode is PreferenceMode.LEAST_EXTRA_BURDEN:
         priority_scores = {
             "visit": max(
@@ -521,8 +580,8 @@ def _ordering(
         )
         names = ["new_test", "medical_risk", *prioritized]
         names.extend(name for name, _ in least if name not in names)
-        return [(name, "min") for name in names] + impact
-    return [*impact, *least]
+        return [*current_impact, *((name, "min") for name in names)]
+    return [*current_impact, *least]
 
 
 def select_acquisition_option(
@@ -561,7 +620,11 @@ def select_acquisition_option(
         elif not option.available_now:
             removed.append(RemovedOption(option_id=option.option_id, reason="현재 사용할 수 없는 경로"))
         elif (
-            policy_id is AcquisitionPolicyId.PATIENT_ADAPTIVE
+            policy_id
+            in {
+                AcquisitionPolicyId.PATIENT_LIMITS_ONLY,
+                AcquisitionPolicyId.PATIENT_ADAPTIVE,
+            }
             and explicit_limit_violations(option, profile, selected_options)
         ):
             removed.append(
@@ -585,6 +648,7 @@ def select_acquisition_option(
         if (
             existing_by_fact[option.fact_id]
             and option.acquisition_mode not in _EXISTING_MODES
+            and policy_id is not AcquisitionPolicyId.PATIENT_ADAPTIVE
         ):
             removed.append(
                 RemovedOption(
@@ -609,7 +673,10 @@ def select_acquisition_option(
         )
 
     preferred_fact_id = None
-    if policy_id is AcquisitionPolicyId.PATIENT_ADAPTIVE and active:
+    if policy_id in {
+        AcquisitionPolicyId.EXACT_FIXED_ROUTE,
+        AcquisitionPolicyId.PATIENT_LIMITS_ONLY,
+    } and active:
         preferred_fact_id = choose_exact_coverage_fact(
             view=view,
             snapshot=snapshot,
@@ -694,14 +761,26 @@ def select_acquisition_option(
         (item for item in active if item.option_id != selected.option_id),
         key=lambda item: item.option_id,
     )
+    affected_trials, affected_criteria, _, _ = impacts[selected.fact_id]
+    if first_difference and first_difference.startswith(
+        ("affected_trials:", "affected_criteria:", "exact_coverage_choice:")
+    ):
+        selection_reason = (
+            f"현재 확인을 기다리는 시험 {affected_trials}개와 조건 "
+            f"{affected_criteria}개가 이 정보에 연결돼 있어 먼저 골랐다."
+        )
+    else:
+        selection_reason = (
+            f"현재 확인을 기다리는 시험 {affected_trials}개와 조건 "
+            f"{affected_criteria}개에 미치는 범위가 같은 선택지끼리 환자 제한, "
+            "방문, 비용과 대기시간을 차례로 비교했다."
+        )
     return AcquisitionDecision(
         policy_id=policy_id,
         selected_option=selected,
         alternative_options=alternatives,
         action_status=status,
-        selection_reason=(
-            "공개된 영향과 부담 항목을 정해진 순서대로 비교해 이 경로를 골랐다."
-        ),
+        selection_reason=selection_reason,
         decision_trace=DecisionTrace(
             **trace_base,
             first_decisive_difference=first_difference,

@@ -52,8 +52,8 @@
         "ecog_score",
         "hemoglobin_g_dl",
         "nct04724018_source_line_10",
-        "nct05000294_source_line_6",
-        "nct05312671_source_line_10",
+        "nct05000294_source_line_10",
+        "nct05312671_source_line_22",
         "nct06470282_source_line_3",
         "nct07414992_source_line_5",
         "pregnancy_or_lactation"
@@ -173,7 +173,7 @@
         "egfr_ml_min_1_73m2",
         "nct04649242_source_line_12",
         "nct06459635_source_line_6",
-        "nct06972056_source_line_3",
+        "nct06972056_source_line_10",
         "nct07642414_source_line_7",
         "nct07667621_source_line_24",
         "pregnancy_or_lactation"
@@ -216,7 +216,7 @@
         "nct06651580_logic_line_10",
         "nct06651580_logic_line_11",
         "nct06651580_logic_line_12",
-        "nct06651580_source_line_5",
+        "nct06651580_source_line_24",
         "nct07439757_source_line_3",
         "pregnancy_or_lactation"
       ]
@@ -262,7 +262,7 @@
         "nct05366881_source_line_9",
         "nct05969860_source_line_10",
         "nct06447064_source_line_5",
-        "nct06995898_source_line_3",
+        "nct06995898_source_line_5",
         "nct07732686_source_line_6",
         "pregnancy_or_lactation"
       ]
@@ -350,16 +350,16 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct05000294_source_line_6",
-          "description": "다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age",
+          "fact_code": "nct05000294_source_line_10",
+          "description": "다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening",
           "value": 1.0,
           "unit": "bool",
           "pivotal": false,
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct05312671_source_line_10",
-          "description": "다음 시험 조건에 해당하는지: * 18 years old at time of consent",
+          "fact_code": "nct05312671_source_line_22",
+          "description": "다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening",
           "value": 1.0,
           "unit": "bool",
           "pivotal": false,
@@ -503,27 +503,27 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-01:nct05000294_source_line_6:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age: 1 bool",
+            "evidence_id": "source-bladder_cancer-01:nct05000294_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-01#nct05000294_source_line_6",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-01#nct05000294_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05000294_source_line_6",
+            "concept": "bladder_cancer:nct05000294_source_line_10",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-01:nct05312671_source_line_10:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * 18 years old at time of consent: 1 bool",
+            "evidence_id": "source-bladder_cancer-01:nct05312671_source_line_22:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-01#nct05312671_source_line_10",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-01#nct05312671_source_line_22",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05312671_source_line_10",
+            "concept": "bladder_cancer:nct05312671_source_line_22",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -701,27 +701,27 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-01:nct05000294_source_line_6:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age: 1 bool",
+            "evidence_id": "source-bladder_cancer-01:nct05000294_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-01#nct05000294_source_line_6",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-01#nct05000294_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05000294_source_line_6",
+            "concept": "bladder_cancer:nct05000294_source_line_10",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-01:nct05312671_source_line_10:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * 18 years old at time of consent: 1 bool",
+            "evidence_id": "source-bladder_cancer-01:nct05312671_source_line_22:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-01#nct05312671_source_line_10",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-01#nct05312671_source_line_22",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05312671_source_line_10",
+            "concept": "bladder_cancer:nct05312671_source_line_22",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -959,16 +959,16 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct05000294_source_line_6",
-          "description": "다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age",
+          "fact_code": "nct05000294_source_line_10",
+          "description": "다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening",
           "value": 0.0,
           "unit": "bool",
           "pivotal": false,
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct05312671_source_line_10",
-          "description": "다음 시험 조건에 해당하는지: * 18 years old at time of consent",
+          "fact_code": "nct05312671_source_line_22",
+          "description": "다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening",
           "value": 0.0,
           "unit": "bool",
           "pivotal": false,
@@ -1112,27 +1112,27 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-02:nct05000294_source_line_6:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age: 0 bool",
+            "evidence_id": "source-bladder_cancer-02:nct05000294_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-02#nct05000294_source_line_6",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-02#nct05000294_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05000294_source_line_6",
+            "concept": "bladder_cancer:nct05000294_source_line_10",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-02:nct05312671_source_line_10:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * 18 years old at time of consent: 0 bool",
+            "evidence_id": "source-bladder_cancer-02:nct05312671_source_line_22:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-02#nct05312671_source_line_10",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-02#nct05312671_source_line_22",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05312671_source_line_10",
+            "concept": "bladder_cancer:nct05312671_source_line_22",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -1310,27 +1310,27 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-02:nct05000294_source_line_6:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age: 0 bool",
+            "evidence_id": "source-bladder_cancer-02:nct05000294_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-02#nct05000294_source_line_6",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-02#nct05000294_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05000294_source_line_6",
+            "concept": "bladder_cancer:nct05000294_source_line_10",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-02:nct05312671_source_line_10:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * 18 years old at time of consent: 0 bool",
+            "evidence_id": "source-bladder_cancer-02:nct05312671_source_line_22:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-02#nct05312671_source_line_10",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-02#nct05312671_source_line_22",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05312671_source_line_10",
+            "concept": "bladder_cancer:nct05312671_source_line_22",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -1579,16 +1579,16 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct05000294_source_line_6",
-          "description": "다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age",
+          "fact_code": "nct05000294_source_line_10",
+          "description": "다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening",
           "value": 1.0,
           "unit": "bool",
           "pivotal": false,
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct05312671_source_line_10",
-          "description": "다음 시험 조건에 해당하는지: * 18 years old at time of consent",
+          "fact_code": "nct05312671_source_line_22",
+          "description": "다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening",
           "value": 1.0,
           "unit": "bool",
           "pivotal": false,
@@ -1732,27 +1732,27 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-03:nct05000294_source_line_6:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age: 1 bool",
+            "evidence_id": "source-bladder_cancer-03:nct05000294_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-03#nct05000294_source_line_6",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-03#nct05000294_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05000294_source_line_6",
+            "concept": "bladder_cancer:nct05000294_source_line_10",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-03:nct05312671_source_line_10:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * 18 years old at time of consent: 1 bool",
+            "evidence_id": "source-bladder_cancer-03:nct05312671_source_line_22:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-03#nct05312671_source_line_10",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-03#nct05312671_source_line_22",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05312671_source_line_10",
+            "concept": "bladder_cancer:nct05312671_source_line_22",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -1917,27 +1917,27 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-03:nct05000294_source_line_6:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age: 1 bool",
+            "evidence_id": "source-bladder_cancer-03:nct05000294_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-03#nct05000294_source_line_6",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-03#nct05000294_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05000294_source_line_6",
+            "concept": "bladder_cancer:nct05000294_source_line_10",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-03:nct05312671_source_line_10:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * 18 years old at time of consent: 1 bool",
+            "evidence_id": "source-bladder_cancer-03:nct05312671_source_line_22:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-03#nct05312671_source_line_10",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-03#nct05312671_source_line_22",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05312671_source_line_10",
+            "concept": "bladder_cancer:nct05312671_source_line_22",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -2183,7 +2183,7 @@
       "pivotal_fact_codes": [
         "active_serious_infection",
         "age_years",
-        "nct05312671_source_line_10",
+        "nct05312671_source_line_22",
         "nct06470282_source_line_3",
         "nct07414992_source_line_5"
       ],
@@ -2253,16 +2253,16 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct05000294_source_line_6",
-          "description": "다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age",
+          "fact_code": "nct05000294_source_line_10",
+          "description": "다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening",
           "value": 1.0,
           "unit": "bool",
           "pivotal": false,
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct05312671_source_line_10",
-          "description": "다음 시험 조건에 해당하는지: * 18 years old at time of consent",
+          "fact_code": "nct05312671_source_line_22",
+          "description": "다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening",
           "value": 1.0,
           "unit": "bool",
           "pivotal": true,
@@ -2406,27 +2406,27 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-04:nct05000294_source_line_6:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age: 1 bool",
+            "evidence_id": "source-bladder_cancer-04:nct05000294_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-04#nct05000294_source_line_6",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-04#nct05000294_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05000294_source_line_6",
+            "concept": "bladder_cancer:nct05000294_source_line_10",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-04:nct05312671_source_line_10:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * 18 years old at time of consent: 1 bool",
+            "evidence_id": "source-bladder_cancer-04:nct05312671_source_line_22:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-04#nct05312671_source_line_10",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-04#nct05312671_source_line_22",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05312671_source_line_10",
+            "concept": "bladder_cancer:nct05312671_source_line_22",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -2591,14 +2591,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-04:nct05000294_source_line_6:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age: 1 bool",
+            "evidence_id": "source-bladder_cancer-04:nct05000294_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-04#nct05000294_source_line_6",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-04#nct05000294_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05000294_source_line_6",
+            "concept": "bladder_cancer:nct05000294_source_line_10",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -2650,8 +2650,8 @@
             "reason": "이 정보가 없으면 공개 원문에서 옮긴 조건을 현재 자료로 확인할 수 없다."
           },
           {
-            "fact_id": "source-bladder_cancer-04:nct05312671_source_line_10",
-            "description": "다음 시험 조건에 해당하는지: * 18 years old at time of consent 확인",
+            "fact_id": "source-bladder_cancer-04:nct05312671_source_line_22",
+            "description": "다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening 확인",
             "related_criterion_ids": [
               "NCT05312671:criterion:06"
             ],
@@ -2711,14 +2711,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-04:nct05312671_source_line_10:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * 18 years old at time of consent: 1 bool",
+            "evidence_id": "source-bladder_cancer-04:nct05312671_source_line_22:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-04#nct05312671_source_line_10",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-04#nct05312671_source_line_22",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05312671_source_line_10",
+            "concept": "bladder_cancer:nct05312671_source_line_22",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -2782,8 +2782,8 @@
             "source_note": "합성 평가에서 기존 기록으로 확인할 정보"
           },
           {
-            "option_id": "source-bladder_cancer-04:nct05312671_source_line_10:internal_record",
-            "fact_id": "source-bladder_cancer-04:nct05312671_source_line_10",
+            "option_id": "source-bladder_cancer-04:nct05312671_source_line_22:internal_record",
+            "fact_id": "source-bladder_cancer-04:nct05312671_source_line_22",
             "action": "LOOKUP_RECORD",
             "acquisition_mode": "internal_record",
             "available_now": true,
@@ -2846,7 +2846,7 @@
             "pending_fact_ids": [
               "source-bladder_cancer-04:active_serious_infection",
               "source-bladder_cancer-04:age_years",
-              "source-bladder_cancer-04:nct05312671_source_line_10"
+              "source-bladder_cancer-04:nct05312671_source_line_22"
             ],
             "logic_status": "unresolved"
           },
@@ -2908,7 +2908,7 @@
       "pivotal_fact_codes": [
         "active_serious_infection",
         "age_years",
-        "nct05312671_source_line_10",
+        "nct05312671_source_line_22",
         "nct06470282_source_line_3",
         "nct07414992_source_line_5"
       ],
@@ -2978,16 +2978,16 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct05000294_source_line_6",
-          "description": "다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age",
+          "fact_code": "nct05000294_source_line_10",
+          "description": "다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening",
           "value": 0.0,
           "unit": "bool",
           "pivotal": false,
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct05312671_source_line_10",
-          "description": "다음 시험 조건에 해당하는지: * 18 years old at time of consent",
+          "fact_code": "nct05312671_source_line_22",
+          "description": "다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening",
           "value": 0.0,
           "unit": "bool",
           "pivotal": true,
@@ -3131,27 +3131,27 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-05:nct05000294_source_line_6:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age: 0 bool",
+            "evidence_id": "source-bladder_cancer-05:nct05000294_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-05#nct05000294_source_line_6",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-05#nct05000294_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05000294_source_line_6",
+            "concept": "bladder_cancer:nct05000294_source_line_10",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-05:nct05312671_source_line_10:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * 18 years old at time of consent: 0 bool",
+            "evidence_id": "source-bladder_cancer-05:nct05312671_source_line_22:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-05#nct05312671_source_line_10",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-05#nct05312671_source_line_22",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05312671_source_line_10",
+            "concept": "bladder_cancer:nct05312671_source_line_22",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -3316,14 +3316,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-05:nct05000294_source_line_6:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adult subjects ≥ eighteen years of age: 0 bool",
+            "evidence_id": "source-bladder_cancer-05:nct05000294_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-05#nct05000294_source_line_6",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-05#nct05000294_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05000294_source_line_6",
+            "concept": "bladder_cancer:nct05000294_source_line_10",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -3375,8 +3375,8 @@
             "reason": "이 정보가 없으면 공개 원문에서 옮긴 조건을 현재 자료로 확인할 수 없다."
           },
           {
-            "fact_id": "source-bladder_cancer-05:nct05312671_source_line_10",
-            "description": "다음 시험 조건에 해당하는지: * 18 years old at time of consent 확인",
+            "fact_id": "source-bladder_cancer-05:nct05312671_source_line_22",
+            "description": "다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening 확인",
             "related_criterion_ids": [
               "NCT05312671:criterion:06"
             ],
@@ -3436,14 +3436,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-bladder_cancer-05:nct05312671_source_line_10:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * 18 years old at time of consent: 0 bool",
+            "evidence_id": "source-bladder_cancer-05:nct05312671_source_line_22:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Negative hepatitis B surface antigen (HBsAg) test at screening: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-bladder_cancer-05#nct05312671_source_line_10",
+            "source_location": "synthetic-public-protocol:source-bladder_cancer-05#nct05312671_source_line_22",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "bladder_cancer:nct05312671_source_line_10",
+            "concept": "bladder_cancer:nct05312671_source_line_22",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -3507,8 +3507,8 @@
             "source_note": "합성 평가에서 기존 기록으로 확인할 정보"
           },
           {
-            "option_id": "source-bladder_cancer-05:nct05312671_source_line_10:internal_record",
-            "fact_id": "source-bladder_cancer-05:nct05312671_source_line_10",
+            "option_id": "source-bladder_cancer-05:nct05312671_source_line_22:internal_record",
+            "fact_id": "source-bladder_cancer-05:nct05312671_source_line_22",
             "action": "LOOKUP_RECORD",
             "acquisition_mode": "internal_record",
             "available_now": true,
@@ -15403,8 +15403,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06972056_source_line_3",
-          "description": "다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment",
+          "fact_code": "nct06972056_source_line_10",
+          "description": "다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.",
           "value": 1.0,
           "unit": "bool",
           "pivotal": false,
@@ -15509,14 +15509,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-migraine-01:nct06972056_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment: 1 bool",
+            "evidence_id": "source-migraine-01:nct06972056_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-migraine-01#nct06972056_source_line_3",
+            "source_location": "synthetic-public-protocol:source-migraine-01#nct06972056_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "migraine:nct06972056_source_line_3",
+            "concept": "migraine:nct06972056_source_line_10",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -15655,14 +15655,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-migraine-01:nct06972056_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment: 1 bool",
+            "evidence_id": "source-migraine-01:nct06972056_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-migraine-01#nct06972056_source_line_3",
+            "source_location": "synthetic-public-protocol:source-migraine-01#nct06972056_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "migraine:nct06972056_source_line_3",
+            "concept": "migraine:nct06972056_source_line_10",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -15875,8 +15875,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06972056_source_line_3",
-          "description": "다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment",
+          "fact_code": "nct06972056_source_line_10",
+          "description": "다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.",
           "value": 0.0,
           "unit": "bool",
           "pivotal": false,
@@ -15981,14 +15981,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-migraine-02:nct06972056_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment: 0 bool",
+            "evidence_id": "source-migraine-02:nct06972056_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-migraine-02#nct06972056_source_line_3",
+            "source_location": "synthetic-public-protocol:source-migraine-02#nct06972056_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "migraine:nct06972056_source_line_3",
+            "concept": "migraine:nct06972056_source_line_10",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -16127,14 +16127,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-migraine-02:nct06972056_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment: 0 bool",
+            "evidence_id": "source-migraine-02:nct06972056_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-migraine-02#nct06972056_source_line_3",
+            "source_location": "synthetic-public-protocol:source-migraine-02#nct06972056_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "migraine:nct06972056_source_line_3",
+            "concept": "migraine:nct06972056_source_line_10",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -16368,8 +16368,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06972056_source_line_3",
-          "description": "다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment",
+          "fact_code": "nct06972056_source_line_10",
+          "description": "다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.",
           "value": 1.0,
           "unit": "bool",
           "pivotal": false,
@@ -16474,14 +16474,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-migraine-03:nct06972056_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment: 1 bool",
+            "evidence_id": "source-migraine-03:nct06972056_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-migraine-03#nct06972056_source_line_3",
+            "source_location": "synthetic-public-protocol:source-migraine-03#nct06972056_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "migraine:nct06972056_source_line_3",
+            "concept": "migraine:nct06972056_source_line_10",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -16620,14 +16620,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-migraine-03:nct06972056_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment: 1 bool",
+            "evidence_id": "source-migraine-03:nct06972056_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-migraine-03#nct06972056_source_line_3",
+            "source_location": "synthetic-public-protocol:source-migraine-03#nct06972056_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "migraine:nct06972056_source_line_3",
+            "concept": "migraine:nct06972056_source_line_10",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -16856,7 +16856,7 @@
       "pivotal_fact_codes": [
         "age_years",
         "body_weight_kg",
-        "nct06972056_source_line_3",
+        "nct06972056_source_line_10",
         "nct07642414_source_line_7",
         "nct07667621_source_line_24"
       ],
@@ -16902,8 +16902,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06972056_source_line_3",
-          "description": "다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment",
+          "fact_code": "nct06972056_source_line_10",
+          "description": "다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.",
           "value": 1.0,
           "unit": "bool",
           "pivotal": true,
@@ -17008,14 +17008,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-migraine-04:nct06972056_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment: 1 bool",
+            "evidence_id": "source-migraine-04:nct06972056_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-migraine-04#nct06972056_source_line_3",
+            "source_location": "synthetic-public-protocol:source-migraine-04#nct06972056_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "migraine:nct06972056_source_line_3",
+            "concept": "migraine:nct06972056_source_line_10",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -17185,8 +17185,8 @@
             "reason": "이 정보가 없으면 공개 원문에서 옮긴 조건을 현재 자료로 확인할 수 없다."
           },
           {
-            "fact_id": "source-migraine-04:nct06972056_source_line_3",
-            "description": "다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment 확인",
+            "fact_id": "source-migraine-04:nct06972056_source_line_10",
+            "description": "다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy. 확인",
             "related_criterion_ids": [
               "NCT06972056:criterion:03"
             ],
@@ -17246,14 +17246,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-migraine-04:nct06972056_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment: 1 bool",
+            "evidence_id": "source-migraine-04:nct06972056_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-migraine-04#nct06972056_source_line_3",
+            "source_location": "synthetic-public-protocol:source-migraine-04#nct06972056_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "migraine:nct06972056_source_line_3",
+            "concept": "migraine:nct06972056_source_line_10",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -17320,8 +17320,8 @@
             "source_note": "합성 평가에서 새 비침습 검사가 필요한 정보"
           },
           {
-            "option_id": "source-migraine-04:nct06972056_source_line_3:internal_record",
-            "fact_id": "source-migraine-04:nct06972056_source_line_3",
+            "option_id": "source-migraine-04:nct06972056_source_line_10:internal_record",
+            "fact_id": "source-migraine-04:nct06972056_source_line_10",
             "action": "LOOKUP_RECORD",
             "acquisition_mode": "internal_record",
             "available_now": true,
@@ -17411,7 +17411,7 @@
             "confirmation_status": "not_confirmed",
             "pending_fact_ids": [
               "source-migraine-04:age_years",
-              "source-migraine-04:nct06972056_source_line_3"
+              "source-migraine-04:nct06972056_source_line_10"
             ],
             "logic_status": "unresolved"
           }
@@ -17449,7 +17449,7 @@
       "pivotal_fact_codes": [
         "age_years",
         "body_weight_kg",
-        "nct06972056_source_line_3",
+        "nct06972056_source_line_10",
         "nct07642414_source_line_7",
         "nct07667621_source_line_24"
       ],
@@ -17495,8 +17495,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06972056_source_line_3",
-          "description": "다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment",
+          "fact_code": "nct06972056_source_line_10",
+          "description": "다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.",
           "value": 0.0,
           "unit": "bool",
           "pivotal": true,
@@ -17601,14 +17601,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-migraine-05:nct06972056_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment: 0 bool",
+            "evidence_id": "source-migraine-05:nct06972056_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-migraine-05#nct06972056_source_line_3",
+            "source_location": "synthetic-public-protocol:source-migraine-05#nct06972056_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "migraine:nct06972056_source_line_3",
+            "concept": "migraine:nct06972056_source_line_10",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -17778,8 +17778,8 @@
             "reason": "이 정보가 없으면 공개 원문에서 옮긴 조건을 현재 자료로 확인할 수 없다."
           },
           {
-            "fact_id": "source-migraine-05:nct06972056_source_line_3",
-            "description": "다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment 확인",
+            "fact_id": "source-migraine-05:nct06972056_source_line_10",
+            "description": "다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy. 확인",
             "related_criterion_ids": [
               "NCT06972056:criterion:03"
             ],
@@ -17839,14 +17839,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-migraine-05:nct06972056_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Adults, 18-70 years of age at the time of enrollment: 0 bool",
+            "evidence_id": "source-migraine-05:nct06972056_source_line_10:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Women of childbearing potential must agree to use effective methods of contraception to reduce the risk of pregnancy.: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-migraine-05#nct06972056_source_line_3",
+            "source_location": "synthetic-public-protocol:source-migraine-05#nct06972056_source_line_10",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "migraine:nct06972056_source_line_3",
+            "concept": "migraine:nct06972056_source_line_10",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -17913,8 +17913,8 @@
             "source_note": "합성 평가에서 새 비침습 검사가 필요한 정보"
           },
           {
-            "option_id": "source-migraine-05:nct06972056_source_line_3:internal_record",
-            "fact_id": "source-migraine-05:nct06972056_source_line_3",
+            "option_id": "source-migraine-05:nct06972056_source_line_10:internal_record",
+            "fact_id": "source-migraine-05:nct06972056_source_line_10",
             "action": "LOOKUP_RECORD",
             "acquisition_mode": "internal_record",
             "available_now": true,
@@ -17996,7 +17996,7 @@
             "confirmation_status": "not_confirmed",
             "pending_fact_ids": [
               "source-migraine-05:age_years",
-              "source-migraine-05:nct06972056_source_line_3"
+              "source-migraine-05:nct06972056_source_line_10"
             ],
             "logic_status": "unresolved"
           }
@@ -20251,8 +20251,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06651580_source_line_5",
-          "description": "다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment",
+          "fact_code": "nct06651580_source_line_24",
+          "description": "다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP",
           "value": 1.0,
           "unit": "bool",
           "pivotal": false,
@@ -20375,14 +20375,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-chronic_pancreatitis-01:nct06651580_source_line_5:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment: 1 bool",
+            "evidence_id": "source-chronic_pancreatitis-01:nct06651580_source_line_24:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-01#nct06651580_source_line_5",
+            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-01#nct06651580_source_line_24",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "chronic_pancreatitis:nct06651580_source_line_5",
+            "concept": "chronic_pancreatitis:nct06651580_source_line_24",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -20534,14 +20534,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-chronic_pancreatitis-01:nct06651580_source_line_5:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment: 1 bool",
+            "evidence_id": "source-chronic_pancreatitis-01:nct06651580_source_line_24:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-01#nct06651580_source_line_5",
+            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-01#nct06651580_source_line_24",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "chronic_pancreatitis:nct06651580_source_line_5",
+            "concept": "chronic_pancreatitis:nct06651580_source_line_24",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -20761,8 +20761,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06651580_source_line_5",
-          "description": "다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment",
+          "fact_code": "nct06651580_source_line_24",
+          "description": "다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP",
           "value": 0.0,
           "unit": "bool",
           "pivotal": false,
@@ -20885,14 +20885,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-chronic_pancreatitis-02:nct06651580_source_line_5:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment: 0 bool",
+            "evidence_id": "source-chronic_pancreatitis-02:nct06651580_source_line_24:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-02#nct06651580_source_line_5",
+            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-02#nct06651580_source_line_24",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "chronic_pancreatitis:nct06651580_source_line_5",
+            "concept": "chronic_pancreatitis:nct06651580_source_line_24",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -21044,14 +21044,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-chronic_pancreatitis-02:nct06651580_source_line_5:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment: 0 bool",
+            "evidence_id": "source-chronic_pancreatitis-02:nct06651580_source_line_24:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-02#nct06651580_source_line_5",
+            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-02#nct06651580_source_line_24",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "chronic_pancreatitis:nct06651580_source_line_5",
+            "concept": "chronic_pancreatitis:nct06651580_source_line_24",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -21287,8 +21287,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06651580_source_line_5",
-          "description": "다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment",
+          "fact_code": "nct06651580_source_line_24",
+          "description": "다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP",
           "value": 1.0,
           "unit": "bool",
           "pivotal": false,
@@ -21411,14 +21411,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-chronic_pancreatitis-03:nct06651580_source_line_5:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment: 1 bool",
+            "evidence_id": "source-chronic_pancreatitis-03:nct06651580_source_line_24:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-03#nct06651580_source_line_5",
+            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-03#nct06651580_source_line_24",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "chronic_pancreatitis:nct06651580_source_line_5",
+            "concept": "chronic_pancreatitis:nct06651580_source_line_24",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -21570,14 +21570,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-chronic_pancreatitis-03:nct06651580_source_line_5:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment: 1 bool",
+            "evidence_id": "source-chronic_pancreatitis-03:nct06651580_source_line_24:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-03#nct06651580_source_line_5",
+            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-03#nct06651580_source_line_24",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "chronic_pancreatitis:nct06651580_source_line_5",
+            "concept": "chronic_pancreatitis:nct06651580_source_line_24",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -21802,7 +21802,7 @@
         "age_years",
         "nct03434392_source_line_39",
         "nct06651580_logic_line_12",
-        "nct06651580_source_line_5",
+        "nct06651580_source_line_24",
         "nct07439757_source_line_3"
       ],
       "clinical_values": [
@@ -21863,8 +21863,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06651580_source_line_5",
-          "description": "다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment",
+          "fact_code": "nct06651580_source_line_24",
+          "description": "다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP",
           "value": 1.0,
           "unit": "bool",
           "pivotal": true,
@@ -21987,14 +21987,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-chronic_pancreatitis-04:nct06651580_source_line_5:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment: 1 bool",
+            "evidence_id": "source-chronic_pancreatitis-04:nct06651580_source_line_24:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-04#nct06651580_source_line_5",
+            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-04#nct06651580_source_line_24",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "chronic_pancreatitis:nct06651580_source_line_5",
+            "concept": "chronic_pancreatitis:nct06651580_source_line_24",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -22174,8 +22174,8 @@
             "reason": "이 정보가 없으면 공개 원문에서 옮긴 조건을 현재 자료로 확인할 수 없다."
           },
           {
-            "fact_id": "source-chronic_pancreatitis-04:nct06651580_source_line_5",
-            "description": "다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment 확인",
+            "fact_id": "source-chronic_pancreatitis-04:nct06651580_source_line_24",
+            "description": "다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP 확인",
             "related_criterion_ids": [
               "NCT06651580:criterion:02"
             ],
@@ -22237,14 +22237,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-chronic_pancreatitis-04:nct06651580_source_line_5:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment: 1 bool",
+            "evidence_id": "source-chronic_pancreatitis-04:nct06651580_source_line_24:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-04#nct06651580_source_line_5",
+            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-04#nct06651580_source_line_24",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "chronic_pancreatitis:nct06651580_source_line_5",
+            "concept": "chronic_pancreatitis:nct06651580_source_line_24",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -22310,8 +22310,8 @@
             "source_note": "합성 평가에서 기존 기록으로 확인할 정보"
           },
           {
-            "option_id": "source-chronic_pancreatitis-04:nct06651580_source_line_5:internal_record",
-            "fact_id": "source-chronic_pancreatitis-04:nct06651580_source_line_5",
+            "option_id": "source-chronic_pancreatitis-04:nct06651580_source_line_24:internal_record",
+            "fact_id": "source-chronic_pancreatitis-04:nct06651580_source_line_24",
             "action": "LOOKUP_RECORD",
             "acquisition_mode": "internal_record",
             "available_now": true,
@@ -22367,7 +22367,7 @@
             "pending_fact_ids": [
               "source-chronic_pancreatitis-04:age_years",
               "source-chronic_pancreatitis-04:nct06651580_logic_line_12",
-              "source-chronic_pancreatitis-04:nct06651580_source_line_5"
+              "source-chronic_pancreatitis-04:nct06651580_source_line_24"
             ],
             "logic_status": "unresolved"
           },
@@ -22425,7 +22425,7 @@
         "age_years",
         "nct03434392_source_line_39",
         "nct06651580_logic_line_12",
-        "nct06651580_source_line_5",
+        "nct06651580_source_line_24",
         "nct07439757_source_line_3"
       ],
       "clinical_values": [
@@ -22486,8 +22486,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06651580_source_line_5",
-          "description": "다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment",
+          "fact_code": "nct06651580_source_line_24",
+          "description": "다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP",
           "value": 0.0,
           "unit": "bool",
           "pivotal": true,
@@ -22610,14 +22610,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-chronic_pancreatitis-05:nct06651580_source_line_5:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment: 0 bool",
+            "evidence_id": "source-chronic_pancreatitis-05:nct06651580_source_line_24:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-05#nct06651580_source_line_5",
+            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-05#nct06651580_source_line_24",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "chronic_pancreatitis:nct06651580_source_line_5",
+            "concept": "chronic_pancreatitis:nct06651580_source_line_24",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -22797,8 +22797,8 @@
             "reason": "이 정보가 없으면 공개 원문에서 옮긴 조건을 현재 자료로 확인할 수 없다."
           },
           {
-            "fact_id": "source-chronic_pancreatitis-05:nct06651580_source_line_5",
-            "description": "다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment 확인",
+            "fact_id": "source-chronic_pancreatitis-05:nct06651580_source_line_24",
+            "description": "다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP 확인",
             "related_criterion_ids": [
               "NCT06651580:criterion:02"
             ],
@@ -22860,14 +22860,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-chronic_pancreatitis-05:nct06651580_source_line_5:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * All children must be under 18 years of age at the time of enrollment: 0 bool",
+            "evidence_id": "source-chronic_pancreatitis-05:nct06651580_source_line_24:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Parenchymal atrophy, irregular contour, accentuated lobular architecture, cavities alone are not diagnostic findings for CP: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-05#nct06651580_source_line_5",
+            "source_location": "synthetic-public-protocol:source-chronic_pancreatitis-05#nct06651580_source_line_24",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "chronic_pancreatitis:nct06651580_source_line_5",
+            "concept": "chronic_pancreatitis:nct06651580_source_line_24",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -22933,8 +22933,8 @@
             "source_note": "합성 평가에서 기존 기록으로 확인할 정보"
           },
           {
-            "option_id": "source-chronic_pancreatitis-05:nct06651580_source_line_5:internal_record",
-            "fact_id": "source-chronic_pancreatitis-05:nct06651580_source_line_5",
+            "option_id": "source-chronic_pancreatitis-05:nct06651580_source_line_24:internal_record",
+            "fact_id": "source-chronic_pancreatitis-05:nct06651580_source_line_24",
             "action": "LOOKUP_RECORD",
             "acquisition_mode": "internal_record",
             "available_now": true,
@@ -26068,8 +26068,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06995898_source_line_3",
-          "description": "다음 시험 조건에 해당하는지: * Ages 45-75 years old",
+          "fact_code": "nct06995898_source_line_5",
+          "description": "다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes",
           "value": 1.0,
           "unit": "bool",
           "pivotal": false,
@@ -26166,14 +26166,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-ovarian_cancer-01:nct06995898_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Ages 45-75 years old: 1 bool",
+            "evidence_id": "source-ovarian_cancer-01:nct06995898_source_line_5:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-ovarian_cancer-01#nct06995898_source_line_3",
+            "source_location": "synthetic-public-protocol:source-ovarian_cancer-01#nct06995898_source_line_5",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "ovarian_cancer:nct06995898_source_line_3",
+            "concept": "ovarian_cancer:nct06995898_source_line_5",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -26299,14 +26299,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-ovarian_cancer-01:nct06995898_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Ages 45-75 years old: 1 bool",
+            "evidence_id": "source-ovarian_cancer-01:nct06995898_source_line_5:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-ovarian_cancer-01#nct06995898_source_line_3",
+            "source_location": "synthetic-public-protocol:source-ovarian_cancer-01#nct06995898_source_line_5",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "ovarian_cancer:nct06995898_source_line_3",
+            "concept": "ovarian_cancer:nct06995898_source_line_5",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -26510,8 +26510,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06995898_source_line_3",
-          "description": "다음 시험 조건에 해당하는지: * Ages 45-75 years old",
+          "fact_code": "nct06995898_source_line_5",
+          "description": "다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes",
           "value": 0.0,
           "unit": "bool",
           "pivotal": false,
@@ -26608,14 +26608,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-ovarian_cancer-02:nct06995898_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Ages 45-75 years old: 0 bool",
+            "evidence_id": "source-ovarian_cancer-02:nct06995898_source_line_5:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-ovarian_cancer-02#nct06995898_source_line_3",
+            "source_location": "synthetic-public-protocol:source-ovarian_cancer-02#nct06995898_source_line_5",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "ovarian_cancer:nct06995898_source_line_3",
+            "concept": "ovarian_cancer:nct06995898_source_line_5",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -26741,14 +26741,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-ovarian_cancer-02:nct06995898_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Ages 45-75 years old: 0 bool",
+            "evidence_id": "source-ovarian_cancer-02:nct06995898_source_line_5:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-ovarian_cancer-02#nct06995898_source_line_3",
+            "source_location": "synthetic-public-protocol:source-ovarian_cancer-02#nct06995898_source_line_5",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "ovarian_cancer:nct06995898_source_line_3",
+            "concept": "ovarian_cancer:nct06995898_source_line_5",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -26960,8 +26960,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06995898_source_line_3",
-          "description": "다음 시험 조건에 해당하는지: * Ages 45-75 years old",
+          "fact_code": "nct06995898_source_line_5",
+          "description": "다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes",
           "value": 1.0,
           "unit": "bool",
           "pivotal": false,
@@ -27058,14 +27058,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-ovarian_cancer-03:nct06995898_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Ages 45-75 years old: 1 bool",
+            "evidence_id": "source-ovarian_cancer-03:nct06995898_source_line_5:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-ovarian_cancer-03#nct06995898_source_line_3",
+            "source_location": "synthetic-public-protocol:source-ovarian_cancer-03#nct06995898_source_line_5",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "ovarian_cancer:nct06995898_source_line_3",
+            "concept": "ovarian_cancer:nct06995898_source_line_5",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -27191,14 +27191,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-ovarian_cancer-03:nct06995898_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Ages 45-75 years old: 1 bool",
+            "evidence_id": "source-ovarian_cancer-03:nct06995898_source_line_5:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-ovarian_cancer-03#nct06995898_source_line_3",
+            "source_location": "synthetic-public-protocol:source-ovarian_cancer-03#nct06995898_source_line_5",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "ovarian_cancer:nct06995898_source_line_3",
+            "concept": "ovarian_cancer:nct06995898_source_line_5",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -27418,7 +27418,7 @@
         "active_serious_infection",
         "age_years",
         "nct06447064_source_line_5",
-        "nct06995898_source_line_3",
+        "nct06995898_source_line_5",
         "nct07732686_source_line_6"
       ],
       "clinical_values": [
@@ -27463,8 +27463,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06995898_source_line_3",
-          "description": "다음 시험 조건에 해당하는지: * Ages 45-75 years old",
+          "fact_code": "nct06995898_source_line_5",
+          "description": "다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes",
           "value": 1.0,
           "unit": "bool",
           "pivotal": true,
@@ -27561,14 +27561,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-ovarian_cancer-04:nct06995898_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Ages 45-75 years old: 1 bool",
+            "evidence_id": "source-ovarian_cancer-04:nct06995898_source_line_5:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-ovarian_cancer-04#nct06995898_source_line_3",
+            "source_location": "synthetic-public-protocol:source-ovarian_cancer-04#nct06995898_source_line_5",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "ovarian_cancer:nct06995898_source_line_3",
+            "concept": "ovarian_cancer:nct06995898_source_line_5",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -27722,8 +27722,8 @@
             "reason": "이 정보가 없으면 공개 원문에서 옮긴 조건을 현재 자료로 확인할 수 없다."
           },
           {
-            "fact_id": "source-ovarian_cancer-04:nct06995898_source_line_3",
-            "description": "다음 시험 조건에 해당하는지: * Ages 45-75 years old 확인",
+            "fact_id": "source-ovarian_cancer-04:nct06995898_source_line_5",
+            "description": "다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes 확인",
             "related_criterion_ids": [
               "NCT06995898:criterion:04"
             ],
@@ -27785,14 +27785,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-ovarian_cancer-04:nct06995898_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Ages 45-75 years old: 1 bool",
+            "evidence_id": "source-ovarian_cancer-04:nct06995898_source_line_5:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes: 1 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-ovarian_cancer-04#nct06995898_source_line_3",
+            "source_location": "synthetic-public-protocol:source-ovarian_cancer-04#nct06995898_source_line_5",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "ovarian_cancer:nct06995898_source_line_3",
+            "concept": "ovarian_cancer:nct06995898_source_line_5",
             "value": 1.0,
             "unit": "bool",
             "input_provenance": null
@@ -27858,8 +27858,8 @@
             "source_note": "합성 평가에서 기존 기록으로 확인할 정보"
           },
           {
-            "option_id": "source-ovarian_cancer-04:nct06995898_source_line_3:internal_record",
-            "fact_id": "source-ovarian_cancer-04:nct06995898_source_line_3",
+            "option_id": "source-ovarian_cancer-04:nct06995898_source_line_5:internal_record",
+            "fact_id": "source-ovarian_cancer-04:nct06995898_source_line_5",
             "action": "LOOKUP_RECORD",
             "acquisition_mode": "internal_record",
             "available_now": true,
@@ -27914,7 +27914,7 @@
             "confirmation_status": "not_confirmed",
             "pending_fact_ids": [
               "source-ovarian_cancer-04:age_years",
-              "source-ovarian_cancer-04:nct06995898_source_line_3"
+              "source-ovarian_cancer-04:nct06995898_source_line_5"
             ],
             "logic_status": "unresolved"
           },
@@ -27972,7 +27972,7 @@
         "active_serious_infection",
         "age_years",
         "nct06447064_source_line_5",
-        "nct06995898_source_line_3",
+        "nct06995898_source_line_5",
         "nct07732686_source_line_6"
       ],
       "clinical_values": [
@@ -28017,8 +28017,8 @@
           "acquisition_mode": "internal_record"
         },
         {
-          "fact_code": "nct06995898_source_line_3",
-          "description": "다음 시험 조건에 해당하는지: * Ages 45-75 years old",
+          "fact_code": "nct06995898_source_line_5",
+          "description": "다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes",
           "value": 0.0,
           "unit": "bool",
           "pivotal": true,
@@ -28115,14 +28115,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-ovarian_cancer-05:nct06995898_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Ages 45-75 years old: 0 bool",
+            "evidence_id": "source-ovarian_cancer-05:nct06995898_source_line_5:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-ovarian_cancer-05#nct06995898_source_line_3",
+            "source_location": "synthetic-public-protocol:source-ovarian_cancer-05#nct06995898_source_line_5",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "ovarian_cancer:nct06995898_source_line_3",
+            "concept": "ovarian_cancer:nct06995898_source_line_5",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -28276,8 +28276,8 @@
             "reason": "이 정보가 없으면 공개 원문에서 옮긴 조건을 현재 자료로 확인할 수 없다."
           },
           {
-            "fact_id": "source-ovarian_cancer-05:nct06995898_source_line_3",
-            "description": "다음 시험 조건에 해당하는지: * Ages 45-75 years old 확인",
+            "fact_id": "source-ovarian_cancer-05:nct06995898_source_line_5",
+            "description": "다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes 확인",
             "related_criterion_ids": [
               "NCT06995898:criterion:04"
             ],
@@ -28339,14 +28339,14 @@
             "input_provenance": null
           },
           {
-            "evidence_id": "source-ovarian_cancer-05:nct06995898_source_line_3:answer",
-            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Ages 45-75 years old: 0 bool",
+            "evidence_id": "source-ovarian_cancer-05:nct06995898_source_line_5:answer",
+            "statement": "합성 환자 다음 시험 조건에 해당하는지: * Agree to allow collection of information from their medical records for study-related purposes: 0 bool",
             "source_type": "medical_record",
-            "source_location": "synthetic-public-protocol:source-ovarian_cancer-05#nct06995898_source_line_3",
+            "source_location": "synthetic-public-protocol:source-ovarian_cancer-05#nct06995898_source_line_5",
             "event_date": "2026-08-23",
             "recorded_date": "2026-08-24",
             "verification_status": "verified",
-            "concept": "ovarian_cancer:nct06995898_source_line_3",
+            "concept": "ovarian_cancer:nct06995898_source_line_5",
             "value": 0.0,
             "unit": "bool",
             "input_provenance": null
@@ -28412,8 +28412,8 @@
             "source_note": "합성 평가에서 기존 기록으로 확인할 정보"
           },
           {
-            "option_id": "source-ovarian_cancer-05:nct06995898_source_line_3:internal_record",
-            "fact_id": "source-ovarian_cancer-05:nct06995898_source_line_3",
+            "option_id": "source-ovarian_cancer-05:nct06995898_source_line_5:internal_record",
+            "fact_id": "source-ovarian_cancer-05:nct06995898_source_line_5",
             "action": "LOOKUP_RECORD",
             "acquisition_mode": "internal_record",
             "available_now": true,
@@ -28463,7 +28463,7 @@
             "confirmation_status": "not_confirmed",
             "pending_fact_ids": [
               "source-ovarian_cancer-05:age_years",
-              "source-ovarian_cancer-05:nct06995898_source_line_3"
+              "source-ovarian_cancer-05:nct06995898_source_line_5"
             ],
             "logic_status": "unresolved"
           },

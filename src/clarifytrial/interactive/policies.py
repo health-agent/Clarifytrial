@@ -81,8 +81,12 @@ class AuthoredOrderPolicy(_DeterministicPolicy):
     policy_id = "authored_order"
 
     def select(self, case, snapshot, revealed_fact_ids):
+        counts = _current_related_counts(case, snapshot, revealed_fact_ids)
         for public in case.available_information:
-            if public.fact_id not in revealed_fact_ids:
+            if (
+                public.fact_id not in revealed_fact_ids
+                and counts.get(public.fact_id, (0, 0, 0))[0] > 0
+            ):
                 return self._action(
                     case,
                     public.fact_id,
@@ -98,10 +102,12 @@ class RandomQuestionPolicy(_DeterministicPolicy):
         self._seed = seed
 
     def select(self, case, snapshot, revealed_fact_ids):
+        counts = _current_related_counts(case, snapshot, revealed_fact_ids)
         remaining = sorted(
             item.fact_id
             for item in case.available_information
             if item.fact_id not in revealed_fact_ids
+            and counts.get(item.fact_id, (0, 0, 0))[0] > 0
         )
         if not remaining:
             return self._none("확인할 정보가 남아 있지 않다.")
@@ -110,6 +116,38 @@ class RandomQuestionPolicy(_DeterministicPolicy):
         )
         fact_id = randomizer.choice(remaining)
         return self._action(case, fact_id, "남은 정보 중 하나를 무작위로 고른다.")
+
+
+class DeclaredFactOrderPolicy(_DeterministicPolicy):
+    """Follow one declared order while skipping facts with no remaining impact."""
+
+    def __init__(self, fact_ids: Sequence[str], *, policy_id: str) -> None:
+        if len(fact_ids) != len(set(fact_ids)):
+            raise ValueError("declared fact order cannot repeat a fact")
+        self._fact_ids = tuple(fact_ids)
+        self.policy_id = policy_id
+
+    def select(self, case, snapshot, revealed_fact_ids):
+        public_ids = {item.fact_id for item in case.available_information}
+        if set(self._fact_ids) != public_ids:
+            raise ValueError("declared fact order must cover the public fact menu")
+        counts = _current_related_counts(case, snapshot, revealed_fact_ids)
+        fact_id = next(
+            (
+                item
+                for item in self._fact_ids
+                if item not in revealed_fact_ids
+                and counts.get(item, (0, 0, 0))[0] > 0
+            ),
+            None,
+        )
+        if fact_id is None:
+            return self._none("현재 결정을 바꿀 수 있는 확인 항목이 없다.")
+        return self._action(
+            case,
+            fact_id,
+            "미리 정한 순서에서 아직 판단에 영향을 주는 첫 정보를 고른다.",
+        )
 
 
 def _current_related_counts(

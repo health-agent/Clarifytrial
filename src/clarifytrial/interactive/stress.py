@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
 from statistics import mean
+from time import perf_counter
 from typing import Any
 
 from ..contracts import (
@@ -41,6 +42,8 @@ from .contracts import (
 from .exact_policy import ExactDecisionTreePolicy, build_uniform_binary_scenarios
 from .oracle import evaluate_policy_view
 from .policies import (
+    AuthoredOrderPolicy,
+    ClarifyTrialExactCoveragePolicy,
     ClarifyTrialRulePolicy,
     ImpactCostPolicy,
     NoQuestionPolicy,
@@ -49,6 +52,7 @@ from .policies import (
     RandomQuestionPolicy,
     WidestImpactPolicy,
 )
+from .statistics import stratified_bootstrap_mean
 
 
 _ROUTE_COST = {
@@ -73,16 +77,57 @@ _SOURCE_BY_ROUTE = {
 }
 
 _TOPOLOGIES: dict[str, tuple[tuple[int, ...], ...]] = {
+    "fully_shared": ((0,), (0, 1), (0, 2), (0, 3), (0, 4)),
+    "fully_separated": ((0,), (1,), (2,), (3,), (4,)),
     "shared_hub": ((0,), (0, 1), (0, 2), (3,), (4,)),
     "chain": ((0, 1), (1, 2), (2, 3), (3, 4), (4, 0)),
     "gated_hub": ((0, 1), (0, 2), (0, 3), (4,), (1, 4)),
-    "separated": ((0,), (1,), (2,), (3, 4), (2, 4)),
+    "low_overlap": ((0,), (1,), (2,), (3, 4), (2, 4)),
     "overlapping_pairs": ((0, 1), (0, 2), (1, 3), (2, 4), (3, 4)),
     "three_way": ((0, 1, 2), (0, 3), (1, 4), (2, 3), (2, 4)),
     "cost_conflict": ((0,), (0, 1), (0, 2), (3,), (4,)),
 }
 
 _DISEASE_LABELS = ("2형 당뇨병", "유방암", "주요우울장애")
+
+
+def _topology_overlap_metrics(
+    topology: str,
+) -> dict[str, int | float | str]:
+    links = _TOPOLOGIES[topology]
+    trials_per_fact = {
+        fact_index: sum(fact_index in trial for trial in links)
+        for fact_index in range(5)
+    }
+    edge_count = sum(len(trial) for trial in links)
+    shared_fact_ids = {
+        fact_index
+        for fact_index, trial_count in trials_per_fact.items()
+        if trial_count >= 2
+    }
+    shared_edges = sum(
+        fact_index in shared_fact_ids
+        for trial in links
+        for fact_index in trial
+    )
+    return {
+        "topology": topology,
+        "criterion_edge_count": edge_count,
+        "shared_fact_count": len(shared_fact_ids),
+        "all_trial_shared_fact_count": sum(
+            trial_count == len(links)
+            for trial_count in trials_per_fact.values()
+        ),
+        "max_trials_per_fact": max(trials_per_fact.values()),
+        "max_trial_coverage_fraction": (
+            max(trials_per_fact.values()) / len(links)
+        ),
+        "shared_fact_edge_fraction": shared_edges / edge_count,
+        "definition": (
+            "fraction of trial-criterion links whose fact is used by at least "
+            "two trials"
+        ),
+    }
 
 
 @dataclass(frozen=True, slots=True)
@@ -115,11 +160,14 @@ def build_stress_case(
     structure_number: int,
     *,
     seed: int,
+    action_budget: int = 3,
 ) -> InteractiveCase:
     """Build one inspectable five-fact graph without clinical-performance claims."""
 
     if topology not in _TOPOLOGIES:
         raise ValueError(f"unknown topology: {topology}")
+    if action_budget not in {1, 2, 3}:
+        raise ValueError("stress action budget must be 1, 2, or 3")
     rng = random.Random(f"{seed}:{topology}:{structure_number}")
     permutation = list(range(5))
     rng.shuffle(permutation)
@@ -228,7 +276,7 @@ def build_stress_case(
         initial_visible_evidence_ids=[visible.evidence_id],
         trials=trials,
         hidden_facts=hidden,
-        action_budget=3,
+        action_budget=action_budget,
     )
 
 
@@ -470,10 +518,12 @@ def _policies(
 ) -> list[QuestionPolicy]:
     return [
         NoQuestionPolicy(),
+        AuthoredOrderPolicy(),
         RandomQuestionPolicy(seed),
         WidestImpactPolicy(),
         ImpactCostPolicy(),
         ClarifyTrialRulePolicy(),
+        ClarifyTrialExactCoveragePolicy(),
         OutcomeEntropyPolicy(view, development),
         ExactDecisionTreePolicy(
             view,
@@ -505,6 +555,14 @@ def _policies(
 
 
 def _aggregate_rows(rows: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows = list(rows)
+    no_question = {
+        (item["evaluation_distribution"], item["structure_id"]): item[
+            "expected_trial_recovery"
+        ]
+        for item in rows
+        if item["policy_id"] == "no_questions"
+    }
     groups: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     for row in rows:
         groups[(row["evaluation_distribution"], row["policy_id"])].append(row)
@@ -519,6 +577,15 @@ def _aggregate_rows(rows: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
         "expected_route_cost",
     )
     for (distribution, policy_id), items in sorted(groups.items()):
+        incremental = [
+            (
+                item["expected_trial_recovery"]
+                - no_question[(distribution, item["structure_id"])]
+            )
+            * 5
+            for item in items
+        ]
+        total_actions = sum(item["expected_actions"] for item in items)
         result.append(
             {
                 "evaluation_distribution": distribution,
@@ -528,6 +595,15 @@ def _aggregate_rows(rows: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
                     metric: mean(item[metric] for item in items)
                     for metric in metric_names
                 },
+                "mean_final_status_matches_out_of_five": mean(
+                    item["expected_trial_recovery"] * 5 for item in items
+                ),
+                "mean_incremental_status_matches_out_of_five": mean(incremental),
+                "incremental_status_matches_per_action": (
+                    sum(incremental) / total_actions
+                    if total_actions > 0
+                    else None
+                ),
             }
         )
     return result
@@ -612,15 +688,24 @@ def _paired_comparisons(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
         }
         structure_ids = sorted({item["structure_id"] for item in items})
         for candidate_id in (
+            "clarifytrial_exact_coverage_v3",
             "exact_decision_tree_expected_horizon_1_v1",
             "exact_decision_tree_expected_v1",
             "exact_decision_tree_worst_case_horizon_1_v1",
             "exact_decision_tree_worst_case_v1",
         ):
+            differences_by_topology: dict[str, list[float]] = defaultdict(list)
+            for structure_id in structure_ids:
+                candidate = by_key[(structure_id, candidate_id)]
+                baseline = by_key[(structure_id, baseline_id)]
+                differences_by_topology[str(candidate["topology"])].append(
+                    candidate["expected_trial_recovery"]
+                    - baseline["expected_trial_recovery"]
+                )
             differences = [
-                by_key[(structure_id, candidate_id)]["expected_trial_recovery"]
-                - by_key[(structure_id, baseline_id)]["expected_trial_recovery"]
-                for structure_id in structure_ids
+                item
+                for values in differences_by_topology.values()
+                for item in values
             ]
             comparisons.append(
                 {
@@ -628,9 +713,127 @@ def _paired_comparisons(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
                     "candidate_policy_id": candidate_id,
                     "strongest_simple_policy_id": baseline_id,
                     **_difference_summary(differences),
+                    "paired_inference": stratified_bootstrap_mean(
+                        differences_by_topology,
+                        cluster_unit="synthetic_structure",
+                    ),
                 }
             )
     return comparisons
+
+
+def _core_policy_comparisons(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Compare the deployed graph-only planner with transparent baselines."""
+
+    by_key = {
+        (
+            item["evaluation_distribution"],
+            item["structure_id"],
+            item["policy_id"],
+        ): item
+        for item in rows
+    }
+    structures = {
+        item["structure_id"]: item["topology"] for item in rows
+    }
+    result = []
+    for distribution in ("similar_heldout", "shifted_heldout"):
+        for baseline_id in (
+            "authored_order",
+            "random",
+            "widest_impact",
+            "clarifytrial_rule_v1",
+        ):
+            differences_by_topology: dict[str, list[float]] = defaultdict(list)
+            for structure_id, topology in sorted(structures.items()):
+                candidate = by_key[
+                    (
+                        distribution,
+                        structure_id,
+                        "clarifytrial_exact_coverage_v3",
+                    )
+                ]["expected_trial_recovery"]
+                baseline = by_key[
+                    (distribution, structure_id, baseline_id)
+                ]["expected_trial_recovery"]
+                differences_by_topology[str(topology)].append(candidate - baseline)
+            result.append(
+                {
+                    "evaluation_distribution": distribution,
+                    "candidate_policy_id": "clarifytrial_exact_coverage_v3",
+                    "baseline_policy_id": baseline_id,
+                    **stratified_bootstrap_mean(
+                        differences_by_topology,
+                        cluster_unit="synthetic_structure",
+                    ),
+                }
+            )
+    return result
+
+
+def _primary_simple_comparisons(
+    rows: Sequence[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Compare simple impact rules with structure-specific random selection."""
+
+    simple_ids = {
+        "widest_impact",
+        "impact_per_cost",
+        "clarifytrial_rule_v1",
+        "outcome_entropy",
+    }
+    development = _aggregate_rows(rows)
+    development_selected_id = max(
+        (
+            item
+            for item in development
+            if item["evaluation_distribution"] == "development"
+            and item["policy_id"] in simple_ids
+        ),
+        key=lambda item: item["expected_trial_recovery"],
+    )["policy_id"]
+    by_key = {
+        (
+            item["evaluation_distribution"],
+            item["structure_id"],
+            item["policy_id"],
+        ): item
+        for item in rows
+    }
+    structures = {
+        item["structure_id"]: item["topology"] for item in rows
+    }
+    result = []
+    for distribution in ("similar_heldout", "shifted_heldout"):
+        for candidate_id in dict.fromkeys(
+            ("widest_impact", "clarifytrial_rule_v1", development_selected_id)
+        ):
+            differences_by_topology: dict[str, list[float]] = defaultdict(list)
+            for structure_id, topology in sorted(structures.items()):
+                candidate = by_key[
+                    (distribution, structure_id, candidate_id)
+                ]["expected_trial_recovery"]
+                random_baseline = by_key[
+                    (distribution, structure_id, "random")
+                ]["expected_trial_recovery"]
+                differences_by_topology[str(topology)].append(
+                    candidate - random_baseline
+                )
+            result.append(
+                {
+                    "evaluation_distribution": distribution,
+                    "candidate_policy_id": candidate_id,
+                    "baseline_policy_id": "random",
+                    "development_selected_simple_policy_id": (
+                        development_selected_id
+                    ),
+                    **stratified_bootstrap_mean(
+                        differences_by_topology,
+                        cluster_unit="synthetic_structure",
+                    ),
+                }
+            )
+    return result
 
 
 def _horizon_comparisons(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -673,30 +876,56 @@ def run_interactive_stress(
     *,
     structures_per_topology: int = 100,
     seed: int = 20_260_821,
+    policy_seed: int | None = None,
+    action_budget: int = 3,
     progress=None,
 ) -> Path:
     """Run the large no-LLM structural benchmark and write replayable results."""
 
     if structures_per_topology <= 0:
         raise ValueError("structures_per_topology must be positive")
+    if action_budget not in {1, 2, 3}:
+        raise ValueError("stress action budget must be 1, 2, or 3")
+    policy_seed = seed if policy_seed is None else policy_seed
+    started_at = datetime.now(timezone.utc)
+    started = perf_counter()
     destination = Path(output_dir)
     destination.mkdir(parents=True, exist_ok=True)
     plan = {
         "protocol_id": "interactive-structural-stress-v1",
         "seed": seed,
+        "random_policy_seed": policy_seed,
+        "random_policy_evaluation": (
+            "fixed seed; one random choice among currently relevant remaining "
+            "facts at each step"
+        ),
         "topologies": sorted(_TOPOLOGIES),
+        "topology_overlap_metrics": [
+            _topology_overlap_metrics(topology)
+            for topology in sorted(_TOPOLOGIES)
+        ],
         "structures_per_topology": structures_per_topology,
         "structure_count": structures_per_topology * len(_TOPOLOGIES),
         "facts_per_structure": 5,
         "trials_per_structure": 5,
-        "action_budget": 3,
+        "action_budget": action_budget,
         "possible_patient_states_per_structure": 32,
+        "structure_state_count": (
+            structures_per_topology * len(_TOPOLOGIES) * 32
+        ),
         "evaluation_distributions": [
             "development",
             "similar_heldout",
             "shifted_heldout",
         ],
         "model_calls": 0,
+        "estimated_api_cost_usd": 0.0,
+        "started_at": started_at.isoformat(),
+        "answer_access_boundary": (
+            "Policies receive only the public graph and observed answers; "
+            "development distributions are generated separately from the "
+            "scenario being evaluated."
+        ),
         "scope": "질문 정책의 구조적 가치만 보는 합성 진단이며 임상 성능이 아니다.",
         "medical_disclaimer": DEFAULT_MEDICAL_DISCLAIMER,
     }
@@ -706,7 +935,12 @@ def run_interactive_stress(
     completed = 0
     for topology in sorted(_TOPOLOGIES):
         for structure_number in range(structures_per_topology):
-            case = build_stress_case(topology, structure_number, seed=seed)
+            case = build_stress_case(
+                topology,
+                structure_number,
+                seed=seed,
+                action_budget=action_budget,
+            )
             view = case.public_policy_view()
             initial_state = case.initial_patient_state()
             development, matched, shifted = build_stress_distributions(
@@ -716,7 +950,7 @@ def run_interactive_stress(
                 view,
                 initial_state,
                 development,
-                seed=seed + structure_number,
+                seed=policy_seed + structure_number,
             )
             for policy in policies:
                 simulations = [
@@ -754,10 +988,21 @@ def run_interactive_stress(
     )
     summary = {
         **plan,
+        "finished_at": datetime.now(timezone.utc).isoformat(),
+        "runtime_seconds": perf_counter() - started,
         "policy_metrics": _aggregate_rows(rows),
         "topology_metrics": _aggregate_topology_rows(rows),
         "paired_comparisons": _paired_comparisons(rows),
+        "core_policy_comparisons": _core_policy_comparisons(rows),
+        "primary_simple_vs_random_comparisons": _primary_simple_comparisons(
+            rows
+        ),
         "horizon_comparisons": _horizon_comparisons(rows),
+        "policy_count": len({item["policy_id"] for item in rows}),
+        "policy_state_evaluation_count": (
+            plan["structure_state_count"]
+            * len({item["policy_id"] for item in rows})
+        ),
         "result_status": "structural_diagnostic_only",
     }
     summary_path = destination / "summary.json"

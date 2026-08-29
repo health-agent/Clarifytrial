@@ -49,7 +49,13 @@ class NextAction(str, Enum):
 
 
 class ClinicalStatus(str, Enum):
-    """How the known patient facts relate to one normalized criterion."""
+    """Eligibility-facing result after applying inclusion or exclusion kind.
+
+    ``supports`` means the patient remains compatible with this criterion;
+    ``violates`` means the criterion blocks eligibility.  Meeting an exclusion
+    condition therefore violates eligibility, while not meeting it supports
+    eligibility.
+    """
 
     SUPPORTS = "supports"
     VIOLATES = "violates"

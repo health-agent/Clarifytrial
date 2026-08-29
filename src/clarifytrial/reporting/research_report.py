@@ -122,7 +122,7 @@ def build_research_report(
         )
         current = _find_summary(
             question["summaries"],
-            policy_id="clarifytrial_exact_coverage_v3",
+            policy_id="clarifytrial_rule_v1",
             action_budget=action_budget,
             split=split,
             input_state=input_state,
@@ -148,7 +148,7 @@ def build_research_report(
                         fixed["trial_status_recovery"],
                     ),
                     (
-                        f"남은 {action_budget}번 안에 가장 많은 시험 판단을 끝낼\n정보를 매번 다시 계산",
+                        "현재 미정인 시험과 가장 많이 연결된\n정보부터 확인",
                         current["trial_status_recovery"],
                     ),
                 ],
@@ -164,7 +164,7 @@ def build_research_report(
                 "| 부족한 정보를 고른 방법 | 확인 횟수 안에 판단을 끝낸 시험 비율 | 최종 판단에 실제로 필요했던 정보 중 확인한 비율 | 확인했지만 어떤 시험의 판단도 더 바꾸지 못한 정보 수 |",
                 "|---|---:|---:|---:|",
                 f"| 처음 빠진 정보 목록의 앞 {action_budget}개를 적힌 순서대로 확인 | {fixed['trial_status_recovery']:.1%} | {fixed['mean_needed_fact_recall']:.1%} | 환자당 {fixed['mean_unnecessary_action_count']:.2f}개 |",
-                f"| 남은 {action_budget}번 안에 가장 많은 시험 판단을 끝낼 정보 조합을 매번 다시 계산 | {current['trial_status_recovery']:.1%} | {current['mean_needed_fact_recall']:.1%} | 환자당 {current['mean_unnecessary_action_count']:.2f}개 |",
+                f"| 현재 미정인 시험과 가장 많이 연결된 정보부터 확인 | {current['trial_status_recovery']:.1%} | {current['mean_needed_fact_recall']:.1%} | 환자당 {current['mean_unnecessary_action_count']:.2f}개 |",
                 "",
                 "![질문 순서 결과](question-policy.svg)",
                 "",
@@ -173,63 +173,160 @@ def build_research_report(
 
     if burden_path is not None:
         burden = _read(burden_path)
-        comparisons = burden["adoption_comparison"]
-        if split not in comparisons:
-            raise ValueError(
-                f"burden result has no requested split {split!r}"
-            )
-        comparison = comparisons[split]
-        normalized["patient_burden"] = comparison
-        burden_metrics = {
-            "overall_recovery_fixed": comparison["baseline_recovery"],
-            "overall_recovery_adaptive": comparison["candidate_recovery"],
-            "constrained_feasible_fixed": comparison["constrained_baseline_feasible_recovery"],
-            "constrained_feasible_adaptive": comparison["constrained_candidate_feasible_recovery"],
-            "constrained_new_test_visit_fixed": comparison["constrained_new_test_visit_baseline"],
-            "constrained_new_test_visit_adaptive": comparison["constrained_new_test_visit_candidate"],
-            "urgent_delay_fixed": comparison["urgent_mean_delay_baseline"],
-            "urgent_delay_adaptive": comparison["urgent_mean_delay_candidate"],
-        }
-        for name, value in burden_metrics.items():
-            metric_rows.append(
-                {"section": "patient_burden", "arm": split, "metric": name, "value": value}
-            )
-        (output / "patient-burden.svg").write_text(
-            _bar_svg(
-                "환자 제한을 지키면서 최종 판단까지 끝낸 시험",
-                "이동·비용 제한이 있거나 새 검사·추가 방문을 피해야 하는 합성 상황",
-                [
-                    (
-                        "모든 환자에게 같은 비용표를 적용해\n확인 방법을 선택",
-                        comparison["constrained_baseline_feasible_recovery"],
-                    ),
-                    (
-                        "환자의 이동·비용·시간 제한을 반영해\n확인 방법을 선택",
-                        comparison["constrained_candidate_feasible_recovery"],
-                    ),
-                ],
-            ),
-            encoding="utf-8",
+        mechanism = burden.get("mechanism_ablation")
+        hard_filter = (
+            mechanism.get("disallowed_path_filter")
+            if isinstance(mechanism, dict)
+            else None
         )
-        sections.extend(
-            [
-                "## 같은 정보를 어떤 방법으로 확인할지 환자 상황에 맞춰 선택",
-                "",
-                "같은 부족 정보라도 기존 병원 기록 조회, 환자 답변, 새 검사처럼 여러 확인 방법이 있을 수 있다. 모든 환자에게 같은 비용표를 적용하는 방법과, 환자가 입력한 이동·비용·시간 제한을 먼저 반영하는 방법을 비교했다.",
-                "",
-                "| 무엇을 측정했는가 | 모든 환자에게 같은 비용표를 적용해 확인 방법을 선택 | 환자의 이동·비용·시간 제한을 반영해 확인 방법을 선택 |",
-                "|---|---:|---:|",
-                f"| 이동·비용 제한이 없는 상황까지 모두 합쳤을 때 판단을 끝낸 시험 비율 | {comparison['baseline_recovery']:.1%} | {comparison['candidate_recovery']:.1%} |",
-                f"| 이동·비용 제한이 있는 합성 환자에게 허용된 확인 방법만 사용하고도 최종 판단까지 끝낸 시험 비율 | {comparison['constrained_baseline_feasible_recovery']:.1%} | {comparison['constrained_candidate_feasible_recovery']:.1%} |",
-                f"| 환자가 새 검사나 추가 방문을 피해야 한다고 입력했는데도 그런 방법을 선택한 횟수 | {comparison['constrained_new_test_visit_baseline']}회 | {comparison['constrained_new_test_visit_candidate']}회 |",
-                f"| 시간이 급하다고 입력한 환자에게 선택한 확인 방법의 예상 대기시간 합계 | {comparison['urgent_mean_delay_baseline']:.2f}시간 | {comparison['urgent_mean_delay_candidate']:.2f}시간 |",
-                "",
-                "환자의 제한을 반영하면 실행하기 어려운 검사나 방문은 피할 수 있지만, 확인하지 못한 정보가 남아 시험 판단을 끝내지 못할 수도 있다. 따라서 전체 판단 완료 비율과 환자 제한을 지킨 상태의 판단 완료 비율을 함께 본다.",
-                "",
-                "![환자 부담 결과](patient-burden.svg)",
-                "",
+        if isinstance(hard_filter, dict):
+            normalized["patient_burden"] = {
+                "evaluation": "disallowed_path_filter",
+                **hard_filter,
+            }
+            means = hard_filter["metric_means"]
+            totals = hard_filter["metric_totals"]
+            feasible = means["burden_feasible_trial_status_recovery"]
+            inference = hard_filter["paired_inference"][
+                "burden_feasible_trial_status_recovery"
             ]
-        )
+            interval = inference["bootstrap_95_ci"]
+            current_metrics = {
+                "feasible_status_match_without_limits": feasible["baseline"],
+                "feasible_status_match_with_limits": feasible["candidate"],
+                "new_tests_without_limits": totals["new_test_count"]["baseline"],
+                "new_tests_with_limits": totals["new_test_count"]["candidate"],
+                "visits_without_limits": totals["additional_visit_count"]["baseline"],
+                "visits_with_limits": totals["additional_visit_count"]["candidate"],
+                "limit_violations_without_limits": totals[
+                    "explicit_limit_violations"
+                ]["baseline"],
+                "limit_violations_with_limits": totals[
+                    "explicit_limit_violations"
+                ]["candidate"],
+            }
+            for name, value in current_metrics.items():
+                metric_rows.append(
+                    {
+                        "section": "patient_burden",
+                        "arm": "explicit_patient_limits",
+                        "metric": name,
+                        "value": value,
+                    }
+                )
+            (output / "patient-burden.svg").write_text(
+                _bar_svg(
+                    "환자가 이용할 수 있는 정보만 기준으로 맞힌 시험 상태",
+                    (
+                        f"합성 환자 {hard_filter['base_patient_count']}명 · "
+                        f"같은 환자의 정보 가림과 확인 경로를 달리한 "
+                        f"{hard_filter['setting_pair_count']}개 비교"
+                    ),
+                    [
+                        (
+                            "환자가 피하고 싶은 확인 방법을\n그대로 선택할 수 있게 둔 경우",
+                            feasible["baseline"],
+                        ),
+                        (
+                            "환자가 피하고 싶은 확인 방법을\n먼저 제외한 경우",
+                            feasible["candidate"],
+                        ),
+                    ],
+                ),
+                encoding="utf-8",
+            )
+            sections.extend(
+                [
+                    "## 환자가 피하고 싶은 검사와 방문을 확인 후보에서 제외",
+                    "",
+                    (
+                        f"합성 환자 {hard_filter['base_patient_count']}명에게서 정보 가림과 "
+                        f"확인 경로를 달리한 {hard_filter['setting_pair_count']}개 설정을 만들었다. "
+                        "두 경우에 같은 정보 영향 계산을 적용했다. 한쪽은 모든 확인 방법을 "
+                        "선택 목록에 두었고, 다른 쪽은 환자가 피하고 싶다고 입력한 새 검사와 "
+                        "추가 방문을 선택 전에 제외했다. 경로가 빠지면 다음 정보 순서도 달라질 "
+                        "수 있다."
+                    ),
+                    "",
+                    "| 결과 | 환자 제한을 적용하지 않음 | 환자가 피하고 싶은 방법을 제외 |",
+                    "|---|---:|---:|",
+                    f"| 환자에게 실제로 이용 가능한 정보만 보았을 때 기대했던 시험 상태와 일치 | {feasible['baseline']:.1%} | {feasible['candidate']:.1%} |",
+                    f"| 새 검사를 선택한 횟수 | {totals['new_test_count']['baseline']}회 | {totals['new_test_count']['candidate']}회 |",
+                    f"| 추가 방문을 선택한 횟수 | {totals['additional_visit_count']['baseline']}회 | {totals['additional_visit_count']['candidate']}회 |",
+                    f"| 환자가 피하고 싶다고 입력한 방법을 선택한 횟수 | {totals['explicit_limit_violations']['baseline']}회 | {totals['explicit_limit_violations']['candidate']}회 |",
+                    f"| 한 설정에서 선택한 확인 방법의 예상 대기시간 합계 | {means['cumulative_delay_hours']['baseline']:.2f}시간 | {means['cumulative_delay_hours']['candidate']:.2f}시간 |",
+                    "",
+                    (
+                        "환자에게 실제로 이용 가능한 정보만 기준으로 삼은 시험 상태 일치는 "
+                        f"{feasible['difference']:+.1%}p 높았다. 환자 {inference['pair_count']}명을 "
+                        "단위로 다시 뽑아 계산한 95% 범위는 "
+                        f"{interval['lower']:+.1%}p에서 {interval['upper']:+.1%}p였다. "
+                        "새 검사와 추가 방문을 피한 만큼 예상 대기시간이 늘어난 점도 함께 "
+                        "표시했다."
+                    ),
+                    "",
+                    "![환자 부담 결과](patient-burden.svg)",
+                    "",
+                ]
+            )
+        else:
+            comparisons = burden["adoption_comparison"]
+            if split not in comparisons:
+                raise ValueError(
+                    f"burden result has no requested split {split!r}"
+                )
+            comparison = comparisons[split]
+            normalized["patient_burden"] = comparison
+            burden_metrics = {
+                "overall_recovery_fixed": comparison["baseline_recovery"],
+                "overall_recovery_adaptive": comparison["candidate_recovery"],
+                "constrained_feasible_fixed": comparison["constrained_baseline_feasible_recovery"],
+                "constrained_feasible_adaptive": comparison["constrained_candidate_feasible_recovery"],
+                "constrained_new_test_visit_fixed": comparison["constrained_new_test_visit_baseline"],
+                "constrained_new_test_visit_adaptive": comparison["constrained_new_test_visit_candidate"],
+                "urgent_delay_fixed": comparison["urgent_mean_delay_baseline"],
+                "urgent_delay_adaptive": comparison["urgent_mean_delay_candidate"],
+            }
+            for name, value in burden_metrics.items():
+                metric_rows.append(
+                    {"section": "patient_burden", "arm": split, "metric": name, "value": value}
+                )
+            (output / "patient-burden.svg").write_text(
+                _bar_svg(
+                    "환자 제한을 지키면서 최종 판단까지 끝낸 시험",
+                    "이동·비용 제한이 있거나 새 검사·추가 방문을 피해야 하는 합성 상황",
+                    [
+                        (
+                            "모든 환자에게 같은 비용표를 적용해\n확인 방법을 선택",
+                            comparison["constrained_baseline_feasible_recovery"],
+                        ),
+                        (
+                            "환자의 이동·비용·시간 제한을 반영해\n확인 방법을 선택",
+                            comparison["constrained_candidate_feasible_recovery"],
+                        ),
+                    ],
+                ),
+                encoding="utf-8",
+            )
+            sections.extend(
+                [
+                    "## 같은 정보를 어떤 방법으로 확인할지 환자 상황에 맞춰 선택",
+                    "",
+                    "같은 부족 정보라도 기존 병원 기록 조회, 환자 답변, 새 검사처럼 여러 확인 방법이 있을 수 있다. 모든 환자에게 같은 비용표를 적용하는 방법과, 환자가 입력한 이동·비용·시간 제한을 먼저 반영하는 방법을 비교했다.",
+                    "",
+                    "| 무엇을 측정했는가 | 모든 환자에게 같은 비용표를 적용해 확인 방법을 선택 | 환자의 이동·비용·시간 제한을 반영해 확인 방법을 선택 |",
+                    "|---|---:|---:|",
+                    f"| 이동·비용 제한이 없는 상황까지 모두 합쳤을 때 판단을 끝낸 시험 비율 | {comparison['baseline_recovery']:.1%} | {comparison['candidate_recovery']:.1%} |",
+                    f"| 이동·비용 제한이 있는 합성 환자에게 허용된 확인 방법만 사용하고도 최종 판단까지 끝낸 시험 비율 | {comparison['constrained_baseline_feasible_recovery']:.1%} | {comparison['constrained_candidate_feasible_recovery']:.1%} |",
+                    f"| 환자가 새 검사나 추가 방문을 피해야 한다고 입력했는데도 그런 방법을 선택한 횟수 | {comparison['constrained_new_test_visit_baseline']}회 | {comparison['constrained_new_test_visit_candidate']}회 |",
+                    f"| 시간이 급하다고 입력한 환자에게 선택한 확인 방법의 예상 대기시간 합계 | {comparison['urgent_mean_delay_baseline']:.2f}시간 | {comparison['urgent_mean_delay_candidate']:.2f}시간 |",
+                    "",
+                    "환자의 제한을 반영하면 실행하기 어려운 검사나 방문은 피할 수 있지만, 확인하지 못한 정보가 남아 시험 판단을 끝내지 못할 수도 있다. 따라서 전체 판단 완료 비율과 환자 제한을 지킨 상태의 판단 완료 비율을 함께 본다.",
+                    "",
+                    "![환자 부담 결과](patient-burden.svg)",
+                    "",
+                ]
+            )
 
     if workflow_path is not None:
         workflow = _read(workflow_path)
@@ -282,8 +379,8 @@ def build_research_report(
         arm_labels = {
             "no_questions": "추가 정보를 확인하지 않고 처음 환자 자료만 사용",
             "fixed_order": f"처음 빠진 정보 목록에 적힌 순서대로 최대 {workflow['action_budget']}개를 확인",
-            "immediate_coverage": f"환자 선택을 보지 않고 현재 가장 많은 미완료 시험에 연결된 정보를 최대 {workflow['action_budget']}개 확인",
-            "clarifytrial": f"남은 {workflow['action_budget']}번 안에 가장 많은 시험 판단을 끝낼 정보를 매번 다시 계산",
+            "immediate_coverage": f"환자 상황을 적용하지 않고 여러 시험에 함께 필요한 정보를 최대 {workflow['action_budget']}개 확인",
+            "clarifytrial": f"여러 시험에 함께 필요한 정보를 먼저 고르고 환자가 이용할 수 있는 방법으로 최대 {workflow['action_budget']}개 확인",
         }
         for row in workflow["arm_metrics"]:
             sections.append(
@@ -451,7 +548,7 @@ def build_research_report(
             sections.extend(
                 [
                     "",
-                    f"환자별로 두 질문 순서를 직접 비교하면, 가장 많은 시험 판단을 끝낼 정보를 다시 계산한 방법이 더 좋았던 환자는 {paired['clarifytrial_better_patient_count']}명, 같았던 환자는 {paired['equal_patient_count']}명, 더 낮았던 환자는 {paired['clarifytrial_worse_patient_count']}명이었다.",
+                    f"환자별로 두 질문 순서를 직접 비교하면, 여러 시험에 함께 필요한 정보를 먼저 확인한 방법이 더 좋았던 환자는 {paired['clarifytrial_better_patient_count']}명, 같았던 환자는 {paired['equal_patient_count']}명, 더 낮았던 환자는 {paired['clarifytrial_worse_patient_count']}명이었다.",
                 ]
             )
             for name in (
@@ -478,8 +575,8 @@ def build_research_report(
             sections.extend(
                 [
                     "",
-                    "현재 가장 많은 미완료 시험에 연결된 정보부터 확인하는 방식과 비교하면, "
-                    f"ClarifyTrial이 더 좋았던 환자는 {immediate_paired['clarifytrial_better_patient_count']}명, "
+                    "환자 상황을 적용하지 않고 여러 시험에 함께 필요한 정보부터 확인한 방식과 비교하면, "
+                    f"환자가 이용할 수 있는 확인 방법까지 반영한 방식이 더 좋았던 환자는 {immediate_paired['clarifytrial_better_patient_count']}명, "
                     f"같았던 환자는 {immediate_paired['equal_patient_count']}명, "
                     f"더 낮았던 환자는 {immediate_paired['clarifytrial_worse_patient_count']}명이었다.",
                 ]
@@ -509,7 +606,7 @@ def build_research_report(
                     "",
                     "### 질환별 판단 완료",
                     "",
-                    "| 합성 환자 질환 | 현재 가장 많은 미완료 시험에 연결된 정보부터 확인 | 남은 확인 횟수 전체를 계산 |",
+                    "| 합성 환자 질환 | 환자 상황을 적용하지 않고 여러 시험에 함께 필요한 정보부터 확인 | 같은 정보 순서를 쓰되 환자가 이용할 수 있는 확인 방법을 적용 |",
                     "|---|---:|---:|",
                 ]
             )
@@ -644,8 +741,8 @@ def build_research_report(
             shutil.copyfile(source, output / name)
         frontier_labels = {
             "fixed_order": "입력 파일에 적힌 순서",
-            "immediate_coverage": "현재 가장 많은 시험에 연결된 정보 우선",
-            "clarifytrial": "남은 확인 횟수 전체를 고려",
+            "immediate_coverage": "여러 시험에 함께 필요한 정보 우선, 환자 상황 미반영",
+            "clarifytrial": "여러 시험에 함께 필요한 정보 우선, 환자 상황 반영",
         }
         sections.extend(
             [
@@ -761,7 +858,7 @@ def build_research_report(
                 sections.extend(
                     [
                         "",
-                        "이 조건에서는 남은 확인 횟수 전체를 계산한 방법과 현재 영향이 가장 큰 정보를 바로 고른 방법의 결과가 같았다.",
+                        "이 조건에서는 환자 상황을 적용한 경우와 적용하지 않은 경우의 최종 판단 결과가 같았다.",
                     ]
                 )
         sections.extend(

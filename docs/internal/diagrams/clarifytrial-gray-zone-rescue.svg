@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">질문 한 번 뒤 시험 상태 변화</title>
+<desc id="desc">확인 전 미확정 조합 22개 중 14개가 최대 한 번의 추가 확인 뒤 확인 완료로 바뀌었고 8개는 대기로 남았다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#98A2B3"/></marker>
+</defs>
+<rect width="1200" height="675" fill="#F7F9FC"/>
+<text x="70.0" y="72.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="32" font-weight="700" fill="#182533" text-anchor="start">세 기본 문진 뒤 남은 22건 중 14건이 한 번의 확인으로 정리됐다</text>
+<text x="70.0" y="112.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="start">나이·임신/수유·활동성 감염을 시작 자료에 넣은 뒤의 평가</text>
+<rect x="70.0" y="190.0" width="340.0" height="280.0" rx="22.0" fill="#FFFFFF" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="240.0" y="245.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="700" fill="#64748B" text-anchor="middle">확인 전</text>
+<text x="240.0" y="335.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="68" font-weight="700" fill="#17324D" text-anchor="middle">22건</text>
+<text x="240.0" y="385.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="20" font-weight="600" fill="#182533" text-anchor="middle"><tspan x="240.0" dy="0">후보로 남아 있었지만</tspan><tspan x="240.0" dy="30">아직 참가 조건을 확정하지 못함</tspan></text>
+<line x1="430.0" y1="330.0" x2="560.0" y2="330.0" stroke="#2F6FED" stroke-width="5.0" marker-end="url(#arrow)"/>
+<text x="495.0" y="275.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="600" fill="#17324D" text-anchor="middle">환자마다 최대 1회</text>
+<text x="495.0" y="302.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="400" fill="#64748B" text-anchor="middle">실제로 확인한 횟수 14회</text>
+<rect x="580.0" y="190.0" width="550.0" height="125.0" rx="22.0" fill="#EAF0FF" stroke="#7AA2F7" stroke-width="1.0"/>
+<text x="625.0" y="245.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="48" font-weight="700" fill="#2F6FED" text-anchor="start">14건</text>
+<text x="790.0" y="235.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="22" font-weight="700" fill="#182533" text-anchor="start"><tspan x="790.0" dy="0">답을 받은 뒤</tspan><tspan x="790.0" dy="31">참가 조건 확인 완료</tspan></text>
+<rect x="580.0" y="345.0" width="550.0" height="125.0" rx="22.0" fill="#FFFFFF" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="625.0" y="400.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="48" font-weight="700" fill="#98A2B3" text-anchor="start">8건</text>
+<text x="790.0" y="390.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="22" font-weight="700" fill="#182533" text-anchor="start"><tspan x="790.0" dy="0">한 번의 확인으로 부족해</tspan><tspan x="790.0" dy="31">다음 확인을 기다림</tspan></text>
+<rect x="70.0" y="525.0" width="1060.0" height="70.0" rx="14.0" fill="#EEF2F6" stroke="none" stroke-width="1.0"/>
+<text x="600.0" y="568.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="600" fill="#182533" text-anchor="middle">합성 환자 30명 × 각 5건 = 환자-시험 조합 150개</text>
+<text x="70.0" y="642.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">열 개 질환에서 모두 한 건 이상 바뀌었으며, 실제 질문과 답변 뒤의 변화만 셌다.</text>
+</svg>

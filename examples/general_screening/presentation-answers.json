@@ -1,0 +1,18 @@
+[
+  {
+    "fact_id": "recent-hba1c",
+    "access_path": "REQUEST_VERIFICATION",
+    "evidence": {
+      "evidence_id": "presentation-official-hba1c",
+      "statement": "2026년 8월 20일 공식 HbA1c 결과는 7.5%였다.",
+      "source_type": "official_verification",
+      "source_location": "synthetic-presentation-result#hba1c",
+      "event_date": "2026-08-20",
+      "recorded_date": "2026-08-20",
+      "verification_status": "verified",
+      "concept": "hba1c",
+      "value": 7.5,
+      "unit": "%"
+    }
+  }
+]

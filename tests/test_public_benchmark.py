@@ -142,9 +142,10 @@ def test_small_public_grid_run_writes_frozen_baseline_comparison(tmp_path) -> No
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
 
     assert summary["visible_context_count"] == 8
-    assert summary["scenario_policy_evaluations"] == 8 * 32 * 7
-    assert summary["policy_count"] == 7
-    assert len(summary["policy_metrics"]) == 3 * 7
+    assert summary["scenario_policy_evaluations"] == 8 * 32 * 9
+    assert summary["hidden_value_combination_count"] == 8 * 32
+    assert summary["policy_count"] == 9
+    assert len(summary["policy_metrics"]) == 3 * 9
     assert summary["comparison"]["baseline_selected_on_development"] in {
         "widest_impact",
         "impact_per_cost",
@@ -152,3 +153,4 @@ def test_small_public_grid_run_writes_frozen_baseline_comparison(tmp_path) -> No
         "outcome_entropy",
     }
     assert len(summary["comparison"]["comparisons"]) == 4
+    assert len(summary["comparison"]["core_policy_comparisons"]) == 6

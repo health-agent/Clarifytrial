@@ -171,6 +171,14 @@ def test_agent_metadata_is_unique_and_points_to_prompt_files() -> None:
     assert all(Path(agent.prompt_id).is_file() for agent in agent_types)
 
 
+def test_matcher_prompt_uses_eligibility_direction_for_exclusion_status() -> None:
+    prompt = Path(MatcherJudgeAgent.prompt_id).read_text(encoding="utf-8")
+    compact = " ".join(prompt.split())
+
+    assert "제외 조건에 해당하면 `violates`" in compact
+    assert "해당하지 않으면 `supports`" in compact
+
+
 def test_matcher_batch_rejects_duplicate_criterion_ids() -> None:
     assessment = {
         "criterion_id": "criterion-1",

@@ -147,8 +147,6 @@ def _agents(model: ScriptedStructuredModel) -> EpisodeAgents:
 
 
 def test_stale_lab_is_retained_then_confirmed_after_official_result() -> None:
-    matcher_inputs: list[Mapping[str, Any]] = []
-
     def coordinate(payload: Mapping[str, Any]) -> Mapping[str, Any]:
         route = payload["allowed_routes"][0]
         return {
@@ -158,45 +156,12 @@ def test_stale_lab_is_retained_then_confirmed_after_official_result() -> None:
             "reason": "Select the permitted next state.",
         }
 
-    def match(payload: Mapping[str, Any]) -> Mapping[str, Any]:
-        matcher_inputs.append(payload)
-        evidence_ids = {
-            item["evidence_id"] for item in payload["patient_facts"]
-        }
-        if "fresh-platelets-result" in evidence_ids:
-            return {
-                "assessments": [
-                    {
-                        "criterion_id": "criterion-platelets",
-                        "criterion_source_location": "protocol#inclusion-4",
-                        "clinical_status": "supports",
-                        "evidence_sufficiency": "sufficient",
-                        "evidence_ids": ["fresh-platelets-result"],
-                        "missing_information_ids": [],
-                        "rationale": "The recent official result meets the threshold.",
-                        "review_flags": [],
-                    }
-                ]
-            }
-        return {
-            "assessments": [
-                {
-                    "criterion_id": "criterion-platelets",
-                    "criterion_source_location": "protocol#inclusion-4",
-                    "clinical_status": "supports",
-                    "evidence_sufficiency": "insufficient",
-                    "evidence_ids": ["old-platelets"],
-                    "missing_information_ids": ["fresh-platelets"],
-                    "rationale": "The old result supports possibility but is outside 14 days.",
-                    "review_flags": [],
-                }
-            ]
-        }
-
     model = ScriptedStructuredModel(
         {
             "coordinator": coordinate,
-            "matcher_judge": match,
+            "matcher_judge": lambda _: pytest.fail(
+                "structured criteria must not call matcher_judge"
+            ),
             "next_evidence": lambda _: {
                 "action": "REQUEST_VERIFICATION",
                 "target_fact_id": "fresh-platelets",
@@ -238,15 +203,9 @@ def test_stale_lab_is_retained_then_confirmed_after_official_result() -> None:
     )
     assert model.call_count == {
         "coordinator": 4,
-        "matcher_judge": 2,
         "next_evidence": 1,
     }
-    assert "fresh-platelets-result" not in {
-        item["evidence_id"] for item in matcher_inputs[0]["patient_facts"]
-    }
-    assert "fresh-platelets-result" in {
-        item["evidence_id"] for item in matcher_inputs[1]["patient_facts"]
-    }
+    assert model.call_count.get("matcher_judge", 0) == 0
     assert any(event.actor == "decision_rules" for event in trace.events)
     assert any(event.actor == "mechanical_checks" for event in trace.events)
     assert any(
@@ -312,7 +271,7 @@ def test_code_authoritative_criterion_does_not_review_model_only_flag() -> None:
     assert model.call_count.get("selective_reviewer", 0) == 0
 
 
-def test_numeric_code_result_replaces_a_conflicting_model_answer() -> None:
+def test_numeric_code_result_is_applied_without_a_model_answer() -> None:
     case = _case(with_request=False)
 
     def coordinate(payload: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -326,20 +285,9 @@ def test_numeric_code_result_replaces_a_conflicting_model_answer() -> None:
     model = ScriptedStructuredModel(
         {
             "coordinator": coordinate,
-            "matcher_judge": lambda _: {
-                "assessments": [
-                    {
-                        "criterion_id": "criterion-platelets",
-                        "criterion_source_location": "protocol#inclusion-4",
-                        "clinical_status": "violates",
-                        "evidence_sufficiency": "sufficient",
-                        "evidence_ids": [],
-                        "missing_information_ids": [],
-                        "rationale": "Return a deliberately conflicting answer.",
-                        "review_flags": [],
-                    }
-                ]
-            },
+            "matcher_judge": lambda _: pytest.fail(
+                "structured criteria must not call matcher_judge"
+            ),
             "next_evidence": lambda _: pytest.fail("next evidence was not expected"),
             "selective_reviewer": lambda _: pytest.fail("review was not expected"),
         }
@@ -362,7 +310,12 @@ def test_numeric_code_result_replaces_a_conflicting_model_answer() -> None:
     assert result.final_decision.candidate_status.value == "retain"
     assert result.final_decision.confirmation_status.value == "not_confirmed"
     assert result.review_history == []
+    assert model.call_count.get("matcher_judge", 0) == 0
     assert any(
+        item.event == "structured_criteria_applied_without_model"
+        for item in trace.events
+    )
+    assert not any(
         item.event == "model_assessments_replaced" for item in trace.events
     )
 

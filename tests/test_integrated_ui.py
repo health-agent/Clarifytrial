@@ -5,6 +5,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
 
 from clarifytrial.cli import main
 from clarifytrial.contracts import (
@@ -16,11 +17,13 @@ from clarifytrial.contracts import (
     VerificationStatus,
 )
 from clarifytrial.environment import EnvironmentStatus, ToolExecutionResult
+from clarifytrial.settings import EpisodeSettings
 from clarifytrial.ui import build_integrated_ui_fixture
 from clarifytrial.ui.terminal import (
     IntegratedTerminalRenderer,
     PausingInformationTools,
     TerminalTraceRecorder,
+    run_integrated_terminal_ui,
 )
 
 
@@ -202,6 +205,16 @@ def test_terminal_renderer_shows_every_stage_without_private_reasoning(
     )
     trace.record(
         cycle=0,
+        actor="mechanical_checks",
+        event="structured_criteria_applied_without_model",
+        input_refs=[f"{candidate_ids[0]}:inclusion:001"],
+        output={
+            "criterion_count": 1,
+            "criterion_ids": [f"{candidate_ids[0]}:inclusion:001"],
+        },
+    )
+    trace.record(
+        cycle=0,
         actor="matcher_judge",
         event="structured_model_completed",
         output={
@@ -257,6 +270,7 @@ def test_terminal_renderer_shows_every_stage_without_private_reasoning(
     assert "시험의 모든 참가 조건을 옮긴 자료는 아닙니다" in text
     assert "진행 관리:" in text
     assert "조건 판단:" in text
+    assert "코드 판단: 구조화 조건 1개 처리 · 모델 호출 없음" in text
     assert "판정 변화 요약" in text
     assert "전체 외부 모델 호출: 2회, 1,234토큰" in text
     assert "chain of thought" not in text.casefold()
@@ -350,6 +364,10 @@ def test_full_ui_default_runs_offline_on_current_public_dataset(
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
+    (tmp_path / "execution-error.json").write_text(
+        '{"status": "older failure"}\n',
+        encoding="utf-8",
+    )
     exit_code = main(
         [
             "run-full-ui",
@@ -360,6 +378,7 @@ def test_full_ui_default_runs_offline_on_current_public_dataset(
     )
 
     assert exit_code == 0
+    assert not (tmp_path / "execution-error.json").exists()
     result = (tmp_path / "result.json").read_text(encoding="utf-8")
     assert '"run_mode": "integrated_terminal_ui_synthetic_evaluation"' in result
     assert '"patient_id": "source-chronic_pancreatitis-04"' in result
@@ -367,3 +386,116 @@ def test_full_ui_default_runs_offline_on_current_public_dataset(
     assert "코드 역할 단계" in output
     assert "외부 모델 호출: 0회, 0토큰" in output
     assert "모델 호출\n" not in output
+
+
+class _ExecutionFailureModel:
+    def complete(self, call):
+        raise RuntimeError("synthetic provider failure")
+
+
+class _ResponseParsingFailureModel:
+    def complete(self, call):
+        call.response_model.model_validate({})
+        raise AssertionError("model validation should fail")
+
+
+@pytest.mark.parametrize(
+    ("model", "expected_error_type", "expected_exception"),
+    [
+        (_ExecutionFailureModel(), "RuntimeError", RuntimeError),
+        (_ResponseParsingFailureModel(), "ValidationError", ValidationError),
+    ],
+)
+def test_integrated_ui_persists_model_failure_before_reraising(
+    tmp_path: Path,
+    model,
+    expected_error_type: str,
+    expected_exception: type[Exception],
+) -> None:
+    fixture = _fixture()
+    with pytest.raises(expected_exception):
+        run_integrated_terminal_ui(
+            fixture=fixture,
+            model=model,
+            model_label="failing-test-model",
+            settings=EpisodeSettings(
+                max_external_actions=1,
+                max_selective_reviews=0,
+                max_cycles=3,
+            ),
+            output_dir=tmp_path,
+            medical_disclaimer="synthetic test only",
+            auto_advance=True,
+            write=lambda _: None,
+        )
+
+    assert not (tmp_path / "result.json").exists()
+    failure = json.loads(
+        (tmp_path / "execution-error.json").read_text(encoding="utf-8")
+    )
+    assert failure == {
+        "status": "screening_execution_failed",
+        "phase": "screening_workflow",
+        "case_id": fixture.screening_case.case_id,
+        "model": "failing-test-model",
+        "error": {
+            "type": expected_error_type,
+            "message": failure["error"]["message"],
+        },
+    }
+    assert failure["error"]["message"]
+
+    trace_events = [
+        json.loads(line)
+        for line in (tmp_path / "trace.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    last_event = trace_events[-1]
+    assert last_event["actor"] == "screening_workflow"
+    assert last_event["event"] == "execution_failed"
+    assert last_event["output"] == failure
+
+
+def test_integrated_ui_failure_does_not_leave_an_older_success_result(
+    tmp_path: Path,
+) -> None:
+    (tmp_path / "result.json").write_text(
+        '{"status": "older success"}\n',
+        encoding="utf-8",
+    )
+    (tmp_path / "execution-error.json").write_text(
+        '{"status": "older failure"}\n',
+        encoding="utf-8",
+    )
+    (tmp_path / "trace.jsonl").write_text(
+        '{"event": "older run"}\n',
+        encoding="utf-8",
+    )
+
+    fixture = _fixture()
+    with pytest.raises(RuntimeError, match="synthetic provider failure"):
+        run_integrated_terminal_ui(
+            fixture=fixture,
+            model=_ExecutionFailureModel(),
+            model_label="failing-test-model",
+            settings=EpisodeSettings(
+                max_external_actions=1,
+                max_selective_reviews=0,
+                max_cycles=3,
+            ),
+            output_dir=tmp_path,
+            medical_disclaimer="synthetic test only",
+            auto_advance=True,
+            write=lambda _: None,
+        )
+
+    assert not (tmp_path / "result.json").exists()
+    failure = json.loads(
+        (tmp_path / "execution-error.json").read_text(encoding="utf-8")
+    )
+    assert failure["status"] == "screening_execution_failed"
+    trace_events = [
+        json.loads(line)
+        for line in (tmp_path / "trace.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    assert all(event.get("event") != "older run" for event in trace_events)
+    assert trace_events[-1]["event"] == "execution_failed"

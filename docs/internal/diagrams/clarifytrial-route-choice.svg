@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">환자 상황에 따른 확인 방법 선택</title>
+<desc id="desc">같은 답을 얻는 기존 공식 결과 회수와 새 검사를 놓고 환자 상황에 따라 선택 경로만 달라지는 통제 실험이다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#98A2B3"/></marker>
+</defs>
+<rect width="1200" height="675" fill="#F7F9FC"/>
+<text x="70.0" y="72.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="34" font-weight="700" fill="#182533" text-anchor="start">같은 정보를 얻는 방법은 환자 상황에 따라 달라졌다</text>
+<text x="70.0" y="112.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="start">합성 환자 20명 · 가린 사례 40개 · 두 방법 모두 같은 답을 제공</text>
+<rect x="70.0" y="155.0" width="500.0" height="128.0" rx="18.0" fill="#FFFFFF" stroke="#D8DEE8" stroke-width="1.0"/>
+<rect x="630.0" y="155.0" width="500.0" height="128.0" rx="18.0" fill="#FFFFFF" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="105.0" y="195.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="24" font-weight="700" fill="#17324D" text-anchor="start">외부 기관의 기존 공식 결과 받기</text>
+<text x="105.0" y="232.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="start">합성 대기 72시간 · 방문 없음 · 낮은 비용</text>
+<text x="665.0" y="195.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="24" font-weight="700" fill="#17324D" text-anchor="start">같은 검사를 새로 받기</text>
+<text x="665.0" y="232.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="start">합성 대기 8시간 · 방문 필요 · 중간 비용</text>
+<line x1="320.0" y1="300.0" x2="320.0" y2="355.0" stroke="#98A2B3" stroke-width="2.0" marker-end="url(#arrow)"/>
+<line x1="880.0" y1="300.0" x2="880.0" y2="355.0" stroke="#98A2B3" stroke-width="2.0" marker-end="url(#arrow)"/>
+<rect x="70.0" y="370.0" width="500.0" height="155.0" rx="18.0" fill="#EEF2F6" stroke="none" stroke-width="1.0"/>
+<rect x="630.0" y="370.0" width="500.0" height="155.0" rx="18.0" fill="#EAF0FF" stroke="none" stroke-width="1.0"/>
+<text x="105.0" y="412.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="700" fill="#182533" text-anchor="start">추가 부담을 줄이거나 이동·비용 제한이 있음</text>
+<text x="105.0" y="463.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="32" font-weight="700" fill="#17324D" text-anchor="start">기존 결과 받기  85회 · 85회</text>
+<text x="665.0" y="412.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="700" fill="#182533" text-anchor="start">확인 속도가 가장 중요함</text>
+<text x="665.0" y="463.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="32" font-weight="700" fill="#2F6FED" text-anchor="start">새 검사  85회</text>
+<rect x="70.0" y="555.0" width="1060.0" height="60.0" rx="14.0" fill="#17324D" stroke="none" stroke-width="1.0"/>
+<text x="600.0" y="593.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="21" font-weight="700" fill="#FFFFFF" text-anchor="middle">정보 순서와 시험별 최종 상태는 40/40개 사례에서 같았고, 확인 방법만 달라졌다.</text>
+<text x="70.0" y="650.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">시간과 비용은 경로 선택 동작을 확인하려고 정한 합성 값이며 실제 병원 대기시간을 뜻하지 않는다.</text>
+</svg>

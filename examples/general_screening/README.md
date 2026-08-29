@@ -26,6 +26,20 @@
 {"statement":"공식 HbA1c 결과는 6.4%였다.","concept":"hba1c","value":6.4,"unit":"%","event_date":"2026-08-20","recorded_date":"2026-08-20","source_type":"official_verification","source_location":"official-result#hba1c","verification_status":"verified"}
 ```
 
+발표 화면에서는 `presentation-answers.json`을 사용할 수 있다. 최근 HbA1c가 7.5%로
+들어오므로 7.0% 미만을 요구한 시험은 참가 조건 불충족으로 바뀌고, 8.0% 미만을 요구한
+시험은 현재 확인이 끝난다. 환자 정보 하나가 서로 다른 기준을 가진 두 시험에 함께
+반영되는 장면을 한 번의 실행으로 보여 준다.
+
+```powershell
+.\.venv\Scripts\clarifytrial.exe run-screening `
+  --patient examples\general_screening\patient.json `
+  --trials examples\general_screening\trials.jsonl `
+  --answers examples\general_screening\presentation-answers.json `
+  --provider deterministic `
+  --output runs\presentation-screening
+```
+
 `quit`을 입력하면 현재 상태를 `session.json`에 저장한다. 이어서 실행할 때는 같은 환자와
 시험 파일을 사용하고 `--resume runs\general-screening-example\session.json`을 붙인다.
 

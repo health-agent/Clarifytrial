@@ -14,8 +14,8 @@ from ..io import atomic_write_text
 _ARM_LABELS = {
     "no_questions": "추가 확인 없음",
     "fixed_order": "입력 파일에 적힌 순서",
-    "immediate_coverage": "현재 가장 많은 시험에 연결된 정보 우선",
-    "clarifytrial": "남은 확인 횟수 전체를 고려",
+    "immediate_coverage": "여러 시험에 함께 필요한 정보 우선, 환자 상황 미반영",
+    "clarifytrial": "여러 시험에 함께 필요한 정보 우선, 환자 상황 반영",
 }
 _COLORS = {
     "fixed_order": "#8B95A1",
@@ -420,7 +420,7 @@ def build_budget_frontier(
             lines.extend(
                 [
                     "",
-                    "이 조건에서는 남은 확인 횟수 전체를 계산한 방법과 현재 영향이 가장 큰 정보를 바로 고른 방법의 결과가 같았다.",
+                    "이 조건에서는 환자 상황을 적용한 경우와 적용하지 않은 경우의 최종 판단 결과가 같았다.",
                 ]
             )
     lines.extend(

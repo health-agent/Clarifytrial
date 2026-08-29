@@ -1,0 +1,9 @@
+﻿action_budget,candidate_policy_id,baseline_policy_id,metric,patient_count,mean_difference,bootstrap_95_lower,bootstrap_95_upper,wins,ties,losses,preferred_direction,candidate_better_count,candidate_same_count,candidate_worse_count,two_sided_exact_sign_test_p
+1,clarifytrial_rule_v1,random_order_expectation,trial_status_recovery,30,0.004444444444444447,0.0,0.013333333333333341,1,29,0,higher,1,29,0,1.0
+1,clarifytrial_rule_v1,random_order_expectation,confirmed_rescue_count,30,0.022222222222222223,0.0,0.06666666666666668,1,29,0,higher,1,29,0,1.0
+1,clarifytrial_rule_v1,random_order_expectation,ineligible_cleanup_count,30,0.0,0.0,0.0,0,30,0,higher,0,30,0,1.0
+1,clarifytrial_rule_v1,random_order_expectation,action_count,30,0.0,0.0,0.0,0,30,0,lower,0,30,0,1.0
+1,clarifytrial_exact_coverage_v3,clarifytrial_rule_v1,trial_status_recovery,30,0.0,0.0,0.0,0,30,0,higher,0,30,0,1.0
+1,clarifytrial_exact_coverage_v3,clarifytrial_rule_v1,confirmed_rescue_count,30,0.0,0.0,0.0,0,30,0,higher,0,30,0,1.0
+1,clarifytrial_exact_coverage_v3,clarifytrial_rule_v1,ineligible_cleanup_count,30,0.0,0.0,0.0,0,30,0,higher,0,30,0,1.0
+1,clarifytrial_exact_coverage_v3,clarifytrial_rule_v1,action_count,30,0.0,0.0,0.0,0,30,0,lower,0,30,0,1.0

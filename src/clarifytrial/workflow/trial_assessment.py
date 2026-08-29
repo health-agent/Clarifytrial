@@ -13,12 +13,43 @@ from ..contracts import (
     ReviewFlag,
     TrialCriterion,
 )
-from ..mechanical_checks import evaluate_criterion
+from ..mechanical_checks import MechanicalCriterionResult, evaluate_criterion
 from ..trace import TraceRecorder
 
 
 class TrialAssessmentProtocolError(RuntimeError):
     """The matching role referred to data outside its supplied input."""
+
+
+def _assessment_from_structured_check(
+    *,
+    criterion: TrialCriterion,
+    result: MechanicalCriterionResult,
+    evidence_requests: Sequence[NextEvidenceRequest],
+) -> CriterionAssessment:
+    related_missing_ids = sorted(
+        request.fact_id
+        for request in evidence_requests
+        if criterion.criterion_id in request.related_criterion_ids
+    )
+    return CriterionAssessment(
+        criterion_id=criterion.criterion_id,
+        criterion_source_location=criterion.source_location,
+        clinical_status=result.clinical_status,
+        evidence_sufficiency=result.evidence_sufficiency,
+        evidence_ids=result.evidence_ids,
+        missing_information_ids=(
+            []
+            if result.evidence_sufficiency is EvidenceSufficiency.SUFFICIENT
+            else related_missing_ids
+        ),
+        rationale="구조화된 수치·단위·날짜·출처 검사를 코드로 적용했다.",
+        review_flags=(
+            [ReviewFlag.EVIDENCE_CONFLICT]
+            if result.evidence_sufficiency is EvidenceSufficiency.CONFLICTING
+            else []
+        ),
+    )
 
 
 def assess_criteria_bundle(
@@ -31,11 +62,11 @@ def assess_criteria_bundle(
     trace: TraceRecorder,
     cycle: int,
 ) -> list[CriterionAssessment]:
-    """Check and judge one or more trials in a single model call.
+    """Check structured criteria in code and send only free text to the model.
 
     The criteria may span trials.  Stable trial and criterion identifiers keep
-    the response separable after the call, while deterministic checks retain
-    authority over configured numeric and temporal rules.
+    the response separable after the call.  Configured numeric and temporal
+    rules never need a matcher-model interpretation.
     """
 
     if not criteria:
@@ -43,8 +74,6 @@ def assess_criteria_bundle(
     criterion_ids = [item.criterion_id for item in criteria]
     if len(criterion_ids) != len(set(criterion_ids)):
         raise ValueError("criteria must not repeat criterion_id")
-    trial_ids = sorted({item.trial_id for item in criteria})
-
     mechanical_by_id = {
         criterion.criterion_id: evaluate_criterion(criterion, patient_state)
         for criterion in criteria
@@ -61,11 +90,49 @@ def assess_criteria_bundle(
         },
     )
 
-    criterion_id_set = set(criterion_ids)
+    structured_criteria = [
+        criterion
+        for criterion in criteria
+        if mechanical_by_id[criterion.criterion_id].configured
+    ]
+    free_text_criteria = [
+        criterion
+        for criterion in criteria
+        if not mechanical_by_id[criterion.criterion_id].configured
+    ]
+    criterion_by_id = {item.criterion_id: item for item in criteria}
+    structured_assessments = [
+        _assessment_from_structured_check(
+            criterion=criterion,
+            result=mechanical_by_id[criterion.criterion_id],
+            evidence_requests=evidence_requests,
+        )
+        for criterion in structured_criteria
+    ]
+    if structured_assessments:
+        structured_ids = [item.criterion_id for item in structured_assessments]
+        trace.record(
+            cycle=cycle,
+            actor="mechanical_checks",
+            event="structured_criteria_applied_without_model",
+            input_refs=structured_ids,
+            output={
+                "criterion_count": len(structured_ids),
+                "criterion_ids": structured_ids,
+            },
+        )
+
+    if not free_text_criteria:
+        by_id = {item.criterion_id: item for item in structured_assessments}
+        return [by_id[item] for item in criterion_ids]
+
+    model_criterion_ids = [item.criterion_id for item in free_text_criteria]
+    model_criterion_id_set = set(model_criterion_ids)
+    trial_ids = sorted({item.trial_id for item in free_text_criteria})
     relevant_requests = [
         request
         for request in evidence_requests
-        if set(request.related_criterion_ids) & criterion_id_set
+        if set(request.related_criterion_ids) & model_criterion_id_set
     ]
     response = matcher_judge.run(
         {
@@ -73,7 +140,9 @@ def assess_criteria_bundle(
             "trial_id": trial_ids[0] if len(trial_ids) == 1 else "multiple_trials",
             "trial_ids": trial_ids,
             "as_of": patient_state.as_of.isoformat(),
-            "criteria": [item.model_dump(mode="json") for item in criteria],
+            "criteria": [
+                item.model_dump(mode="json") for item in free_text_criteria
+            ],
             "patient_facts": [
                 item.model_dump(mode="json") for item in patient_state.facts
             ],
@@ -83,22 +152,23 @@ def assess_criteria_bundle(
             "mechanical_checks": {
                 criterion_id: result.model_dump(mode="json")
                 for criterion_id, result in mechanical_by_id.items()
+                if criterion_id in model_criterion_id_set
             },
         },
         trace=trace,
         cycle=cycle,
-        input_refs=[*criterion_ids, *evidence_ids],
+        input_refs=[*model_criterion_ids, *evidence_ids],
     ).output
 
     returned_ids = {item.criterion_id for item in response.assessments}
-    unknown_ids = returned_ids - criterion_id_set
+    unknown_ids = returned_ids - model_criterion_id_set
     if unknown_ids:
         raise TrialAssessmentProtocolError(
             "matcher_judge returned criteria outside the request: "
             + ", ".join(sorted(unknown_ids))
         )
-    missing_ids = criterion_id_set - returned_ids
-    validated = []
+    missing_ids = model_criterion_id_set - returned_ids
+    validated = list(structured_assessments)
     mechanical_corrections = []
     protocol_corrections = []
     for assessment in response.assessments:
@@ -233,7 +303,9 @@ def assess_criteria_bundle(
             },
         )
         missing_criteria = [
-            item for item in criteria if item.criterion_id in missing_ids
+            criterion_by_id[item]
+            for item in model_criterion_ids
+            if item in missing_ids
         ]
         validated.extend(
             assess_criteria_bundle(

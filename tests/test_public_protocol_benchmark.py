@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 from clarifytrial.app.evaluation import run_full_workflow_evaluation
@@ -41,6 +42,17 @@ def test_public_protocol_subset_keeps_sources_logic_and_patient_burden() -> None
     assert trials["source_snapshot"]["sha256"]
     assert all(
         item["source_location"].startswith("https://clinicaltrials.gov/study/")
+        for item in trials["criteria"]
+    )
+    age_wording = re.compile(
+        r"(?:\b(?:adults?|children)\b.{0,80}\b(?:\d+|eighteen)\b|"
+        r"\b(?:\d+|eighteen)\b.{0,35}\b(?:years?\s+old|years?\s+of\s+age)\b|"
+        r"\bages?\s+(?:\d+|eighteen)\b)",
+        re.I,
+    )
+    assert not any(
+        ("source_line" in item["fact_code"] or "logic_line" in item["fact_code"])
+        and age_wording.search(item["source_text"])
         for item in trials["criteria"]
     )
     assert patients["patient_count"] == 50
@@ -127,6 +139,34 @@ def test_compound_numeric_sentence_is_not_misread_as_an_ecog_cutoff() -> None:
     assert all("and/or" not in row["source_text"] for row in rows)
     ecog = [row for row in rows if row["fact_code"].startswith("ecog")]
     assert [(row["operator"], row["threshold"]) for row in ecog] == [("lte", 1.0)]
+
+
+def test_free_text_age_line_is_not_added_as_a_second_patient_fact() -> None:
+    record = TeamTrialRecord(
+        nct_id="NCT-AGE-DUPLICATE",
+        title="Age written twice",
+        conditions=["test condition"],
+        minimum_age="18 Years",
+        maximum_age=None,
+        overall_status="RECRUITING",
+        eligibility_text=(
+            "Inclusion Criteria:\n"
+            "* 18 years old at time of consent\n"
+            "* Histologically confirmed test condition"
+        ),
+    )
+
+    rows, _, _ = structure_trial_criteria(
+        record=record,
+        group_id="test_group",
+        maximum_criteria=4,
+        minimum_criteria=2,
+        logic_declarations=[],
+    )
+
+    assert any(row["fact_code"] == "age_years" for row in rows)
+    assert all("18 years old" not in row["source_text"] for row in rows)
+    assert any("Histologically confirmed" in row["source_text"] for row in rows)
 
 
 def test_synthetic_numeric_values_stay_within_broad_human_ranges() -> None:

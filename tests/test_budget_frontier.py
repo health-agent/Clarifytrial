@@ -85,6 +85,7 @@ def test_budget_frontier_writes_tables_intervals_and_figures(tmp_path: Path) -> 
     report = (tmp_path / "frontier" / "frontier.md").read_text(encoding="utf-8")
     assert "확인 기회가 1번뿐일 때" in report
     assert "정보 한 건당 판단을 끝낸 시험" in report
+    assert "여러 시험에 함께 필요한 정보 우선, 환자 상황 반영" in report
     assert "0.062500" in report
     for name in (
         "frontier.json",

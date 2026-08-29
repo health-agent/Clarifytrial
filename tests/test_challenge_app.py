@@ -477,7 +477,8 @@ def test_one_topic_runs_from_free_text_to_ranked_result(tmp_path: Path) -> None:
         (output / "prepared-trials.json").read_text(encoding="utf-8")
     )[0]
     assert saved_trial["eligibility_text"] == criterion_text
-    assert result["usage"]["call_count"] == 3
+    assert result["usage"]["call_count"] == 2
+    assert model.call_count.get("matcher_judge", 0) == 0
     session = json.loads((output / "session.json").read_text(encoding="utf-8"))
     assert session["metadata"]["candidate_ranking"][0]["rank"] == 1
     assert session["metadata"]["trial_protocol_cache"] == {
@@ -517,7 +518,7 @@ def test_one_topic_runs_from_free_text_to_ranked_result(tmp_path: Path) -> None:
     second_session = json.loads(
         (second_output / "session.json").read_text(encoding="utf-8")
     )
-    assert second_result["usage"]["call_count"] == 2
+    assert second_result["usage"]["call_count"] == 1
     assert second_session["metadata"]["trial_protocol_cache"] == {
         "reused_trial_count": 1,
         "newly_structured_trial_count": 0,

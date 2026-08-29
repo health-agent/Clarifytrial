@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">ClarifyTrial 질문 뒤 재판정</title>
+<desc id="desc">최근 HbA1c 결과 하나를 입력한 뒤 두 임상시험의 판단이 서로 다르게 바뀌고 같은 근거가 재사용된 실제 합성 실행 결과</desc>
+<rect width="1200" height="675" fill="#0D1117"/>
+<rect x="0" y="0" width="1200" height="58" fill="#111827"/>
+<rect x="0" y="57" width="1200" height="2" fill="#58A6FF"/>
+<text x="42.0" y="38.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="20" font-weight="700" fill="#E6EDF3" text-anchor="start">ClarifyTrial  |  질문 뒤 재판정</text>
+<text x="48.0" y="94.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="18" font-weight="700" fill="#58A6FF" text-anchor="start">[시작 상태]</text>
+<text x="48.0" y="130.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="19" font-weight="700" fill="#E6EDF3" text-anchor="start">NCT-SYNTH-A</text>
+<text x="245.0" y="130.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="19" font-weight="400" fill="#9CA3AF" text-anchor="start">후보 유지  ·  최근 공식 HbA1c 결과 대기</text>
+<text x="905.0" y="130.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="18" font-weight="400" fill="#9CA3AF" text-anchor="start">조건  7.0% 미만</text>
+<text x="48.0" y="164.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="19" font-weight="700" fill="#E6EDF3" text-anchor="start">NCT-SYNTH-B</text>
+<text x="245.0" y="164.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="19" font-weight="400" fill="#9CA3AF" text-anchor="start">후보 유지  ·  최근 공식 HbA1c 결과 대기</text>
+<text x="905.0" y="164.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="18" font-weight="400" fill="#9CA3AF" text-anchor="start">조건  8.0% 미만</text>
+<line x1="48" y1="192.0" x2="1152" y2="192.0" stroke="#2D3748"/>
+<text x="48.0" y="230.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="19" font-weight="700" fill="#58A6FF" text-anchor="start">질문 &gt;</text>
+<text x="148.0" y="230.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="19" font-weight="400" fill="#E6EDF3" text-anchor="start">최근 14일 안의 공식 HbA1c 결과</text>
+<text x="48.0" y="270.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="19" font-weight="700" fill="#58A6FF" text-anchor="start">환자 입력 &gt;</text>
+<text x="188.0" y="270.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="20" font-weight="700" fill="#E6EDF3" text-anchor="start">2026-08-20  /  공식검사  /  7.5%</text>
+<text x="48.0" y="310.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="18" font-weight="700" fill="#58A6FF" text-anchor="start">저장된 근거 &gt;</text>
+<text x="208.0" y="310.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="18" font-weight="400" fill="#9CA3AF" text-anchor="start">공식검사 HbA1c · 2026-08-20</text>
+<line x1="48" y1="338.0" x2="1152" y2="338.0" stroke="#2D3748"/>
+<text x="48.0" y="378.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="18" font-weight="700" fill="#58A6FF" text-anchor="start">[재판정]</text>
+<text x="48.0" y="420.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="20" font-weight="700" fill="#FF6B6B" text-anchor="start">NCT-SYNTH-A  제외  ·  7.5%는 7.0% 기준보다 0.5% 높음</text>
+<text x="48.0" y="462.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="20" font-weight="700" fill="#58A6FF" text-anchor="start">NCT-SYNTH-B  현재 자료로 확인 완료  ·  7.5%는 8.0% 미만</text>
+<line x1="48" y1="494.0" x2="1152" y2="494.0" stroke="#2D3748"/>
+<text x="48.0" y="535.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="18" font-weight="700" fill="#58A6FF" text-anchor="start">[근거 사용]</text>
+<text x="48.0" y="577.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="19" font-weight="700" fill="#E6EDF3" text-anchor="start">NCT-SYNTH-A</text>
+<text x="48.0" y="611.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="19" font-weight="700" fill="#E6EDF3" text-anchor="start">NCT-SYNTH-B</text>
+<line x1="185" y1="571" x2="238" y2="571" stroke="#9CA3AF" stroke-width="2"/>
+<line x1="185" y1="605" x2="258" y2="605" stroke="#9CA3AF" stroke-width="2"/>
+<line x1="238" y1="571" x2="238" y2="605" stroke="#9CA3AF" stroke-width="2"/>
+<text x="270.0" y="611.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="19" font-weight="400" fill="#9CA3AF" text-anchor="start">공식검사 HbA1c · 2026-08-20</text>
+<text x="710.0" y="598.0" font-family="Cascadia Mono, D2Coding, Consolas, Malgun Gothic, monospace" font-size="19" font-weight="400" fill="#9CA3AF" text-anchor="start">같은 검사 결과를 두 시험의 조건에 각각 적용</text>
+</svg>

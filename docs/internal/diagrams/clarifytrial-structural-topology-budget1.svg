@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">환자 정보와 임상시험의 연결 구조별 질문 순서 효과</title>
+<desc id="desc">합성 연결 구조 아홉 종류에서 현재 남은 시험과 가장 많이 연결된 정보 우선 정책과 단계별 무작위 선택의 차이를 비교했다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#98A2B3"/></marker>
+</defs>
+<rect width="1200" height="675" fill="#F7F9FC"/>
+<text x="70.0" y="72.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="32" font-weight="700" fill="#182533" text-anchor="start">질문 순서의 차이는 정보가 연결된 모양에 따라 달라졌다</text>
+<text x="70.0" y="112.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="start">구조 9종 × 각 200개 설정 · 현재 연결 수 우선과 단계별 무작위 선택의 차이 · 확인 한 번</text>
+<line x1="700.0" y1="160.0" x2="700.0" y2="570.0" stroke="#98A2B3" stroke-width="1.5"/>
+<text x="700.0" y="610.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="middle">0%p</text>
+<text x="335.0" y="610.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="middle">−45%p</text>
+<text x="1065.0" y="610.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="middle">+45%p</text>
+<rect x="58.0" y="148.0" width="1080.0" height="48.0" rx="8.0" fill="#EAF0FF" stroke="none" stroke-width="1.0"/>
+<text x="355.0" y="181.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="700" fill="#182533" text-anchor="end">다섯 시험이 한 정보를 함께 씀</text>
+<rect x="700.0" y="159.0" width="351.1" height="27.0" rx="4.0" fill="#2F6FED" stroke="none" stroke-width="1.0"/>
+<text x="1063.1" y="180.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="700" fill="#17324D" text-anchor="start">+43.3%p</text>
+<text x="355.0" y="226.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="500" fill="#182533" text-anchor="end">하나가 여러 시험에 연결</text>
+<rect x="700.0" y="204.0" width="165.2" height="27.0" rx="4.0" fill="#7AA2F7" stroke="none" stroke-width="1.0"/>
+<text x="877.2" y="225.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="700" fill="#17324D" text-anchor="start">+20.4%p</text>
+<text x="355.0" y="271.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="500" fill="#182533" text-anchor="end">공통 확인 뒤 개별 확인</text>
+<rect x="700.0" y="249.0" width="77.3" height="27.0" rx="4.0" fill="#7AA2F7" stroke="none" stroke-width="1.0"/>
+<text x="789.3" y="270.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="700" fill="#17324D" text-anchor="start">+9.5%p</text>
+<text x="355.0" y="316.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="500" fill="#182533" text-anchor="end">시험 세 곳씩 정보가 겹침</text>
+<rect x="700.0" y="294.0" width="71.1" height="27.0" rx="4.0" fill="#7AA2F7" stroke="none" stroke-width="1.0"/>
+<text x="783.1" y="315.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="700" fill="#17324D" text-anchor="start">+8.8%p</text>
+<text x="355.0" y="361.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="500" fill="#182533" text-anchor="end">시험 두 곳씩 정보가 겹침</text>
+<rect x="700.0" y="339.0" width="2.2" height="27.0" rx="4.0" fill="#7AA2F7" stroke="none" stroke-width="1.0"/>
+<text x="714.2" y="360.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="700" fill="#17324D" text-anchor="start">+0.3%p</text>
+<text x="355.0" y="406.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="500" fill="#182533" text-anchor="end">연결이 차례로 이어짐</text>
+<rect x="693.9" y="384.0" width="6.1" height="27.0" rx="4.0" fill="#7AA2F7" stroke="none" stroke-width="1.0"/>
+<text x="681.9" y="405.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="700" fill="#17324D" text-anchor="end">-0.8%p</text>
+<text x="355.0" y="451.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="500" fill="#182533" text-anchor="end">겹치는 정보가 적음</text>
+<rect x="700.0" y="429.0" width="50.3" height="27.0" rx="4.0" fill="#7AA2F7" stroke="none" stroke-width="1.0"/>
+<text x="762.3" y="450.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="700" fill="#17324D" text-anchor="start">+6.2%p</text>
+<text x="355.0" y="496.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="500" fill="#182533" text-anchor="end">영향과 확인 부담이 엇갈림</text>
+<rect x="700.0" y="474.0" width="152.8" height="27.0" rx="4.0" fill="#7AA2F7" stroke="none" stroke-width="1.0"/>
+<text x="864.8" y="495.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="700" fill="#17324D" text-anchor="start">+18.8%p</text>
+<rect x="58.0" y="508.0" width="1080.0" height="48.0" rx="8.0" fill="#EAF0FF" stroke="none" stroke-width="1.0"/>
+<text x="355.0" y="541.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="700" fill="#182533" text-anchor="end">시험마다 필요한 정보가 완전히 다름</text>
+<rect x="700.0" y="519.0" width="2.0" height="27.0" rx="4.0" fill="#98A2B3" stroke="none" stroke-width="1.0"/>
+<text x="712.0" y="540.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="700" fill="#17324D" text-anchor="start">+0.0%p</text>
+<text x="1125.0" y="540.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="end">겹침 없음</text>
+<text x="70.0" y="650.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">공통 연결의 비율만으로 효과가 정해지지 않는다. 정보 하나가 판단이 끝나지 않은 후보 여러 건과 직접 연결되는 모양이 중요했다.</text>
+</svg>

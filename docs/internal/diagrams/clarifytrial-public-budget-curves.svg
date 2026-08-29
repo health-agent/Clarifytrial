@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">환자 정보를 확인하는 순서와 최종 상태 일치</title>
+<desc id="desc">공개 조건 합성 환자에서 확인 기회 0회부터 5회까지 세 질문 순서의 최종 시험 상태 일치율을 비교한 선 그래프다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#98A2B3"/></marker>
+</defs>
+<rect width="1200" height="675" fill="#F7F9FC"/>
+<text x="70.0" y="72.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="34" font-weight="700" fill="#182533" text-anchor="start">확인할 수 있는 정보가 적을수록 순서의 차이가 컸다</text>
+<text x="70.0" y="112.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="start">10개 질환의 합성 환자 50명 · 최종 평가 30명 · 환자마다 공개 시험 5건</text>
+<line x1="105.0" y1="540.0" x2="785.0" y2="540.0" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="87.0" y="547.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="end">10%</text>
+<line x1="105.0" y1="500.0" x2="785.0" y2="500.0" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="87.0" y="507.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="end">20%</text>
+<line x1="105.0" y1="460.0" x2="785.0" y2="460.0" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="87.0" y="467.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="end">30%</text>
+<line x1="105.0" y1="420.0" x2="785.0" y2="420.0" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="87.0" y="427.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="end">40%</text>
+<line x1="105.0" y1="380.0" x2="785.0" y2="380.0" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="87.0" y="387.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="end">50%</text>
+<line x1="105.0" y1="340.0" x2="785.0" y2="340.0" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="87.0" y="347.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="end">60%</text>
+<line x1="105.0" y1="300.0" x2="785.0" y2="300.0" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="87.0" y="307.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="end">70%</text>
+<line x1="105.0" y1="260.0" x2="785.0" y2="260.0" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="87.0" y="267.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="end">80%</text>
+<line x1="105.0" y1="220.0" x2="785.0" y2="220.0" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="87.0" y="227.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="end">90%</text>
+<line x1="105.0" y1="180.0" x2="785.0" y2="180.0" stroke="#D8DEE8" stroke-width="1.0"/>
+<text x="87.0" y="187.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="17" font-weight="400" fill="#64748B" text-anchor="end">100%</text>
+<line x1="105.0" y1="540.0" x2="785.0" y2="540.0" stroke="#98A2B3" stroke-width="1.5"/>
+<line x1="105.0" y1="540.0" x2="105.0" y2="180.0" stroke="#98A2B3" stroke-width="1.5"/>
+<text x="105.0" y="155.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="18" font-weight="400" fill="#64748B" text-anchor="start">시험 상태 일치율</text>
+<text x="445.0" y="608.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="middle">확인한 환자 정보 수</text>
+<text x="105.0" y="574.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="middle">0</text>
+<text x="241.0" y="574.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="middle">1</text>
+<text x="377.0" y="574.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="middle">2</text>
+<text x="513.0" y="574.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="middle">3</text>
+<text x="649.0" y="574.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="middle">4</text>
+<text x="785.0" y="574.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="19" font-weight="400" fill="#64748B" text-anchor="middle">5</text>
+<polyline points="105.0,505.3 241.0,419.3 377.0,335.2 513.0,246.6 649.0,209.0 785.0,180.0" fill="none" stroke="#98A2B3" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 7"/>
+<circle cx="105.0" cy="505.3" r="6" fill="#FFFFFF" stroke="#98A2B3" stroke-width="3"/>
+<circle cx="241.0" cy="419.3" r="6" fill="#FFFFFF" stroke="#98A2B3" stroke-width="3"/>
+<circle cx="377.0" cy="335.2" r="6" fill="#FFFFFF" stroke="#98A2B3" stroke-width="3"/>
+<circle cx="513.0" cy="246.6" r="6" fill="#FFFFFF" stroke="#98A2B3" stroke-width="3"/>
+<circle cx="649.0" cy="209.0" r="6" fill="#FFFFFF" stroke="#98A2B3" stroke-width="3"/>
+<circle cx="785.0" cy="180.0" r="6" fill="#FFFFFF" stroke="#98A2B3" stroke-width="3"/>
+<polyline points="105.0,505.3 241.0,329.3 377.0,238.7 513.0,204.0 649.0,182.7 785.0,180.0" fill="none" stroke="#17324D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="12 6"/>
+<circle cx="105.0" cy="505.3" r="6" fill="#FFFFFF" stroke="#17324D" stroke-width="3"/>
+<circle cx="241.0" cy="329.3" r="6" fill="#FFFFFF" stroke="#17324D" stroke-width="3"/>
+<circle cx="377.0" cy="238.7" r="6" fill="#FFFFFF" stroke="#17324D" stroke-width="3"/>
+<circle cx="513.0" cy="204.0" r="6" fill="#FFFFFF" stroke="#17324D" stroke-width="3"/>
+<circle cx="649.0" cy="182.7" r="6" fill="#FFFFFF" stroke="#17324D" stroke-width="3"/>
+<circle cx="785.0" cy="180.0" r="6" fill="#FFFFFF" stroke="#17324D" stroke-width="3"/>
+<polyline points="105.0,505.3 241.0,273.3 377.0,228.0 513.0,198.7 649.0,182.7 785.0,180.0" fill="none" stroke="#2F6FED" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="105.0" cy="505.3" r="6" fill="#FFFFFF" stroke="#2F6FED" stroke-width="3"/>
+<circle cx="241.0" cy="273.3" r="6" fill="#FFFFFF" stroke="#2F6FED" stroke-width="3"/>
+<circle cx="377.0" cy="228.0" r="6" fill="#FFFFFF" stroke="#2F6FED" stroke-width="3"/>
+<circle cx="513.0" cy="198.7" r="6" fill="#FFFFFF" stroke="#2F6FED" stroke-width="3"/>
+<circle cx="649.0" cy="182.7" r="6" fill="#FFFFFF" stroke="#2F6FED" stroke-width="3"/>
+<circle cx="785.0" cy="180.0" r="6" fill="#FFFFFF" stroke="#2F6FED" stroke-width="3"/>
+<line x1="825" y1="185" x2="867" y2="185" stroke="#98A2B3" stroke-width="4" stroke-dasharray="7 7"/>
+<text x="883.0" y="192.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="600" fill="#182533" text-anchor="start">가능한 정보 순서 전체 평균</text>
+<text x="883.0" y="218.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">한 번 확인  40.2%</text>
+<text x="883.0" y="242.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">0~5회 곡선 면적  0.67</text>
+<line x1="825" y1="290" x2="867" y2="290" stroke="#17324D" stroke-width="4" stroke-dasharray="12 6"/>
+<text x="883.0" y="297.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="600" fill="#182533" text-anchor="start">파일에 적힌 순서</text>
+<text x="883.0" y="323.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">한 번 확인  62.7%</text>
+<text x="883.0" y="347.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">0~5회 곡선 면적  0.80</text>
+<line x1="825" y1="395" x2="867" y2="395" stroke="#2F6FED" stroke-width="4"/>
+<text x="883.0" y="402.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="600" fill="#182533" text-anchor="start">여러 시험에 필요한 정보 우선</text>
+<text x="883.0" y="428.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">한 번 확인  76.7%</text>
+<text x="883.0" y="452.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">0~5회 곡선 면적  0.84</text>
+<rect x="825.0" y="520.0" width="315.0" height="70.0" rx="12.0" fill="#EAF0FF" stroke="none" stroke-width="1.0"/>
+<text x="850.0" y="548.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="600" fill="#182533" text-anchor="start"><tspan x="850.0" dy="0">남은 횟수를 모두 계산한 방법도</tspan><tspan x="850.0" dy="23">영향 우선과 0~5회 모두 같았다.</tspan></text>
+<text x="70.0" y="650.0" font-family="Pretendard, Noto Sans KR, Malgun Gothic, sans-serif" font-size="16" font-weight="400" fill="#64748B" text-anchor="start">같은 환자에게 붙인 시험 다섯 건을 따로 세지 않고, 합성 환자 30명을 통계 단위로 삼았다.</text>
+</svg>

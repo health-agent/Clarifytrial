@@ -49,6 +49,8 @@ _FACT_LABELS = {
     "prior_systemic_treatment_count": "이전에 받은 전신치료 횟수",
     "sleep_disorder_diagnosis": "수면장애 진단 여부",
 }
+_DEFAULT_QUESTION_POLICY_ID = "clarifytrial_rule_v1"
+_DEFAULT_QUESTION_POLICY_LABEL = "여러 시험에 함께 필요한 정보부터 확인"
 
 
 def _decision_label(item: Mapping[str, Any]) -> str:
@@ -106,6 +108,7 @@ def render_natural_question_run(
     write(f"검토할 임상시험: {run['final_metrics']['trial_count']}개")
     write(f"처음 입력: {input_label}")
     write(f"확인 가능한 질문 수: 최대 {run['action_budget']}개")
+    write(f"정보 확인 순서: {_DEFAULT_QUESTION_POLICY_LABEL}")
     write("")
     write("처음 판정")
     _print_decisions(run["trajectory"][0]["decisions"], write)
@@ -232,7 +235,7 @@ def run_natural_text_demo(
         for item in document["runs"]
         if item["patient_id"] == patient_id
         and item["input_state"] == stored_state
-        and item["policy_id"] == "clarifytrial_exact_coverage_v3"
+        and item["policy_id"] == _DEFAULT_QUESTION_POLICY_ID
     )
     render_natural_question_run(
         run=run,
@@ -245,6 +248,7 @@ def run_natural_text_demo(
         "output": str(destination),
         "patient_id": patient_id,
         "input_state": stored_state,
+        "question_policy_id": run["policy_id"],
         "action_count": run["action_count"],
         "unresolved_to_resolved": run["unresolved_to_resolved"],
         "question_selection_metrics": run["question_selection_metrics"],

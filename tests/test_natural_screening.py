@@ -361,10 +361,10 @@ def test_natural_sources_run_through_search_structure_and_rejudgment() -> None:
     assert model.call_count == {
         "patient_record_structurer": 1,
         "trial_protocol_structurer": 2,
-        "matcher_judge": 2,
         "next_evidence": 1,
     }
-    assert result.usage.call_count == 6
+    assert model.call_count.get("matcher_judge", 0) == 0
+    assert result.usage.call_count == 4
     assert result.usage.total_tokens == 0
     assert result.usage.by_role["trial_protocol_structurer"].call_count == 2
     structurer_event = next(

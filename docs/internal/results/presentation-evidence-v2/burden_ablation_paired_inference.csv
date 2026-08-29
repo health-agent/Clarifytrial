@@ -1,0 +1,6 @@
+﻿comparison,metric,mean_difference,ci_95_lower,ci_95_upper,wins,ties,losses,exact_sign_p,independent_unit,independent_unit_count,repeated_setting_pair_count,interpretation
+apply_explicit_patient_limits_minus_exact_fixed_route,trial_status_recovery,-0.07250000000000001,-0.105,-0.0425,1,5,14,0.0009765625,base_patient,20,80,환자 한 명을 한 단위로 묶어 비교했다. 80개 설정은 합성 환자 20명에게 숨긴 정보와 자료 이용 상황을 반복 적용한 조합이다.
+apply_explicit_patient_limits_minus_exact_fixed_route,burden_feasible_trial_status_recovery,0.1175,0.08499999999999999,0.1525,17,3,0,1.52587890625e-05,base_patient,20,80,환자 한 명을 한 단위로 묶어 비교했다. 80개 설정은 합성 환자 20명에게 숨긴 정보와 자료 이용 상황을 반복 적용한 조합이다.
+apply_explicit_patient_limits_minus_exact_fixed_route,cumulative_delay_hours,9.30625,3.3125,15.303125,15,1,4,0.0192108154296875,base_patient,20,80,환자 한 명을 한 단위로 묶어 비교했다. 80개 설정은 합성 환자 20명에게 숨긴 정보와 자료 이용 상황을 반복 적용한 조합이다.
+apply_explicit_patient_limits_minus_exact_fixed_route,pending_trial_count,0.3625,0.2125,0.525,14,5,1,0.0009765625,base_patient,20,80,환자 한 명을 한 단위로 묶어 비교했다. 80개 설정은 합성 환자 20명에게 숨긴 정보와 자료 이용 상황을 반복 적용한 조합이다.
+apply_explicit_patient_limits_minus_exact_fixed_route,fully_resolved_setting,-0.125,-0.1875,-0.0625,0,11,9,0.00390625,base_patient,20,80,환자 한 명을 한 단위로 묶어 비교했다. 80개 설정은 합성 환자 20명에게 숨긴 정보와 자료 이용 상황을 반복 적용한 조합이다.
