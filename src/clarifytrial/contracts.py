@@ -556,3 +556,106 @@ class CriterionBoundaryDifference(ContractModel):
         ),
         min_length=1,
     )
+
+
+class CriterionChangeKind(str, Enum):
+    """What kind of later change or check a violated condition permits."""
+
+    RECHECKABLE_MEASUREMENT = "recheckable_measurement"
+    ELAPSED_TIME = "elapsed_time"
+    FIXED_OR_HISTORICAL = "fixed_or_historical"
+    CLINICAL_STATE_OR_PROCEDURE = "clinical_state_or_procedure"
+    UNCLEAR = "unclear"
+
+
+class ReconsiderationPathStatus(str, Enum):
+    """Whether one logical eligibility route is worth checking again."""
+
+    CAN_RECHECK = "can_recheck"
+    NEEDS_CLINICAL_REVIEW = "needs_clinical_review"
+    NO_CURRENT_PATH = "no_current_path"
+
+
+class CriterionChangeDetail(ContractModel):
+    """Plain-language feasibility note for one violated criterion."""
+
+    criterion_id: str = Field(min_length=1)
+    statement: str = Field(min_length=1)
+    kind: CriterionChangeKind
+    explanation: str = Field(min_length=1)
+
+
+class CriterionChangePath(ContractModel):
+    """One smallest known set of changes for an eligibility route."""
+
+    criterion_ids: list[str] = Field(min_length=1)
+    criterion_statements: list[str] = Field(min_length=1)
+    reconsideration_status: ReconsiderationPathStatus = (
+        ReconsiderationPathStatus.NEEDS_CLINICAL_REVIEW
+    )
+    change_details: list[CriterionChangeDetail] = Field(default_factory=list)
+    still_unconfirmed_criterion_ids: list[str] = Field(default_factory=list)
+    still_unconfirmed_statements: list[str] = Field(default_factory=list)
+    explanation: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def criterion_lists_match(self) -> Self:
+        _require_unique(self.criterion_ids, "criterion_ids")
+        _require_unique(
+            self.still_unconfirmed_criterion_ids,
+            "still_unconfirmed_criterion_ids",
+        )
+        if len(self.criterion_ids) != len(self.criterion_statements):
+            raise ValueError("criterion_ids and criterion_statements must match")
+        if self.change_details:
+            if [item.criterion_id for item in self.change_details] != self.criterion_ids:
+                raise ValueError("change_details must follow criterion_ids")
+            if [item.statement for item in self.change_details] != self.criterion_statements:
+                raise ValueError("change_details must follow criterion_statements")
+        if len(self.still_unconfirmed_criterion_ids) != len(
+            self.still_unconfirmed_statements
+        ):
+            raise ValueError(
+                "still_unconfirmed criterion identifiers and statements must match"
+            )
+        return self
+
+
+class CriterionRecheckDate(ContractModel):
+    """A deterministic date when an elapsed-time criterion can be checked again."""
+
+    trial_id: str = Field(min_length=1)
+    criterion_id: str = Field(min_length=1)
+    evidence_id: str = Field(min_length=1)
+    current_elapsed: float = Field(ge=0, allow_inf_nan=False)
+    required_elapsed: float = Field(ge=0, allow_inf_nan=False)
+    unit: str = Field(min_length=1)
+    days_remaining: int = Field(ge=1)
+    recheck_date: date
+    assumption: str = Field(min_length=1)
+    explanation: str = Field(min_length=1)
+
+
+class TrialReconsiderationSummary(ContractModel):
+    """Inspectable ways an ineligible trial could become worth checking again."""
+
+    trial_id: str = Field(min_length=1)
+    minimum_change_count: int = Field(ge=1)
+    change_paths: list[CriterionChangePath] = Field(min_length=1)
+    paths_truncated: bool = False
+    recheck_dates: list[CriterionRecheckDate] = Field(default_factory=list)
+    explanation: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def paths_and_dates_are_consistent(self) -> Self:
+        if self.minimum_change_count != min(
+            len(item.criterion_ids) for item in self.change_paths
+        ):
+            raise ValueError("minimum_change_count must match change_paths")
+        if any(item.trial_id != self.trial_id for item in self.recheck_dates):
+            raise ValueError("every recheck date must belong to trial_id")
+        _require_unique(
+            [item.criterion_id for item in self.recheck_dates],
+            "recheck_dates.criterion_id",
+        )
+        return self

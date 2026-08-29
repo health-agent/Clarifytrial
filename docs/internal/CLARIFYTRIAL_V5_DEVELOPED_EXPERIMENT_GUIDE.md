@@ -79,6 +79,15 @@ Invoke-WebRequest `
 `result.json`, `trace.jsonl`, `session.json`을 남기며 결과 상태는
 `no_related_enrolling_trials`이다.
 
+여러 환자 실행이 끝난 뒤 검색 수, 판정한 시험 수, 조건 수, 모델 사용량과 원문 위치를
+한 번에 점검하려면 다음 명령을 쓴다.
+
+```powershell
+.\.venv\Scripts\python.exe scripts\audit_official_challenge_run.py runs\challenge-all
+```
+
+같은 폴더에 `audit-summary.json`과 `audit-summary.md`가 만들어진다.
+
 ## 3. 별도 환자와 시험 파일 실행
 
 기본 예제 파일을 사용한 일반 실행은 다음과 같다.
@@ -167,7 +176,8 @@ Invoke-WebRequest `
 | `immediate_coverage` | 현재 가장 많은 미완료 시험에 연결된 정보부터 확인 |
 | `clarifytrial` | 남은 확인 횟수 안의 정보 조합을 계산 |
 
-`--include-unavailable-scenario`는 환자마다 답 하나를 받을 수 없게 한 실행을 추가한다.
+`--include-unavailable-scenario`는 각 정보 선택 방법이 첫 번째로 고른 답을 얻지 못하게
+한 실행을 추가한다. 방법마다 첫 선택이 다르면 실제로 고른 답을 각각 막는다.
 `--include-patient-choice-scenario`는 새 검사와 추가 방문을 거절한 실행을 추가한다.
 `--approve-synthetic-actions`는 평가자료에 미리 선언된 합성 선택만 자동으로 적용한다.
 

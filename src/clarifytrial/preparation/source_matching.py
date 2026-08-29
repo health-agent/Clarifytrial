@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import unicodedata
+import re
 from dataclasses import dataclass
 
 
@@ -24,6 +25,12 @@ def _comparison_characters(text: str) -> tuple[str, list[int]]:
     characters: list[str] = []
     positions: list[int] = []
     for position, original in enumerate(text):
+        if (
+            original == "\\"
+            and position + 1 < len(text)
+            and text[position + 1] in r"<>*_[]()#+-.!"
+        ):
+            continue
         normalized = unicodedata.normalize("NFKC", original).casefold()
         for character in normalized:
             if character.isspace() or unicodedata.category(character) == "Cf":
@@ -34,9 +41,52 @@ def _comparison_characters(text: str) -> tuple[str, list[int]]:
 
 
 def comparison_text(text: str) -> str:
-    """Normalize Unicode and ignore layout-only whitespace."""
+    """Normalize Unicode and ignore layout whitespace and Markdown escapes."""
 
     return _comparison_characters(text)[0]
+
+
+def _context_tokens(text: str) -> set[str]:
+    ignored = {
+        "and",
+        "for",
+        "from",
+        "have",
+        "must",
+        "that",
+        "the",
+        "their",
+        "this",
+        "with",
+    }
+    return {
+        item
+        for item in re.findall(
+            r"[0-9a-z가-힣]+",
+            unicodedata.normalize("NFKC", text).casefold(),
+        )
+        if len(item) >= 3 and item not in ignored
+    }
+
+
+def _local_context(text: str, start: int, end: int) -> str:
+    left_candidates = [
+        text.rfind("\n", 0, start),
+        text.rfind(". ", 0, start),
+        text.rfind("; ", 0, start),
+    ]
+    left = max(left_candidates) + 1
+    right_candidates = [
+        value
+        for value in (
+            text.find("\n", end),
+            text.find(". ", end),
+            text.find("; ", end),
+        )
+        if value >= 0
+    ]
+    right = min(right_candidates) + 1 if right_candidates else len(text)
+    return text[left:right]
 
 
 def resolve_source_span(
@@ -45,6 +95,8 @@ def resolve_source_span(
     *,
     approximate_start_char: int | None = None,
     approximate_end_char: int | None = None,
+    occurrence_index: int | None = None,
+    context_hint: str | None = None,
 ) -> SourceSpan:
     """Find a quote while ignoring whitespace, line wrapping, and letter case.
 
@@ -85,22 +137,54 @@ def resolve_source_span(
     if not matches:
         raise SourceValidationError("quoted source text was not found")
 
-    if len(matches) > 1:
-        if approximate_start_char is None:
+    if occurrence_index is not None:
+        if occurrence_index < 0:
             raise SourceValidationError(
-                "quoted source text appears more than once; provide an approximate location"
+                "source quote occurrence index is outside the available matches"
             )
-        distances = [
-            abs(source_positions[match] - approximate_start_char)
-            for match in matches
-        ]
-        nearest = min(distances)
-        if distances.count(nearest) > 1:
-            raise SourceValidationError(
-                "quoted source text has more than one equally close match"
-            )
-        match = matches[distances.index(nearest)]
-        method = "normalized_nearest_match"
+        match = matches[min(occurrence_index, len(matches) - 1)]
+        method = (
+            "normalized_occurrence_match"
+            if occurrence_index < len(matches)
+            else "normalized_reused_occurrence_match"
+        )
+    elif len(matches) > 1:
+        selected_by_context = False
+        hint_tokens = _context_tokens(context_hint or "")
+        if hint_tokens:
+            context_scores = []
+            for candidate in matches:
+                source_start = source_positions[candidate]
+                source_end = source_positions[candidate + len(quote_key) - 1] + 1
+                surrounding = _local_context(
+                    source_text,
+                    source_start,
+                    source_end,
+                )
+                context_scores.append(
+                    len(hint_tokens & _context_tokens(surrounding))
+                )
+            best = max(context_scores)
+            if best > 0 and context_scores.count(best) == 1:
+                match = matches[context_scores.index(best)]
+                method = "normalized_context_match"
+                selected_by_context = True
+        if not selected_by_context:
+            if approximate_start_char is None:
+                raise SourceValidationError(
+                    "quoted source text appears more than once; provide an approximate location"
+                )
+            distances = [
+                abs(source_positions[candidate] - approximate_start_char)
+                for candidate in matches
+            ]
+            nearest = min(distances)
+            if distances.count(nearest) > 1:
+                raise SourceValidationError(
+                    "quoted source text has more than one equally close match"
+                )
+            match = matches[distances.index(nearest)]
+            method = "normalized_nearest_match"
     else:
         match = matches[0]
         method = "normalized_unique_match"

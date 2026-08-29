@@ -7,6 +7,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 from ..agents import (
+    CandidateRelevanceAgent,
     CoordinatorAgent,
     MatcherJudgeAgent,
     NextEvidenceAgent,
@@ -16,6 +17,7 @@ from ..llm import StructuredModel
 from ..io import atomic_write_text
 from ..preparation import (
     CandidateSearch,
+    ClinicalTrialsGovCandidateSearch,
     NaturalScreeningPipeline,
     NoCandidateTrialsFound,
     TrialProtocolCache,
@@ -197,6 +199,11 @@ def _run_new_topic(
         patient_structurer=PatientRecordStructurerAgent(model),
         trial_structurer=TrialProtocolStructurerAgent(model),
         candidate_search=candidate_search,
+        candidate_reviewer=(
+            CandidateRelevanceAgent(model)
+            if isinstance(candidate_search, ClinicalTrialsGovCandidateSearch)
+            else None
+        ),
         screening_runner=PatientScreeningRunner(
             _episode_agents(model),
             options.settings,
@@ -221,6 +228,34 @@ def _run_new_topic(
             medical_disclaimer=medical_disclaimer,
             write=write,
         )
+    except Exception as error:
+        trace.record(
+            cycle=0,
+            actor="challenge_input_preparation",
+            event="preparation_failed",
+            input_refs=[topic.num],
+            output={
+                "error_type": type(error).__name__,
+                "error": str(error),
+            },
+        )
+        trace.write_jsonl(topic_dir / "trace.jsonl")
+        atomic_write_text(
+            topic_dir / "preparation-error.json",
+            json.dumps(
+                {
+                    "topic_id": topic.num,
+                    "status": "input_preparation_failed",
+                    "error_type": type(error).__name__,
+                    "error": str(error),
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        raise
     write("찾은 질환·상태: " + " / ".join(prepared.search_conditions))
     write(f"환자 기록에서 확인한 사실: {len(prepared.patient_state.facts)}개")
     write(f"검토할 임상시험: {len(prepared.candidate_hits)}개")

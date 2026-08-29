@@ -8,6 +8,7 @@ from typing import Any
 
 _ROLE_LABELS = {
     "patient_record_structurer": "환자 기록 정리",
+    "candidate_relevance_reviewer": "검색된 시험의 질환 확인",
     "trial_protocol_structurer": "시험 조건 정리",
     "coordinator": "진행 관리",
     "matcher_judge": "조건 판단",
@@ -91,6 +92,46 @@ def _trial_lines(
     return lines
 
 
+def _reconsideration_lines(summary: Mapping[str, Any]) -> list[str]:
+    paths = list(summary.get("change_paths", []))
+    if not paths:
+        return []
+    lines = [f"     {summary.get('explanation', '다시 검토 조건')}"]
+    status_labels = {
+        "can_recheck": "나중에 다시 확인할 수 있는 경로",
+        "needs_clinical_review": "기록 또는 의료진 확인이 필요한 경로",
+        "no_current_path": "현재 다시 검토할 수 없는 경로",
+    }
+    for index, path in enumerate(paths, start=1):
+        status = str(
+            path.get("reconsideration_status", "needs_clinical_review")
+        )
+        lines.append(f"       {index}. {status_labels.get(status, '조건 경로')}")
+        details = list(path.get("change_details", []))
+        if details:
+            for detail in details:
+                lines.append(f"          - {detail.get('statement', '')}")
+                lines.append(f"            {detail.get('explanation', '')}")
+        else:
+            changed = _compact(
+                [str(item) for item in path.get("criterion_statements", [])],
+                limit=4,
+            )
+            lines.append(f"          - {changed}")
+        unconfirmed = _compact(
+            [
+                str(item)
+                for item in path.get("still_unconfirmed_statements", [])
+            ],
+            limit=3,
+        )
+        if unconfirmed:
+            lines.append(f"          이 경우 함께 확인할 내용: {unconfirmed}")
+    for item in summary.get("recheck_dates", []):
+        lines.append(f"     다시 확인할 날짜: {item['explanation']}")
+    return lines
+
+
 def build_terminal_summary_lines(
     result: Mapping[str, Any],
     *,
@@ -171,6 +212,10 @@ def build_terminal_summary_lines(
         boundary_by_trial.setdefault(str(item["trial_id"]), []).append(
             str(item["explanation"])
         )
+    reconsideration_by_trial = {
+        str(item["trial_id"]): item
+        for item in screening.get("trial_reconsideration_summaries", [])
+    }
     for decision in removed:
         trial_id = str(decision["trial_id"])
         lines.append(f"  - {trial_id} · {title_by_id.get(trial_id, trial_id)}")
@@ -185,6 +230,9 @@ def build_terminal_summary_lines(
         difference = _compact(boundary_by_trial.get(trial_id, []), limit=2)
         if difference:
             lines.append(f"     기준과의 차이: {difference}")
+        reconsideration = reconsideration_by_trial.get(trial_id)
+        if reconsideration is not None:
+            lines.extend(_reconsideration_lines(reconsideration))
 
     history = list(screening.get("decision_history", []))
     lines.append("판정 변화 요약")

@@ -7,6 +7,8 @@ from .source_matching import (
     resolve_source_span,
 )
 from .structured_value_validation import (
+    remove_unsupported_evidence_requirements,
+    remove_unwritten_equality_constraint,
     validate_patient_fact_source,
     validate_trial_criterion_source,
 )
@@ -16,6 +18,8 @@ __all__ = [
     "SourceValidationError",
     "comparison_text",
     "resolve_source_span",
+    "remove_unsupported_evidence_requirements",
+    "remove_unwritten_equality_constraint",
     "validate_patient_fact_source",
     "validate_trial_criterion_source",
 ]

@@ -18,8 +18,22 @@ from .source_matching import SourceValidationError
 
 
 _NUMBER_PATTERN = re.compile(
-    r"(?<![\w.])[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?![\w.])"
+    r"(?<![\w.])[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?!\d|\.\d)"
 )
+_NUMBER_WORDS = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+}
 
 _GENERIC_CONCEPT_WORDS = {
     "at",
@@ -55,9 +69,16 @@ def _numbers(text: str) -> list[float]:
 
 
 def _number_is_present(expected: float, text: str) -> bool:
-    return any(
+    numeric_match = any(
         math.isclose(expected, observed, rel_tol=1e-9, abs_tol=1e-9)
         for observed in _numbers(text)
+    )
+    if numeric_match:
+        return True
+    return any(
+        math.isclose(expected, value, rel_tol=1e-9, abs_tol=1e-9)
+        and re.search(rf"(?i)\b{word}\b", text)
+        for word, value in _NUMBER_WORDS.items()
     )
 
 
@@ -71,6 +92,18 @@ def _concept_is_present(concept: str, source_text: str) -> bool:
         "_",
         unicodedata.normalize("NFKC", concept).casefold(),
     ).strip("_")
+    if "duration" in concept_key and re.search(
+        r"(?i)\b(?:\d+(?:\.\d+)?|"
+        + "|".join(_NUMBER_WORDS)
+        + r")[ -]?(?:hour|day|week|month|year)s?\b",
+        source,
+    ):
+        return True
+    if concept_key == "age" and re.search(
+        r"(?i)(?:\baged?\b|\b(?:day|week|month|year)s?[-\s]+old\b)",
+        source,
+    ):
+        return True
     phrases = {
         concept_key.replace("_", " "),
         *_CONCEPT_ALIASES.get(concept_key, ()),
@@ -97,13 +130,33 @@ def _unit_is_present(
     source_text: str,
     concept: str | None = None,
 ) -> bool:
-    if normalized_unit(unit) in normalized_unit(source_text):
+    normalized = normalized_unit(unit)
+    normalized_source = normalized_unit(source_text)
+    if normalized in normalized_source:
+        return True
+    if "/" in normalized:
+        parts = [item for item in normalized.split("/") if item]
+        if len(parts) == 2 and "/" in normalized_source and all(
+            item in normalized_source for item in parts
+        ):
+            return True
+    if normalized == "xuln" and "uln" in normalized_source:
+        return True
+    if (
+        concept
+        and normalized == "score"
+        and (
+            any(item in concept.casefold() for item in ("score", "status"))
+            or concept.casefold().strip() in {"ecog", "ecog-ps"}
+        )
+        and _concept_is_present(concept, source_text)
+    ):
         return True
     return bool(
         concept
         and "age" in concept.casefold()
-        and normalized_unit(unit) == "year"
-        and re.search(r"\bage\b", source_text, re.IGNORECASE)
+        and normalized == "year"
+        and re.search(r"\baged?\b", source_text, re.IGNORECASE)
     )
 
 
@@ -132,6 +185,8 @@ _OPERATOR_PATTERNS: dict[ComparisonOperator, tuple[re.Pattern[str], ...]] = {
             r"at\s+most",
             r"no\s+more\s+than",
             r"not\s+greater\s+than",
+            r"\bmaximum\b",
+            r"\bwithin(?:\s+the)?(?:\s+(?:past|last))?\b",
             r"or\s+(?:less|lower|younger)",
             r"<=|≤|이하|최대",
         )
@@ -143,7 +198,10 @@ _OPERATOR_PATTERNS: dict[ComparisonOperator, tuple[re.Pattern[str], ...]] = {
             r"at\s+least",
             r"no\s+less\s+than",
             r"not\s+less\s+than",
+            r"\bminimum\b",
             r"or\s+(?:greater|more|older)",
+            r"or\s+over",
+            r"(?:and|or)\s+higher",
             r">=|≥|이상|최소",
         )
     ),
@@ -151,6 +209,7 @@ _OPERATOR_PATTERNS: dict[ComparisonOperator, tuple[re.Pattern[str], ...]] = {
         re.compile(pattern)
         for pattern in (
             r"less\s+than(?!\s+or\s+equal)",
+            r"\bfewer\s+than\b",
             r"\bbelow\b",
             r"\bunder\b",
             r"(?<![<])<(?![=])|미만",
@@ -160,6 +219,10 @@ _OPERATOR_PATTERNS: dict[ComparisonOperator, tuple[re.Pattern[str], ...]] = {
         re.compile(pattern)
         for pattern in (
             r"greater\s+than(?!\s+or\s+equal)",
+            r"\bmore\s+than\b",
+            r"\bno\s+(?:occurrence|episode|use|receipt|treatment)"
+            r"[^.;\n]{0,100}\bwithin\b",
+            r"\bnot\s+(?:yet\s+)?improved\s+to\b[^\n]{0,120}(?:≤|<=)",
             r"\babove\b",
             r"\bover\b",
             r"(?<![>])>(?![=])|초과",
@@ -188,6 +251,7 @@ def _supported_operators(source_text: str) -> set[ComparisonOperator]:
 _RANGE_PATTERN = re.compile(
     r"(?:\bbetween\s+|\bfrom\s+)?"
     r"([-+]?(?:\d+(?:\.\d+)?))\s*"
+    r"(?:[a-z가-힣]+(?:\s+old)?\s*)?"
     r"(?:-|–|—|\bto\b|\band\b)\s*"
     r"([-+]?(?:\d+(?:\.\d+)?))",
     re.IGNORECASE,
@@ -210,24 +274,10 @@ def _range_supports_operator(
     return False
 
 
-_NUMBER_WORDS = {
-    "one": 1,
-    "two": 2,
-    "three": 3,
-    "four": 4,
-    "five": 5,
-    "six": 6,
-    "seven": 7,
-    "eight": 8,
-    "nine": 9,
-    "ten": 10,
-    "eleven": 11,
-    "twelve": 12,
-}
 _DURATION_PATTERN = re.compile(
     r"(?<![\w.])(\d+(?:\.\d+)?|"
     + "|".join(_NUMBER_WORDS)
-    + r")\s*(days?|weeks?|일|주)(?!\w)",
+    + r")\s*(hours?|days?|weeks?|시간|일|주)(?!\w)",
     re.IGNORECASE,
 )
 
@@ -239,7 +289,10 @@ def _duration_days(source_text: str) -> set[int]:
             numeric = float(_NUMBER_WORDS[raw_value.casefold()])
         else:
             numeric = float(raw_value)
-        if raw_unit.casefold() in {"week", "weeks", "주"}:
+        unit = raw_unit.casefold()
+        if unit in {"hour", "hours", "시간"}:
+            numeric /= 24
+        elif unit in {"week", "weeks", "주"}:
             numeric *= 7
         if numeric.is_integer():
             values.add(int(numeric))
@@ -268,6 +321,8 @@ _SOURCE_KEYWORDS: dict[EvidenceSourceType, tuple[str, ...]] = {
         "laboratory result",
         "lab result",
         "pathology",
+        "histopathology",
+        "histopathologically",
         "imaging",
         "공식",
         "중앙검사",
@@ -411,3 +466,84 @@ def validate_trial_criterion_source(
             raise SourceValidationError(
                 f"verification status {status.value!r} is not supported by the cited source"
             )
+
+
+def remove_unsupported_evidence_requirements(
+    criterion: TrialCriterionDraft,
+    matched_source_text: str,
+    *,
+    allow_remove_recency: bool = False,
+) -> tuple[TrialCriterionDraft, list[str]]:
+    """Remove model-added evidence rules that the quoted criterion does not state."""
+
+    requirement = criterion.evidence_requirement
+    if requirement is None:
+        return criterion, []
+    corrections: list[str] = []
+    max_age_days = requirement.max_age_days
+    if (
+        allow_remove_recency
+        and max_age_days is not None
+        and max_age_days not in _duration_days(matched_source_text)
+    ):
+        max_age_days = None
+        corrections.append(
+            "복수 경로를 아직 해석하지 못한 원문에서 근거 범위를 벗어난 자료 유효기간을 제거했다."
+        )
+    allowed_source_types = requirement.allowed_source_types
+    if allowed_source_types is not None:
+        kept_sources = [
+            item
+            for item in allowed_source_types
+            if _contains_keyword(matched_source_text, _SOURCE_KEYWORDS[item])
+        ]
+        if kept_sources != allowed_source_types:
+            corrections.append("원문에 없는 자료 출처 제한을 제거했다.")
+        allowed_source_types = kept_sources or None
+    allowed_statuses = requirement.allowed_verification_statuses
+    if allowed_statuses is not None:
+        kept_statuses = [
+            item
+            for item in allowed_statuses
+            if _contains_keyword(matched_source_text, _STATUS_KEYWORDS[item])
+        ]
+        if kept_statuses != allowed_statuses:
+            corrections.append("원문에 없는 자료 확인 상태 제한을 제거했다.")
+        allowed_statuses = kept_statuses or None
+    if max_age_days is None and allowed_source_types is None and allowed_statuses is None:
+        sanitized_requirement = None
+    else:
+        sanitized_requirement = requirement.model_copy(
+            update={
+                "max_age_days": max_age_days,
+                "allowed_source_types": allowed_source_types,
+                "allowed_verification_statuses": allowed_statuses,
+            }
+        )
+    return (
+        criterion.model_copy(
+            update={"evidence_requirement": sanitized_requirement}
+        ),
+        corrections,
+    )
+
+
+def remove_unwritten_equality_constraint(
+    criterion: TrialCriterionDraft,
+    matched_source_text: str,
+) -> tuple[TrialCriterionDraft, list[str]]:
+    """Leave an equality-like timepoint to text judgment when equality is unwritten."""
+
+    constraint = criterion.numeric_constraint
+    if (
+        constraint is None
+        or constraint.operator is not ComparisonOperator.EQ
+        or ComparisonOperator.EQ in _supported_operators(matched_source_text)
+    ):
+        return criterion, []
+    return (
+        criterion.model_copy(update={"numeric_constraint": None}),
+        [
+            "원문은 평가 시점을 설명하지만 값이 정확히 같아야 한다고 쓰지 않아 수치 같음 조건을 제거했다."
+        ],
+    )

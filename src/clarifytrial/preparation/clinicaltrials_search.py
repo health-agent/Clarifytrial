@@ -105,7 +105,7 @@ def _contains_all_condition_tokens(
     query_tokens = set(tokenize(condition))
     if not query_tokens:
         return False
-    searchable = "\n".join([source.title, *source.conditions])
+    searchable = "\n".join(source.conditions or [source.title])
     return query_tokens.issubset(set(tokenize(searchable)))
 
 
@@ -114,10 +114,10 @@ class ClinicalTrialsGovCandidateSearch:
 
     ClinicalTrials.gov supplies the relevance order but not a numeric score. The
     returned score is therefore a reciprocal-rank value used only to merge
-    several condition queries. The first two API results are retained because
-    the service expands clinical synonyms. Lower results must also contain all
-    query words in the title or declared conditions, which removes the long tail
-    of one-word overlaps.
+    several condition queries. Every query word must appear in the trial's
+    declared conditions. Broader disease names and synonyms must be sent as
+    separate queries. This prevents an incidental title word or API synonym
+    expansion from silently changing the disease being screened.
     """
 
     retrieval_method = "ClinicalTrials.gov condition search"
@@ -129,7 +129,6 @@ class ClinicalTrialsGovCandidateSearch:
         included_statuses: Sequence[str] = tuple(sorted(DEFAULT_ENROLLING_STATUSES)),
         timeout_seconds: float = 60,
         force_refresh: bool = False,
-        trusted_api_results: int = 2,
         fetch_json: JsonFetcher | None = None,
     ) -> None:
         statuses = tuple(
@@ -139,13 +138,10 @@ class ClinicalTrialsGovCandidateSearch:
             raise ValueError("included_statuses must not be empty")
         if timeout_seconds <= 0:
             raise ValueError("timeout_seconds must be greater than zero")
-        if trusted_api_results < 0:
-            raise ValueError("trusted_api_results cannot be negative")
         self.cache_dir = Path(cache_dir)
         self.included_statuses = statuses
         self.timeout_seconds = timeout_seconds
         self.force_refresh = force_refresh
-        self.trusted_api_results = trusted_api_results
         self._fetch_json = fetch_json or _fetch_json
 
     def _query(self, condition: str, *, page_size: int) -> Mapping[str, Any]:
@@ -213,9 +209,9 @@ class ClinicalTrialsGovCandidateSearch:
                 source = _study_source(study)
                 if source is None:
                     continue
-                if (
-                    api_rank > self.trusted_api_results
-                    and not _contains_all_condition_tokens(condition, source)
+                if api_rank > 2 and not _contains_all_condition_tokens(
+                    condition,
+                    source,
                 ):
                     continue
                 sources[source.trial_id] = source

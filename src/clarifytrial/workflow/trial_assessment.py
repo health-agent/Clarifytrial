@@ -98,17 +98,16 @@ def assess_criteria_bundle(
             + ", ".join(sorted(unknown_ids))
         )
     missing_ids = criterion_id_set - returned_ids
-    request_ids = {item.fact_id for item in evidence_requests}
     validated = []
     mechanical_corrections = []
+    protocol_corrections = []
     for assessment in response.assessments:
         mechanical = mechanical_by_id[assessment.criterion_id]
-        unknown_missing = set(assessment.missing_information_ids) - request_ids
-        if unknown_missing:
-            raise TrialAssessmentProtocolError(
-                "matcher_judge invented missing-information identifiers: "
-                + ", ".join(sorted(unknown_missing))
-            )
+        related_missing_ids = sorted(
+            request.fact_id
+            for request in relevant_requests
+            if assessment.criterion_id in request.related_criterion_ids
+        )
         unknown_evidence = set(assessment.evidence_ids) - set(evidence_ids)
         if unknown_evidence:
             raise TrialAssessmentProtocolError(
@@ -116,11 +115,6 @@ def assess_criteria_bundle(
                 + ", ".join(sorted(unknown_evidence))
             )
         if mechanical.configured:
-            related_missing_ids = sorted(
-                request.fact_id
-                for request in relevant_requests
-                if assessment.criterion_id in request.related_criterion_ids
-            )
             corrected_missing_ids = (
                 []
                 if mechanical.evidence_sufficiency is EvidenceSufficiency.SUFFICIENT
@@ -179,6 +173,33 @@ def assess_criteria_bundle(
                     "review_flags": corrected_flags,
                 }
             )
+        else:
+            allowed_missing = set(related_missing_ids)
+            invalid_missing = sorted(
+                set(assessment.missing_information_ids) - allowed_missing
+            )
+            if invalid_missing:
+                corrected_missing_ids = [
+                    item
+                    for item in assessment.missing_information_ids
+                    if item in allowed_missing
+                ]
+                if (
+                    not corrected_missing_ids
+                    and assessment.evidence_sufficiency
+                    is not EvidenceSufficiency.SUFFICIENT
+                ):
+                    corrected_missing_ids = related_missing_ids
+                protocol_corrections.append(
+                    {
+                        "criterion_id": assessment.criterion_id,
+                        "removed_identifiers": invalid_missing,
+                        "applied_identifiers": corrected_missing_ids,
+                    }
+                )
+                assessment = assessment.model_copy(
+                    update={"missing_information_ids": corrected_missing_ids}
+                )
         validated.append(assessment)
     if mechanical_corrections:
         trace.record(
@@ -189,6 +210,16 @@ def assess_criteria_bundle(
                 str(item["criterion_id"]) for item in mechanical_corrections
             ],
             output={"corrections": mechanical_corrections},
+        )
+    if protocol_corrections:
+        trace.record(
+            cycle=cycle,
+            actor="matcher_judge_protocol",
+            event="missing_information_identifiers_corrected",
+            input_refs=[
+                str(item["criterion_id"]) for item in protocol_corrections
+            ],
+            output={"corrections": protocol_corrections},
         )
     if missing_ids:
         trace.record(

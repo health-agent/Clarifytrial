@@ -5,6 +5,10 @@ from .candidate_search import (
     InMemoryCandidateSearch,
     TrialGPTCandidateSearch,
 )
+from .candidate_relevance import (
+    CandidateRelevanceProtocolError,
+    review_candidate_relevance,
+)
 from .clinicaltrials_search import (
     CLINICALTRIALS_API_ROOT,
     CLINICALTRIALS_STUDY_ROOT,
@@ -42,6 +46,7 @@ from .team_trials import (
 
 __all__ = [
     "CandidateSearch",
+    "CandidateRelevanceProtocolError",
     "CandidateSearchHit",
     "CLINICALTRIALS_API_ROOT",
     "CLINICALTRIALS_STUDY_ROOT",
@@ -70,5 +75,6 @@ __all__ = [
     "iter_team_trial_records",
     "prepare_team_trial_corpus",
     "summarize_model_usage",
+    "review_candidate_relevance",
     "team_trial_sources",
 ]

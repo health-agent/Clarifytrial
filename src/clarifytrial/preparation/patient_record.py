@@ -51,15 +51,23 @@ def structure_patient_record(
             approximate_start_char=item.start_char,
             approximate_end_char=item.end_char,
         )
-        # Candidate retrieval uses the text that actually appears in the
-        # record. The model label is retained only in the trace and cannot
-        # silently replace the patient's documented condition.
-        search_conditions.append(match.source_text.strip())
+        # Search may use a normalized diagnosis inferred from the cited
+        # symptoms or test pattern. It is only a retrieval query; patient facts
+        # and final eligibility evidence still come from the quoted source.
+        search_condition = item.condition.strip()
+        search_conditions.append(search_condition)
+        normalized_condition = "".join(search_condition.casefold().split())
+        normalized_source = "".join(match.source_text.casefold().split())
         source_matches.append(
             {
                 "item_type": "search_condition",
                 "item_key": item.condition,
-                "retrieval_text": match.source_text.strip(),
+                "retrieval_text": search_condition,
+                "query_basis": (
+                    "explicit_record_text"
+                    if normalized_condition in normalized_source
+                    else "model_inference_from_cited_record"
+                ),
                 "start_char": match.start_char,
                 "end_char": match.end_char,
                 "match_method": match.match_method,

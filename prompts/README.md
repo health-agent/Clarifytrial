@@ -19,6 +19,7 @@
 | 파일 | 모델이 맡는 일 | 출력 형식 |
 |---|---|---|
 | [patient_record_structurer.md](patient_record_structurer.md) | 자유 문장 환자 기록에서 검색 질환, 환자 사실과 근거 문구를 정리 | `PreparedPatientRecord` |
+| [candidate_relevance_reviewer.md](candidate_relevance_reviewer.md) | 공식 검색 결과가 환자의 질환과 실제로 같은 대상을 다루는지 확인 | `CandidateRelevanceBatch` |
 | [trial_protocol_structurer.md](trial_protocol_structurer.md) | 시험 원문에서 선정·제외 조건과 필요한 환자 사실을 정리 | `PreparedTrialProtocol` |
 | [matcher_judge.md](matcher_judge.md) | 코드로 계산할 수 없는 조건의 상태와 현재 자료의 충분성을 판단 | `CriterionAssessmentBatch` |
 | [next_evidence.md](next_evidence.md) | 코드가 고른 사실과 확인 방법을 사람이 읽을 질문이나 요청문으로 작성 | `AgentAction` |
@@ -78,6 +79,7 @@
 ## 6. 모든 지시문이 지켜야 하는 규칙
 
 - 입력에 없는 환자 사실이나 근거 식별자를 만들지 않는다.
+- 검색된 시험의 질환 확인과 환자 참가 조건 판단을 섞지 않는다.
 - 합성 사례의 숨긴 답과 평가 정답을 모델 입력에 넣지 않는다.
 - 날짜, 수치, 단위와 확인 횟수는 코드가 다시 검사한다.
 - 후보 유지 여부와 현재 자료의 충분성은 조건별 결과에서 코드가 집계한다.

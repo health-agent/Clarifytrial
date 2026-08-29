@@ -26,6 +26,7 @@ AS_OF = datetime(2026, 8, 20, 12, tzinfo=timezone.utc)
 
 def _criterion(
     *,
+    concept: str = "platelet_count",
     operator: ComparisonOperator = ComparisonOperator.GTE,
     threshold: float = 100,
     unit: str = "10^9/L",
@@ -37,7 +38,7 @@ def _criterion(
         statement="Platelets must be at least 100 x10^9/L within 14 days.",
         source_location="synthetic-protocol#inclusion-4",
         numeric_constraint=NumericConstraint(
-            concept="platelet_count",
+            concept=concept,
             operator=operator,
             threshold=threshold,
             unit=unit,
@@ -259,6 +260,30 @@ def test_equivalent_unit_notation_is_used_without_value_conversion() -> None:
     )
 
     assert result.clinical_status is ClinicalStatus.SUPPORTS
+    assert result.evidence_sufficiency is EvidenceSufficiency.SUFFICIENT
+    assert result.issue_codes == []
+
+
+def test_age_in_months_is_compared_with_an_age_limit_in_years() -> None:
+    result = evaluate_criterion(
+        _criterion(
+            concept="age",
+            operator=ComparisonOperator.GTE,
+            threshold=18,
+            unit="years",
+        ),
+        _state(
+            _fact(
+                evidence_id="infant-age",
+                concept="age",
+                value=3,
+                unit="month-old",
+                event_date=date(2026, 8, 20),
+            )
+        ),
+    )
+
+    assert result.clinical_status is ClinicalStatus.VIOLATES
     assert result.evidence_sufficiency is EvidenceSufficiency.SUFFICIENT
     assert result.issue_codes == []
 

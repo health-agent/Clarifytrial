@@ -71,9 +71,14 @@ class PatientFactDraft(ContractModel):
 
 
 class SearchConditionDraft(ContractModel):
-    """A normalized search condition anchored to patient-record source text."""
+    """A search condition supported by a quoted part of the patient record."""
 
-    condition: str = Field(min_length=1)
+    condition: str = Field(
+        min_length=1,
+        description=(
+            "Standard English disease or condition name used to search trial records"
+        ),
+    )
     source_quote: str = Field(min_length=1)
     start_char: int | None = Field(default=None, ge=0)
     end_char: int | None = Field(default=None, gt=0)

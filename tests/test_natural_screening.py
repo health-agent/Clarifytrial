@@ -30,7 +30,10 @@ from clarifytrial.preparation import (
     build_synthetic_information_tools,
     summarize_model_usage,
 )
-from clarifytrial.preparation.patient_record import PatientRecordStructurerAgent
+from clarifytrial.preparation.patient_record import (
+    PatientRecordStructurerAgent,
+    structure_patient_record,
+)
 from clarifytrial.preparation.trial_protocol import TrialProtocolStructurerAgent
 from clarifytrial.retrieval import TrialGPTRetrievalConfig, TrialGPTRuntimeSearch
 from clarifytrial.settings import EpisodeSettings
@@ -397,14 +400,21 @@ def test_formatting_differences_and_wrong_offset_hints_are_accepted() -> None:
     }
 
 
-def test_candidate_search_uses_patient_source_text_not_model_relabeling() -> None:
-    prepared = _pipeline(_model(wrong_search_condition=True)).prepare(_request())
+def test_candidate_search_can_use_an_inferred_condition_with_cited_support() -> None:
+    trace = TraceRecorder("inferred-search-condition")
+    _, search_conditions = structure_patient_record(
+        _request().patient_record,
+        PatientRecordStructurerAgent(_model(wrong_search_condition=True)),
+        trace=trace,
+    )
 
-    assert prepared.search_conditions == ["type 2 diabetes"]
-    assert [item.source.trial_id for item in prepared.candidate_hits] == [
-        "NCT-SYNTH-A",
-        "NCT-SYNTH-B",
-    ]
+    assert search_conditions == ["major depressive disorder"]
+    source_event = next(
+        item for item in trace.events if item.actor == "patient_record_source_checks"
+    )
+    assert source_event.output["source_matches"][0]["query_basis"] == (
+        "model_inference_from_cited_record"
+    )
 
 
 def test_source_quote_that_does_not_exist_is_rejected() -> None:
@@ -417,17 +427,35 @@ def test_source_quote_that_does_not_exist_is_rejected() -> None:
     [
         (_model(wrong_patient_value=True), "patient value 6.4"),
         (_model(wrong_patient_date=True), "event date"),
-        (_model(wrong_trial_threshold=True), "criterion threshold 9"),
-        (_model(wrong_trial_operator=True), "criterion operator 'gte'"),
-        (_model(wrong_evidence_age=True), "evidence age 30 days"),
     ],
 )
-def test_decision_changing_structured_values_need_source_support(
+def test_patient_values_that_change_a_decision_need_source_support(
     model: ScriptedStructuredModel,
     message: str,
 ) -> None:
     with pytest.raises(ValueError, match=message):
         _pipeline(model).prepare(_request())
+
+
+@pytest.mark.parametrize(
+    ("model", "removed_field"),
+    [
+        (_model(wrong_trial_threshold=True), "numeric_constraint"),
+        (_model(wrong_trial_operator=True), "numeric_constraint"),
+        (_model(wrong_evidence_age=True), "evidence_requirement"),
+    ],
+)
+def test_unverified_trial_fields_are_not_used_for_automatic_confirmation(
+    model: ScriptedStructuredModel,
+    removed_field: str,
+) -> None:
+    prepared = _pipeline(model).prepare(_request())
+
+    for trial in prepared.screening_case.trials:
+        criterion = trial.criteria[0]
+        assert getattr(criterion, removed_field) is None
+        assert trial.protocol_logic_supported is False
+        assert trial.protocol_logic_issues
 
 
 def test_trialgpt_runtime_search_can_serve_one_patient_query(tmp_path: Path) -> None:

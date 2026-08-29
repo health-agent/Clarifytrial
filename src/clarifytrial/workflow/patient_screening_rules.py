@@ -8,9 +8,11 @@ from collections.abc import Mapping, Sequence
 from ..agents import CoordinatorRoute, ReviewDecision
 from ..contracts import (
     AgentAction,
+    CandidateStatus,
     ConfirmationStatus,
     CriterionAssessment,
     NextEvidenceRequest,
+    NextAction,
     PatientState,
     TrialDecision,
 )
@@ -31,7 +33,10 @@ from ..interactive.contracts import (
     InteractiveSnapshot,
     InteractiveTrial,
 )
-from ..reporting import build_ineligible_boundary_differences
+from ..reporting import (
+    build_ineligible_boundary_differences,
+    build_trial_reconsideration_summaries,
+)
 from ..settings import EpisodeSettings
 from .patient_screening_contracts import (
     PatientScreeningActionRecord,
@@ -165,13 +170,32 @@ def aggregate_screening_trial(
         for fact_id in item.missing_information_ids
     }
     pending = [item for item in evidence_requests if item.fact_id in missing_ids]
-    return aggregate_trial_decision(
+    decision = aggregate_trial_decision(
         trial_id=trial.trial_id,
         criteria=trial.criteria,
         assessments=list(assessments.values()),
         pending_information=pending,
         available_evidence_ids=[item.evidence_id for item in patient_state.facts],
         eligibility_logic=trial.eligibility_logic,
+    )
+    if trial.protocol_logic_supported:
+        return decision
+    return decision.model_copy(
+        update={
+            "candidate_status": CandidateStatus.RETAIN,
+            "confirmation_status": ConfirmationStatus.NOT_CONFIRMED,
+            "pending_information": pending,
+            "next_action": AgentAction(
+                action=NextAction.NONE,
+                reason=(
+                    "시험 조건 원문의 일부를 현재 구조로 안전하게 계산할 수 없어 "
+                    "참가 여부를 확정하지 않았다."
+                ),
+            ),
+            "review_required": False,
+            "review_reasons": [],
+            "logic_evaluation": None,
+        }
     )
 
 
@@ -291,6 +315,11 @@ def build_screening_result(
                 for trial in case.trials
                 for criterion in trial.criteria
             },
+        ),
+        trial_reconsideration_summaries=build_trial_reconsideration_summaries(
+            patient_state=patient_state,
+            decisions=list(decisions.values()),
+            trials=case.trials,
         ),
         planned_action=planned_action,
         guidance=guidance,

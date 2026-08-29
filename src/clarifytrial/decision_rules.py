@@ -275,7 +275,10 @@ def select_review_reasons(
             )
 
         has_defect = False
-        if assessment.review_flags:
+        reviewable_flags = set(assessment.review_flags) - {
+            ReviewFlag.MISSING_EVIDENCE
+        }
+        if reviewable_flags:
             add(ReviewReason.EXPLICIT_FLAG)
             has_defect = True
 
@@ -307,9 +310,11 @@ def select_review_reasons(
             evidence_id not in known_evidence
             for evidence_id in assessment.evidence_ids
         )
+        # A plain "missing evidence" flag belongs to the normal question path.
+        # It becomes a review defect only if the model nevertheless makes a
+        # decisive evidence claim, or cites evidence that is unavailable.
         evidence_missing = (
-            ReviewFlag.MISSING_EVIDENCE in assessment.review_flags
-            or (makes_evidence_claim and not assessment.evidence_ids)
+            (makes_evidence_claim and not assessment.evidence_ids)
             or references_missing
         )
         if evidence_missing:

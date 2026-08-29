@@ -25,6 +25,7 @@ class StructuredTrialSource(ContractModel):
     title: str = Field(min_length=1)
     conditions: list[str] = Field(default_factory=list)
     summary: str = ""
+    eligibility_text: str | None = Field(default=None, min_length=1)
     source_location: str = Field(min_length=1)
     trial: ScreeningTrial
 

@@ -210,6 +210,27 @@ def test_ordinary_missing_information_does_not_call_reviewer() -> None:
     )
 
 
+def test_missing_evidence_flag_uses_question_path_instead_of_reviewer() -> None:
+    criteria = [criterion("c-1")]
+    assessments = [
+        assessment(
+            "c-1",
+            status=ClinicalStatus.UNKNOWN,
+            sufficiency=EvidenceSufficiency.INSUFFICIENT,
+            review_flags=[ReviewFlag.MISSING_EVIDENCE],
+        )
+    ]
+
+    reasons = select_review_reasons(
+        criteria=criteria,
+        assessments=assessments,
+        candidate_status=CandidateStatus.RETAIN,
+        confirmation_status=ConfirmationStatus.NOT_CONFIRMED,
+    )
+
+    assert reasons == []
+
+
 def test_decisive_claim_without_evidence_selects_review() -> None:
     criteria = [criterion("c-1")]
     assessments = [

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Protocol
 
+from ..agents import CandidateRelevanceAgent
 from ..contracts import ContractModel, PatientState, TrialSearchRank
 from ..trace import TraceRecorder
 from ..workflow import (
@@ -13,6 +14,7 @@ from ..workflow import (
 )
 from ..workflow.patient_screening_contracts import InformationTools
 from .candidate_search import CandidateSearch
+from .candidate_relevance import review_candidate_relevance
 from .contracts import (
     NaturalScreeningRequest,
     NaturalScreeningUsage,
@@ -136,12 +138,14 @@ class NaturalScreeningPipeline:
         patient_structurer: PatientRecordStructurerAgent,
         trial_structurer: TrialProtocolStructurerAgent,
         candidate_search: CandidateSearch,
+        candidate_reviewer: CandidateRelevanceAgent | None = None,
         screening_runner: PatientScreeningRunner,
         trial_protocol_cache: TrialProtocolCache | None = None,
     ) -> None:
         self._patient_structurer = patient_structurer
         self._trial_structurer = trial_structurer
         self._candidate_search = candidate_search
+        self._candidate_reviewer = candidate_reviewer
         self._screening_runner = screening_runner
         self._trial_protocol_cache = trial_protocol_cache
 
@@ -159,9 +163,36 @@ class NaturalScreeningPipeline:
             self._patient_structurer,
             trace=recorder,
         )
-        candidate_hits = self._candidate_search.search(
+        search_count = (
+            request.candidate_count
+            if self._candidate_reviewer is None
+            else min(20, max(request.candidate_count * 4, request.candidate_count))
+        )
+        retrieved_hits = self._candidate_search.search(
             search_conditions,
-            top_k=request.candidate_count,
+            top_k=search_count,
+        )
+        recorder.record(
+            cycle=0,
+            actor="candidate_trial_search",
+            event="candidate_trials_retrieved",
+            input_refs=[request.patient_record.source_id],
+            output={
+                "search_conditions": search_conditions,
+                "trial_ids": [item.source.trial_id for item in retrieved_hits],
+                "scores": [item.score for item in retrieved_hits],
+            },
+        )
+        candidate_hits = (
+            retrieved_hits[: request.candidate_count]
+            if self._candidate_reviewer is None
+            else review_candidate_relevance(
+                search_conditions=search_conditions,
+                candidate_hits=retrieved_hits,
+                reviewer=self._candidate_reviewer,
+                requested_count=request.candidate_count,
+                trace=recorder,
+            )
         )
         if not candidate_hits:
             recorder.record(

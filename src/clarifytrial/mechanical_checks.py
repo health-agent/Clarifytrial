@@ -23,7 +23,7 @@ from .contracts import (
     PatientState,
     TrialCriterion,
 )
-from .measurements import units_equivalent
+from .measurements import converted_value
 
 
 class MechanicalIssueCode(str, Enum):
@@ -150,9 +150,17 @@ def evaluate_criterion(
         )
 
     unit_matches = [
-        fact
+        (fact, converted)
         for fact in concept_matches
-        if fact.unit is not None and units_equivalent(fact.unit, constraint.unit)
+        if fact.unit is not None
+        and (
+            converted := converted_value(
+                fact.value,
+                source_unit=fact.unit,
+                target_unit=constraint.unit,
+            )
+        )
+        is not None
     ]
     if not unit_matches:
         return MechanicalCriterionResult(
@@ -166,47 +174,56 @@ def evaluate_criterion(
     facts_with_issues = [
         (
             fact,
+            converted,
             _requirement_issues(
                 fact,
                 criterion.evidence_requirement,
                 patient_state.as_of.date(),
             ),
         )
-        for fact in unit_matches
+        for fact, converted in unit_matches
     ]
-    sufficient_facts = [fact for fact, issues in facts_with_issues if not issues]
+    sufficient_facts = [
+        (fact, converted)
+        for fact, converted, issues in facts_with_issues
+        if not issues
+    ]
     if sufficient_facts:
-        newest_event_date = max(fact.event_date or date.min for fact in sufficient_facts)
+        newest_event_date = max(
+            fact.event_date or date.min for fact, _ in sufficient_facts
+        )
         newest_facts = [
-            fact
-            for fact in sufficient_facts
+            (fact, converted)
+            for fact, converted in sufficient_facts
             if (fact.event_date or date.min) == newest_event_date
         ]
         directions = {
             _clinical_status(
                 criterion,
                 _compare(
-                    fact.value,
+                    converted,
                     constraint.operator,
                     constraint.threshold,
                 ),
             )
-            for fact in newest_facts
-            if fact.value is not None
+            for _, converted in newest_facts
         }
         if len(directions) > 1:
             return MechanicalCriterionResult(
                 configured=True,
                 clinical_status=ClinicalStatus.UNKNOWN,
                 evidence_sufficiency=EvidenceSufficiency.CONFLICTING,
-                evidence_ids=sorted(fact.evidence_id for fact in newest_facts),
+                evidence_ids=sorted(fact.evidence_id for fact, _ in newest_facts),
                 issue_codes=[MechanicalIssueCode.EVIDENCE_CONFLICT],
             )
-        selected = max(newest_facts, key=_recency_key)
+        selected, selected_value = max(
+            newest_facts,
+            key=lambda item: _recency_key(item[0]),
+        )
         issues: list[MechanicalIssueCode] = []
         sufficiency = EvidenceSufficiency.SUFFICIENT
     else:
-        selected, issues = max(
+        selected, selected_value, issues = max(
             facts_with_issues,
             key=lambda item: _recency_key(item[0]),
         )
@@ -218,7 +235,7 @@ def evaluate_criterion(
 
     assert selected.value is not None
     condition_met = _compare(
-        selected.value,
+        selected_value,
         constraint.operator,
         constraint.threshold,
     )

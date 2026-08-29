@@ -93,7 +93,7 @@ def test_broad_case_runs_connected_rescue_metrics_and_readiness_report(
         approve_synthetic_actions=True,
         progress=lambda _: None,
     )
-    assert summary["protocol_id"] == "clarifytrial-full-workflow-evaluation-v4"
+    assert summary["protocol_id"] == "clarifytrial-full-workflow-evaluation-v5"
     assert summary["agent_architecture"] == "rules_only"
     current = next(
         item for item in summary["arm_metrics"] if item["arm"] == "clarifytrial"

@@ -18,6 +18,7 @@ from ..contracts import (
     TrialSearchRank,
     TrialCriterion,
     TrialDecision,
+    TrialReconsiderationSummary,
 )
 from ..environment import ToolExecutionResult
 from ..interactive.burden_contracts import (
@@ -58,6 +59,8 @@ class ScreeningTrial(ContractModel):
     trial_id: str = Field(min_length=1)
     criteria: list[TrialCriterion] = Field(min_length=1)
     eligibility_logic: CriterionLogic | None = None
+    protocol_logic_supported: bool = True
+    protocol_logic_issues: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def criteria_belong_to_trial(self) -> "ScreeningTrial":
@@ -79,6 +82,16 @@ class ScreeningTrial(ContractModel):
             }
             if not required.issubset(referenced):
                 raise ValueError("eligibility_logic must include required criteria")
+        if self.protocol_logic_supported and self.protocol_logic_issues:
+            raise ValueError(
+                "protocol_logic_issues require protocol_logic_supported=false"
+            )
+        if not self.protocol_logic_supported and not self.protocol_logic_issues:
+            raise ValueError(
+                "unsupported protocol logic needs at least one explanation"
+            )
+        if len(self.protocol_logic_issues) != len(set(self.protocol_logic_issues)):
+            raise ValueError("protocol_logic_issues must not contain duplicates")
         return self
 
 
@@ -182,6 +195,9 @@ class PatientScreeningResult(ContractModel):
     action_history: list[PatientScreeningActionRecord]
     review_history: list[ReviewDecision]
     ineligible_boundary_differences: list[CriterionBoundaryDifference] = Field(
+        default_factory=list
+    )
+    trial_reconsideration_summaries: list[TrialReconsiderationSummary] = Field(
         default_factory=list
     )
     planned_action: AgentAction | None = None

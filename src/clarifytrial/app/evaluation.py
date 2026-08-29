@@ -311,12 +311,12 @@ def _metrics(
         item
         for item in trial_ids
         if gold[item] == ("retain", "confirmed")
-        and initial.get(item) != ("retain", "confirmed")
+        and initial_gold.get(item) != ("retain", "confirmed")
     }
     false_preservations = {
         item
         for item in trial_ids
-        if initial.get(item) == ("retain", "not_confirmed")
+        if initial_gold.get(item) == ("retain", "not_confirmed")
         and gold[item] == ("remove", "ineligible")
     }
     return {
@@ -737,27 +737,6 @@ def _decision_separation_summary(pairs: Sequence[dict[str, Any]]) -> dict[str, A
     }
 
 
-def _least_connected_fact_id(fixture: Any) -> str:
-    criterion_to_trial = {
-        criterion.criterion_id: trial.trial_id
-        for trial in fixture.screening_case.trials
-        for criterion in trial.criteria
-    }
-    request = min(
-        fixture.screening_case.evidence_requests,
-        key=lambda item: (
-            len(
-                {
-                    criterion_to_trial[criterion_id]
-                    for criterion_id in item.related_criterion_ids
-                }
-            ),
-            item.fact_id,
-        ),
-    )
-    return request.fact_id
-
-
 def run_full_workflow_evaluation(
     *,
     trial_set_path: str | Path,
@@ -820,7 +799,7 @@ def run_full_workflow_evaluation(
     case_path = output_dir / "cases.jsonl"
     manifest_path = output_dir / "run-manifest.json"
     manifest = {
-        "protocol_id": "clarifytrial-full-workflow-evaluation-v4",
+        "protocol_id": "clarifytrial-full-workflow-evaluation-v5",
         "model": (
             "deterministic-workflow"
             if agent_architecture == "rules_only"
@@ -839,7 +818,7 @@ def run_full_workflow_evaluation(
             broad_search_top_k if broad_corpus_path is not None else None
         ),
         "unavailable_answer_selection": (
-            "fewest_connected_trials_then_fact_id"
+            "each_arm_first_selected_fact"
             if include_unavailable_scenario
             else None
         ),
@@ -902,14 +881,13 @@ def run_full_workflow_evaluation(
             "expected_trial_decisions"
         ]
         scenarios: list[
-            tuple[str, frozenset[str], PatientBurdenInput | None]
+            tuple[str, frozenset[str] | None, PatientBurdenInput | None]
         ] = [("all_answers_available", frozenset(), None)]
         if include_unavailable_scenario:
-            unavailable_fact_id = _least_connected_fact_id(fixture)
             scenarios.append(
                 (
-                    "one_answer_unavailable",
-                    frozenset({unavailable_fact_id}),
+                    "first_selected_answer_unavailable",
+                    None,
                     None,
                 )
             )
@@ -930,11 +908,26 @@ def run_full_workflow_evaluation(
                     ),
                 )
             )
-        for scenario, unavailable_fact_ids, burden_input in scenarios:
+        first_selected_fact_by_arm: dict[str, str] = {}
+        for scenario, unavailable_template, burden_input in scenarios:
             for arm in selected_arms:
                 arm_spec = _ARMS[arm]
                 key = (patient_id, scenario, arm)
+                unavailable_fact_ids = (
+                    frozenset(
+                        {first_selected_fact_by_arm[arm]}
+                        if arm in first_selected_fact_by_arm
+                        else ()
+                    )
+                    if unavailable_template is None
+                    else unavailable_template
+                )
                 if key in completed_keys:
+                    existing = row_by_key.get(key, {})
+                    if scenario == "all_answers_available":
+                        selected = existing.get("selected_fact_ids") or []
+                        if selected:
+                            first_selected_fact_by_arm[arm] = str(selected[0])
                     continue
                 trace = TraceRecorder(f"{patient_id}:{scenario}:{arm}")
                 settings = EpisodeSettings(
@@ -1110,6 +1103,10 @@ def run_full_workflow_evaluation(
                         "total_latency_ms": total_latency,
                     }
                 patient_rows.append(row)
+                if scenario == "all_answers_available":
+                    selected = row.get("selected_fact_ids") or []
+                    if selected:
+                        first_selected_fact_by_arm[arm] = str(selected[0])
         return patient_rows
 
     with case_path.open(
@@ -1147,7 +1144,9 @@ def run_full_workflow_evaluation(
         item for item in rows if item.get("scenario") == "all_answers_available"
     ]
     unavailable_rows = [
-        item for item in rows if item.get("scenario") == "one_answer_unavailable"
+        item
+        for item in rows
+        if item.get("scenario") == "first_selected_answer_unavailable"
     ]
     patient_choice_rows = [
         item
@@ -1155,7 +1154,7 @@ def run_full_workflow_evaluation(
         if item.get("scenario") == "patient_declines_new_tests"
     ]
     payload = {
-        "protocol_id": "clarifytrial-full-workflow-evaluation-v4",
+        "protocol_id": "clarifytrial-full-workflow-evaluation-v5",
         "model": (
             "deterministic-workflow"
             if agent_architecture == "rules_only"
@@ -1174,7 +1173,7 @@ def run_full_workflow_evaluation(
             broad_search_top_k if broad_searcher is not None else None
         ),
         "unavailable_answer_selection": (
-            "fewest_connected_trials_then_fact_id"
+            "each_arm_first_selected_fact"
             if include_unavailable_scenario
             else None
         ),

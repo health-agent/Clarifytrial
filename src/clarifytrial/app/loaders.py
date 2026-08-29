@@ -100,8 +100,11 @@ def prepare_general_case(
             title=item.title,
             conditions=item.conditions,
             summary=item.summary,
-            eligibility_text="\n".join(
-                criterion.statement for criterion in item.trial.criteria
+            eligibility_text=(
+                item.eligibility_text
+                or "\n".join(
+                    criterion.statement for criterion in item.trial.criteria
+                )
             ),
             source_location=item.source_location,
         )

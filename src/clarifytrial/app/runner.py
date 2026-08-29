@@ -399,6 +399,34 @@ def run_general_screening(
             session_path=session_path,
             paused=True,
         )
+    except Exception as error:
+        recorder.record(
+            cycle=0,
+            actor="screening_workflow",
+            event="execution_failed",
+            input_refs=[case.case_id],
+            output={
+                "error_type": type(error).__name__,
+                "error": str(error),
+            },
+        )
+        recorder.write_jsonl(trace_path)
+        atomic_write_text(
+            options.output_dir / "execution-error.json",
+            json.dumps(
+                {
+                    "case_id": case.case_id,
+                    "status": "screening_execution_failed",
+                    "error_type": type(error).__name__,
+                    "error": str(error),
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        raise
 
     usage = summarize_model_usage(recorder)
     result_document = {

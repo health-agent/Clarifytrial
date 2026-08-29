@@ -470,6 +470,13 @@ def test_one_topic_runs_from_free_text_to_ranked_result(tmp_path: Path) -> None:
     assert trial["trial_id"] == "T1"
     assert trial["recommendation_rank"] == 1
     assert trial["search_rank"] == 1
+    assert result["input"]["candidate_hits"][0]["source"][
+        "eligibility_text"
+    ] == criterion_text
+    saved_trial = json.loads(
+        (output / "prepared-trials.json").read_text(encoding="utf-8")
+    )[0]
+    assert saved_trial["eligibility_text"] == criterion_text
     assert result["usage"]["call_count"] == 3
     session = json.loads((output / "session.json").read_text(encoding="utf-8"))
     assert session["metadata"]["candidate_ranking"][0]["rank"] == 1

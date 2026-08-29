@@ -212,6 +212,7 @@ def materialize_prepared_topic(
             title=hit.source.title,
             conditions=hit.source.conditions,
             summary=hit.source.summary,
+            eligibility_text=hit.source.eligibility_text,
             source_location=hit.source.source_location,
             trial=trial_by_id[hit.source.trial_id],
         )
