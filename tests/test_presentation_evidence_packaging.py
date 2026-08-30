@@ -85,8 +85,9 @@ def test_presentation_question_productivity_claim_matches_transition_data() -> N
     assert int(row["resolved_after_one_question_count"]) == 14
 
     packet = PRESENTATION_PACKET.read_text(encoding="utf-8")
-    assert "질문 14번 모두 적어도 한 시험의 판단을 바꿨다" in packet
-    assert "물어도 어느 시험도 바뀌지 않은 질문 0회" in packet
+    assert "미확정 22건 중 14건이 한 번의 확인 뒤 바뀌었다" in packet
+    assert "한 번의 추가 확인 뒤 상태가 바뀐 조합 14개" in packet
+    assert "확인 대기로 남은 조합 8개" in packet
 
 
 def test_renderer_requires_route_choice_output(tmp_path: Path) -> None:
@@ -422,7 +423,8 @@ def test_main_presentation_script_fits_the_declared_time_without_rushed_slides()
         slide_paces.append(spoken_characters / (seconds / 60))
 
     assert [int(item.group(1)) for item in headings] == list(range(1, 18))
-    assert total_seconds == 1_020
+    assert total_seconds == 945
+    assert "945초, 15분 45초" in packet
     assert max(slide_paces) <= 285
     assert "발표 시작 1분 25초에 보이고 2분 45초 안에 끝난다" in packet
 
