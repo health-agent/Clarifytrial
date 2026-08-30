@@ -46,6 +46,21 @@ def test_one_shared_answer_reaches_two_trials_and_the_final_guidance(
     ordering = action["acquisition_decision"]["decision_trace"][
         "applied_ordering_rule"
     ]
+    trace = action["acquisition_decision"]["decision_trace"]
+    assert trace["considered_option_ids"] == [
+        "recent-hba1c:existing-result",
+        "recent-hba1c:new-test",
+    ]
+    assert trace["removed_options"] == [
+        {
+            "option_id": "recent-hba1c:new-test",
+            "reason": "추가 방문 한도 초과; 새 검사 거부",
+        }
+    ]
+    assert (
+        action["acquisition_decision"]["selected_option"]["option_id"]
+        == "recent-hba1c:existing-result"
+    )
     assert ordering[:2] == ["affected_trials:max", "affected_criteria:max"]
     assert "exact_coverage_choice:max" not in ordering
 
@@ -60,7 +75,7 @@ def test_one_shared_answer_reaches_two_trials_and_the_final_guidance(
         ]
 
     guidance = screening["guidance"]
-    assert guidance["patient_input_status"] == "absent"
-    assert "preference_mode" in guidance["defaulted_fields"]
+    assert guidance["patient_input_status"] == "partial"
+    assert "preference_mode" not in guidance["defaulted_fields"]
     assert guidance["trial_groups"]["confirmed_trial_ids"] == ["NCT-SYNTH-B"]
     assert guidance["trial_groups"]["removed_trial_ids"] == ["NCT-SYNTH-A"]

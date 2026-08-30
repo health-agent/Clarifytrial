@@ -275,6 +275,7 @@ def test_saved_session_resumes_after_patient_and_clinician_approval(
     patient_document = json.loads(
         (EXAMPLE / "patient.json").read_text(encoding="utf-8")
     )
+    patient_document.pop("patient_burden_input", None)
     option = patient_document["acquisition_options"][0]
     option.update(
         {

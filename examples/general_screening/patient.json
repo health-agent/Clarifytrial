@@ -20,6 +20,13 @@
       }
     ]
   },
+  "patient_burden_input": {
+    "preference_mode": "least_extra_burden",
+    "stated_limits": {
+      "max_additional_visits": 0,
+      "allow_new_tests": false
+    }
+  },
   "evidence_requests": [
     {
       "fact_id": "recent-hba1c",
@@ -51,6 +58,25 @@
       "requires_patient_choice": false,
       "requires_clinician_authorization": false,
       "source_note": "합성 기존 공식 결과"
+    },
+    {
+      "option_id": "recent-hba1c:new-test",
+      "fact_id": "recent-hba1c",
+      "action": "REQUEST_VERIFICATION",
+      "acquisition_mode": "new_noninvasive_test",
+      "available_now": true,
+      "expected_delay_hours": 72,
+      "visit_required": true,
+      "direct_cost_band": "medium",
+      "physical_burden_0_to_3": 1,
+      "emotional_burden_0_to_3": 0,
+      "medical_risk_0_to_3": 0,
+      "treatment_disruption_0_to_3": 0,
+      "already_planned_in_care": false,
+      "new_test_required": true,
+      "requires_patient_choice": true,
+      "requires_clinician_authorization": true,
+      "source_note": "합성 새 비침습 검사"
     }
   ]
 }

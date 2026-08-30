@@ -50,6 +50,12 @@ class DemoData:
     value: float
     unit: str
     evidence_id: str
+    selected_option_id: str
+    selected_delay_hours: float
+    considered_option_ids: tuple[str, ...]
+    removed_option_id: str
+    removed_option_reason: str
+    stop_reason: str
     first: DemoTrial
     second: DemoTrial
 
@@ -162,6 +168,63 @@ def load_demo_data(path: Path) -> DemoData:
     if len(action_history) != 1:
         raise DemoDataError("발표 실행은 추가 확인 한 번을 포함해야 합니다")
     action = _mapping(action_history[0], "action_history[0]")
+    acquisition_decision = _mapping(
+        action.get("acquisition_decision"), "acquisition_decision"
+    )
+    selected_option = _mapping(
+        acquisition_decision.get("selected_option"), "selected_option"
+    )
+    selected_option_id = _text_value(
+        selected_option.get("option_id"), "selected_option.option_id"
+    )
+    if selected_option_id != "recent-hba1c:existing-result":
+        raise DemoDataError("발표 실행은 기존 공식 결과 경로를 골라야 합니다")
+    if selected_option.get("acquisition_mode") != "existing_official_result":
+        raise DemoDataError("발표 실행의 선택 경로가 기존 공식 결과가 아닙니다")
+    if selected_option.get("visit_required") is not False or selected_option.get(
+        "new_test_required"
+    ) is not False:
+        raise DemoDataError("발표 실행의 선택 경로에는 새 검사와 방문이 없어야 합니다")
+    selected_delay_hours = _number_value(
+        selected_option.get("expected_delay_hours"),
+        "selected_option.expected_delay_hours",
+    )
+    decision_trace = _mapping(
+        acquisition_decision.get("decision_trace"),
+        "acquisition_decision.decision_trace",
+    )
+    considered_option_ids = tuple(
+        _text_value(item, "decision_trace.considered_option_id")
+        for item in _sequence(
+            decision_trace.get("considered_option_ids"),
+            "decision_trace.considered_option_ids",
+        )
+    )
+    expected_options = {
+        "recent-hba1c:existing-result",
+        "recent-hba1c:new-test",
+    }
+    if set(considered_option_ids) != expected_options:
+        raise DemoDataError("발표 실행은 기존 결과와 새 검사 경로를 모두 비교해야 합니다")
+    removed_options = _sequence(
+        decision_trace.get("removed_options"), "decision_trace.removed_options"
+    )
+    if len(removed_options) != 1:
+        raise DemoDataError("발표 실행에서 제외한 확인 경로는 한 개여야 합니다")
+    removed_option = _mapping(removed_options[0], "decision_trace.removed_option")
+    removed_option_id = _text_value(
+        removed_option.get("option_id"), "removed_option.option_id"
+    )
+    removed_option_reason = _text_value(
+        removed_option.get("reason"), "removed_option.reason"
+    )
+    if removed_option_id != "recent-hba1c:new-test":
+        raise DemoDataError("발표 실행에서는 새 검사 경로가 제외돼야 합니다")
+    if (
+        "새 검사 거부" not in removed_option_reason
+        or "추가 방문" not in removed_option_reason
+    ):
+        raise DemoDataError("발표 실행에서는 환자 제한 때문에 새 검사 경로가 제외돼야 합니다")
     agent_action = _mapping(action.get("agent_action"), "agent_action")
     question = _text_value(agent_action.get("message"), "agent_action.message")
     tool_result = _mapping(action.get("tool_result"), "tool_result")
@@ -254,6 +317,10 @@ def load_demo_data(path: Path) -> DemoData:
     if value <= trials[0].threshold or value >= trials[1].threshold:
         raise DemoDataError("HbA1c 값이 두 시험을 서로 다른 결과로 나누지 않습니다")
 
+    stop_reason = _text_value(screening.get("stop_reason"), "screening.stop_reason")
+    if stop_reason != "all_trials_resolved":
+        raise DemoDataError("발표 실행은 모든 시험을 정리하고 끝나야 합니다")
+
     return DemoData(
         question=question,
         historical_event_date=historical_event_date,
@@ -264,6 +331,12 @@ def load_demo_data(path: Path) -> DemoData:
         value=value,
         unit=unit,
         evidence_id=evidence_id,
+        selected_option_id=selected_option_id,
+        selected_delay_hours=selected_delay_hours,
+        considered_option_ids=considered_option_ids,
+        removed_option_id=removed_option_id,
+        removed_option_reason=removed_option_reason,
+        stop_reason=stop_reason,
         first=trials[0],
         second=trials[1],
     )
@@ -387,7 +460,9 @@ def main() -> int:
     parser.add_argument(
         "--input",
         type=Path,
-        default=Path("runs/presentation-demo-interactive-20260830/result.json"),
+        default=Path(
+            "runs/presentation-demo-agent-loop-patient-aware-20260830/result.json"
+        ),
         help="Saved interactive screening result JSON.",
     )
     parser.add_argument(

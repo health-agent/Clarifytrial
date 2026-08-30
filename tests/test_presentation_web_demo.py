@@ -31,6 +31,9 @@ def test_web_demo_is_self_contained_and_uses_saved_results(
     contents = output.read_text(encoding="utf-8")
     assert '<html lang="ko">' in contents
     assert 'data-stage="0"' in contents
+    assert 'data-loop="4"' in contents
+    assert "ClarifyTrial 에이전트 워크플로우" in contents
+    assert "상태 → 결정 → 도구 → 갱신 → 반복 판단" in contents
     assert "NCT-SYNTH-A" in contents
     assert "NCT-SYNTH-B" in contents
     assert "HbA1c 6.5%" in contents
@@ -40,6 +43,14 @@ def test_web_demo_is_self_contained_and_uses_saved_results(
     assert "8% 미만" in contents
     assert "조건 불충족" in contents
     assert "확인 완료" in contents
+    assert "recent-hba1c:existing-result" in contents
+    assert "recent-hba1c:new-test" in contents
+    assert "환자 제한 · 새 검사·추가 방문 없음" in contents
+    assert "환자 제한에 맞지 않아 제외" in contents
+    assert "미확정이 남으면 갱신된 상태로 돌아가" in contents
+    assert "이번 사례: 미확정 0개 · 종료" in contents
+    assert "반복 또는 종료 판단" in contents
+    assert "1/5" in contents
     assert 'id="play"' in contents
     assert 'id="next"' in contents
     assert 'id="fullscreen"' in contents

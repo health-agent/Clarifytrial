@@ -92,19 +92,22 @@ python -m venv .venv
   --trials examples\general_screening\trials.jsonl `
   --answers examples\general_screening\presentation-answers.json `
   --provider deterministic `
-  --output runs\presentation-demo-interactive-20260830
+  --output runs\presentation-demo-agent-loop-patient-aware-20260830
 
 .\.venv\Scripts\python.exe scripts\render_presentation_terminal_demo.py `
-  --input runs\presentation-demo-interactive-20260830\result.json `
+  --input runs\presentation-demo-agent-loop-patient-aware-20260830\result.json `
   --output docs\internal\diagrams\clarifytrial-terminal-demo.svg
 
 .\.venv\Scripts\python.exe scripts\render_presentation_web_demo.py `
-  --input runs\presentation-demo-interactive-20260830\result.json `
+  --input runs\presentation-demo-agent-loop-patient-aware-20260830\result.json `
   --output docs\internal\demo\clarifytrial-presentation-demo.html
 ```
 
-HTML 데모는 16:9 한 화면에서 `임상시험 후보 → 공통 정보 선택 → 확인 방법 → 관련
-조건 재판정 → 판단 갱신`을 단계별로 보여 준다. `자동 재생`, `다음`, `처음`, `전체 화면`
+HTML 데모는 16:9 한 화면에서 `현재 상태 읽기 → 다음 행동 결정 → 확인 도구 실행 →
+상태 갱신 → 반복 또는 종료 판단`을 단계별로 보여 준다. 같은 정보를 얻는 기존 공식
+결과와 새 검사를 실제 규칙이 비교하고, 새 검사·추가 방문을 원하지 않는 합성 환자의
+제한에 맞는 경로를 고른 실행 기록을 사용한다.
+`자동 재생`, `다음`, `처음`, `전체 화면`
 버튼과 오른쪽 화살표·스페이스바·Home 키를 사용할 수 있다. 네트워크와 외부 모델을
 부르지 않는 한 파일짜리 화면이므로 브라우저에서 열어 녹화하거나 마지막 장면을 캡처해
 발표자료에 넣을 수 있다. 마지막 장면은
