@@ -2,7 +2,7 @@
   "source": "ClinicalTrials.gov",
   "api_version": "2.0.5",
   "data_timestamp": "2026-08-28T09:00:06",
-  "retrieved_at": "2026-08-30T14:15:36.825210+00:00",
+  "retrieved_at": "2026-08-30T14:38:23.344912+00:00",
   "terms_url": "https://clinicaltrials.gov/about-site/terms-conditions",
   "attribution": "ClinicalTrials.gov, U.S. National Library of Medicine",
   "modifications": "원본 연구기록은 수정하지 않았다. 이후 구조화 기준은 원문 일부를 수치·기간 규칙으로 옮긴 연구자 파생자료다.",
@@ -14,7 +14,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT07026968",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT07026968",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT07026968.json",
-      "record_sha256": "3466a00393b5526339f47ab2be6a7b60116454bb856a031049fe3f99d71437e6",
+      "record_sha256": "1195a38a95611a173258efc8401bdd96572ea9b46ab366bee21f1396e22fba41",
       "eligibility_sha256": "ff2603035ec2614f7b5843b9154a525cc356e1def6c0e910cac03193740db736"
     },
     {
@@ -23,7 +23,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT06267391",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT06267391",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT06267391.json",
-      "record_sha256": "5dfd1d960a9c3ecb7654c5e09697e62d281113d509cb706aaf9c597d3afe87ef",
+      "record_sha256": "acb63d12290874c2fa78904417f048511727403aa43043391d70a2d894b052af",
       "eligibility_sha256": "d2ef26a74a344e3f7d9d072710ee5c6403cd45355502817c8533d02a9d4dd9c4"
     },
     {
@@ -32,7 +32,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT07527650",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT07527650",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT07527650.json",
-      "record_sha256": "1c533d79a496c79d03c6ddc87ad5a6981e7e8941823cc590d0d90664726a68f1",
+      "record_sha256": "ac0f35abd3c451eac29da2cf12e8de14f2a10a20e4dd07e6c49dfb749d937375",
       "eligibility_sha256": "ebc41b50528d8b7c276cd08580a4b86fa4daec3abd15fab88d286c7db601412f"
     },
     {
@@ -41,7 +41,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT07146347",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT07146347",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT07146347.json",
-      "record_sha256": "370a3cb780db75e2cc6b4bdfe31bc8e91431aafb12dafc712ff848e0b9b535ce",
+      "record_sha256": "3e87b7570a19d476dc700404a1ce2922435789c5e1843b6ab66a1592bb38796b",
       "eligibility_sha256": "bb38bb2550132b754abb43d5929bf85e2912c1fd606d5a47e93806d4cc6d4d8e"
     },
     {
@@ -50,7 +50,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT05516576",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT05516576",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT05516576.json",
-      "record_sha256": "d6b20983061888dd7a30aaaf80b247d088dc699059b784f6d823eab0dfb19512",
+      "record_sha256": "ea2fca7cdaaaa053fc28c2075afcc17b0d54e19d10c7c623b7a3b2e400e2a1f4",
       "eligibility_sha256": "011f1b47329421d2632ff0813198afa2f7079af1a53fd6737090692da34760ec"
     },
     {
@@ -59,7 +59,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT07054242",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT07054242",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT07054242.json",
-      "record_sha256": "a12dd53ecd66fae44d6ce84b982fea1a39d66dc39911979958d2e5a13b64bd4d",
+      "record_sha256": "343fd53f8235639889330485052207ac0f553cdc7d3b15d7fee79f75e89ab21e",
       "eligibility_sha256": "e4376234a86ed49b6193b83e005f09852634d7f2668ae7a825b1a19788e670f7"
     },
     {
@@ -68,7 +68,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT03546686",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT03546686",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT03546686.json",
-      "record_sha256": "be82877ed994cdddbef0531ca8ae91cf6920fc71b49e3a00c1732353d72dc3e2",
+      "record_sha256": "70422f357c0205264ed17c35b68499d6f52cb60c3040d80587aff9b3e1482390",
       "eligibility_sha256": "f5e5aa072ea3c247fdcf173c1aa731df9d15b2b53a68f40b19849a232229c728"
     },
     {
@@ -77,7 +77,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT07467330",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT07467330",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT07467330.json",
-      "record_sha256": "d2ad9e7bfd16126818cef0e995d75f48658d452f46887fb27a61f55c3e0be7ba",
+      "record_sha256": "656fa2ebc2c7cec24e0e2638c548cf1766dafc04e9ee22e676ed516d16294c53",
       "eligibility_sha256": "e451dab8f5153274cdd53a7677e6f44515a33e5c10ef061c8e65c27af67ddc4d"
     },
     {
@@ -86,7 +86,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT07227233",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT07227233",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT07227233.json",
-      "record_sha256": "4219ea6506fd896ee4407b3c708fe6e20c4dfbec77ca4e8b08f12410aa627a0a",
+      "record_sha256": "472f856a4791b34b0d0182312ead2a925e40951f7b157c07d73ff5e403c4bfde",
       "eligibility_sha256": "e546ef79256536efefeccdac7bdd9452938dbc1cf0b8c763562b1ede09fcbe85"
     },
     {
@@ -95,7 +95,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT07441512",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT07441512",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT07441512.json",
-      "record_sha256": "8cfd3f099f04d5eaadc51985fa0bd8dbc55b2fd5b8ec408aa39c5d6b10ef9465",
+      "record_sha256": "65c3f967afcb3a8a03281c578c290507da78d9a61b936d41828743fc77954cb2",
       "eligibility_sha256": "b5d30cd896f19bd941a3243746b4e7ba0fb8c53c969a86e4bde27a8904f2a34d"
     },
     {
@@ -104,7 +104,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT05757791",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT05757791",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT05757791.json",
-      "record_sha256": "04307d92d2237afead9b1d84d44b4494c1734fe8454f812e9d7d6bf48baed643",
+      "record_sha256": "e6645fb8542db9de0a8634f15f97acb2e051d283ce2bf4fb12a963fc9111dc56",
       "eligibility_sha256": "5e2f2ec31ee7c920cda06eb17dca7d3a5b55dced0bfd3ce3a452f9681a9190b5"
     },
     {
@@ -113,7 +113,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT06633016",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT06633016",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT06633016.json",
-      "record_sha256": "69d37b3232ebd20012b8bba2a7c24594e967613aa439f3bd511b80361639e740",
+      "record_sha256": "f92f0e1a53e20d4c0385c34a75b86cfc8dc191f28ce3d08c4e9235ec93b985cd",
       "eligibility_sha256": "edfe42e5ed077664d07bf5f59eebc4e11ac9ecb8ff01cea710f8379aa0eaf94b"
     },
     {
@@ -122,7 +122,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT06820723",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT06820723",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT06820723.json",
-      "record_sha256": "319e9da5c0ccc83bb5a6f637b2ca4f628253250c1f52959285beb118553e7cc6",
+      "record_sha256": "4cfe8bcc07d64a125e96b278b73bf2275e4555e05b8cb63681686ab7e5d61ae5",
       "eligibility_sha256": "dae9f513cc39309d9da0df967c50ae7fa2ab90b51d374b17ae6bbe823b712b9d"
     },
     {
@@ -131,7 +131,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT07041073",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT07041073",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT07041073.json",
-      "record_sha256": "a3d314bc50ce765e1aee38adaad263dc00510fa65ba0d6bddc23ec4c8386ea85",
+      "record_sha256": "60b258d5abef7d7026d643fa4c0452f9dadb7063698e5e6ab657e118f8df4917",
       "eligibility_sha256": "8ee7aba049356443e9d0120d0ef8a278aea0ae6a57d6681fb08d87aa2da96bd1"
     },
     {
@@ -140,7 +140,7 @@
       "study_url": "https://clinicaltrials.gov/study/NCT07503002",
       "api_url": "https://clinicaltrials.gov/api/v2/studies/NCT07503002",
       "local_record": "data\\interactive_public_benchmark_v1\\source_snapshot\\records\\NCT07503002.json",
-      "record_sha256": "55c762a265f0b353a4a4201202a96ab08c5dc633d8be12f592c6e6ffe6b9c163",
+      "record_sha256": "3c63e7c18be723269df6fba828278da24de9b4be7956965330d0ff1373bcbffc",
       "eligibility_sha256": "8b660161e154fdd868406d78d66f5a36de72d68d22b0b079b0f8add4a8dafac2"
     }
   ]

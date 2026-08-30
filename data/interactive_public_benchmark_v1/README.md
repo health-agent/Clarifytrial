@@ -6,7 +6,7 @@ ClinicalTrials.gov 공개 시험 15건이다. 실험이 나중의 API 수정에 
 
 - 출처: ClinicalTrials.gov API v2
 - 자료 시각: `2026-08-28T09:00:06`
-- 받은 시각: `2026-08-30T14:15:36.825210+00:00`
+- 받은 시각: `2026-08-30T14:38:23.344912+00:00`
 - 이용 조건: <https://clinicaltrials.gov/about-site/terms-conditions>
 - 표시 출처: ClinicalTrials.gov, U.S. National Library of Medicine
 
