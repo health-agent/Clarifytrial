@@ -339,7 +339,7 @@ def _optional_bm25_imports() -> tuple[Any, Any]:
         from rank_bm25 import BM25Okapi
     except ImportError as exc:
         raise RuntimeError(
-            "TrialGPT retrieval dependencies are missing; install .[retrieval]"
+            "TrialGPT BM25 dependencies are missing; install .[retrieval-bm25]"
         ) from exc
     return word_tokenize, BM25Okapi
 

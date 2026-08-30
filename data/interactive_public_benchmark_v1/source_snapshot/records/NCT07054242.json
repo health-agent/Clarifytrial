@@ -1,0 +1,219 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT07054242",
+      "orgStudyIdInfo": {
+        "id": "NIKORA"
+      },
+      "organization": {
+        "fullName": "Yantai Yuhuangding Hospital",
+        "class": "OTHER"
+      },
+      "briefTitle": "A Prospective, Single-center, Phase II Study of Sacituzumab Tirumotecan in Combination With Pembrolizumab for Neoadjuvant Treatment of Triple-Negative Breast Cancer (TNBC)",
+      "officialTitle": "A Prospective, Single-center, Phase II Study of Sacituzumab Tirumotecan in Combination With Pembrolizumab for Neoadjuvant Treatment of Triple-Negative Breast Cancer (TNBC)"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2025-09",
+      "overallStatus": "NOT_YET_RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2025-10-30",
+        "type": "ESTIMATED"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2026-10-30",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2028-06-30",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2025-05-25",
+      "studyFirstSubmitQcDate": "2025-06-26",
+      "studyFirstPostDateStruct": {
+        "date": "2025-07-08",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2025-09-26",
+      "lastUpdatePostDateStruct": {
+        "date": "2025-10-01",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "PRINCIPAL_INVESTIGATOR",
+        "investigatorFullName": "Guangdong Qiao",
+        "investigatorTitle": "Director of Department of Breast Surgery, Chief Physician",
+        "investigatorAffiliation": "Yantai Yuhuangding Hospital"
+      },
+      "leadSponsor": {
+        "name": "Yantai Yuhuangding Hospital",
+        "class": "OTHER"
+      },
+      "collaborators": [
+        {
+          "name": "Sichuan Kelun-Biotech Biopharmaceutical Co., Ltd.",
+          "class": "INDUSTRY"
+        }
+      ]
+    },
+    "oversightModule": {
+      "oversightHasDmc": true,
+      "isFdaRegulatedDrug": false,
+      "isFdaRegulatedDevice": false,
+      "isUsExport": true
+    },
+    "descriptionModule": {
+      "briefSummary": "This is a prospective, single center, phase II study to enroll participants with stage II or III TNBC who have not previously undergone systemic therapy. The primary endpoint is pCR in the ITT population. The study aims to enroll 52 participants. Eligible participants will receive a combination therapy of SKB264 and Pembrolizumab.\n\nExperimental arm: SKB264 will be administered intravenously (IV) at a dose of 4 mg/kg every two weeks (Q2W); Pembrolizumab will be administered intravenously at a dose of 200mg every three weeks (Q3W) All enrolled participants will initially receive SKB264 plus Pembrolizumab for 8 weeks. Based on early imaging and biopsy assessment, patients who deemed as responders continue to receive combined drug therapy for 10 weeks, followed by surgical treatment. Patients who assessed as non-responders will be treated at the discretion of the physician.\n\nParticipants will undergo regular tumor assessments based on RECIST 1.1 criteria. Imaging assessments will be conducted every 9 weeks (±1 week) for the first 18 weeks following treatment initiation, and every 12 weeks (±1 week) thereafter, until confirmed disease progression, initiation of a new antitumor treatment, withdrawal of consent, loss to follow-up, death, or study end, whichever occurs first. After termination of the study treatment, participants must complete the EOT visit and a safety follow-up, and undergo survival visits every 3 months (±14 days) post the last dose to collect information on survival, new antitumor treatments received."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Neoadjuvant Therapy",
+        "Stage II to III (T1cN1-2 or T2-4N0-2) TNBC Breast Cancer"
+      ],
+      "keywords": [
+        "SKB264",
+        "Pembrolizumab",
+        "TNBC",
+        "Neoadjuvant therapy"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE2"
+      ],
+      "designInfo": {
+        "allocation": "NA",
+        "interventionModel": "SINGLE_GROUP",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "NONE"
+        }
+      },
+      "enrollmentInfo": {
+        "count": 52,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "SKB264 plus Pembrolizumab",
+          "type": "EXPERIMENTAL",
+          "interventionNames": [
+            "Drug: Sacituzumab Tirumotecan (SKB264) plus Pembrolizumab"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DRUG",
+          "name": "Sacituzumab Tirumotecan (SKB264) plus Pembrolizumab",
+          "description": "SKB264 will be administered intravenously (IV) at a dose of 4 mg/kg every two weeks (Q2W); Pembrolizumab will be administered intravenously at a dose of 200mg every three weeks (Q3W)",
+          "armGroupLabels": [
+            "SKB264 plus Pembrolizumab"
+          ],
+          "otherNames": [
+            "SKB264 also named sac-TMT or MK2870"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Pathological complete response rate (pCR: ypT0/is, ypN0)",
+          "description": "pCR: defined as the absence of histological evidence of malignant tumor in the primary breast cancer and metastatic regional lymph nodes, or the presence of only carcinoma in situ components.",
+          "timeFrame": "18 weeks"
+        }
+      ],
+      "secondaryOutcomes": [
+        {
+          "measure": "Objective Response Rate (ORR)",
+          "description": "ORR, defined as the proportion of subjects with Complete Response (CR) and Partial Response (PR) among the total subjects.",
+          "timeFrame": "8 weeks and 18 weeks"
+        },
+        {
+          "measure": "Event-Free Survival (EFS)",
+          "description": "EFS, defined as the time from the start of treatment to the first occurrence of any of the following events: disease progression that precludes surgical treatment, local or distant recurrence, or death from any cause.",
+          "timeFrame": "up to 36 months"
+        },
+        {
+          "measure": "Overall Survival (OS)",
+          "description": "OS, defined as the time from the start of treatment to the death of the subject from any cause.",
+          "timeFrame": "up to 36 months"
+        }
+      ],
+      "otherOutcomes": [
+        {
+          "measure": "TROP2; PD-L1; HER2; Ki67",
+          "description": "Explore potential biomarkers that predict the therapeutic efficacy of SKB264 in combination with pembrolizumab, including but not limited to the expression levels of TROP2, PD-L1, HER2 and Ki67 in tumor tissue specimens.",
+          "timeFrame": "up to 22 weeks"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n1. Histologically or cytologically confirmed stage II-III (T1cN1-2 or T2-4N0-2) triple-negative breast cancer (TNBC), defined as:\n\n   * Immunohistochemistry (IHC) showing ER and PR \\<1%\n   * HER2-negative per 2028 ASCO-CAP guidelines (IHC 0/1+ or IHC 2+/ISH-)\n2. Available tumor tissue sample for biomarker analysis.\n3. At least one measurable lesion as per RECIST 1.1 criteria.\n4. ECOG performance status 0-1.\n5. Adequate organ function as evidenced by:\n\n   * Absolute neutrophil count ≥1.5×10⁹/L (no G-CSF support within 14 days)\n   * Platelets ≥100×10⁹/L (no transfusion within 14 days)\n   * Hemoglobin \\>9 g/dL (no transfusion/ESA within 14 days)\n   * Total bilirubin ≤1.5×ULN\n   * AST/ALT ≤1.5×ULN\n   * Alkaline phosphatase ≤2.5×ULN\n   * Serum creatinine ≤1.5×ULN or CrCl ≥60 mL/min (Cockcroft-Gault)\n   * INR/PT ≤1.5×ULN\n   * TSH within normal range (or normal FT3/FT4 if TSH abnormal)\n   * Normal cardiac enzymes (isolated abnormalities allowed if clinically insignificant)\n6. No prior anti-cancer therapy for current diagnosis.\n7. For women of childbearing potential and men with WOCBP partners: agreement to use effective contraception from screening until 6 months post-treatment.\n8. Willing and able to comply with study procedures and provide written informed consent.\n\nExclusion Criteria:\n\n1. LVEF \\<50% by ECHO/MUGA or significant cardiac disease (NYHA Class III/IV).\n2. Prior chemotherapy, targeted therapy, or radiotherapy for current breast cancer.\n3. Previous treatment with immune checkpoint inhibitors (anti-PD-1/L1, anti-CTLA-4) or T-cell targeting therapies.\n4. Prior Trop-2 directed therapy or topoisomerase I inhibitor treatment.\n5. Other malignancies within 5 years (except adequately treated CIS of cervix, BCC, or cutaneous SCC).\n6. Severe ocular surface disease (dry eye syndrome, meibomian gland dysfunction, or corneal disorders impairing healing).\n7. Known hypersensitivity to study drug components.\n8. History of immunodeficiency disorders or organ transplantation.\n9. Current or history of:\n\n   * Steroid-requiring interstitial lung disease/pneumoniti Unresolved ILD/pneumonitis on screening imaging\n\n   Clinically significant pulmonary conditions including:\n   * Recent pulmonary embolism (≤3 months)\n   * Severe asthma/COPD/restrictive lung disease\n   * Pleural effusion requiring intervention\n   * Connective tissue disease with pulmonary involvement\n   * Prior pneumonectomy\n10. Active autoimmune disease requiring systemic treatment (past 2 years), except:\n\n    * Hormone replacement therapy\n    * Physiologic corticosteroid replacement\n11. Active infection requiring systemic therapy within 14 days prior to initiation.\n12. Uncontrolled comorbidities that may:\n\n    * Compromise patient safety\n    * Interfere with study completion\n13. Any condition that in the investigator's judgment may:\n\n    * Affect study drug evaluation\n    * Compromise safety assessments\n    * Interfere with data interpretation\n    * Otherwise contraindicate participation",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "maximumAge": "75 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "Guangdong Qiao",
+          "role": "CONTACT",
+          "phone": "China: 0535-6691999-81603",
+          "email": "qiaogddxy@163.com"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "Department of Breast Surgery, Yantai Yuhuangding Hospital",
+          "city": "Yantai",
+          "state": "Shandong",
+          "zip": "264000",
+          "country": "China",
+          "contacts": [
+            {
+              "name": "Guangdong Qiao",
+              "role": "CONTACT",
+              "phone": "0535-6691999-81603",
+              "email": "qiaogddxy@163.com"
+            },
+            {
+              "name": "Yalun Li",
+              "role": "CONTACT"
+            },
+            {
+              "name": "Guangdong Qiao",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 37.47649,
+            "lon": 121.44081
+          }
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "NO"
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    }
+  },
+  "hasResults": false
+}

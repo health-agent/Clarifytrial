@@ -1,0 +1,245 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT07441512",
+      "orgStudyIdInfo": {
+        "id": "ML46206"
+      },
+      "organization": {
+        "fullName": "Zhejiang Cancer Hospital",
+        "class": "OTHER"
+      },
+      "briefTitle": "A Phase II, Single-arm Study to Evaluate the Efficacy and Safety of Inavolisib in Combination With Eribulin in Pretreated Advanced Triple-negative Breast Cancer Harboring a PIK3CA Mutation",
+      "officialTitle": "A Phase II, Single-arm Study to Evaluate the Efficacy and Safety of Inavolisib in Combination With Eribulin in Pretreated Advanced Triple-negative Breast Cancer Harboring a PIK3CA Mutation"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2026-02",
+      "overallStatus": "NOT_YET_RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2026-03-15",
+        "type": "ESTIMATED"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2028-03-15",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2028-03-15",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2026-02-10",
+      "studyFirstSubmitQcDate": "2026-02-27",
+      "studyFirstPostDateStruct": {
+        "date": "2026-03-02",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2026-02-27",
+      "lastUpdatePostDateStruct": {
+        "date": "2026-03-02",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "SPONSOR_INVESTIGATOR",
+        "investigatorFullName": "Hu Hai",
+        "investigatorTitle": "Director",
+        "investigatorAffiliation": "Zhejiang Cancer Hospital"
+      },
+      "leadSponsor": {
+        "name": "Hu Hai",
+        "class": "OTHER"
+      },
+      "collaborators": [
+        {
+          "name": "Zhejiang Cancer Hospital",
+          "class": "OTHER"
+        }
+      ]
+    },
+    "oversightModule": {
+      "oversightHasDmc": false,
+      "isFdaRegulatedDrug": false,
+      "isFdaRegulatedDevice": false
+    },
+    "descriptionModule": {
+      "briefSummary": "This is an open-label, Simon's optimal two-stage design, single-arm, Phase II study with first 6 patients in the safety run-in portion. PIK3CAmut advanced triple-negative breast cancer(TNBC) patients who have progressed on at least one prior line of systemic therapy in advanced setting will be enrolled to receive inavolisib plus eribulin treatment. The study is carried out in two stages. In Stage One, 10 patients are accrued. If there are 4 or more responses among these 10 patients and positive recommendation by the safety review meeting based on the evaluation of first 6 safety run-in patients' data, additional 16 patients will be accrued in Stage Two, resulting in a total patient number of 26. Otherwise, the study will be terminated and a report will be prepared outlining the observed data and the rationale for termination."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "TNBC - Triple-Negative Breast Cancer",
+        "TNBC"
+      ],
+      "keywords": [
+        "ML46206",
+        "TNBC"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE2"
+      ],
+      "designInfo": {
+        "allocation": "NA",
+        "interventionModel": "SINGLE_GROUP",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "NONE"
+        }
+      },
+      "enrollmentInfo": {
+        "count": 26,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "A Phase II, Single-arm Study to Evaluate the Efficacy and Safety of Inavolisib in Combination With E",
+          "type": "EXPERIMENTAL",
+          "description": "All enrolled patients will receive inavolisib 9 mg once daily (QD) with eribulin (1.4 mg/m2 IV days 1 and 8), both administered every 21 days until RECIST 1.1-defined progression or another discontinuation criterion is met.Following treatment discontinuation, choice of subsequent therapy will be at the discretion of the Investigator.",
+          "interventionNames": [
+            "Drug: Inavolisib in Combination With Eribulin"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DRUG",
+          "name": "Inavolisib in Combination With Eribulin",
+          "description": "All enrolled patients will receive inavolisib 9 mg once daily (QD) with eribulin (1.4 mg/m2 IV days 1 and 8), both administered every 21 days until RECIST 1.1-defined progression or another discontinuation criterion is met. Following treatment discontinuation, choice of subsequent therapy will be at the discretion of the Investigator.",
+          "armGroupLabels": [
+            "A Phase II, Single-arm Study to Evaluate the Efficacy and Safety of Inavolisib in Combination With E"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "ORR by Investigator assessment per RECIST 1.1",
+          "description": "ORR by Investigator assessment per RECIST 1.1",
+          "timeFrame": "22 months"
+        }
+      ],
+      "secondaryOutcomes": [
+        {
+          "measure": "Incidence and severity of adverse events (graded by CTCAE v5.0)",
+          "timeFrame": "22 months"
+        },
+        {
+          "measure": "Number of participants with Abnormal and clinically significant change from baseline in targeted vital signs",
+          "timeFrame": "22 months"
+        },
+        {
+          "measure": "Number of participants with Abnormal and clinical significant change from baseline in targeted clinical laboratory test results",
+          "timeFrame": "22 months"
+        },
+        {
+          "measure": "Secondary Outcome Measure",
+          "description": "The total cumulative dose of Inavolisib actually administered to each subject (unit: mg), calculated by summarizing the daily dosing records documented in the electronic data system or source documents.",
+          "timeFrame": "22 months"
+        },
+        {
+          "measure": "PFS by Investigator assessment per RECIST 1.1",
+          "timeFrame": "22 months"
+        },
+        {
+          "measure": "Secondary Outcome Measure",
+          "description": "DoR \\[Duration of Response\\] by Investigator assessment per RECIST 1.1",
+          "timeFrame": "22 months"
+        },
+        {
+          "measure": "Secondary Outcome Measure",
+          "description": "CBR \\[Clinical Benefit Rate\\] by Investigator assessment per RECIST 1.1",
+          "timeFrame": "22 months"
+        },
+        {
+          "measure": "Overall survival (OS)",
+          "timeFrame": "22 months"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* Patients must meet the following criteria for study entry:\n\n  * Signed Informed Consent Form\n  * Female participants who are at least 18 years of age on the day of signing informed consent\n  * Evaluable or measurable disease per RECIST v1.1\n  * Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1\n  * Life expectancy of \\> 12 weeks\n  * Adequate hematologic and organ function within 14 days prior to initiation of study treatment, defined by the following:\n\n    * Absolute neutrophil count ≥ 1500/μL\n    * Hemoglobin ≥ 9 g/dL\n    * Platelet count ≥ 100,000/μL\n    * Fasting glucose \\< 126 mg/dL or \\< 7 mmol/L and glycosylated hemoglobin (HbA1C) \\< 6.5% or \\< 48 mmol/mol\n    * Total bilirubin ≤ 1.5 × upper limit of normal (ULN) (\\< 3 × ULN if Gilbert's disease)\n    * Serum albumin ≥ 2.5 g/dL or 25 g/L\n    * AST and ALT ≤ 2.5 × ULN with the following exception:\n* Patients with documented liver metastases: AST and ALT ≤ 5.0 × ULN\n\n  o ALP ≤ 2.5 × ULN with the following exception:\n* Participants with documented liver or bone metastases: ALP ≤ 5.0 × ULN\n\n  o INR \\< 1.5 × ULN and aPTT \\< 1.5 × ULN\n* For participants requiring anticoagulation therapy with warfarin or similar agents (such as Vitamin K antagonists), a stable INR between 2 and 3 is required. If anticoagulation is required for a prosthetic heart valve, then stable INR between 2.5 and 3.5 is permitted.\n\n  * Creatinine clearance ≥ 60 mL/min on the basis of the Cockcroft-Gault glomerular filtration rate estimation.\n\n    • Participants with controlled HBV infection are allowed if they have:\n  * Normal ALT levels\n  * Positive hepatitis B surface antigen (HbsAg) and negative total hepatitis B core antibody (HbcAb) or positive HbcAb and\n  * HBV DNA ≤ 2000 UI/mL\n* They are under antiviral treatment following local guidelines. Prophylactic treatment and follow-up must be done by a specialized physician per local SoC. The overall potential benefits associated with study treatment should be deemed to exceed the overall risks by the investigator\n\n  * Negative hepatitis C virus (HCV) antibody test at screening, or a positive HCV antibody test followed by a negative HCV RNA test at screening\n  * Histologically or cytologically documented adenocarcinoma of the breast that is locally advanced or metastatic, not amenable to surgical or radiation therapy with curative intent\n\n    * Documented HR-negative tumor in accordance with American Society of Clinical Oncology (ASCO)/College of American Pathologists (CAP) guidelines31, defined as \\< 1% of tumor cells staining positive for estrogen receptor (ER) and progesterone receptor (PgR), as per the most recently available local assessment.\n    * Documented HER2-negative tumor in accordance with ASCO/CAP guidelines, defined as a HER2 immunohistochemistry (IHC) score of 0 or 1+ , or an IHC score of 2+ accompanied by a negative fluorescence, chromogenic, or silver in situ hybridization test indicating absence of HER2 gene amplification, or a HER2/CEP17 ratio of \\< 2.0, based on the most recently available local assessment.\n  * Have progressed after at least one line of systemic therapy in advanced setting.\n\n    o Patients who received chemotherapy or antibody-drug conjugate (ADC), either with or without a checkpoint inhibitor treatment, in advanced setting are eligible for enrollment\n  * Consent to provide fresh (preferred) or archival tumor tissue specimen, and freshly collected pretreatment blood sample. It is preferred that the specimen be from the most recently collected and available tumor tissue, and whenever possible, from a metastatic site of disease. Archival tumor tissue is defined as tumor tissue that was collected prior to the participant being (pre)screened for the study, and it can be from either the metastatic disease (preferred) or the primary tumor. See Section 8.2.8 for specimen requirements.\n  * Confirmation of biomarker eligibility: valid results from central testing of tumor tissue documenting the presence of a study-eligible PIK3CA mutation. Eligible PIK3CA mutations are defined as follows (71 PIK3CA mutations): H1047D/I/L/N/P/Q/R/T/Y G1049A/C/D/R/S E545A/D/G/K/L/Q/R/V E453A/D/G/K/Q/V E542A/D/G/K/Q/R/V K111E/N/R Q546E/H/K/L/P/R G106A/D/R/S/V N345D/H/I/K/S/T/Y G118D C420R R88Q M1043I/T/V N1044H/I/K/S/T/Y T1025A/I/S The central test for identification of eligible PIK3CA mutations is the whole exome sequencing performed at Sponsor-designated central testing laboratory.\n  * For women of childbearing potential: agreement to remain abstinent (refrain from heterosexual intercourse) or use a highly effective form of contraceptive method (non-hormonal) with a failure rate of \\< 1% per year in combination with use of male condom with spermicide (for male partners), unless male sterilization has been confirmed. Agreement to refrain from donating eggs during the treatment period and for at least 60 days after the last dose of inavolisib and at least 3 months after the last dose of eribulin.\n\nA woman is considered to be of childbearing potential if she is postmenarcheal, has not reached a postmenopausal state ( ≥ 12 continuous months of amenorrhea with no identified cause other than menopause), and has not undergone surgical sterilization (removal of ovaries and/or uterus).\n\nThe reliability of sexual abstinence should be evaluated in relation to the duration of the clinical trial and the preferred and usual lifestyle of the patient. Periodic abstinence (e.g., calendar, ovulation, symptothermal, or post-ovulation methods) and withdrawal are not acceptable methods of contraception.\n\nExclusion Criteria:\n\n* Patients who meet any of the following criteria will be excluded from study entry:\n\n  * Pregnancy, lactation, or intention to become pregnant during the study\n\n    o Women of childbearing potential (including those who have had a tubal ligation) must have a negative pregnancy test result within 14 days prior to initiation of study treatment.\n  * Metaplastic breast cancer\n  * Radiotherapy within 4 weeks before Cycle 1 Day 1\n  * Type 2 diabetes requiring ongoing systemic treatment at the time of study entry; or any history of Type 1 diabetes\n  * Malabsorption syndrome or other condition that would interfere with enteral absorption\n  * Inability or unwillingness to swallow pills\n  * Any history of leptomeningeal disease or carcinomatous meningitis\n  * Known and untreated, or active CNS metastases (progressing or requiring anticonvulsants or corticosteroids for symptomatic control). Patients with a history of treated CNS metastases are eligible, provided they meet all of the following criteria:\n\n    * Measurable or evaluable disease (per RECIST v1.1) outside the CNS\n    * No ongoing requirement for corticosteroids as therapy for CNS metastases, with corticosteroids discontinued for ≥ 2 weeks prior to enrollment and no ongoing symptoms attributed to CNS metastases\n    * Radiographic demonstration of improvement upon the completion of CNS-directed therapy and no evidence of interim progression between the completion of CNS-directed therapy and the screening radiographic study\n    * The screening CNS radiographic study is ≥ 4 weeks since completion of radiotherapy\n    * No history of intracranial hemorrhage or spinal cord hemorrhage\n  * Pleural effusion, pericardial effusion, or ascites requiring drainage procedures every 14 days or more frequently\n\n    o Indwelling pleural or abdominal catheters may be allowed, provided the patient has adequately recovered from the procedure, is hemodynamically stable and symptomatically improved.\n  * Symptomatic hypercalcemia requiring continued use of bisphosphonate or denosumab therapy\n\n    o Bisphosphonate and denosumab therapy for bone metastases or osteopenia/osteoporosis is allowed.\n  * Any active infection that, in the opinion of the investigator, could impact patient safety; or serious infection requiring intravenous (IV) antibiotics within 7 days prior to Day 1 of Cycle 1\n  * Active inflammatory (e.g., uveitis or vitritis) or infectious (e.g., conjunctivitis, keratitis, scleritis, or endophthalmitis) conditions in either eye or history of idiopathic or autoimmune-associated uveitis in either eye\n  * Requirement for daily supplemental oxygen\n  * Symptomatic active lung disease that is not specifically due to underlying breast cancer, including pneumonitis\n  * Active tuberculosis\n  * History of or active inflammatory disease (e.g., Crohn's disease or ulcerative colitis), or any active bowel inflammation (including diverticulitis)\n\n    o Patients currently receiving immunosuppressants (e.g., sulfasalazines) are considered to have active disease and are thus ineligible.\n  * Any serious medical condition or abnormality in clinical laboratory tests that precludes an individual's safe participation in and completion of the study\n  * Prior hematopoietic stem cell or bone marrow transplantation, or radiation therapy encompassing \\> 30% of marrow\n  * Unresolved toxicity \\> Grade 1 from prior cancer therapy, except for:\n\n    * Hot flashes and alopecia (may be any grade)\n    * Peripheral neuropathy (may be up to Grade 1)\n  * Significant traumatic injury or major surgical procedure within 4 weeks prior to initiation of study treatment, or planned surgery during the study\n  * Positive HIV test at screening\n  * Clinically significant history of liver disease, including severe liver impairment (ChildPugh Class B/C), active viral or other hepatitis, current alcohol abuse, or cirrhosis\n\n    o Patients with active HBV infection defined as: positive HbsAg, positive HbcAb, HBV DNA \\> 2000 UI/mL, and/or elevated ALT levels\n  * History of malignancy within 5 years prior to consent, with the exception of the cancer under investigation in this study and malignancies with a negligible risk of metastasis or death (e.g., 5-year OS rate \\> 90%), such as adequately treated carcinoma in situ of the cervix, nonmelanoma skin carcinoma, localized prostate cancer, ductal carcinoma in situ, or Stage I uterine cancer\n  * History or presence of an abnormal ECG that is deemed clinically significant, (e.g., complete left bundle branch block, second- or third-degree atrioventricular heart block) or evidence of prior myocardial infarction\n  * History of or active clinically significant cardiovascular dysfunction, including the following:\n\n    * History of stroke or transient ischemic attack within 6 months prior to first dose of study treatment\n    * History of myocardial infarction within 6 months prior to first dose of study treatment\n    * New York Heart Association Class III or IV cardiac disease or congestive heart failure requiring medication\n    * Uncontrolled arrhythmias, history of or active ventricular arrhythmia requiring medication\n    * Coronary heart disease that is symptomatic or unstable angina\n    * Congenital long QT syndrome or QT interval corrected with Fridericia's formula (QTcF) \\> 470 ms demonstrated by at least two ECGs \\> 30 minutes apart, history of long or short QT syndrome, Brugada syndrome or known history of corrected QT interval prolongation, or torsades de pointes.\n  * Known allergy or hypersensitivity to any of the study drugs or any of their excipients\n  * Patients with any of the following prior treatment histories are excluded:\n\n    * Prior treatment with PARP inhibitors for advanced TNBC\n    * Progressed solely on endocrine therapy or HER2-targeted therapy without prior chemotherapy for advanced TNBC\n    * Treatment with investigational therapy within 28 days prior to initiation of study treatment\n    * Prior treatment with any of the PI3K, AKT, or mTOR inhibitor or with eribulin",
+      "healthyVolunteers": false,
+      "sex": "FEMALE",
+      "genderBased": true,
+      "minimumAge": "18 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "Hai Hu Doctor",
+          "role": "CONTACT",
+          "phone": "86+15958192550",
+          "email": "hjoyh@126.com"
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "UNDECIDED",
+      "description": "A plan for sharing individual participant data (IPD) from this study has not been finalized. The availability of IPD will be determined at a later stage, and any decision will be documented accordingly on this registry."
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D064726",
+          "term": "Triple Negative Breast Neoplasms"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D001943",
+          "term": "Breast Neoplasms"
+        },
+        {
+          "id": "D009371",
+          "term": "Neoplasms by Site"
+        },
+        {
+          "id": "D009369",
+          "term": "Neoplasms"
+        },
+        {
+          "id": "D001941",
+          "term": "Breast Diseases"
+        },
+        {
+          "id": "D012871",
+          "term": "Skin Diseases"
+        },
+        {
+          "id": "D017437",
+          "term": "Skin and Connective Tissue Diseases"
+        }
+      ]
+    },
+    "interventionBrowseModule": {
+      "meshes": [
+        {
+          "id": "C000723546",
+          "term": "inavolisib"
+        },
+        {
+          "id": "C490954",
+          "term": "eribulin"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

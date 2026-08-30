@@ -1,0 +1,501 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT07527650",
+      "orgStudyIdInfo": {
+        "id": "HM-OBCT-202"
+      },
+      "organization": {
+        "fullName": "Hanmi Pharmaceutical Company Limited",
+        "class": "INDUSTRY"
+      },
+      "briefTitle": "Study to Evaluate HM15275 in Subjects With Type 2 Diabetes Mellitus",
+      "officialTitle": "A Phase 2, Randomized, Double-blind, Placebo-controlled, Parallel Group Study to Evaluate Efficacy, Safety, and Tolerability of HM15275 for 36 Weeks in Subjects With Type 2 Diabetes Mellitus"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2026-06",
+      "overallStatus": "RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2026-05-18",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2027-10",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2027-10",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2026-04-07",
+      "studyFirstSubmitQcDate": "2026-04-07",
+      "studyFirstPostDateStruct": {
+        "date": "2026-04-14",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2026-08-13",
+      "lastUpdatePostDateStruct": {
+        "date": "2026-08-17",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "SPONSOR"
+      },
+      "leadSponsor": {
+        "name": "Hanmi Pharmaceutical Company Limited",
+        "class": "INDUSTRY"
+      }
+    },
+    "oversightModule": {
+      "oversightHasDmc": false,
+      "isFdaRegulatedDrug": true,
+      "isFdaRegulatedDevice": false
+    },
+    "descriptionModule": {
+      "briefSummary": "This study is a Phase 2 clinical trial to evaluate the efficacy, safety, and tolerability of HM15275 in subjects with type 2 diabetes mellitus over 36 weeks.",
+      "detailedDescription": "HM-OBCT-202 is a Phase 2, randomized, double-blind, placebo-controlled, multicenter, parallel-group study designed to evaluate the efficacy, safety, and tolerability of HM15275 treatment over 36 weeks in adults with type 2 diabetes mellitus (T2DM).\n\nThe study will enroll adult participants with T2DM (aged 18 to 75 years) who have inadequate glycemic control. Eligible participants must have a body mass index (BMI) ≥25 kg/m² and ≤50 kg/m² and HbA1c between 7.0% and 10.0% at screening.\n\nParticipants in this study will be randomly assigned in a 1:1:1:1 ratio to 1 of the 4 treatment arms. Randomization will be stratified by screening HbA1c (≤8.0% versus \\>8.0%) and use of metformin (yes versus no).\n\nAll participants will undergo a 4-week screening period, a 36-week treatment period (including weekly subcutaneous \\[SC\\] injection of study drug), and a 4-week safety follow-up period."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Type 2 Diabetes Mellitus",
+        "T2DM"
+      ],
+      "keywords": [
+        "Type 2 Diabetes Mellitus",
+        "T2DM"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE2"
+      ],
+      "designInfo": {
+        "allocation": "RANDOMIZED",
+        "interventionModel": "PARALLEL",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "TRIPLE",
+          "whoMasked": [
+            "PARTICIPANT",
+            "INVESTIGATOR",
+            "OUTCOMES_ASSESSOR"
+          ]
+        }
+      },
+      "enrollmentInfo": {
+        "count": 180,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "HM15275",
+          "type": "EXPERIMENTAL",
+          "description": "Participants will receive HM15275 via subcutaneous (SC) injection.",
+          "interventionNames": [
+            "Drug: HM15275"
+          ]
+        },
+        {
+          "label": "Placebo of HM15275",
+          "type": "PLACEBO_COMPARATOR",
+          "description": "Participants will receive placebo of HM15275 via subcutaneous (SC) injection.",
+          "interventionNames": [
+            "Drug: Placebo of HM15275"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DRUG",
+          "name": "HM15275",
+          "description": "HM15275 is a sterile solution for subcutaneous injection, supplied pre-filled syringes.",
+          "armGroupLabels": [
+            "HM15275"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Placebo of HM15275",
+          "description": "A sterile, matching solution supplied in pre-filled syringes.",
+          "armGroupLabels": [
+            "Placebo of HM15275"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Change in Glycated Hemoglobin (HbA1c)",
+          "description": "Change in HbA1c (%) from randomization to Week 37.",
+          "timeFrame": "Up to 41 weeks"
+        }
+      ],
+      "secondaryOutcomes": [
+        {
+          "measure": "Percentage of participants reaching specified HbA1c (%)",
+          "description": "Percentage of participants reaching specified high, medium, and low HbA1c (%) after multiple subcutaneous (SC) doses.",
+          "timeFrame": "Up to 41 weeks"
+        },
+        {
+          "measure": "Number of participants with adverse events (AEs)",
+          "description": "Number of participants with adverse events (AEs) after multiple subcutaneous (SC) doses.",
+          "timeFrame": "Up to 41 weeks"
+        }
+      ],
+      "otherOutcomes": [
+        {
+          "measure": "Plasma concentration profile",
+          "description": "Plasma concentration profile of HM15275 after multiple subcutaneous (SC) doses.",
+          "timeFrame": "Up to 41 weeks"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Key Inclusion Criteria\n\n1. Participant's age at the time of signing the informed consent:\n\n   * United States: 18 to 75 years (inclusive)\n2. Diagnosed with type 2 diabetes mellitus (T2DM) with HbA1c ≥7.0% and ≤10.0% at screening\n3. Treated with diet and exercise alone or on a stable dose of metformin (≥1000 mg/day) for at least 3 months prior to screening\n4. BMI ≥25 kg/m² and ≤50 kg/m²\n5. Body weight change \\<5% over the past 3 months prior to screening\n6. Capable of giving signed informed consent and willing to comply with all protocol procedures\n\nKey Exclusion Criteria\n\n1. Type 1 diabetes mellitus or use of glucose-lowering medications other than metformin within 3 months prior to screening\n2. Poor glycemic control (fasting plasma glucose \\>270 mg/dL)\n3. History of diabetic ketoacidosis or severe hypoglycemia within 6 months\n4. Clinically significant cardiovascular disease (e.g., NYHA class III/IV heart failure, recent myocardial infarction, stroke, or revascularization within 3 months)\n5. History of pancreatitis or factors increasing the risk of pancreatitis\n6. Personal or family history of medullary thyroid carcinoma (MTC) or multiple endocrine neoplasia type 2\n7. Clinically significant liver disease, renal impairment (eGFR \\<60 mL/min/1.73 m²), or abnormal laboratory findings at screening\n8. Participation in another investigational study within 30 days or within 5 half-lives of the investigational product, whichever is longer; for GLP-1 receptor agonist-related or weight loss studies, participation within 3 months prior to screening",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "maximumAge": "75 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "Pureun Nam",
+          "role": "CONTACT",
+          "phone": "+82-2-410-9147",
+          "email": "pureun.nam@hanmi.co.kr"
+        },
+        {
+          "name": "Hyeonho Choi",
+          "role": "CONTACT",
+          "phone": "+82-2-410-9834",
+          "email": "hyeonho.choi@hanmi.co.kr"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "Desert Clinical Research",
+          "status": "RECRUITING",
+          "city": "Mesa",
+          "state": "Arizona",
+          "zip": "85123",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Gerald Shockey",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 33.42227,
+            "lon": -111.82264
+          }
+        },
+        {
+          "facility": "Accel Research Sites - DeLand",
+          "status": "RECRUITING",
+          "city": "DeLand",
+          "state": "Florida",
+          "zip": "32720",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Bruce Rankin",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 29.02832,
+            "lon": -81.30312
+          }
+        },
+        {
+          "facility": "Charter Research",
+          "status": "RECRUITING",
+          "city": "Orlando",
+          "state": "Florida",
+          "zip": "32803",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Mary Hilal Quarterman",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 28.53834,
+            "lon": -81.37924
+          }
+        },
+        {
+          "facility": "AdventHealth Translational Research Institute",
+          "status": "NOT_YET_RECRUITING",
+          "city": "Orlando",
+          "state": "Florida",
+          "zip": "32804",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Richard Edwin Pratley",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 28.53834,
+            "lon": -81.37924
+          }
+        },
+        {
+          "facility": "K2 Medical Research The Villages LLC",
+          "status": "RECRUITING",
+          "city": "The Villages",
+          "state": "Florida",
+          "zip": "32159",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Craig T Curtis",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 28.93408,
+            "lon": -81.95994
+          }
+        },
+        {
+          "facility": "Centricity Research IRT - DBA IACT Health Columbus Piedmont",
+          "status": "RECRUITING",
+          "city": "Columbus",
+          "state": "Georgia",
+          "zip": "31904",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Steven Leichter",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 32.46098,
+            "lon": -84.98771
+          }
+        },
+        {
+          "facility": "The South Bend Clinic",
+          "status": "RECRUITING",
+          "city": "South Bend",
+          "state": "Indiana",
+          "zip": "46617",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Rita Schmid",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 41.68338,
+            "lon": -86.25001
+          }
+        },
+        {
+          "facility": "Jefferson City Medical Center",
+          "status": "RECRUITING",
+          "city": "Jefferson City",
+          "state": "Missouri",
+          "zip": "65109",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Benjamin Cook",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 38.5767,
+            "lon": -92.17352
+          }
+        },
+        {
+          "facility": "Clay Platte Family Medicine",
+          "status": "RECRUITING",
+          "city": "Kansas City",
+          "state": "Missouri",
+          "zip": "64151",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Scott Kuennen",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 39.09973,
+            "lon": -94.57857
+          }
+        },
+        {
+          "facility": "Methodist Physicians Clinic",
+          "status": "RECRUITING",
+          "city": "Fremont",
+          "state": "Nebraska",
+          "zip": "68025",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Thomas Wolf",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 41.43333,
+            "lon": -96.49808
+          }
+        },
+        {
+          "facility": "Santa Rosa Medical Centers of Nevada",
+          "status": "RECRUITING",
+          "city": "Las Vegas",
+          "state": "Nevada",
+          "zip": "89119",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Syed Pervaiz",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 36.17497,
+            "lon": -115.13722
+          }
+        },
+        {
+          "facility": "Lucas Research, Inc.",
+          "status": "RECRUITING",
+          "city": "Morehead City",
+          "state": "North Carolina",
+          "zip": "28557",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Kathryn Jean Lucas",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 34.72294,
+            "lon": -76.72604
+          }
+        },
+        {
+          "facility": "Centricity Research Columbus",
+          "status": "RECRUITING",
+          "city": "Columbus",
+          "state": "Ohio",
+          "zip": "43213",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Sridhar Guduri",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 39.96118,
+            "lon": -82.99879
+          }
+        },
+        {
+          "facility": "Olympus Family Medicine",
+          "status": "RECRUITING",
+          "city": "Salt Lake City",
+          "state": "Utah",
+          "zip": "84117",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Jared Probst",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 40.76078,
+            "lon": -111.89105
+          }
+        },
+        {
+          "facility": "Manassas Clinical Research Center",
+          "status": "RECRUITING",
+          "city": "Manassas",
+          "state": "Virginia",
+          "zip": "20110",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Nabil Saleh Andrawis",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 38.75095,
+            "lon": -77.47527
+          }
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "NO"
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D003924",
+          "term": "Diabetes Mellitus, Type 2"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D003920",
+          "term": "Diabetes Mellitus"
+        },
+        {
+          "id": "D044882",
+          "term": "Glucose Metabolism Disorders"
+        },
+        {
+          "id": "D008659",
+          "term": "Metabolic Diseases"
+        },
+        {
+          "id": "D009750",
+          "term": "Nutritional and Metabolic Diseases"
+        },
+        {
+          "id": "D004700",
+          "term": "Endocrine System Diseases"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

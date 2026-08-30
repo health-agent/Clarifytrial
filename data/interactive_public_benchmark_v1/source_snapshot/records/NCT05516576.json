@@ -1,0 +1,244 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT05516576",
+      "orgStudyIdInfo": {
+        "id": "ST-2019-002"
+      },
+      "organization": {
+        "fullName": "University Hospital, Grenoble",
+        "class": "OTHER"
+      },
+      "briefTitle": "Endoscopic Sutured Gastroplasty with Endomina® Device Versus Standard of Care in Patients with Type 2 Diabetes and Class I Obesity: a Multi-center, Randomized Controlled Trial",
+      "officialTitle": "Endoscopic Sutured Gastroplasty with Endomina® Device Versus Standard of Care in Patients with Type 2 Diabetes and Class I Obesity: a Multi-center, Randomized Controlled Trial",
+      "acronym": "ESTIME"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2024-12",
+      "overallStatus": "RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2023-09-29",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2028-11",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2028-12",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2022-07-15",
+      "studyFirstSubmitQcDate": "2022-08-23",
+      "studyFirstPostDateStruct": {
+        "date": "2022-08-25",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2025-03-11",
+      "lastUpdatePostDateStruct": {
+        "date": "2025-03-14",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "SPONSOR"
+      },
+      "leadSponsor": {
+        "name": "University Hospital, Grenoble",
+        "class": "OTHER"
+      },
+      "collaborators": [
+        {
+          "name": "Endo Tools Therapeutics S.A.",
+          "class": "INDUSTRY"
+        }
+      ]
+    },
+    "oversightModule": {
+      "oversightHasDmc": true,
+      "isFdaRegulatedDrug": false,
+      "isFdaRegulatedDevice": false,
+      "isUsExport": false
+    },
+    "descriptionModule": {
+      "briefSummary": "The primary objective of this study is to assess the efficacy of endoscopic gastric reduction with the endomina® device, in combination with standard of care, compared to standard of care alone, on the remission of diabetes 24 months after surgery, in patients with type-2 diabetes and class I obesity."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Diabetes Mellitus, Type 2",
+        "Obesity"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "NA"
+      ],
+      "designInfo": {
+        "allocation": "RANDOMIZED",
+        "interventionModel": "PARALLEL",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "NONE"
+        }
+      },
+      "enrollmentInfo": {
+        "count": 200,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "endoscopic gastroplasty with endomina®",
+          "type": "EXPERIMENTAL",
+          "interventionNames": [
+            "Device: endomina®"
+          ]
+        },
+        {
+          "label": "control",
+          "type": "NO_INTERVENTION"
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DEVICE",
+          "name": "endomina®",
+          "description": "Endoscopic gastroplasty",
+          "armGroupLabels": [
+            "endoscopic gastroplasty with endomina®"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Remission of diabetes after endoscopic gastroplasty with endomina, in patients with type-2 diabetes and class I obesity",
+          "description": "Remission is defined as HbA1c \\< 6.5% without antidiabetic drug for at least 3 months",
+          "timeFrame": "24 months"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* Age between 18-65 years;\n* Recently diagnosed Type 2 Diabetes (\\<= 10 years):\n* HbA1c \\< 9%:\n* Under non-insulin anti-diabetic treatment, i.e., metformin, sulfonylurea, glinide, DPP4i, GLP1-RA, SGLT2i, alone or in combination\n* Anti-diabetic therapy stable during the last 3 months before inclusion\n* BMI between 30-34.9 kg/m² with adaptation for Asian population 27.5-32.5kg/m²\n* Must be able to comply with all study requirements for the duration of the study as outlined in the protocol (including compliance to randomization treatment, dietary follow up, visits schedule and all study specific procedures);\n* Must be able to understand and be willing to provide written informed consent.\n\nExclusion Criteria:\n\n* Contra-indication to the use of endomina® and TAPES according to their Instruction for Use (IFU).\n* Type I diabetes characterized by C peptide \\<0.2 nmol/l or presence of anti-GAD, anti IA2, anti-ZNT8\n* Unstable diabetic retinopathy\n* Severe kidney (stage 4-5), hepatic (child B and C cirrhosis), pulmonary disease or cancer (cancer in the past 5 years);\n* Short-term prognosis due to a proven serious comorbidity including severe macrovascular complications and / or a limited life expectancy (\\<5 years)\n* Contra-indication to endoscopic gastroplasty (...)\n* Impending gastric surgery 60 days post intervention;\n* Participant involved in another interventional clinical study\n* Patients having alcoholic or drug addiction;\n* Patients having a severe mental illness such as psychosis, bipolar disorders, severe, current depression or eating disorder such as bulimia nervosa or binge eating disorder;\n* Person deprived of liberty by judicial order\n* Person under guardianship or curatorship",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "maximumAge": "65 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "L. LECLERCQ, MSc",
+          "role": "CONTACT",
+          "phone": "+3271919409",
+          "email": "ESTIME@endotools.be"
+        }
+      ],
+      "overallOfficials": [
+        {
+          "name": "A-L BOREL, MD PHD",
+          "affiliation": "University Grenoble Hospital",
+          "role": "PRINCIPAL_INVESTIGATOR"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "Chu Grenoble Alpes",
+          "status": "RECRUITING",
+          "city": "La Tronche",
+          "zip": "38043",
+          "country": "France",
+          "contacts": [
+            {
+              "name": "Anne-Laure BOREL, MDD",
+              "role": "CONTACT",
+              "email": "ALBorel@chu-grenoble.fr"
+            }
+          ],
+          "geoPoint": {
+            "lat": 45.20507,
+            "lon": 5.74629
+          }
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "UNDECIDED"
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D003924",
+          "term": "Diabetes Mellitus, Type 2"
+        },
+        {
+          "id": "D009765",
+          "term": "Obesity"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D003920",
+          "term": "Diabetes Mellitus"
+        },
+        {
+          "id": "D044882",
+          "term": "Glucose Metabolism Disorders"
+        },
+        {
+          "id": "D008659",
+          "term": "Metabolic Diseases"
+        },
+        {
+          "id": "D009750",
+          "term": "Nutritional and Metabolic Diseases"
+        },
+        {
+          "id": "D004700",
+          "term": "Endocrine System Diseases"
+        },
+        {
+          "id": "D050177",
+          "term": "Overweight"
+        },
+        {
+          "id": "D044343",
+          "term": "Overnutrition"
+        },
+        {
+          "id": "D009748",
+          "term": "Nutrition Disorders"
+        },
+        {
+          "id": "D001835",
+          "term": "Body Weight"
+        },
+        {
+          "id": "D012816",
+          "term": "Signs and Symptoms"
+        },
+        {
+          "id": "D013568",
+          "term": "Pathological Conditions, Signs and Symptoms"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

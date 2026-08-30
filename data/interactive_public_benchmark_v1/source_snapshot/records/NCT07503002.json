@@ -1,0 +1,291 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT07503002",
+      "orgStudyIdInfo": {
+        "id": "IRB00460674"
+      },
+      "organization": {
+        "fullName": "Johns Hopkins University",
+        "class": "OTHER"
+      },
+      "briefTitle": "Shortened LSD Intervention for Major Depressive Disorder",
+      "officialTitle": "Shortened LSD Intervention for Major Depressive Disorder",
+      "acronym": "SLIM"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2026-07",
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+        "date": "2026-08-31",
+        "type": "ESTIMATED"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2027-07-01",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2027-12-01",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2026-03-25",
+      "studyFirstSubmitQcDate": "2026-03-25",
+      "studyFirstPostDateStruct": {
+        "date": "2026-03-31",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2026-07-23",
+      "lastUpdatePostDateStruct": {
+        "date": "2026-07-24",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "SPONSOR"
+      },
+      "leadSponsor": {
+        "name": "Johns Hopkins University",
+        "class": "OTHER"
+      }
+    },
+    "oversightModule": {
+      "isFdaRegulatedDrug": true,
+      "isFdaRegulatedDevice": false
+    },
+    "descriptionModule": {
+      "briefSummary": "The purpose of this study is to determine the safety and clinical effectiveness of a shortened lysergic acid diethylamide (LSD) experience. This will be achieved by administering the drug risperidone 45-minutes after the administration of LSD.",
+      "detailedDescription": "This study will administer open-label oral LSD hemi-L-tartrate 250 µg followed 45 minutes later by oral risperidone 1 mg to 10 participants with Major Depressive Disorder (MDD) for a pilot investigation into the effects of abbreviated LSD on depression. Participants will be monitored for 10.5 hours and assessed for subjective effects and discharge readiness at several time points following the dose. The main aim of this study is to test whether risperidone can be used to abbreviate the subjective effects of LSD, and whether this abbreviated LSD experience will have any potential therapeutic benefit in patients with MDD."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Major Depression Moderate",
+        "Major Depression Severe",
+        "Major Depression"
+      ],
+      "keywords": [
+        "LSD",
+        "lysergic acid diethylamide",
+        "depression",
+        "MDD",
+        "major depression",
+        "major depressive"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE1"
+      ],
+      "designInfo": {
+        "allocation": "NA",
+        "interventionModel": "SINGLE_GROUP",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "NONE"
+        }
+      },
+      "enrollmentInfo": {
+        "count": 10,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "LSD + Risperidone",
+          "type": "EXPERIMENTAL",
+          "interventionNames": [
+            "Drug: LSD",
+            "Drug: Risperidone"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DRUG",
+          "name": "LSD",
+          "description": "Participants will be administered LSD followed 45-minutes later by risperidone.",
+          "armGroupLabels": [
+            "LSD + Risperidone"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Risperidone",
+          "description": "Participants will be administered LSD followed 45-minutes later by risperidone.",
+          "armGroupLabels": [
+            "LSD + Risperidone"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Change in Montgomery Asberg Depression Rating Scale (MADRS)",
+          "description": "Score range from 0 to 60. Higher scores indicate worse depression symptoms",
+          "timeFrame": "1 month"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* Have given written informed consent\n* Meet DSM-5 criteria for MDD\n* MADRS \\>= 28 at screening Can read, write, and speak English fluently\n* Be judged by study team clinicians to be at low risk for suicidality\n\nExclusion Criteria:\n\n* Women who are pregnant, nursing, or not practicing an effective means of birth control\n* Cardiovascular conditions: hypertension with resting blood pressure systolic \\>139 or diastolic \\>89, angina, heart rate \\> 99, a clinically significant ECG abnormality (e.g., atrial fibrillation, QTc \\> 450), TIA in the last 6 months stroke, peripheral or pulmonary vascular disease, cardiac valvulopathy\n* Epilepsy\n* Insulin-dependent diabetes; if taking oral hypoglycemic agent, then no history of hypoglycemia\n* Currently taking antipsychotics, or MAO inhibitors\n* Patients taking antidepressant medications and unable to taper\n* Moderate or strong CYP2D6 inhibitor antidepressants must undergo a washout period of 4 weeks or five half-lives prior to treatment\n* Currently taking CYP2D6 inhibitor other than an antidepressant that will be tapered\n* Currently taking efavirenz, Acetaldehyde dehydrogenase inhibitors such as disulfiram (Antabuse), Alcohol dehydrogenase inhibitors, or UGT1A9 inhibitors or UGT1A10 inhibitors such as phenytoin, regorafenib, eltrombopag\n* Have a seizure disorder, multiple sclerosis, history of significant head trauma, CNS tumor, movement disorders or any neurodegenerative condition\n* Morbidly obese (\\>100 lbs. above ideal body weight, or BMI \\>=40, or BMI \\>=35 with high blood pressure or diabetes)\n* Be judged by a study team clinician to be at risk for moderate or severe alcohol or benzodiazepine withdrawal\n* Body weight \\< 45 kg\n* Significant acute adverse reaction (e.g., dystonia) to an antipsychotic\n* Current or past history of meeting DSM-5 criteria for Schizophrenia, Psychotic Disorder (including substance-induced), Bipolar I or II Disorder or Major\n* Depression with psychotic features\n* Have a first degree relative with schizophrenia, psychotic disorder (unless substance induced or due to a medical condition), or Bipolar I Disorder.",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "21 Years",
+      "maximumAge": "70 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "Matthew Nielsen, BA",
+          "role": "CONTACT",
+          "phone": "410-999-8066",
+          "email": "slimstudy@jh.edu"
+        }
+      ],
+      "overallOfficials": [
+        {
+          "name": "Sandeep Nayak, MD",
+          "affiliation": "Johns Hopkins University",
+          "role": "PRINCIPAL_INVESTIGATOR"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "Johns Hopkins Center for Psychedelic and Consciousness Research",
+          "city": "Baltimore",
+          "state": "Maryland",
+          "zip": "21224",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Matthew Nielsen, BA",
+              "role": "CONTACT",
+              "phone": "917-991-0642",
+              "email": "mnielse7@jh.edu"
+            },
+            {
+              "name": "Sandeep Nayak, MD",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 39.29038,
+            "lon": -76.61219
+          }
+        }
+      ]
+    },
+    "referencesModule": {
+      "seeAlsoLinks": [
+        {
+          "label": "Center for Psychedelic and Consciousness Research",
+          "url": "http://hopkinspsychedelic.org/"
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "NO"
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D003865",
+          "term": "Depressive Disorder, Major"
+        },
+        {
+          "id": "D003863",
+          "term": "Depression"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D003866",
+          "term": "Depressive Disorder"
+        },
+        {
+          "id": "D019964",
+          "term": "Mood Disorders"
+        },
+        {
+          "id": "D001523",
+          "term": "Mental Disorders"
+        },
+        {
+          "id": "D001526",
+          "term": "Behavioral Symptoms"
+        },
+        {
+          "id": "D001519",
+          "term": "Behavior"
+        }
+      ]
+    },
+    "interventionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D008238",
+          "term": "Lysergic Acid Diethylamide"
+        },
+        {
+          "id": "D018967",
+          "term": "Risperidone"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D008237",
+          "term": "Lysergic Acid"
+        },
+        {
+          "id": "D004873",
+          "term": "Ergolines"
+        },
+        {
+          "id": "D004876",
+          "term": "Ergot Alkaloids"
+        },
+        {
+          "id": "D000470",
+          "term": "Alkaloids"
+        },
+        {
+          "id": "D006571",
+          "term": "Heterocyclic Compounds"
+        },
+        {
+          "id": "D006576",
+          "term": "Heterocyclic Compounds, 4 or More Rings"
+        },
+        {
+          "id": "D000072471",
+          "term": "Heterocyclic Compounds, Fused-Ring"
+        },
+        {
+          "id": "D011744",
+          "term": "Pyrimidinones"
+        },
+        {
+          "id": "D011743",
+          "term": "Pyrimidines"
+        },
+        {
+          "id": "D006573",
+          "term": "Heterocyclic Compounds, 1-Ring"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

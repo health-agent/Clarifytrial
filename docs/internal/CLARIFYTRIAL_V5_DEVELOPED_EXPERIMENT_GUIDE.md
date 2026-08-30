@@ -4,17 +4,17 @@
 그림까지 다시 만들 수 있다. 모든 명령은 저장소 최상위 폴더에서 PowerShell로
 실행한다.
 
-실행 결과는 `runs`에 저장한다. 내려받은 공개 원본과 검색용 임시 파일은
-`.research-cache`에 둔다. 두 폴더의 파일을 지우지 않으면 같은 자료를 다시 내려받거나
-처음부터 계산하지 않아도 된다.
+실행 결과는 `runs`에 저장한다. 검색용 임시 파일은 `.research-cache`에 둔다. 환자별
+확인 방법과 부담 제한 평가에 쓰는 공개 원문 15건은 이후 API 수정의 영향을 받지 않도록
+`data/interactive_public_benchmark_v1/source_snapshot`에 고정했다.
 
 ## 1. 설치
 
-Python 3.11 이상이 필요하다.
+Windows와 Python 3.12에서 재현을 확인했다.
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -c constraints\research.txt -e ".[dev,retrieval-bm25,codex-subscription]"
+.\.venv\Scripts\python.exe -m pip install -c constraints\repro-python312.txt -e ".[dev,retrieval-bm25]"
 .\.venv\Scripts\python.exe -m nltk.downloader punkt
 ```
 
@@ -177,7 +177,9 @@ HTML 데모는 16:9 한 화면에서 `현재 상태 읽기 → 다음 행동 결
 
 ## 5. 환자 상황에 따른 확인 방법 평가
 
-이 평가는 공개 조건 원본을 한 번 내려받아 사용한다.
+이 평가는 Git에 함께 넣은 공개 조건 원문을 사용한다. 최신 ClinicalTrials.gov 응답과
+비교할 필요가 있을 때만 `prepare-clinicaltrials-v5`로 별도 캐시를 만든다. 최신 응답은
+재현 자료가 아니라 원문 변경 점검용이다.
 
 ```powershell
 .\.venv\Scripts\clarifytrial.exe prepare-clinicaltrials-v5 `
@@ -191,7 +193,7 @@ HTML 데모는 16:9 한 화면에서 `현재 상태 읽기 → 다음 행동 결
 
 ```powershell
 .\.venv\Scripts\clarifytrial.exe run-public-route-choice-benchmark `
-  --source-cache .research-cache\clinicaltrials-v5 `
+  --source-cache data\interactive_public_benchmark_v1\source_snapshot `
   --output runs\policy-scale-20260830\route-choice-controlled
 ```
 
@@ -210,7 +212,7 @@ HTML 데모는 16:9 한 화면에서 `현재 상태 읽기 → 다음 행동 결
 
 ```powershell
 .\.venv\Scripts\clarifytrial.exe run-public-burden-benchmark `
-  --source-cache .research-cache\clinicaltrials-v5 `
+  --source-cache data\interactive_public_benchmark_v1\source_snapshot `
   --action-budget 3 `
   --output runs\policy-scale-20260830\burden-ablation-final
 ```
@@ -226,8 +228,14 @@ HTML 데모는 16:9 한 화면에서 `현재 상태 읽기 → 다음 행동 결
 ## 6. 발표 근거 묶음과 그림 만들기
 
 발표 근거 묶음에는 주 평가, 확인 방법 평가와 여러 합성 연결 모양에서 규칙이 움직이는
-방식이 들어간다. 아래 명령은 확인 횟수 1회, 2회, 3회를 세 작업으로 나눠 동시에
-실행한다. PowerShell 7 이상이 필요하다.
+방식이 들어간다. 가장 간단한 방법은 저장소에 포함한 재현 명령을 실행하는 것이다.
+
+```powershell
+.\scripts\reproduce_core.ps1 -Mode full -OutputRoot runs\reproduction-full
+```
+
+아래는 같은 작업을 나누어 실행할 때 쓰는 명령이다. 확인 횟수 1회, 2회, 3회를 세
+작업으로 나눠 동시에 실행하므로 PowerShell 7 이상이 필요하다.
 
 ```powershell
 $repoRoot = (Get-Location).Path
@@ -237,12 +245,12 @@ $repoRoot = (Get-Location).Path
   $checkCount = $_
 
   .\.venv\Scripts\clarifytrial.exe run-public-interactive-benchmark `
-    --source-cache .research-cache\clinicaltrials-v5 `
+    --source-cache data\interactive_public_benchmark_v1\source_snapshot `
     --action-budget $checkCount `
     --output "runs\policy-scale-20260830\budget-$checkCount\public-patients"
 
   .\.venv\Scripts\clarifytrial.exe run-public-grid-stress `
-    --source-cache .research-cache\clinicaltrials-v5 `
+    --source-cache data\interactive_public_benchmark_v1\source_snapshot `
     --action-budget $checkCount `
     --output "runs\policy-scale-20260830\budget-$checkCount\public-grid"
 
@@ -285,12 +293,13 @@ $repoRoot = (Get-Location).Path
   --public-protocol-scale runs\public-protocol-policy-scale-20260830 `
   --common-facts-known runs\public-protocol-common-facts-known-rebuild-v2 `
   --shared-fact-report runs\public-protocol-shared-facts-v1\shared-fact-report.json `
-  --live-model-smoke-before-result runs\presentation-live-model-smoke-fixed-20260830\result.json `
-  --live-model-smoke-after-result runs\presentation-live-model-smoke-code-routed-20260830\result.json `
-  --deterministic-smoke-before-result runs\presentation-deterministic-smoke-20260830\result.json `
-  --deterministic-smoke-after-result runs\presentation-deterministic-smoke-code-routed-20260830\result.json `
+  --archived-live-model-smoke-summary docs\internal\results\presentation-evidence-v2\live_model_smoke_summary.csv `
   --output docs\internal\results\presentation-evidence-v2
 ```
+
+실제 모델 한 사례는 동일 응답을 보장할 수 없으므로 다시 호출하지 않는다. 위 옵션은
+이미 저장한 합성 사례의 연결·사용량 관찰값을 그대로 포함하고, 나머지 표는 이번 실행
+결과로 다시 계산한다.
 
 생성된 CSV를 발표용 SVG 그림으로 바꾼다.
 

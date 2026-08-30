@@ -92,6 +92,7 @@ def fetch_clinicaltrials_v5_sources(
                     "study_url": f"https://clinicaltrials.gov/study/{nct_id}",
                     "api_url": f"{API_ROOT}/studies/{nct_id}",
                     "local_record": str(path),
+                    "record_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
                     "eligibility_sha256": hashlib.sha256(
                         eligibility.encode("utf-8")
                     ).hexdigest(),

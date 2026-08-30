@@ -1,0 +1,824 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT06633016",
+      "orgStudyIdInfo": {
+        "id": "ABX-002-2001"
+      },
+      "organization": {
+        "fullName": "Autobahn Therapeutics, Inc.",
+        "class": "INDUSTRY"
+      },
+      "briefTitle": "Study of ABX-002 for the Adjunctive Treatment of Major Depressive Disorder (AMPLIFY)",
+      "officialTitle": "A Phase 2 Randomized, Double-Blind, Placebo-Controlled Study of ABX-002 for the Adjunctive Treatment of Major Depressive Disorder"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2026-01",
+      "overallStatus": "RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2024-09-20",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2026-06",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2026-06",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2024-09-30",
+      "studyFirstSubmitQcDate": "2024-10-07",
+      "studyFirstPostDateStruct": {
+        "date": "2024-10-09",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2026-01-16",
+      "lastUpdatePostDateStruct": {
+        "date": "2026-01-20",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "SPONSOR"
+      },
+      "leadSponsor": {
+        "name": "Autobahn Therapeutics, Inc.",
+        "class": "INDUSTRY"
+      }
+    },
+    "oversightModule": {
+      "oversightHasDmc": true,
+      "isFdaRegulatedDrug": true,
+      "isFdaRegulatedDevice": false
+    },
+    "descriptionModule": {
+      "briefSummary": "The goal of this clinical trial is to learn if ABX-002 added to an existing antidepressant treatment will benefit depression symptoms in adults with moderate to severe major depressive disorder who have had an inadequate response to their antidepressant.\n\nThis is a double-blind, placebo-controlled, 2-arm, parallel-group, Phase 2 study, randomized 1:1 (ABX-002: placebo).\n\nThe study will include the following stages:\n\n1. Screening, approximately 35 days\n2. 42-day Treatment Period\n3. 2-week post dose Safety Follow-up Period\n4. 6-month postdose targeted safety follow-up period"
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Major Depressive Disorder"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE2"
+      ],
+      "designInfo": {
+        "allocation": "RANDOMIZED",
+        "interventionModel": "PARALLEL",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "DOUBLE",
+          "maskingDescription": "The study participants, Investigator, and study site staff, Sponsor will be blinded to treatment assignments (ABX-002 or placebo solution).",
+          "whoMasked": [
+            "PARTICIPANT",
+            "INVESTIGATOR"
+          ]
+        }
+      },
+      "enrollmentInfo": {
+        "count": 230,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "ABX-002 + SSRI/SNRI",
+          "type": "EXPERIMENTAL",
+          "description": "Patients continue to receive their selective serotonin reuptake inhibitor/serotonin norepinephrine reuptake inhibitor (SSRI/SNRI) antidepressants at a stable dose for the duration of the study in addition to ABX-002.",
+          "interventionNames": [
+            "Drug: ABX-002"
+          ]
+        },
+        {
+          "label": "Placebo + SSRI/SNRI",
+          "type": "PLACEBO_COMPARATOR",
+          "description": "Patients continue to receive their selective serotonin reuptake inhibitor/serotonin norepinephrine reuptake inhibitor (SSRI/SNRI) antidepressants at a stable dose for the duration of the study in addition to the Placebo.",
+          "interventionNames": [
+            "Other: Placebo"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DRUG",
+          "name": "ABX-002",
+          "description": "ABX-002 oral solution in 1-mL cyclic olefin polymer prefilled syringes, taken on an empty stomach first thing in the morning followed by 240 mL (8 oz) of water.",
+          "armGroupLabels": [
+            "ABX-002 + SSRI/SNRI"
+          ]
+        },
+        {
+          "type": "OTHER",
+          "name": "Placebo",
+          "description": "Comparator Placebo oral solution in 1-mL cyclic olefin polymer prefilled syringes, taken on an empty stomach first thing in the morning followed by 240 mL (8 oz) of water.",
+          "armGroupLabels": [
+            "Placebo + SSRI/SNRI"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Change from Baseline in the 17-item Hamilton Rating Scale for Depression (HAMD-17)",
+          "description": "The HAMD-17 is a clinician-based assessment of depressive symptoms. Higher scores indicate worse symptoms. A score of 0-9 is generally accepted to be within the normal range (or in clinical remission), while a score of greater than 17 indicates moderate to severe depression symptoms.",
+          "timeFrame": "6 weeks"
+        }
+      ],
+      "secondaryOutcomes": [
+        {
+          "measure": "Change from Baseline for Clinical Global Impression of Severity (CGI-S)",
+          "description": "a 7-point rating scale used to measure illness and symptom severity in subjects with mental disorders. The greater the number the more severe.",
+          "timeFrame": "6 weeks"
+        },
+        {
+          "measure": "Change from Baseline for Sheehan Disability Scale (SDS)",
+          "description": "Self-rated, 3-item questionnaire that uses a Likert scale from 0 (not at all) to 10 (extremely) to assess impairment in the occupational, social, and family domains.",
+          "timeFrame": "6 weeks"
+        },
+        {
+          "measure": "Change from baseline for 6-item Hamilton Rating Scale for Depression (HAMD-6)",
+          "description": "Six-item scale used to assess the core symptoms of depression.",
+          "timeFrame": "6 weeks"
+        },
+        {
+          "measure": "Change from baseline for 29-item Hamilton Rating Scale for Depression (HAMD-29)",
+          "description": "Clinician-based assessment of depressive symptoms. HAMD-29 covers HAMD-6, HAMD-17 (items 1 to 17), the Melancholia Scale (MES) (items 18 to 23), and the neurovegetative symptoms (NVS) (items 24 to 28).",
+          "timeFrame": "6 weeks"
+        },
+        {
+          "measure": "Patient Global Impression-Improvement (PGI-I)",
+          "description": "Quality-of-life questionnaire to assess improvement of activities of daily living, wellbeing, and function.",
+          "timeFrame": "6 weeks"
+        },
+        {
+          "measure": "Assessment of safety and tolerability of ABX-002 compared with placebo using adverse events",
+          "description": "Incidence and severity of treatment-emergent adverse events to ABX-002 will be measured",
+          "timeFrame": "6 weeks"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* Meets the DSM-5 criteria for Major Depressive Disorder, with a current major depressive episode duration of \\> 6 weeks and ≤ 18 months.\n* A score of ≤ 22 (midrange mild/moderate) on the Hamilton Anxiety Rating Scale.\n* Montgomery-Asberg Depression Rating Scale total score of \\> 24 \\[indicating moderate to severe depression\\] at Screening and at Baseline.\n* Subject is compliantly using a single selective serotonin reuptake inhibitors / serotonin norepinephrine reuptake inhibitor antidepressant for at least 6 weeks for their current episode of depression, with an adequate dose, and with an inadequate response as defined by the Antidepressant Treatment Response Questionnaire. The dosage of the current antidepressant must have been stable for the past 4 weeks, and the dosage and specific antidepressant used should remain the same from Screening through the end of the Follow-up Period.\n\nExclusion Criteria:\n\nNote: History implies lifetime history, unless otherwise specified\n\n* History of schizophrenia or other psychotic disorder, major depressive disorder with psychotic features or concomitant DSM-5 depressive disorders, bipolar I or II disorder, cyclothymic disorder, delirium, dementia, amnestic disorder, or cognitive disorder.\n* Current diagnosis or active symptoms within the last 2 years of obsessive-compulsive disorder, posttraumatic stress disorder, panic disorder, or eating disorder, according to DSM-5 criteria.\n* Primary diagnosis of borderline, antisocial, paranoid, schizoid, schizotypal, or histrionic personality disorder, according to DSM-5 criteria. Current or history within the last 2 years of self-injurious behavior is exclusionary.\n* Has failed more than 2 single selective serotonin reuptake inhibitors / serotonin norepinephrine reuptake inhibitor antidepressant treatments, including the current serotonin reuptake inhibitors / serotonin norepinephrine reuptake inhibitor, during the current depressive episode, despite an adequate dose (per Antidepressant Treatment Response Questionnaire) and duration (at least 6 weeks).\n* Failure to respond to triiodothyronine or thyroxine augmentation for the treatment of depression.\n* Started new psychotherapy or had a change in the intensity of psychotherapy within 8 weeks before Screening.\n* Is suicidal at Screening or Baseline\n* History or current evidence within previous 3 months before Screening of uncontrolled, clinically significant neurological, gastrointestinal, respiratory, renal, hepatic, immunological, hematological, or other medical disorder, including cancer, that would jeopardize the safe participation of the subject in the study (in the opinion of the Investigator).\n* History of thyroid disease\n* History of multiple endocrine neoplasia syndrome\n* Diagnosis of epilepsy or history of convulsions, including childhood febrile seizure. Use of co-administered drugs that may lower seizure threshold is excluded.\n* Females who are pregnant, intend to become pregnant or are breastfeeding.\n* Antidepressants: Prior use of psychedelics, ketamine, or esketamine, for the treatment of Major Depressive Disorder.\n* Antidepressants: Current use, or use within 4 weeks prior to Screening, of any other augmentation agents for Major Depressive Disorder (e.g. second-generation antipsychotics \\[SGA\\], monoamine oxidase inhibitors \\[MAOI\\], tricyclic antidepressants \\[TCA\\], lithium, or bupropion)\n* Current or prior use of treatment for hypothyroidism including but not limited to synthetic or natural thyroid hormone, triiodothyronine and/or thyroxine.\n* Concomitant use of biotin of any dose and in any preparation 14 days prior to Day 1 until after the last study visit at Week 8 (Day 56).\n* Medications that are strong cytochrome P450 3A4 inhibitors or strong cytochrome P450 3A4 inducers are not allowed.\n* Prescription drug/controlled substance abuse, or illicit substance use within 1 year of Screening or positive urine drug results at Screening or Baseline for an illicit substance.\n* History or presence of cataract on ophthalmic examination (including slit-lamp), glaucoma, inflammatory eye disease or prior ophthalmic surgical procedures or laser surgery in either eye",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "maximumAge": "65 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "Ashlee Heldreth, MS",
+          "role": "CONTACT",
+          "phone": "8582573418",
+          "email": "clinicaltrials@autobahntx.com"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "Autobahn Site #131",
+          "status": "RECRUITING",
+          "city": "Birmingham",
+          "state": "Alabama",
+          "zip": "35294",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.52066,
+            "lon": -86.80249
+          }
+        },
+        {
+          "facility": "Autobahn Site #132",
+          "status": "ACTIVE_NOT_RECRUITING",
+          "city": "Chandler",
+          "state": "Arizona",
+          "zip": "85224",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.30616,
+            "lon": -111.84125
+          }
+        },
+        {
+          "facility": "Autobahn Site #116",
+          "status": "ACTIVE_NOT_RECRUITING",
+          "city": "Phoenix",
+          "state": "Arizona",
+          "zip": "85102",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.44838,
+            "lon": -112.07404
+          }
+        },
+        {
+          "facility": "Autobahn Site #136",
+          "status": "WITHDRAWN",
+          "city": "Tucson",
+          "state": "Arizona",
+          "zip": "85704",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 32.22174,
+            "lon": -110.92648
+          }
+        },
+        {
+          "facility": "Autobahn Site #150",
+          "status": "RECRUITING",
+          "city": "Anaheim",
+          "state": "California",
+          "zip": "92805",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.83529,
+            "lon": -117.9145
+          }
+        },
+        {
+          "facility": "Autobahn Site #113",
+          "status": "WITHDRAWN",
+          "city": "Encino",
+          "state": "California",
+          "zip": "91316",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 34.15917,
+            "lon": -118.50119
+          }
+        },
+        {
+          "facility": "Autobahn Site #133",
+          "status": "WITHDRAWN",
+          "city": "Encino",
+          "state": "California",
+          "zip": "91316",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 34.15917,
+            "lon": -118.50119
+          }
+        },
+        {
+          "facility": "Autobahn Site #124",
+          "status": "RECRUITING",
+          "city": "Glendale",
+          "state": "California",
+          "zip": "91206",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 34.14251,
+            "lon": -118.25508
+          }
+        },
+        {
+          "facility": "Autobahn Site #140",
+          "status": "RECRUITING",
+          "city": "Long Beach",
+          "state": "California",
+          "zip": "90807",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.76696,
+            "lon": -118.18923
+          }
+        },
+        {
+          "facility": "Autobahn Site #121",
+          "status": "WITHDRAWN",
+          "city": "Los Alamitos",
+          "state": "California",
+          "zip": "90720",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.80307,
+            "lon": -118.07256
+          }
+        },
+        {
+          "facility": "Autobahn Site #117",
+          "status": "WITHDRAWN",
+          "city": "Newport Beach",
+          "state": "California",
+          "zip": "92660",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.61891,
+            "lon": -117.92895
+          }
+        },
+        {
+          "facility": "Autobahn Site #106",
+          "status": "ACTIVE_NOT_RECRUITING",
+          "city": "Oceanside",
+          "state": "California",
+          "zip": "92056",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.19587,
+            "lon": -117.37948
+          }
+        },
+        {
+          "facility": "Autobahn Site #152",
+          "status": "RECRUITING",
+          "city": "Orange",
+          "state": "California",
+          "zip": "92866",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.78779,
+            "lon": -117.85311
+          }
+        },
+        {
+          "facility": "Autobahn Site #151",
+          "status": "RECRUITING",
+          "city": "Rancho Cucamonga",
+          "state": "California",
+          "zip": "91730",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 34.1064,
+            "lon": -117.59311
+          }
+        },
+        {
+          "facility": "Autobahn Site #119",
+          "status": "RECRUITING",
+          "city": "San Jose",
+          "state": "California",
+          "zip": "95124",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 37.33939,
+            "lon": -121.89496
+          }
+        },
+        {
+          "facility": "Autobahn Site #126",
+          "status": "RECRUITING",
+          "city": "Walnut Creek",
+          "state": "California",
+          "zip": "94596",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 37.90631,
+            "lon": -122.06496
+          }
+        },
+        {
+          "facility": "Autobahn Site #149",
+          "status": "RECRUITING",
+          "city": "West Covina",
+          "state": "California",
+          "zip": "91790",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 34.06862,
+            "lon": -117.93895
+          }
+        },
+        {
+          "facility": "Autobahn Site #122",
+          "status": "RECRUITING",
+          "city": "Cromwell",
+          "state": "Connecticut",
+          "zip": "06416",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 41.5951,
+            "lon": -72.64537
+          }
+        },
+        {
+          "facility": "Autobahn Site #108",
+          "status": "RECRUITING",
+          "city": "Brandon",
+          "state": "Florida",
+          "zip": "33511",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 27.9378,
+            "lon": -82.28592
+          }
+        },
+        {
+          "facility": "Autobahn Site #110",
+          "status": "RECRUITING",
+          "city": "Hialeah",
+          "state": "Florida",
+          "zip": "33012",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 25.8576,
+            "lon": -80.27811
+          }
+        },
+        {
+          "facility": "Autobahn Site #101",
+          "status": "RECRUITING",
+          "city": "Jacksonville",
+          "state": "Florida",
+          "zip": "32256",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 30.33218,
+            "lon": -81.65565
+          }
+        },
+        {
+          "facility": "Autobahn Site #139",
+          "status": "ACTIVE_NOT_RECRUITING",
+          "city": "Lake City",
+          "state": "Florida",
+          "zip": "32055",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 30.18968,
+            "lon": -82.63929
+          }
+        },
+        {
+          "facility": "Autobahn Site #111",
+          "status": "RECRUITING",
+          "city": "Miami",
+          "state": "Florida",
+          "zip": "33144",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 25.77427,
+            "lon": -80.19366
+          }
+        },
+        {
+          "facility": "Autobahn Site #141",
+          "status": "ACTIVE_NOT_RECRUITING",
+          "city": "Miami",
+          "state": "Florida",
+          "zip": "33157",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 25.77427,
+            "lon": -80.19366
+          }
+        },
+        {
+          "facility": "Autobahn Site #147",
+          "status": "RECRUITING",
+          "city": "Miami Gardens",
+          "state": "Florida",
+          "zip": "33014",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 25.94204,
+            "lon": -80.2456
+          }
+        },
+        {
+          "facility": "Autobahn Site #102",
+          "status": "ACTIVE_NOT_RECRUITING",
+          "city": "Orlando",
+          "state": "Florida",
+          "zip": "32822",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 28.53834,
+            "lon": -81.37924
+          }
+        },
+        {
+          "facility": "Autobahn Site #148",
+          "status": "RECRUITING",
+          "city": "Tampa",
+          "state": "Florida",
+          "zip": "33629",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 27.94752,
+            "lon": -82.45843
+          }
+        },
+        {
+          "facility": "Autobahn Site #123",
+          "status": "ACTIVE_NOT_RECRUITING",
+          "city": "Atlanta",
+          "state": "Georgia",
+          "zip": "30328",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.749,
+            "lon": -84.38798
+          }
+        },
+        {
+          "facility": "Autobahn Site #112",
+          "status": "RECRUITING",
+          "city": "Decatur",
+          "state": "Georgia",
+          "zip": "30030",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.77483,
+            "lon": -84.29631
+          }
+        },
+        {
+          "facility": "Autobahn Site #142",
+          "status": "RECRUITING",
+          "city": "Peachtree Corners",
+          "state": "Georgia",
+          "zip": "30071",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.9701,
+            "lon": -84.22159
+          }
+        },
+        {
+          "facility": "Autobahn Site #120",
+          "status": "ACTIVE_NOT_RECRUITING",
+          "city": "Savannah",
+          "state": "Georgia",
+          "zip": "31405",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 32.08354,
+            "lon": -81.09983
+          }
+        },
+        {
+          "facility": "Autobahn Site #154",
+          "status": "ACTIVE_NOT_RECRUITING",
+          "city": "Elgin",
+          "state": "Illinois",
+          "zip": "60123",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 42.03725,
+            "lon": -88.28119
+          }
+        },
+        {
+          "facility": "Autobahn Site #137",
+          "status": "RECRUITING",
+          "city": "Boston",
+          "state": "Massachusetts",
+          "zip": "02130",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 42.35843,
+            "lon": -71.05977
+          }
+        },
+        {
+          "facility": "Autobahn Site #138",
+          "status": "ACTIVE_NOT_RECRUITING",
+          "city": "Watertown",
+          "state": "Massachusetts",
+          "zip": "02472",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 42.37093,
+            "lon": -71.18283
+          }
+        },
+        {
+          "facility": "Autobahn Site #127",
+          "status": "RECRUITING",
+          "city": "Saint Charles",
+          "state": "Missouri",
+          "zip": "63304",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 38.78394,
+            "lon": -90.48123
+          }
+        },
+        {
+          "facility": "Autobahn Site #130",
+          "status": "WITHDRAWN",
+          "city": "Las Vegas",
+          "state": "Nevada",
+          "zip": "89121",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 36.17497,
+            "lon": -115.13722
+          }
+        },
+        {
+          "facility": "Autobahn Site #129",
+          "status": "RECRUITING",
+          "city": "Berlin",
+          "state": "New Jersey",
+          "zip": "08009",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 39.79123,
+            "lon": -74.92905
+          }
+        },
+        {
+          "facility": "Autobahn Site #105",
+          "status": "RECRUITING",
+          "city": "Brooklyn",
+          "state": "New York",
+          "zip": "11229",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 40.6501,
+            "lon": -73.94958
+          }
+        },
+        {
+          "facility": "Autobahn Site #134",
+          "status": "RECRUITING",
+          "city": "Brooklyn",
+          "state": "New York",
+          "zip": "11235",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 40.6501,
+            "lon": -73.94958
+          }
+        },
+        {
+          "facility": "Autobahn Site #125",
+          "status": "ACTIVE_NOT_RECRUITING",
+          "city": "New York",
+          "state": "New York",
+          "zip": "10022",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 40.71427,
+            "lon": -74.00597
+          }
+        },
+        {
+          "facility": "Autobahn Site #104",
+          "status": "RECRUITING",
+          "city": "Staten Island",
+          "state": "New York",
+          "zip": "10314",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 40.56233,
+            "lon": -74.13986
+          }
+        },
+        {
+          "facility": "Autobahn Site #109",
+          "status": "RECRUITING",
+          "city": "Beachwood",
+          "state": "Ohio",
+          "zip": "44122",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 41.4645,
+            "lon": -81.50873
+          }
+        },
+        {
+          "facility": "Autobahn Site #107",
+          "status": "RECRUITING",
+          "city": "Oklahoma City",
+          "state": "Oklahoma",
+          "zip": "73112",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 35.46756,
+            "lon": -97.51643
+          }
+        },
+        {
+          "facility": "Autobahn Site #128",
+          "status": "ACTIVE_NOT_RECRUITING",
+          "city": "North Charleston",
+          "state": "South Carolina",
+          "zip": "29405",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 32.85462,
+            "lon": -79.97481
+          }
+        },
+        {
+          "facility": "Autobahn Site #153",
+          "status": "RECRUITING",
+          "city": "Beaumont",
+          "state": "Texas",
+          "zip": "77701",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 30.08605,
+            "lon": -94.10185
+          }
+        },
+        {
+          "facility": "Autobahn Site #146",
+          "status": "RECRUITING",
+          "city": "San Antonio",
+          "state": "Texas",
+          "zip": "78215",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 29.42412,
+            "lon": -98.49363
+          }
+        },
+        {
+          "facility": "Autobahn Site #144",
+          "status": "RECRUITING",
+          "city": "Sherman",
+          "state": "Texas",
+          "zip": "75092",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.63566,
+            "lon": -96.60888
+          }
+        },
+        {
+          "facility": "Autobahn Site #159",
+          "status": "RECRUITING",
+          "city": "Orem",
+          "state": "Utah",
+          "zip": "84058",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 40.2969,
+            "lon": -111.69465
+          }
+        },
+        {
+          "facility": "Autobahn Site #145",
+          "status": "RECRUITING",
+          "city": "Fairfax",
+          "state": "Virginia",
+          "zip": "22030",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 38.84622,
+            "lon": -77.30637
+          }
+        },
+        {
+          "facility": "Autobahn Site #143",
+          "status": "RECRUITING",
+          "city": "Bellevue",
+          "state": "Washington",
+          "zip": "98007",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 47.61038,
+            "lon": -122.20068
+          }
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "NO"
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D003865",
+          "term": "Depressive Disorder, Major"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D003866",
+          "term": "Depressive Disorder"
+        },
+        {
+          "id": "D019964",
+          "term": "Mood Disorders"
+        },
+        {
+          "id": "D001523",
+          "term": "Mental Disorders"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

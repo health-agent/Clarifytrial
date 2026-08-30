@@ -1,0 +1,352 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT07041073",
+      "orgStudyIdInfo": {
+        "id": "101149645"
+      },
+      "organization": {
+        "fullName": "Corporacion Parc Tauli",
+        "class": "OTHER"
+      },
+      "briefTitle": "EEG-based Neurofeedback to Improve Emotion Regulation in Major Depressive Disorder: A Randomized Clinical Trial",
+      "officialTitle": "Restoring Emotional Stability Through Neurofeedback and AI for Transformative Empowerment",
+      "acronym": "RESoNATE"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2025-06",
+      "overallStatus": "RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2025-05-19",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2026-03",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2026-09",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2025-06-18",
+      "studyFirstSubmitQcDate": "2025-06-18",
+      "studyFirstPostDateStruct": {
+        "date": "2025-06-27",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2025-06-18",
+      "lastUpdatePostDateStruct": {
+        "date": "2025-06-27",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "PRINCIPAL_INVESTIGATOR",
+        "investigatorFullName": "Virginia Soria",
+        "investigatorTitle": "Head of Adults Mental Health Department",
+        "investigatorAffiliation": "Corporacion Parc Tauli"
+      },
+      "leadSponsor": {
+        "name": "Corporacion Parc Tauli",
+        "class": "OTHER"
+      },
+      "collaborators": [
+        {
+          "name": "Horizon 2020 - European Commission",
+          "class": "OTHER"
+        }
+      ]
+    },
+    "oversightModule": {
+      "oversightHasDmc": false,
+      "isFdaRegulatedDrug": false,
+      "isFdaRegulatedDevice": true,
+      "isUsExport": true
+    },
+    "descriptionModule": {
+      "briefSummary": "The goal of this clinical trial is to evaluate whether EEG-based neurofeedback targeting the emotion regulation network through swLORETA can improve emotional regulation and reduce symptoms in adults with Major Depressive Disorder (MDD) who have not responded sufficiently to first-line treatments. The main questions it aims to answer are:\n\n* Does EEG-neurofeedback improve emotional self-regulation and reduce clinical symptoms in patients with MDD with or without anxiety symptoms?\n* Are changes in EEG resting-state activity and stress biomarkers (e.g., cortisol) associated with clinical improvement?\n\nResearchers will compare an active neurofeedback group, a sham (placebo) neurofeedback group, and a treatment-as-usual control group to see if real-time EEG-neurofeedback leads to greater improvement in mood, emotional regulation, and neurophysiological indicators than placebo or no additional intervention.\n\nParticipants will:\n\n* Receive 10 sessions of either real or sham EEG-neurofeedback (or no sessions in the control group) over 5 weeks.\n* Complete clinical, psychological, and neurophysiological assessments before (week 0) and after the intervention (week 6).\n* Provide repeated saliva samples to assess stress-related biomarkers at week 0 and week 6.\n* Continue their standard pharmacological treatment throughout the study.",
+      "detailedDescription": "This is a single-blind, randomized, placebo-controlled clinical trial designed to evaluate the efficacy of EEG-based neurofeedback (EEG-NF) as a complementary intervention for individuals diagnosed with Major Depressive Disorder (MDD) who have shown an insufficient response to first-line pharmacological treatments. Seventy-two adult participants aged 18 to 65 with a confirmed diagnosis of MDD and a minimum threshold score on a validated depression severity scale will be recruited through psychiatric services. Participants will be randomized into three groups: an active neurofeedback group, a sham neurofeedback group (receiving non-contingent feedback), and a treatment-as-usual control group. The intervention is based on swLORETA Z-score neurofeedback using the NeuroGuide® platform, targeting key regions within the fronto-limbic circuit, including the anterior cingulate cortex, medial prefrontal cortex, amygdala, insula, posterior cingulate cortex, precuneus, habenula, and nucleus accumbens. These areas are implicated in emotion regulation and have shown altered activity and connectivity in individuals with MDD. The EEG will be acquired using a 24-channel EEG system (eego™, ANT Neuro) with electrodes placed according to the 10-20 international system, and real-time feedback will be provided via interactive gamified visual interfaces. Participants in the active neurofeedback group will undergo 10 training sessions over five weeks (two sessions per week), each consisting of a baseline resting EEG, five blocks of training based on operant conditioning (reinforcing reductions in abnormal Z-scores), a transfer task to assess generalization, and a post-training EEG resting-state with eyes closed. The sham group will follow an identical structure but receive feedback from another participant's EEG, ensuring the participant receives non-contingent, placebo-controlled feedback. EEG data will be preprocessed in real time, and feedback will be calculated based on frequency-specific parameters (delta, theta, alpha, beta, high beta) across power, coherence, and phase metrics. Participants will continue taking their usual medication during the trial. In addition to EEG, salivary cortisol will be measured as a neuroendocrine biomarker of stress regulation, collecting saliva with Salivette® kits at awakening, +30 minutes, +60 minutes, 10:00h, and 21:00h, on two consecutive days at baseline and post-treatment. The data will be used to calculate the cortisol awakening response (CAR) and diurnal slope following established guidelines. EEG recordings at baseline and after the intervention will be analyzed to assess changes in power spectra, connectivity, and network-level dynamics. In parallel, machine learning classifiers will be trained on vectorized EEG features to identify neurophysiological signatures of response to the intervention, using 80/20 train-test splits with 50 repeated iterations to ensure generalizability. Recursive Feature Elimination (RFE) will be employed to rank and select the most informative features, which will also be examined as potential predictors of clinical response.\n\nThe study complies with the CRED-nf checklist for neurofeedback research, incorporates rigorous sham control and randomization procedures, and adheres to ethical standards per the Declaration of Helsinki and European regulations for low-risk, non-invasive clinical trials. EEG acquisition systems and analysis software (NeuroGuide and eego™) are certified medical devices under FDA (510(k): K041263) and CE Class IIa regulations. Participants are blinded to their group allocation, and informed consent is obtained before enrollment. All data will be pseudo-anonymized and stored securely on REDCap (Research Electronic Data Capture), ensuring traceability and compliance with data protection legislation."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Major Depression With Comorbid Anxiety Symptoms",
+        "Major Depressive Disorder (MDD)"
+      ],
+      "keywords": [
+        "neurofeedback",
+        "eeg",
+        "MDD",
+        "anxiety",
+        "depression",
+        "emotion regulation"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "NA"
+      ],
+      "designInfo": {
+        "allocation": "RANDOMIZED",
+        "interventionModel": "PARALLEL",
+        "interventionModelDescription": "This study follows a parallel assignment model in which participants are randomized into one of three groups: active neurofeedback (EEG-NF), yoked-sham neurofeedback (sham-NF), or treatment-as-usual (control). Each participant completes the assigned intervention arm over the study period without crossover. However, to ensure ethical access to the potentially beneficial intervention, participants initially assigned to the sham-NF group or to the control group will be offered the opportunity to receive the active EEG-NF protocol after the completion of their participation in the study. These individuals may be re-enrolled into a subsequent phase as part of the experimental group and undergo the full EEG-NF training. This optional post-trial access is designed to address ethical considerations and maximize participant benefit while maintaining the scientific integrity of the initial randomized design.",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "SINGLE",
+          "whoMasked": [
+            "PARTICIPANT"
+          ]
+        }
+      },
+      "enrollmentInfo": {
+        "count": 72,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "Active Neurofeedback (EEG-NF)",
+          "type": "EXPERIMENTAL",
+          "description": "Participants in this arm will receive 10 sessions of active EEG-based neurofeedback over 5 weeks, while continuing their standard pharmacological treatment. Neurofeedback will be delivered using swLORETA Z-score training via NeuroGuide software, targeting key regions of the fronto-limbic emotional regulation network (e.g., anterior cingulate cortex, medial prefrontal cortex, amygdala, insula).",
+          "interventionNames": [
+            "Device: Active swLORETA Z-score Neurofeedback"
+          ]
+        },
+        {
+          "label": "Yoked-sham Neurofeedback",
+          "type": "SHAM_COMPARATOR",
+          "description": "Participants in this arm will undergo 10 sessions of sham neurofeedback with the same structure, duration, and appearance as the active intervention, while continuing their standard pharmacological treatment. However, the feedback presented on screen will be non-contingent and based on pre-recorded EEG activity from a participant in the active group (yoked design). This design ensures participants receive no real-time modulation of their own brain activity, serving as a placebo control while preserving participant blinding. After completing the study, these participants will be offered the opportunity to receive the active neurofeedback intervention in a separate phase.",
+          "interventionNames": [
+            "Device: Yoked-sham swLORETA Z-score Neurofeedback"
+          ]
+        },
+        {
+          "label": "Treatment as Usual (Control)",
+          "type": "NO_INTERVENTION",
+          "description": "Participants in this arm will continue their standard pharmacological treatment without receiving any additional intervention during the study period. This group serves as a control condition to assess the effects of neurofeedback relative to usual care."
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DEVICE",
+          "name": "Active swLORETA Z-score Neurofeedback",
+          "description": "Participants receive 10 sessions (25 minutes each, twice per week for 5 weeks) of EEG-based neurofeedback using the NeuroGuide® software and a 24-channel EEG recording system (eego™, ANT Neuro). The neurofeedback protocol is based on real-time swLORETA Z-score training targeting brain regions involved in emotion regulation. Feedback is provided via gamified visual displays when EEG activity moves toward normative patterns. This is an operant conditioning-based protocol designed to enhance emotional self-regulation.",
+          "armGroupLabels": [
+            "Active Neurofeedback (EEG-NF)"
+          ]
+        },
+        {
+          "type": "DEVICE",
+          "name": "Yoked-sham swLORETA Z-score Neurofeedback",
+          "description": "Participants receive 10 sessions identical in appearance and duration to the active neurofeedback condition. However, the feedback provided is not based on their own EEG activity. Instead, it is pre-recorded data from a matched participant in the active group (\"yoked\" design), ensuring no real-time neurophysiological modulation occurs. The same EEG equipment and visual feedback interface are used to maintain blinding.",
+          "armGroupLabels": [
+            "Yoked-sham Neurofeedback"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Change in depressive symptom severity, as measured by the Montgomery-Åsberg Depression Rating Scale (MADRS), from baseline to post-intervention.",
+          "description": "The MADRS is a validated clinician-administered scale widely used to assess the severity of depressive symptoms. A clinically significant response is defined as a reduction of more than 50% from the baseline score. Clinical remission is defined as a final score of 10 or below. The Spanish version of the MADRS, validated for use in the study population, will be administered by trained clinicians at three time points: baseline (pre-intervention), mid-treatment (after session 5), and post-intervention (after session 10).",
+          "timeFrame": "From enrollment (week 0) to the end of treatment (week 6)"
+        },
+        {
+          "measure": "Change in depressive symptoms measured by the Hamilton Depression Rating Scale (HAM-D), from baseline to post-treatment",
+          "description": "The HAM-D is a clinician-administered scale that evaluates a broad range of depressive symptoms, including insomnia, anxiety, and somatic complaints. It complements the MADRS by covering additional symptom domains and will be administered at baseline and post-treatment to assess clinical change.",
+          "timeFrame": "From enrollment (week 0) to the end of treatment (week 6)"
+        },
+        {
+          "measure": "Change in self-reported anxiety symptoms measured by the Beck Anxiety Inventory (BAI), from baseline to post-intervention",
+          "description": "The BAI is a 21-item self-report instrument designed to assess the severity of anxiety symptoms. It will be used to evaluate the potential impact of the neurofeedback intervention on co-occurring anxiety.",
+          "timeFrame": "From enrollment (week 0) to the end of treatment (week 6)"
+        },
+        {
+          "measure": "Change in self-reported depressive symptoms measured by the Beck Depression Inventory-II (BDI-II), from baseline to post-intervention",
+          "description": "The BDI-II is a widely used self-report questionnaire designed to assess the presence and severity of depressive symptoms.It will be administered at baseline and post-treatment to complement clinician-rated measures and capture subjective aspects of depression, such as patient-reported changes in mood, cognition, and physical symptoms related to depression.",
+          "timeFrame": "From enrollment (week 0) to the end of treatment (week 6)"
+        },
+        {
+          "measure": "Change in salivary cortisol levels (Cortisol Awakening Response and Diurnal Slope)",
+          "description": "Cortisol will be measured from saliva samples collected at five time points across the day (awakening, +30 min, +60 min, 10:00h, 21:00h), over two consecutive days at the enrollment and post-intervention. AUCi, AUCg, and diurnal slope will be calculated as biomarkers of HPA axis activity and stress response.",
+          "timeFrame": "From enrollment (week 0) to the end of treatment (week 6)"
+        },
+        {
+          "measure": "Change in cognitive emotion regulation strategies measured by the Cognitive Emotion Regulation Questionnaire (CERQ)",
+          "description": "The CERQ is a self-report instrument that evaluates the use of specific cognitive strategies in response to negative life events. It assesses both adaptive and maladaptive regulation strategies such as reappraisal, catastrophizing, and rumination. The scale will be used to determine whether the neurofeedback intervention promotes changes in cognitive emotion regulation patterns that are relevant to the development and maintenance of depressive symptoms.",
+          "timeFrame": "From enrollment (week 0) to the end of treatment (week 6)"
+        },
+        {
+          "measure": "Change in transient mood states measured by the Profile of Mood States (POMS)",
+          "description": "The POMS is a standardized questionnaire that measures transient mood states. It will be administered before and after each neurofeedback session to monitor short-term mood fluctuations during training.",
+          "timeFrame": "Before and after each neurofeedback session (Sessions 1-10; Weeks 1-5)"
+        },
+        {
+          "measure": "Change in resting-state EEG activity",
+          "description": "Resting-state EEG will be recorded before and after each Neurofeedback session to examine changes in spectral power and connectivity within emotion regulation networks. EEG activity will be analyzed using swLORETA and qEEG metrics.",
+          "timeFrame": "From baseline (week 0) to Post-treatment (Week 6); Before and after each neurofeedback session (Sessions 1-10; Weeks 1-5)"
+        },
+        {
+          "measure": "Change in emotion regulation skills measured by the Emotion Regulation Skills Questionnaire (ERSQ)",
+          "description": "The ERSQ evaluates the use of adaptive emotion regulation strategies in daily life. It will be used to assess whether skills acquired during neurofeedback training transfer to real-world emotional functioning.",
+          "timeFrame": "From enrollment (week 0) to the end of treatment (week 6)"
+        }
+      ],
+      "secondaryOutcomes": [
+        {
+          "measure": "Change in sleep quality measured by the Pittsburgh Sleep Quality Index (PSQI)",
+          "description": "The PSQI is a self-report instrument that evaluates subjective sleep quality and disturbances. It will assess whether neurofeedback improves sleep patterns often disrupted in MDD.",
+          "timeFrame": "Baseline (Week 0), Post-treatment (Week 6)"
+        },
+        {
+          "measure": "Change in rumination measured by the Ruminative Responses Scale (RRS)",
+          "description": "The RRS assesses the frequency of ruminative thoughts and responses to depressed mood. It will evaluate the impact of neurofeedback on cognitive vulnerability to depression and anxiety.",
+          "timeFrame": "Baseline (Week 0), Post-treatment (Week 6)"
+        },
+        {
+          "measure": "Change in sensitivity to punishment and reward measured by the SPSRQ",
+          "description": "The Sensitivity to Punishment and Sensitivity to Reward Questionnaire (SPSRQ) assesses behavioral inhibition and activation. It will explore changes in emotional responsiveness and motivational systems.",
+          "timeFrame": "Baseline (Week 0), Post-treatment (Week 6)"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* A primary diagnosis of Major Depressive Disorder (MDD), established by qualified psychiatrists according to DSM-5 criteria.\n* Patients with comorbid anxiety or anxiety symptoms will be included, provided that MDD is the primary diagnosis.\n* Participants must score at least 20 on the Montgomery-Åsberg Depression Rating Scale (MADRS), indicating a moderate level of depression.\n* All participants must be on a stable psychopharmacological treatment for at least 6 weeks before beginning of the study.\n\nExclusion Criteria:\n\n* Patients with a concurrent diagnosis of MDD and other severe psychiatric disorders.\n* Patients with serious physical illnesses that could interfere with study participation or the interpretation of results.\n* Participants currently undergoing structured psychotherapy or other interventions unrelated to standard psychopharmacological treatment.\n* Patients presenting with active suicidal ideation, as measured by the Columbia-Suicide Severity Rating Scale (C-SSRS), at the time of screening will not be eligible due to associated risks.\n* Active substance abuse or dependence (except nicotine).\n* Intellectual disability or conditions that interfere with the ability to provide informed consent and complete the intervention (e.g., severe visual or hearing impairments).\n* Pregnancy.",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "maximumAge": "65 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "Virginia Soria, MD,PhD",
+          "role": "CONTACT",
+          "phone": "+34 937231010",
+          "phoneExt": "82711",
+          "email": "vsoria@gmail.com"
+        },
+        {
+          "name": "Diego Palao, MD, PhD",
+          "role": "CONTACT",
+          "phone": "+34 937231010",
+          "phoneExt": "82711",
+          "email": "dpalao@tauli.cat"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "Corporació Sanitària Parc Taulí de Sabadell",
+          "status": "RECRUITING",
+          "city": "Sabadell",
+          "state": "Barcelona, Cataluña",
+          "zip": "08208",
+          "country": "Spain",
+          "contacts": [
+            {
+              "name": "Virginia Soria, MD, PhD",
+              "role": "CONTACT",
+              "phone": "+34 937231010",
+              "phoneExt": "82711",
+              "email": "vsoria@gmail.com"
+            },
+            {
+              "name": "Diego Palao, MD, PhD",
+              "role": "CONTACT",
+              "phone": "+34 937231010",
+              "phoneExt": "82711",
+              "email": "dpalao@tauli.cat"
+            },
+            {
+              "name": "Eleonora De Filippi, PhD",
+              "role": "SUB_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 41.54329,
+            "lon": 2.10942
+          }
+        }
+      ]
+    },
+    "referencesModule": {
+      "references": [
+        {
+          "pmid": "38199411",
+          "type": "BACKGROUND",
+          "citation": "Wu YC, Yu HE, Yen CF, Yeh YC, Jian CR, Lin CW, Lin IM. The effects of swLORETA Z-score neurofeedback for patients comorbid with major depressive disorder and anxiety symptoms. J Affect Disord. 2024 Apr 1;350:340-349. doi: 10.1016/j.jad.2024.01.020. Epub 2024 Jan 8."
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "UNDECIDED",
+      "description": "The decision to share individual participant data (IPD) has not yet been finalized, as it is contingent upon ethical approvals, participant consent, institutional policies, and compliance with applicable data protection regulations, including the General Data Protection Regulation (GDPR). The research team is currently assessing the feasibility of implementing appropriate anonymization procedures and secure data-sharing protocols. If data sharing is approved, access to IPD would likely be provided under controlled conditions through data use agreements to ensure participant privacy and responsible data management."
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D003865",
+          "term": "Depressive Disorder, Major"
+        },
+        {
+          "id": "D001008",
+          "term": "Anxiety Disorders"
+        },
+        {
+          "id": "D003863",
+          "term": "Depression"
+        },
+        {
+          "id": "D000080103",
+          "term": "Emotional Regulation"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D003866",
+          "term": "Depressive Disorder"
+        },
+        {
+          "id": "D019964",
+          "term": "Mood Disorders"
+        },
+        {
+          "id": "D001523",
+          "term": "Mental Disorders"
+        },
+        {
+          "id": "D001526",
+          "term": "Behavioral Symptoms"
+        },
+        {
+          "id": "D001519",
+          "term": "Behavior"
+        },
+        {
+          "id": "D000068356",
+          "term": "Self-Control"
+        },
+        {
+          "id": "D012919",
+          "term": "Social Behavior"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

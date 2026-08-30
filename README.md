@@ -110,13 +110,20 @@
 
 ## 실행
 
-Python 3.11 이상이 필요하다.
+재현이 확인된 환경은 Windows와 Python 3.12다. Python 3.13은 현재 고정한 연구용
+의존성과 맞지 않으므로 지원하지 않는다.
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -c constraints\research.txt -e ".[dev,retrieval-bm25,codex-subscription]"
+.\.venv\Scripts\python.exe -m pip install -c constraints\repro-python312.txt -e ".[dev,retrieval-bm25]"
 .\.venv\Scripts\python.exe -m nltk.downloader punkt
 .\.venv\Scripts\python.exe -m pytest -q
+```
+
+TrialGPT 방식의 의미 검색이나 외부 모델 실행이 필요할 때만 선택 기능을 추가한다.
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -c constraints\research.txt -e ".[retrieval,codex-subscription]"
 ```
 
 준비된 합성 사례에서 검색, 질문, 답변과 재판정을 한 번에 실행한다. 이 예제는 외부
@@ -130,6 +137,31 @@ python -m venv .venv
 입력은 [실행과 실험 안내](docs/internal/CLARIFYTRIAL_V5_DEVELOPED_EXPERIMENT_GUIDE.md)에
 예시가 있다.
 
+## 결과 재현
+
+다음 명령은 별도 API 키 없이 전체 검사, 공개 시험 50건·합성 환자 30명의 핵심 평가,
+환자별 확인 방법과 부담 제한 평가를 실행한다. 끝나면 커밋된 발표 근거와 파일·수치를
+비교해 `reproduction-report.json`을 만든다.
+
+```powershell
+.\scripts\reproduce_core.ps1 -Mode package
+```
+
+고정값을 사용한 연결 구조 1,800개까지 다시 계산하려면 `-Mode core`를 사용한다. 이
+대량 계산은 발표 수치가 이미 검증된 상태에서 매번 반복할 필요는 없다.
+
+확인 한도 1·2·3회를 모두 실행해 연결 구조 계산 2,073,600회와 발표용 표·그림까지 다시
+만들려면 다음 명령을 사용한다. 기존 결과를 지우지 않으므로 같은 출력 폴더가 있으면
+`-OutputRoot`로 새 폴더를 지정한다.
+
+```powershell
+.\scripts\reproduce_core.ps1 -Mode full -OutputRoot runs\reproduction-full
+```
+
+실제 모델을 호출한 합성 환자 한 사례는 모델 성능값이 아니며 완전 동일하게 다시 생성할
+수도 없다. 전체 재현 명령은 이 관찰값을 다시 호출하지 않고, Git에 저장한 요약을 발표
+근거 묶음에 포함한다.
+
 ## 문서
 
 - [발표 구성과 말하기 대본](docs/internal/CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md)
@@ -138,3 +170,7 @@ python -m venv .venv
 - [연구계획 v5](docs/internal/CLARIFYTRIAL_RESEARCH_PLAN_V5.md)
 - [실험자료 구성](docs/internal/CLARIFYTRIAL_DATASETS.md)
 - [전체 문서 목록](docs/internal/README.md)
+- [MIT License](LICENSE)
+
+MIT License는 ClarifyTrial 코드와 프로젝트 문서에 적용된다. 저장소에 포함하거나 연결한
+제3자 공개자료의 조건과 출처는 [DATA_SOURCES.md](DATA_SOURCES.md)를 따른다.

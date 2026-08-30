@@ -1,0 +1,721 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT06267391",
+      "orgStudyIdInfo": {
+        "id": "898"
+      },
+      "organization": {
+        "fullName": "Endogenex, Inc.",
+        "class": "INDUSTRY"
+      },
+      "briefTitle": "Safety and Effectiveness of Endoscopic Intestinal Re-Cellularization Therapy in Individuals With Type II Diabetes",
+      "officialTitle": "A Multicenter, Randomized, Double-blind, Sham-controlled Study for Assessing the Safety and Effectiveness of Endoscopic Intestinal Re-Cellularization Therapy in Individuals With Type II Diabetes (ReCET Study)"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2026-08",
+      "overallStatus": "ACTIVE_NOT_RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2024-05-01",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2027-02-01",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2027-10-01",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2024-02-05",
+      "studyFirstSubmitQcDate": "2024-02-12",
+      "studyFirstPostDateStruct": {
+        "date": "2024-02-20",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2026-08-03",
+      "lastUpdatePostDateStruct": {
+        "date": "2026-08-05",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "SPONSOR"
+      },
+      "leadSponsor": {
+        "name": "Endogenex, Inc.",
+        "class": "INDUSTRY"
+      }
+    },
+    "oversightModule": {
+      "oversightHasDmc": true,
+      "isFdaRegulatedDrug": false,
+      "isFdaRegulatedDevice": true,
+      "isUnapprovedDevice": true
+    },
+    "descriptionModule": {
+      "briefSummary": "This study is designed to evaluate the safety and effectiveness of endoscopic intestinal re-cellularization therapy in individuals with type 2 diabetes (T2D) inadequately controlled on non-insulin glucose-lowering medications.",
+      "detailedDescription": "This is a prospective, multi-center, randomized, double-blind, sham-controlled, adaptive study enrolling individuals with type 2 diabetes inadequately controlled on non-insulin glucose-lowering medications. Participants will be randomized to receive the Endogenex therapy or sham procedure consisting of device insertion without treatment. Participants will be followed for 6 months for the primary endpoint and 12 months in total. After 12 months, participants randomized to the sham arm may cross-over to receive the Endogenex procedure."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Type 2 Diabetes Mellitus",
+        "Type2diabetes",
+        "Diabetes Mellitus, Type 2",
+        "Diabetes",
+        "Type 2 Diabetes"
+      ],
+      "keywords": [
+        "Diabetes",
+        "Type 2 Diabetes",
+        "Duodenal Mucosal Resurfacing"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "NA"
+      ],
+      "designInfo": {
+        "allocation": "RANDOMIZED",
+        "interventionModel": "SEQUENTIAL",
+        "interventionModelDescription": "The participants randomized in a 2:1 ratio to the treatment arm or the sham control arm.",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "QUADRUPLE",
+          "whoMasked": [
+            "PARTICIPANT",
+            "CARE_PROVIDER",
+            "INVESTIGATOR",
+            "OUTCOMES_ASSESSOR"
+          ]
+        }
+      },
+      "enrollmentInfo": {
+        "count": 350,
+        "type": "ACTUAL"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "Endogenex Arm",
+          "type": "EXPERIMENTAL",
+          "description": "Treatment Arm will receive the Endogenex procedure.",
+          "interventionNames": [
+            "Device: Endogenex Treatment"
+          ]
+        },
+        {
+          "label": "Control Arm",
+          "type": "SHAM_COMPARATOR",
+          "description": "Control Arm will receive a sham procedure.",
+          "interventionNames": [
+            "Device: Sham Procedure"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DEVICE",
+          "name": "Endogenex Treatment",
+          "description": "Treatment arm will receive the Endogenex therapy. The procedure utilizes the Endogenex catheter to deliver non-thermal pulsed electric field to the first portion of the small intestine (duodenum) to induce cell regeneration. The catheter is introduced to the duodenum through the mouth using a guide wire and the therapy is applied to treat the duodenum. Participants will be followed for 12 months post procedure.",
+          "armGroupLabels": [
+            "Endogenex Arm"
+          ],
+          "otherNames": [
+            "duodenal mucosal resurfacing"
+          ]
+        },
+        {
+          "type": "DEVICE",
+          "name": "Sham Procedure",
+          "description": "The Control arm will receive a sham procedure. The sham procedure consists of placing the Endogenex catheter as described above without therapy applied. Participants will be followed for 12 months post procedure. They will be offered the Endogenex therapy after 12 months.",
+          "armGroupLabels": [
+            "Control Arm"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "HbA1c",
+          "description": "Change in HbA1c (%) from baseline to Month 6",
+          "timeFrame": "6 months post-procedure"
+        }
+      ],
+      "secondaryOutcomes": [
+        {
+          "measure": "HbA1c",
+          "description": "Change in HbA1c (%) from baseline to Month 12",
+          "timeFrame": "12 months post-procedure"
+        },
+        {
+          "measure": "HbA1c ≤7.0% without requiring rescue medication",
+          "description": "Proportion of participants with HbA1c ≤7.0% without requiring rescue medication",
+          "timeFrame": "6 months post-procedure"
+        },
+        {
+          "measure": "Time-in Range (TIR)",
+          "description": "Proportion of participants with TIR ≥70%",
+          "timeFrame": "6 months post-procedure"
+        },
+        {
+          "measure": "Total body weight loss (%TBWL)",
+          "description": "Percent total body weight loss (%TBWL) from baseline to Month 6",
+          "timeFrame": "6 months post-procedure"
+        },
+        {
+          "measure": "Incidence of adverse events",
+          "description": "Incidence of adverse events, device- and/or procedure-related adverse events, and serious device- and/or procedure-related adverse events, and adverse events of special interest.",
+          "timeFrame": "6 months post-procedure"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* 22- 70 years of age, inclusive.\n* T2D diagnosis for at least 6 months.\n* HbA1C of 7.5-10.5%, inclusive, determined by the central laboratory.\n* BMI 27-40 kg/m2, inclusive.\n* On 2-4 non-insulin glucose lowering mediations or on monotherapy with either GLP-1 or GLP-1/GIP medications, with no changes in medication or dosing for at least 12 weeks prior to the baseline visit.\n* Individualized metabolic surgery (IMS) score ≤ 95.\n* Weight stability (≤5% weight change) for at least 12 weeks prior to the screening visit.\n* Agree not to donate blood during participation in the study.\n* Able to comply with study requirements and understand and sign the Informed Consent Form.\n* Women of childbearing potential must be not pregnant and using an acceptable method of contraception throughout the study.\n* Willing and able to comply with study visits and study tasks as required per protocol.\n\nExclusion Criteria:\n\n* Diagnosed with type 1 diabetes.\n* History of diabetic ketoacidosis or hyperosmolar nonketotic coma.\n* Fasting serum C-peptide \\<1 ng/mL (333pmol/l).\n* Current use of insulin, or previous use of any types of insulin for \\>1 month at any time (except for treatment of gestational diabetes) in last 2 years.\n* Hypoglycemic unawareness.\n* History of ≥1 severe hypoglycemia episode in past 6 months\n* Discontinuation of a GLP-1RA or a GLP-1/GIP dual-agonist within 6 months of the screening visit following at least one month of treatment.\n* Known autoimmune disease, including but not limited to, celiac disease, or pre-existing symptoms of systemic lupus erythematosus, scleroderma or other autoimmune connective tissue disorder, or as evidenced by a positive anti-glutamic acid decarboxylase (GAD) test.\n* Previous GI surgery that has changed GI anatomy or could limit treatment of the duodenum, such as Billroth 2, Roux-en-Y gastric bypass, gastric band or other similar procedures or conditions.\n* Known history of a structural or functional disorder of the upper GI tract that may impede passage of the device through the upper GI tract or increase risk of tissue damage during an endoscopic procedure, including eosinophilic esophagitis, stricture/stenosis, varices, diverticula, or other disorder of the esophagus, stomach and duodenum.\n* History of gastroparesis.\n* Acute gastrointestinal illness in the last 7 days.\n* Known history of irritable bowel syndrome, radiation enteritis or other inflammatory bowel disease, such as Crohn's disease and Celiac disease.\n* History of chronic or acute pancreatitis.\n* Active hepatitis or active liver disease, or alanine aminotransferase (ALT) level \\>3.0 times the upper limit of normal (ULN) for the reference range, as determined by the central laboratory at screening visit. Patients with NAFLD are eligible if their ALT level is ≤3.0 times the ULN.\n* Current use of vitamin K antagonists, such as warfarin, or current use of direct-action oral anticoagulants (DOCAs) that cannot be safely discontinued periprocedurally.\n* Current use of P2Y12 inhibitors (clopidogrel, prasugrel, ticagrelor) that cannot be discontinued for 7 days before the procedure.\n* Unable to discontinue non-steroidal anti-inflammatory drugs (NSAIDs) from treatment through 4 weeks following the procedure. Alternative use of acetaminophen and low dose aspirin is allowed.\n* Use of systemic glucocorticoids (excluding topical or ophthalmic application or inhaled forms) for more than 10 consecutive days within 12 weeks prior to the screening visit.\n* Use of medications known to affect GI motility (e.g. metoclopramide/ Reglan)\n* Current use of weight loss medications such as Saxenda \\[liraglutide \\], Xenical® \\[orlistat\\], Acutrim® \\[phenylpropanolamine\\], Sanorex® \\[mazindol\\], Adipex® \\[phentermine\\], BELVIQ® \\[lorcaserin\\], Qsymia® \\[phentermine/topiramate combination\\], Contrave® \\[naltrexone/bupropion\\], or other weight loss medications including over-the-counter \\[OTC\\] medications \\[for example, Allī®\\]) or have discontinued weight loss medications within 6 months.\n* Participation in any structured weight loss program or endoscopic weight loss intervention within 6 months of the screen visit.\n* Persistent anemia, defined as hemoglobin \\<10 g/dL.\n* Known history of hemoglobinopathy, hemolytic anemia or sickle cell anemia, or any other traits of hemoglobin abnormalities known to interfere with the measurement of HbA1c.\n* History of blood donation or transfusion within 3 months prior to the Screening Visit.\n* Unstable or paroxysmal cardiac arrhythmia.\n* Any of the following cardiovascular conditions within 6-months prior to screening visit: acute myocardial infarction, cerebrovascular accident (stroke), hospitalization due to congestive heart failure.\n* History of valvular heart disease or chronic heart failure (NYHA III or IV).\n* Estimated glomerular filtration rate (eGFR) ≤ 45 ml/min/1.73m2 calculated by CKD-EPI Creatinine Equation as determined by the central laboratory.\n* Known immunocompromised status, including but not limited to individuals who have undergone organ transplantation, chemotherapy, or radiotherapy within the past 12 months, who have clinically significant leukopenia, who are positive for the human immunodeficiency virus (HIV) or whose immune status makes the participant a poor candidate for clinical trial participation in the opinion of the investigator.\n* History of secondary hypothyroidism or inadequately controlled primary hypothyroidism (TSH value outside the normal range at screening).\n* Presence of any implanted electronic devices that cannot be turned off during the procedure\n* Presence of duodenal or biliary stents.\n* Not a candidate for upper GI endoscopy or general anesthesia.\n* Active illicit substance abuse or alcoholism (\\>2 drinks/day regularly).\n* Active malignancy within the last 5 years (excluding non-melanoma skin cancers).\n* Women who are breastfeeding.\n* Participating in another ongoing clinical trial of an investigational drug or device.\n* Binge eating disorder, or any other mental or physical condition which, in the opinion of the study investigator, makes the participant a poor candidate for clinical trial participation.\n* Critically ill or has a life expectancy \\<5 years.\n* Are investigator site personnel directly affiliated with this study and/or their immediate family member. Immediate family is defined as a spouse, parent, child, or sibling, whether biological or legally adopted.",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "22 Years",
+      "maximumAge": "70 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "overallOfficials": [
+        {
+          "name": "Lian Cunningham, MD, PhD",
+          "affiliation": "lcunningham@endogenex.com",
+          "role": "STUDY_DIRECTOR"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "University of Alabama",
+          "city": "Birmingham",
+          "state": "Alabama",
+          "zip": "35205",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.52066,
+            "lon": -86.80249
+          }
+        },
+        {
+          "facility": "Central Alabama Research",
+          "city": "Birmingham",
+          "state": "Alabama",
+          "zip": "35209",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.52066,
+            "lon": -86.80249
+          }
+        },
+        {
+          "facility": "Velocity Clinical Research, Gardena",
+          "city": "Gardena",
+          "state": "California",
+          "zip": "90247",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.88835,
+            "lon": -118.30896
+          }
+        },
+        {
+          "facility": "Cedars-Sinai Medical Center",
+          "city": "Los Angeles",
+          "state": "California",
+          "zip": "90048",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 34.05223,
+            "lon": -118.24368
+          }
+        },
+        {
+          "facility": "UCLA",
+          "city": "Los Angeles",
+          "state": "California",
+          "zip": "90065",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 34.05223,
+            "lon": -118.24368
+          }
+        },
+        {
+          "facility": "Hoag Memorial Hospital Presbyterian - Digestive Health Institute",
+          "city": "Newport Beach",
+          "state": "California",
+          "zip": "92663",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.61891,
+            "lon": -117.92895
+          }
+        },
+        {
+          "facility": "Velocity Clinical Research, Hallandale Beach",
+          "city": "Hallandale",
+          "state": "Florida",
+          "zip": "33009",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 25.9812,
+            "lon": -80.14838
+          }
+        },
+        {
+          "facility": "Mayo Clinic",
+          "city": "Jacksonville",
+          "state": "Florida",
+          "zip": "32224",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 30.33218,
+            "lon": -81.65565
+          }
+        },
+        {
+          "facility": "Universal Axon Clinical Research LLC",
+          "city": "Miami",
+          "state": "Florida",
+          "zip": "33166",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 25.77427,
+            "lon": -80.19366
+          }
+        },
+        {
+          "facility": "University of Miami",
+          "city": "Miami",
+          "state": "Florida",
+          "zip": "33166",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 25.77427,
+            "lon": -80.19366
+          }
+        },
+        {
+          "facility": "Quantum Clinical Research",
+          "city": "Miami Beach",
+          "state": "Florida",
+          "zip": "33140",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 25.79065,
+            "lon": -80.13005
+          }
+        },
+        {
+          "facility": "West Orange Endocrinology",
+          "city": "Ocoee",
+          "state": "Florida",
+          "zip": "34761",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 28.56917,
+            "lon": -81.54396
+          }
+        },
+        {
+          "facility": "Advent Health",
+          "city": "Orlando",
+          "state": "Florida",
+          "zip": "32804",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 28.53834,
+            "lon": -81.37924
+          }
+        },
+        {
+          "facility": "Orlando Health",
+          "city": "Orlando",
+          "state": "Florida",
+          "zip": "32806",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 28.53834,
+            "lon": -81.37924
+          }
+        },
+        {
+          "facility": "Health Synergy Clinical Research",
+          "city": "West Palm Beach",
+          "state": "Florida",
+          "zip": "33407",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 26.71534,
+            "lon": -80.05337
+          }
+        },
+        {
+          "facility": "NorthShore University Health System",
+          "city": "Evanston",
+          "state": "Illinois",
+          "zip": "60201",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 42.04114,
+            "lon": -87.69006
+          }
+        },
+        {
+          "facility": "Heartland Medical Research, Inc.",
+          "city": "Clive",
+          "state": "Iowa",
+          "zip": "50325",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 41.60304,
+            "lon": -93.72411
+          }
+        },
+        {
+          "facility": "Iowa Diabetes and Endocrinology Research Center",
+          "city": "West Des Moines",
+          "state": "Iowa",
+          "zip": "50266",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 41.57721,
+            "lon": -93.71133
+          }
+        },
+        {
+          "facility": "John Hopkins",
+          "city": "Baltimore",
+          "state": "Maryland",
+          "zip": "21287",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 39.29038,
+            "lon": -76.61219
+          }
+        },
+        {
+          "facility": "Mayo Clinic",
+          "city": "Rochester",
+          "state": "Minnesota",
+          "zip": "55905",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 44.02163,
+            "lon": -92.4699
+          }
+        },
+        {
+          "facility": "Cooper Health System",
+          "city": "Camden",
+          "state": "New Jersey",
+          "zip": "08103",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 39.92595,
+            "lon": -75.11962
+          }
+        },
+        {
+          "facility": "Robert Wood Johnson Medical School",
+          "city": "New Brunswick",
+          "state": "New Jersey",
+          "zip": "08901",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 40.48622,
+            "lon": -74.45182
+          }
+        },
+        {
+          "facility": "The Ohio State University- Wexner Medical Center",
+          "city": "Columbus",
+          "state": "Ohio",
+          "zip": "43210",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 39.96118,
+            "lon": -82.99879
+          }
+        },
+        {
+          "facility": "Velocity Clinical Research - Austin",
+          "city": "Austin",
+          "state": "Texas",
+          "zip": "78613",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 30.26715,
+            "lon": -97.74306
+          }
+        },
+        {
+          "facility": "Dell Medical School",
+          "city": "Austin",
+          "state": "Texas",
+          "zip": "78712",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 30.26715,
+            "lon": -97.74306
+          }
+        },
+        {
+          "facility": "IMA Clinical Research - Austin",
+          "city": "Austin",
+          "state": "Texas",
+          "zip": "78745",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 30.26715,
+            "lon": -97.74306
+          }
+        },
+        {
+          "facility": "The University of Texas Health Science Center at Houston",
+          "city": "Bellaire",
+          "state": "Texas",
+          "zip": "77401",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 29.70579,
+            "lon": -95.45883
+          }
+        },
+        {
+          "facility": "Velocity Clinical Research, Dallas",
+          "city": "Dallas",
+          "state": "Texas",
+          "zip": "75230",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 32.78306,
+            "lon": -96.80667
+          }
+        },
+        {
+          "facility": "Southwest Medical Center",
+          "city": "Dallas",
+          "state": "Texas",
+          "zip": "75235",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 32.78306,
+            "lon": -96.80667
+          }
+        },
+        {
+          "facility": "University of Texas Southwestern Medical School - William P. Clements Jr. University Hospital",
+          "city": "Dallas",
+          "state": "Texas",
+          "zip": "75235",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 32.78306,
+            "lon": -96.80667
+          }
+        },
+        {
+          "facility": "Epic Medical Research",
+          "city": "DeSoto",
+          "state": "Texas",
+          "zip": "75115",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 32.58986,
+            "lon": -96.85695
+          }
+        },
+        {
+          "facility": "Houston Methodist Research Institute",
+          "city": "Houston",
+          "state": "Texas",
+          "zip": "77030",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 29.76328,
+            "lon": -95.36327
+          }
+        },
+        {
+          "facility": "Juno Research, LLC",
+          "city": "Houston",
+          "state": "Texas",
+          "zip": "77054",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 29.76328,
+            "lon": -95.36327
+          }
+        },
+        {
+          "facility": "Texas Diabetes & Endocrinology, P.A.",
+          "city": "Round Rock",
+          "state": "Texas",
+          "zip": "78681",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 30.50826,
+            "lon": -97.6789
+          }
+        },
+        {
+          "facility": "Diabetes & Glandular Disease Clinic, P.A.",
+          "city": "San Antonio",
+          "state": "Texas",
+          "zip": "78229",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 29.42412,
+            "lon": -98.49363
+          }
+        },
+        {
+          "facility": "IMA Clinical Research - San Antonio",
+          "city": "San Antonio",
+          "state": "Texas",
+          "zip": "78229",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 29.42412,
+            "lon": -98.49363
+          }
+        },
+        {
+          "facility": "Mt. Olympus Medical Research",
+          "city": "Sugar Land",
+          "state": "Texas",
+          "zip": "77479",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 29.61968,
+            "lon": -95.63495
+          }
+        },
+        {
+          "facility": "Royal Prince Alfred Hospital",
+          "city": "Camperdown",
+          "state": "New South Wales",
+          "zip": "2006",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -33.88965,
+            "lon": 151.17642
+          }
+        },
+        {
+          "facility": "The BMI Clinic",
+          "city": "Double Bay",
+          "state": "New South Wales",
+          "zip": "2028",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -33.87782,
+            "lon": 151.24354
+          }
+        },
+        {
+          "facility": "Royal North Shore Hospital",
+          "city": "Saint Leonards",
+          "state": "New South Wales",
+          "zip": "2065",
+          "country": "Australia"
+        },
+        {
+          "facility": "Eastern Health - Box Hill Hospital",
+          "city": "Box Hill",
+          "state": "Victoria",
+          "zip": "3128",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -37.81887,
+            "lon": 145.12545
+          }
+        },
+        {
+          "facility": "St Vincent's Hospital Melbourne",
+          "city": "Fitzroy",
+          "state": "Victoria",
+          "zip": "3065",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -37.79839,
+            "lon": 144.97833
+          }
+        },
+        {
+          "facility": "Austin Health",
+          "city": "Heidelberg",
+          "state": "Victoria",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -37.75,
+            "lon": 145.06667
+          }
+        },
+        {
+          "facility": "Baker Heart and Diabetes Institute",
+          "city": "Melbourne",
+          "state": "Victoria",
+          "zip": "3004",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -37.814,
+            "lon": 144.96332
+          }
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "NO"
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D003924",
+          "term": "Diabetes Mellitus, Type 2"
+        },
+        {
+          "id": "D003920",
+          "term": "Diabetes Mellitus"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D044882",
+          "term": "Glucose Metabolism Disorders"
+        },
+        {
+          "id": "D008659",
+          "term": "Metabolic Diseases"
+        },
+        {
+          "id": "D009750",
+          "term": "Nutritional and Metabolic Diseases"
+        },
+        {
+          "id": "D004700",
+          "term": "Endocrine System Diseases"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from typing import Protocol
 
@@ -39,6 +40,7 @@ def repository_prompt_loader() -> FilePromptLoader:
     candidates = (
         module_path.parents[3],  # repository/src/clarifytrial/llm
         module_path.parents[2],  # installed-prefix/clarifytrial/llm
+        Path(sys.prefix),  # data-files are installed under the active environment
     )
     for root in candidates:
         if (root / "prompts").is_dir():

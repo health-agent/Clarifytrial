@@ -1,0 +1,431 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT03546686",
+      "orgStudyIdInfo": {
+        "id": "STU-2021-1043"
+      },
+      "organization": {
+        "fullName": "University of Texas Southwestern Medical Center",
+        "class": "OTHER"
+      },
+      "briefTitle": "Peri-Operative Immune Checkpoint Inhibition and Cryoablation in Women With Triple-negative Breast Cancer",
+      "officialTitle": "A Single Arm Phase 2 Study of Peri-Operative Immune Checkpoint Inhibition and Cryoablation in Women With Hormone Receptor-Negative, HER2-Negative Early Stage/Resectable Breast Cancer."
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2026-07",
+      "overallStatus": "ACTIVE_NOT_RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2019-11-12",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2027-06",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2029-06",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2018-05-23",
+      "studyFirstSubmitQcDate": "2018-05-23",
+      "studyFirstPostDateStruct": {
+        "date": "2018-06-06",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2026-07-20",
+      "lastUpdatePostDateStruct": {
+        "date": "2026-07-22",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "PRINCIPAL_INVESTIGATOR",
+        "investigatorFullName": "Heather McArthur",
+        "investigatorTitle": "Associate Professor of Medicine",
+        "investigatorAffiliation": "University of Texas Southwestern Medical Center"
+      },
+      "leadSponsor": {
+        "name": "University of Texas Southwestern Medical Center",
+        "class": "OTHER"
+      },
+      "collaborators": [
+        {
+          "name": "Susan G. Komen Breast Cancer Foundation",
+          "class": "OTHER"
+        },
+        {
+          "name": "Bristol-Myers Squibb",
+          "class": "INDUSTRY"
+        },
+        {
+          "name": "Boston Scientific Corporation",
+          "class": "INDUSTRY"
+        },
+        {
+          "name": "American Society of Clinical Oncology",
+          "class": "OTHER"
+        }
+      ]
+    },
+    "oversightModule": {
+      "oversightHasDmc": true,
+      "isFdaRegulatedDrug": true,
+      "isFdaRegulatedDevice": false,
+      "isUsExport": true
+    },
+    "descriptionModule": {
+      "briefSummary": "The purpose of this study is to determine the impact of pre-operative cryoablation, and immune checkpoint inhibition (ICI) on on 3-year Event Free Survival (EFS), in women with residual hormone receptor negative, HER2-negative (\"triple negative\") resectable breast cancer after taxane-based neoadjuvant chemotherapy.",
+      "detailedDescription": "The purpose of this study is to determine the impact of pre-operative cryoablation, immune checkpoint inhibition (ICI) on 3-year Event Free Survival (EFS), in women with triple negative breast cancer after taxane-based neoadjuvant chemotherapy. Our strategy combines two interventions: induced activation and maturation of dendritic cells and tumor-specific T cells by cross-presentation of tumor antigens via local destruction of tumor tissue by cryoablation. Second, we administer Pembrolizumab, an antibody that inhibits lymphocyte programmed death 1 (PD-1) receptors and interferes with PD-1 mediated T-cell regulatory signaling; and was recently US FDA approved as curative-intent standard-of-care treatment for triple negative breast cancer. Women with residual triple negative resectable breast cancer after neoadjuvant chemotherapy will be treated with tumor cryoablation and pre-operative immune checkpoint inhibition (ICI). Women undergoing either mastectomy or breast conserving surgery are eligible."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Breast Cancer"
+      ],
+      "keywords": [
+        "Hormone Receptor Negative",
+        "Her2- Negative",
+        "Resectable Breast Cancer",
+        "breast cancer",
+        "immunotherapy",
+        "Ipilimumab",
+        "Nivolumab",
+        "Cryoablation"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE2"
+      ],
+      "designInfo": {
+        "allocation": "NA",
+        "interventionModel": "SINGLE_GROUP",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "NONE"
+        }
+      },
+      "enrollmentInfo": {
+        "count": 51,
+        "type": "ACTUAL"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "Treatment Arm",
+          "type": "EXPERIMENTAL",
+          "description": "Pembrolizumab + Core Biopsy/Cryoablation + Breast Surgery +Post Surgery pembrolizumab\n\nOR\n\nIpilimumab and Nivolumab + Core Biopsy/Cryoablation + Breast Surgery +Post Surgery Nivolumab",
+          "interventionNames": [
+            "Drug: Pembrolizumab",
+            "Procedure: Core Biopsy/Cryoablation",
+            "Procedure: Breast Surgery",
+            "Drug: Ipilimumab",
+            "Drug: Nivolumab"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DRUG",
+          "name": "Pembrolizumab",
+          "description": "Pembro will be administered 1-20 days before the cryoablation date per SOC and q3 weeks after surgery for 9 cycles per SOC.",
+          "armGroupLabels": [
+            "Treatment Arm"
+          ]
+        },
+        {
+          "type": "PROCEDURE",
+          "name": "Core Biopsy/Cryoablation",
+          "description": "US-guided core biopsy and cryoablation 7-10 days prior to surgery.",
+          "armGroupLabels": [
+            "Treatment Arm"
+          ]
+        },
+        {
+          "type": "PROCEDURE",
+          "name": "Breast Surgery",
+          "description": "Standard-of-care definitive surgery.",
+          "armGroupLabels": [
+            "Treatment Arm"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Ipilimumab",
+          "description": "ipilimumab 1mg/Kg IV is administered 1-5 days prior to cryoablation.",
+          "armGroupLabels": [
+            "Treatment Arm"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Nivolumab",
+          "description": "nivolumab 240mg IV flat dose is administered 1-5 days prior to cryoablation and 240mg IV every 2 weeks ± 3 days starting 3 (+/-1) weeks after surgery.",
+          "armGroupLabels": [
+            "Treatment Arm"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Event-Free Survival",
+          "description": "* Time (in months) between randomization and first occurrence of progression of disease that precludes surgery\n* Time (in months) between randomization and first occurrence local or distant disease recurrence\n* Time (in months) between randomization and date of death attributable to any cause including breast cancer, non-breast cancer, or unknown cause",
+          "timeFrame": "36 Months"
+        }
+      ],
+      "secondaryOutcomes": [
+        {
+          "measure": "Invasive Disease-Free Survival",
+          "description": "* Time (in months) between randomization and ipsilateral invasive breast tumor recurrence (i.e. an invasive breast cancer involving the same breast parenchyma as the original primary lesion); or\n* Time (in months) between randomization and ipsilateral local-regional invasive breast cancer (i.e. an invasive breast cancer in the axilla, regional lymph nodes, chest wall and/or skin of the ipsilateral breast); or\n* Time (in months) between randomization and distant recurrence (i.e. evidence of breast cancer in any anatomic site - other than the two abovementioned sites - that has either been histologically confirmed or clinically diagnosed as recurrent invasive breast cancer); or\n* Time (in months) between randomization and contralateral invasive breast cancer; or\n* Time (in months) between randomization and second primary non-breast invasive cancer; or\n* Time (in months) between randomization and date of death",
+          "timeFrame": "36 Months"
+        },
+        {
+          "measure": "Distant Disease-Free Survival",
+          "description": "-Time (in months) between randomization and the date of the first occurrence of distant recurrence (i.e. evidence of breast cancer in any anatomic site - other than local regional sites - that has either been histologically confirmed or clinically diagnosed as recurrent invasive breast cancer)",
+          "timeFrame": "36 Months"
+        },
+        {
+          "measure": "Overall Survival",
+          "description": "-Time (in months) between randomization and death attributable to any cause. Patients who are alive, including lost to follow-up, at the time of the analysis will be censored at the last known alive date.",
+          "timeFrame": "36 Months"
+        },
+        {
+          "measure": "Overall Safety",
+          "description": "Number of related adverse events based on CTCAE v.5.0",
+          "timeFrame": "36 Months"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n1. Women age 18 years or older\n2. Confirmed histologic diagnosis of invasive carcinoma of the breast\n3. Pathology confirmation of invasive carcinoma (reported or requested and pending)\n4. ER, PR and HER2 negative on outside or Cedars Sinai biopsy report, where ER and PR negative are defined as staining present in ≤10% of invasive cancer cells by IHC, and HER2-negative is defined as IHC 0-1+ or FISH \\<2.0. If ER, PR and HER2 status are not reported the results must be requested and pending.\n5. Operable tumor measuring ≥1.0 cm in maximal diameter\n6. Any nodal status allowed, including negative nodal status.\n7. Multifocal and multicentric disease is permitted if all foci have been biopsied and also meet the criteria for TNBC.\n8. Synchronous bilateral invasive breast cancer is permitted if all foci have been biopsied and also meet the criteria for TNBC.\n9. No indication of distant metastases\n10. Total mastectomy or lumpectomy planned\n11. Tumor amenable to cryoablation as determined by a study radiologist\n12. ECOG performance status score of 0 or 1.\n13. Screening laboratory values must meet the following criteria:\n\n    * White blood cells (WBCs) ≥ 2000/μL\n    * Absolute neutrophil count (ANC) ≥ 1500/μL\n    * Platelets ≥ 100 x 103/μL ii. Hemoglobin ≥ 9.0 g/dL iii. Serum creatinine ≤ 1.5 x ULN or creatinine clearance (CrCl) ≥ 40 mL/min (if using the Cockcroft-Gault formula below): Female CrCl = (140 - age in years) x weight in kg x 0.85 72 x serum creatinine in mg/dL\n    * AST/ALT ≤ 3 x upper limit of normal (ULN)\n    * Bilirubin ≤ 1.5 x ULN (except subjects with Gilbert's syndrome, who must have total bilirubin \\< 3.0 mg/dL)\n14. Women of childbearing potential (WOCBP) must use appropriate method(s) of contraception. WOCBP should use an adequate method to avoid pregnancy for 23 weeks (30 days plus the time required for nivolumab and, ipilimumab, and pembrolizumab to undergo five half-lives) after the last dose of investigational drug.\n15. Women of childbearing potential must have a negative serum or urine pregnancy test (minimum sensitivity 25 IU/L or equivalent units of HCG). Women must not be breastfeeding\n16. Willing to adhere to the study visit schedule and the prohibitions and restrictions specified in this protocol.\n\nExclusion Criteria:\n\n* Medical history and concurrent diseases\n\n  1. Has an active autoimmune disease that has required systemic treatment in the past 2 years (i.e., with use of disease modifying agents, corticosteroids, or immunosuppressive drugs). Note: Replacement therapy (eg, thyroxine, insulin, or physiologic corticosteroid replacement therapy for adrenal or pituitary insufficiency) is not considered a form of systemic treatment.\n  2. Any underlying medical or psychiatric condition, which in the opinion of the investigator, will make the administration of study drug hazardous or obscure the interpretation of AEs, such as a condition associated with frequent or poorly controlled diarrhea.\n  3. A history of invasive malignancy ≤5 years prior to signing informed consent except for adequately treated basal cell or squamous cell skin cancer, or in situ cervical cancer, or ovarian cancer.\n  4. Has known active hepatitis B or hepatitis C.\n* Prohibited Treatments and/or Therapies\n\n  1. Chronic use of immunosuppressants and/or systemic corticosteroids (used in the management of cancer or non-cancer-related illnesses). Brief periods of steroid use, for example for the management of chemotherapy-associated toxicities, are allowed. The use of corticosteroids on study is allowed for the treatment of immune related adverse events (irAEs) and other medical conditions including adrenal insufficiency.\n  2. Any non-oncology live vaccine therapy used for prevention of infectious diseases within 3 weeks prior to first dose of ICI.\n  3. Prior investigational agents within 3 weeks prior to ICI administration",
+      "healthyVolunteers": false,
+      "sex": "FEMALE",
+      "minimumAge": "18 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "overallOfficials": [
+        {
+          "name": "Heather McArthur, MD",
+          "affiliation": "University of Texas Southwestern Medical Center",
+          "role": "PRINCIPAL_INVESTIGATOR"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "Cedars Sinai Medical Center",
+          "city": "Los Angeles",
+          "state": "California",
+          "zip": "90048",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 34.05223,
+            "lon": -118.24368
+          }
+        },
+        {
+          "facility": "Ohio State University Medical Center",
+          "city": "Columbus",
+          "state": "Ohio",
+          "zip": "43210",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 39.96118,
+            "lon": -82.99879
+          }
+        },
+        {
+          "facility": "Providence Cancer Institute",
+          "city": "Portland",
+          "state": "Oregon",
+          "zip": "97213",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 45.52345,
+            "lon": -122.67621
+          }
+        },
+        {
+          "facility": "UT Southwestern Medical Center",
+          "city": "Dallas",
+          "state": "Texas",
+          "zip": "75390",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 32.78306,
+            "lon": -96.80667
+          }
+        }
+      ]
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D001943",
+          "term": "Breast Neoplasms"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D009371",
+          "term": "Neoplasms by Site"
+        },
+        {
+          "id": "D009369",
+          "term": "Neoplasms"
+        },
+        {
+          "id": "D001941",
+          "term": "Breast Diseases"
+        },
+        {
+          "id": "D012871",
+          "term": "Skin Diseases"
+        },
+        {
+          "id": "D017437",
+          "term": "Skin and Connective Tissue Diseases"
+        }
+      ]
+    },
+    "interventionBrowseModule": {
+      "meshes": [
+        {
+          "id": "C582435",
+          "term": "pembrolizumab"
+        },
+        {
+          "id": "D001707",
+          "term": "Biopsy, Needle"
+        },
+        {
+          "id": "D003452",
+          "term": "Cryosurgery"
+        },
+        {
+          "id": "D015412",
+          "term": "Mastectomy, Segmental"
+        },
+        {
+          "id": "D000074324",
+          "term": "Ipilimumab"
+        },
+        {
+          "id": "D000077594",
+          "term": "Nivolumab"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D001706",
+          "term": "Biopsy"
+        },
+        {
+          "id": "D003581",
+          "term": "Cytodiagnosis"
+        },
+        {
+          "id": "D003584",
+          "term": "Cytological Techniques"
+        },
+        {
+          "id": "D019411",
+          "term": "Clinical Laboratory Techniques"
+        },
+        {
+          "id": "D019937",
+          "term": "Diagnostic Techniques and Procedures"
+        },
+        {
+          "id": "D003933",
+          "term": "Diagnosis"
+        },
+        {
+          "id": "D013048",
+          "term": "Specimen Handling"
+        },
+        {
+          "id": "D003949",
+          "term": "Diagnostic Techniques, Surgical"
+        },
+        {
+          "id": "D013514",
+          "term": "Surgical Procedures, Operative"
+        },
+        {
+          "id": "D011677",
+          "term": "Punctures"
+        },
+        {
+          "id": "D008919",
+          "term": "Investigative Techniques"
+        },
+        {
+          "id": "D055011",
+          "term": "Ablation Techniques"
+        },
+        {
+          "id": "D008408",
+          "term": "Mastectomy"
+        },
+        {
+          "id": "D061067",
+          "term": "Antibodies, Monoclonal, Humanized"
+        },
+        {
+          "id": "D000911",
+          "term": "Antibodies, Monoclonal"
+        },
+        {
+          "id": "D000906",
+          "term": "Antibodies"
+        },
+        {
+          "id": "D007136",
+          "term": "Immunoglobulins"
+        },
+        {
+          "id": "D007162",
+          "term": "Immunoproteins"
+        },
+        {
+          "id": "D001798",
+          "term": "Blood Proteins"
+        },
+        {
+          "id": "D011506",
+          "term": "Proteins"
+        },
+        {
+          "id": "D000602",
+          "term": "Amino Acids, Peptides, and Proteins"
+        },
+        {
+          "id": "D012712",
+          "term": "Serum Globulins"
+        },
+        {
+          "id": "D005916",
+          "term": "Globulins"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

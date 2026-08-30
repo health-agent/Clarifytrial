@@ -9,6 +9,7 @@ import pytest
 
 from clarifytrial.interactive.shared_fact_report import write_shared_fact_report
 from scripts.build_policy_scale_tables import (
+    _archived_integrated_model_smoke_rows,
     _burden_paired_rows,
     _integrated_model_smoke_row,
     _model_role_routing_change_row,
@@ -27,6 +28,18 @@ ROOT = Path(__file__).resolve().parents[1]
 TRIAL_SET = ROOT / "data/public_protocol_benchmark_v1/trial_set.json"
 PRESENTATION_RESULTS = ROOT / "docs/internal/results/presentation-evidence-v2"
 PRESENTATION_PACKET = ROOT / "docs/internal/CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md"
+
+
+def test_archived_live_model_observation_rebuilds_the_routing_change() -> None:
+    before, after = _archived_integrated_model_smoke_rows(
+        PRESENTATION_RESULTS / "live_model_smoke_summary.csv"
+    )
+
+    [change] = _model_role_routing_change_row(before[0], after[0])
+
+    assert before[0]["model_call_count"] == 5
+    assert after[0]["model_call_count"] == 2
+    assert change["model_call_reduction_rate"] == pytest.approx(0.6)
 
 
 def test_public_shared_fact_report_is_packaged_for_presentation(

@@ -1088,6 +1088,55 @@ def _integrated_model_smoke_row(
     ]
 
 
+def _archived_integrated_model_smoke_rows(
+    path: Path,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Load the tracked one-case observation without rerunning an external model."""
+
+    integer_fields = {
+        "synthetic_case_count",
+        "candidate_trial_count",
+        "model_call_count",
+        "input_tokens",
+        "output_tokens",
+        "thinking_tokens",
+        "total_tokens",
+        "matcher_judge_call_count",
+        "matcher_judge_tokens",
+        "next_evidence_call_count",
+        "next_evidence_tokens",
+        "structured_rule_correction_count",
+        "structured_model_skip_event_count",
+        "independent_unit_count",
+    }
+    float_fields = {"total_model_latency_seconds"}
+    boolean_fields = {
+        "final_trial_statuses_match_code_only",
+        "question_fact_order_matches_code_only",
+    }
+    indexed: dict[str, dict[str, Any]] = {}
+    for source in _read_csv(path):
+        row: dict[str, Any] = {
+            key: value for key, value in source.items() if key != "routing_version"
+        }
+        for key in integer_fields:
+            row[key] = int(row[key])
+        for key in float_fields:
+            row[key] = float(row[key])
+        for key in boolean_fields:
+            if row[key] not in {"True", "False"}:
+                raise ValueError(f"invalid archived boolean {key}: {row[key]!r}")
+            row[key] = row[key] == "True"
+        indexed[source["routing_version"]] = row
+    expected = {"before_code_routing", "after_code_routing"}
+    if set(indexed) != expected:
+        raise ValueError(
+            "archived live-model summary must contain before_code_routing and "
+            "after_code_routing"
+        )
+    return [indexed["before_code_routing"]], [indexed["after_code_routing"]]
+
+
 def _model_role_routing_change_row(
     before: dict[str, Any],
     after: dict[str, Any],
@@ -1897,6 +1946,14 @@ def main() -> int:
     parser.add_argument("--live-model-smoke-after-result", type=Path)
     parser.add_argument("--deterministic-smoke-before-result", type=Path)
     parser.add_argument("--deterministic-smoke-after-result", type=Path)
+    parser.add_argument(
+        "--archived-live-model-smoke-summary",
+        type=Path,
+        help=(
+            "reuse the tracked one-case external-model observation instead of "
+            "requiring ignored raw run directories"
+        ),
+    )
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
 
@@ -2059,26 +2116,34 @@ def main() -> int:
         / "public-protocol-shared-facts-v1"
         / "shared-fact-report.json"
     )
-    integrated_model_smoke_before = _integrated_model_smoke_row(
-        args.live_model_smoke_before_result
-        or args.run_root.parent
-        / "presentation-live-model-smoke-20260830"
-        / "result.json",
-        args.deterministic_smoke_before_result
-        or args.run_root.parent
-        / "presentation-deterministic-smoke-20260830"
-        / "result.json",
-    )
-    integrated_model_smoke_after = _integrated_model_smoke_row(
-        args.live_model_smoke_after_result
-        or args.run_root.parent
-        / "presentation-live-model-smoke-code-routed-20260830"
-        / "result.json",
-        args.deterministic_smoke_after_result
-        or args.run_root.parent
-        / "presentation-deterministic-smoke-code-routed-20260830"
-        / "result.json",
-    )
+    if args.archived_live_model_smoke_summary:
+        (
+            integrated_model_smoke_before,
+            integrated_model_smoke_after,
+        ) = _archived_integrated_model_smoke_rows(
+            args.archived_live_model_smoke_summary
+        )
+    else:
+        integrated_model_smoke_before = _integrated_model_smoke_row(
+            args.live_model_smoke_before_result
+            or args.run_root.parent
+            / "presentation-live-model-smoke-20260830"
+            / "result.json",
+            args.deterministic_smoke_before_result
+            or args.run_root.parent
+            / "presentation-deterministic-smoke-20260830"
+            / "result.json",
+        )
+        integrated_model_smoke_after = _integrated_model_smoke_row(
+            args.live_model_smoke_after_result
+            or args.run_root.parent
+            / "presentation-live-model-smoke-code-routed-20260830"
+            / "result.json",
+            args.deterministic_smoke_after_result
+            or args.run_root.parent
+            / "presentation-deterministic-smoke-code-routed-20260830"
+            / "result.json",
+        )
     model_role_routing_change = _model_role_routing_change_row(
         integrated_model_smoke_before[0],
         integrated_model_smoke_after[0],

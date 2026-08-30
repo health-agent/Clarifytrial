@@ -1,0 +1,263 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT07227233",
+      "orgStudyIdInfo": {
+        "id": "812480"
+      },
+      "organization": {
+        "fullName": "University of California, San Diego",
+        "class": "OTHER"
+      },
+      "briefTitle": "Artificial Intelligence and Machine Learning to Guide CDK4/6 Inhibitor Rechallenge in Breast Cancer.",
+      "officialTitle": "Artificial Intelligence and Machine Learning-Enhanced Biomarker-dRiven CDK4/6 Inhibitor Rechallenge in HR+ HER2- Advanced Breast Tumors.",
+      "acronym": "AIM-BRIGHT"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2026-04",
+      "overallStatus": "RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2026-03-31",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2027-12",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2028-12",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2025-11-10",
+      "studyFirstSubmitQcDate": "2025-11-10",
+      "studyFirstPostDateStruct": {
+        "date": "2025-11-12",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2026-04-04",
+      "lastUpdatePostDateStruct": {
+        "date": "2026-04-09",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "PRINCIPAL_INVESTIGATOR",
+        "investigatorFullName": "Kay Yeung",
+        "investigatorTitle": "Associate Clinical Professor",
+        "investigatorAffiliation": "University of California, San Diego"
+      },
+      "leadSponsor": {
+        "name": "University of California, San Diego",
+        "class": "OTHER"
+      }
+    },
+    "oversightModule": {
+      "oversightHasDmc": true,
+      "isFdaRegulatedDrug": true,
+      "isFdaRegulatedDevice": false,
+      "isUsExport": false
+    },
+    "descriptionModule": {
+      "briefSummary": "The goal of this clinical trial is to learn if an artificial intelligence model will be able to select patients with advanced breast cancer who may respond to a second cyclin-dependent kinase 4/6 (CDK4/6) inhibitor after they have progressed on the first CDK4/6 inhibitor. Patients for this study need to have hormone receptor positive (HR+) human epidermal growth factor receptor 2 negative (HER2-) advanced breast cancer.\n\nThe main questions the study aims to answer are:\n\nIf the artificial intelligence model says that a patient's tumor should respond to the second CDK4/6 inhibitor, and that patient receives the second CDK4/6 inhibitor together with fulvestrant (an endocrine therapy also called Faslodex), will it take longer for the tumor to get worse than if the patient receives another type of therapy? Will the tumor respond better? Will the therapy be safe?\n\nResearchers will compare the combination of a second CDK4/6 inhibitor plus fulvestrant to the therapy chosen by the physician.\n\nParticipants will:\n\nTake the assigned therapy based on the way the therapy is usually prescribed. Visit the clinic once every month for checkups, tests, and questionnaires. Keep a diary of the pills they take at home.",
+      "detailedDescription": "This is a phase II, open-label, randomized controlled single-site study to assess the clinical utility of an artificial intelligence model, called palbo-VNN, to guide treatment selection in patients with hormone receptor positive (HR+) human epidermal growth factor receptor 2 negative (HER2-) advanced (unresectable or metastatic) breast cancer who have progressed after prior treatment with a cyclin-dependent kinase 4/6 (CDK4/6) inhibitor. The investigators hypothesize that: (1) the model will be able to predict who will respond to a second CDK4/6 inhibitors combined with fulvestrant (Faslodex); and (2) that the participants treated with a second CDK4/6 inhibitors plus fulvestrant will have better outcomes (longer progression free survival, higher overall response rate, higher clinical benefit rate, and better quality of life) than the participants treated based on the physician's choice.\n\nNext-generation sequencing of the tumor will be performed using biopsies obtained after the first CDK4/6 inhibitor treatment and within six months of study enrollment. The next-generation sequencing data will be analyzed with the palbo-VNN model. Participants with tumors predicted to respond to a second CDK4/6 inhibitor (CDK4/6i sensitive) will be randomized. Half of the randomized participants will receive a second CDK4/6 inhibitor plus fulvestrant; the other half will receive the treatment of physician's choice, excluding CDK4/6 inhibitors.\n\nAfter 6 months of therapy, the investigators will evaluate the progression free survival rate of the randomized participants, as well as other measures of efficacy, such as overall response rate, clinical benefit rate, and quality of life. They will also do studies to correlate treatment efficacy with molecular alterations of the tumor. These correlative studies may allow to improve the predictive ability of the palbo-VNN model in the future. The investigators will also evaluate treatment safety."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Breast Cancer"
+      ],
+      "keywords": [
+        "Unresectable breast cancer",
+        "Metastatic breast cancer",
+        "Cyclin-dependent kinase 4/6 inhibitors",
+        "Artificial intelligence model",
+        "Human epidermal growth factor receptor 2 negative (HER2- )",
+        "Hormone receptor positive (HR+)",
+        "Fulvestrant"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE2"
+      ],
+      "designInfo": {
+        "allocation": "RANDOMIZED",
+        "interventionModel": "PARALLEL",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "NONE"
+        }
+      },
+      "enrollmentInfo": {
+        "count": 105,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "Second CDK4/6 inhibitor plus fulvestrant",
+          "type": "EXPERIMENTAL",
+          "description": "A CDK4/6 inhibitor different from the first that the participant had received, plus fulvestrant.",
+          "interventionNames": [
+            "Drug: A CDK4/6 inhibitor different from the first that the participant had received, plus fulvestrant."
+          ]
+        },
+        {
+          "label": "Treatment of physician's choice",
+          "type": "ACTIVE_COMPARATOR",
+          "description": "Treatment of physician's choice, excluding CDK4/6 inhibitors.",
+          "interventionNames": [
+            "Drug: Treatment of physician's choice"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DRUG",
+          "name": "A CDK4/6 inhibitor different from the first that the participant had received, plus fulvestrant.",
+          "description": "A CDK4/6 inhibitor different from the first that the participant had received, plus fulvestrant.",
+          "armGroupLabels": [
+            "Second CDK4/6 inhibitor plus fulvestrant"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Treatment of physician's choice",
+          "description": "Treatment of physician's choice, excluding CDK4/6 inhibitors.",
+          "armGroupLabels": [
+            "Treatment of physician's choice"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Progression free survival",
+          "description": "Rate of progression free survival at 6 months after randomization.",
+          "timeFrame": "6 months"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n1. Age \\>18 years\n2. Eastern Cooperative Oncology Group performance status 0-2\n3. Ability to understand and sign the informed consent document\n4. Stated willingness to comply with all study procedures and availability for the duration of the study\n5. Advanced breast cancer (defined as unresectable or metastatic) histologically confirmed hormone receptor positive (HR+) human epidermal growth factor receptor 2 negative (HER2-) advanced breast cancer per American Society of Clinical Oncology/College of American Pathologists (CAP) guidelines.\n6. Endocrine-sensitive disease per the 7th International Consensus Conference on Advanced Breast Cancer (ABC7) 2023 guideline: no relapse during the first 2 years of adjuvant endocrine therapy or progression within the first 6 months of first-line endocrine therapy in the metastatic setting.\n7. Progression of disease, radiographically per Response Evaluation Criteria in Solid Tumors (RECIST) version 1.1 criteria or clinically per physician assessment, after a minimum of 6 months of 1 prior line of any CDK4/6 inhibitor therapy plus or minus endocrine therapy in the metastatic setting, or within 6 months of completing adjuvant CDK4/6 inhibitor with endocrine therapy.\n8. An additional line of therapy with CDK4/6i is possible and available.\n9. Zero to 1 prior line of chemotherapy or antibody-drug conjugates in the metastatic setting.\n10. Available next-generation sequencing panel testing results - or possibility to perform next-generation sequencing panel testing - on tumor tissue biopsy collected within 6 months of enrollment but after CDK4/6 inhibitor exposure. Note that If biopsy was performed more than 6 months before enrollment, the patient is not eligible to participate, unless the biopsy is repeated during the prescreening phase. Adequate tissue/testing will be one of these:\n\n    1. safe non-osseous tumor site for fresh tissue biopsy and subsequent tissue-based next-generation sequencing testing by any Clinical Laboratory Improvement-certified laboratory. Biopsy and next-generation sequencing testing will be performed as standard of care evaluation.\n    2. archival non-osseous tumor tissue adequate for standard of care next-generation sequencing testing by any Clinical Laboratory Improvement Amendments-certified labs.\n    3. prior tissue-based next-generation sequencing testing on tissue that was collected and performed within 6 months of study enrollment.\n11. Palbociclib sensitive disease as determined by the palbo-VNN model.\n12. Participants can have non-measurable but evaluable disease or measurable disease per Response Evaluation Criteria in Solid Tumors (RECIST) version 1.1 criteria\n13. Participants must have organ and marrow function as defined below:\n\n    1. Leukocytes \\> 3,000/microliter\n    2. Hemoglobin \\> 8 g/deciliter\n    3. Absolute neutrophil count \\> 1,200/microliter\n    4. Platelets \\> 75,000/microliter\n14. For participants of reproductive potential:\n\n    1. Females: use of highly effective contraception for at least 1 month before initiation of treatment with study medications (cycle 1 day 1) and agreement to use such a method during study participation and until 3 months after the end of treatment visit. Only non-hormonal contraception (eg., copper intrauterine device, barrier, condoms with spermicidal, sponge with spermicidal, or diaphragm with spermicidal), is allowed.\n    2. Males: use of condoms or other methods to ensure effective contraception with a partner during study participation and until 3 months after the end of treatment visit. For partners, use of hormonal contraception is allowed.\n15. Palliative radiotherapy is allowed.\n16. Participants with new or progressive brain metastases (active brain metastases) or leptomeningeal disease are eligible if the treating physician determines that immediate locoregional central nervous system-specific treatment is not required and is unlikely to be required during the first cycle of therapy.\n17. Human immunodeficiency virus-infected patients on effective anti-retroviral therapy with undetectable viral load within 6 months are eligible.\n18. For participants with evidence of chronic hepatitis B virus infection, the viral load must be undetectable on suppressive therapy, if indicated.\n19. Participants with a history of hepatitis C virus infection must have been treated and cured. For participants with hepatitis C virus infection who are currently on treatment, they are eligible if they have an undetectable viral load.\n20. Patients with a prior or concurrent malignancy whose natural history or treatment does not have the potential to interfere with the safety or efficacy assessment of the investigational regimen are eligible.\n\nExclusion Criteria:\n\n1. Life expectancy less than 6 months.\n2. Any medical or psychiatric condition that would prevent the safe use of a CDK4/6 inhibitor or fulvestrant or treatment of physician's choice or the ability to participate in study procedures.\n3. Participants who are receiving any other investigational agents within 3 weeks of study enrollment only if there is a known pharmacokinetic interaction with the selected drug. No washout period is otherwise required.\n4. Uncontrolled intercurrent illness including ongoing or active infection, congestive heart failure, unstable angina pectoris or cardiac arrhythmia, lung disease requiring continuous oxygen supplementation, decompensated cirrhosis, end-stage kidney disease on dialysis, or psychiatric illness that limits the ability to participate in the study.\n5. Unable to have access to abemaciclib, palbociclib, ribociclib, or fulvestrant as a standard of care treatment.\n6. Pregnancy or lactation.",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "Kay Yeung, MD, PhD",
+          "role": "CONTACT",
+          "phone": "858-822-5354",
+          "email": "CancerCTO@health.ucsd.edu"
+        },
+        {
+          "name": "Breast Research Team",
+          "role": "CONTACT",
+          "phone": "858-822-5354",
+          "email": "cancerCTO@health.ucsd.edu"
+        }
+      ],
+      "overallOfficials": [
+        {
+          "name": "Kay Yeung, MD, PhD",
+          "affiliation": "University of California, San Diego",
+          "role": "PRINCIPAL_INVESTIGATOR"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "University of California, San Diego",
+          "status": "RECRUITING",
+          "city": "La Jolla",
+          "state": "California",
+          "zip": "92093",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Kay Yeung, MD, PhD",
+              "role": "CONTACT",
+              "phone": "858-822-5354",
+              "email": "CancerCTO@health.ucsd.edu"
+            },
+            {
+              "name": "Breast Research Team",
+              "role": "CONTACT",
+              "phone": "858-822-5354",
+              "email": "CancerCTO@health.ucsd.edu"
+            }
+          ],
+          "geoPoint": {
+            "lat": 32.84727,
+            "lon": -117.2742
+          }
+        }
+      ]
+    },
+    "referencesModule": {
+      "references": [
+        {
+          "pmid": "38443662",
+          "type": "BACKGROUND",
+          "citation": "Park S, Silva E, Singhal A, Kelly MR, Licon K, Panagiotou I, Fogg C, Fong S, Lee JJY, Zhao X, Bachelder R, Parker BA, Yeung KT, Ideker T. A deep learning model of tumor cell architecture elucidates response and resistance to CDK4/6 inhibitors. Nat Cancer. 2024 Jul;5(7):996-1009. doi: 10.1038/s43018-024-00740-1. Epub 2024 Mar 5."
+        }
+      ],
+      "seeAlsoLinks": [
+        {
+          "label": "PubMed",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/38443662/"
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "NO"
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D001943",
+          "term": "Breast Neoplasms"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D009371",
+          "term": "Neoplasms by Site"
+        },
+        {
+          "id": "D009369",
+          "term": "Neoplasms"
+        },
+        {
+          "id": "D001941",
+          "term": "Breast Diseases"
+        },
+        {
+          "id": "D012871",
+          "term": "Skin Diseases"
+        },
+        {
+          "id": "D017437",
+          "term": "Skin and Connective Tissue Diseases"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

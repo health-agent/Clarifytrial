@@ -340,3 +340,26 @@ TrialGPT 자료의 답 이름으로 채점하면 공개 TrialGPT 출력이 더 �
 - `runs/policy-scale-20260830/budget-1/structural-1800/`
 - `runs/policy-scale-20260830/route-choice-controlled/`
 - `runs/policy-scale-20260830/burden-ablation-final/`
+
+## 7. 공개 저장소 재현과 패키지 검사
+
+2026년 8월 30일 Windows의 새 Python 3.12 가상환경에서 재현용 고정 파일만 사용해
+설치와 검사를 다시 수행했다.
+
+- `constraints/repro-python312.txt`로 직접·간접 의존성 18개를 고정했다.
+- `python -m pytest -q`: 395개 통과, 61.37초
+- `python -m pip check`: 깨진 의존성 없음
+- 합성 환자 전체 흐름: 외부 모델 호출 없이 정상 종료
+- 공개 시험 50건·최종 평가 환자 30명의 주요 CSV 16개: 커밋된 발표 근거와 파일 단위 일치
+- 환자별 확인 방법과 부담 제한에서 만든 CSV 4개: 커밋된 발표 근거와 파일 단위 일치
+- `pip wheel`로 만든 패키지를 저장소 밖의 별도 환경에 설치한 뒤 프롬프트 읽기, CLI 도움말과 의존성 검사 통과
+
+환자별 확인 방법 평가가 최신 ClinicalTrials.gov 응답에 따라 바뀌지 않도록 공개 원문
+15건을 `data/interactive_public_benchmark_v1/source_snapshot`에 고정했다. 각 원문 파일과
+참가 조건의 SHA-256은 `source_metadata.json`에 기록하고 실행 전에 확인한다.
+
+`scripts/reproduce_core.ps1 -Mode package`는 대량 구조 계산 없이 위 설치, 전체 검사,
+공개 평가와 파일 대조를 수행한다. 이미 검증한 구조 계산까지 다시 확인할 때만
+`-Mode core`, 확인 한도 1·2·3회의 총 2,073,600회 계산과 발표 표·그림까지 만들 때만
+`-Mode full`을 사용한다. 실제 모델을 호출한 합성 환자 한 사례는 동일 응답을 보장할 수
+없으므로 다시 호출하지 않고 저장된 관찰값으로 분리한다.

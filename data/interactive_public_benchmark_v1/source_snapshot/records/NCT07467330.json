@@ -1,0 +1,273 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT07467330",
+      "orgStudyIdInfo": {
+        "id": "MA-BC-III-116"
+      },
+      "organization": {
+        "fullName": "Fujian Cancer Hospital",
+        "class": "OTHER_GOV"
+      },
+      "briefTitle": "Dalpiciclib Combined With Endocrine Therapy and Metronomic Capecitabine vs Dalpiciclib Combined With Endocrine Therapy for First-line Treatment",
+      "officialTitle": "Open, Randomized Controlled Study of Dalpiciclib Combined With Endocrine Therapy and Metronomic Capecitabine Versus Dalpiciclib Combined With Endocrine Therapy for HR +/HER2- Recurrent Metastatic Breast Cancer With Visceral Metastasis"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2026-03",
+      "overallStatus": "RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2025-11-15",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2031-12-31",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2032-12-31",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2025-11-28",
+      "studyFirstSubmitQcDate": "2026-03-11",
+      "studyFirstPostDateStruct": {
+        "date": "2026-03-12",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2026-03-11",
+      "lastUpdatePostDateStruct": {
+        "date": "2026-03-12",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "SPONSOR"
+      },
+      "leadSponsor": {
+        "name": "Fujian Cancer Hospital",
+        "class": "OTHER_GOV"
+      }
+    },
+    "oversightModule": {
+      "oversightHasDmc": false,
+      "isFdaRegulatedDrug": false,
+      "isFdaRegulatedDevice": false
+    },
+    "descriptionModule": {
+      "briefSummary": "This study is an open-label, multicenter, randomized controlled study. It is planned to include 258 patients with HR +/HER2- advanced breast cancer with visceral metastases. Eligible subjects will be randomized 1:1 to receive dalpiciclib in combination with endocrine therapy and metronomic capecitabine chemotherapy in the experimental arm and dalpiciclib in combination with endocrine therapy in the control arm. Randomization was stratified by the number of lines of therapy for recurrent metastases (0 versus 1) and endocrine therapy (AI versus fulvestrant)."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Breast Cancer"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE3"
+      ],
+      "designInfo": {
+        "allocation": "RANDOMIZED",
+        "interventionModel": "PARALLEL",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "NONE"
+        }
+      },
+      "enrollmentInfo": {
+        "count": 258,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "dalpiciclib + capecitabine + endocrine therapy",
+          "type": "EXPERIMENTAL",
+          "interventionNames": [
+            "Drug: dalpiciclib + capecitabine + endocrine therapy"
+          ]
+        },
+        {
+          "label": "dalpiciclib + endocrine therapy",
+          "type": "ACTIVE_COMPARATOR",
+          "interventionNames": [
+            "Drug: dalpiciclib + endocrine therapy"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DRUG",
+          "name": "dalpiciclib + capecitabine + endocrine therapy",
+          "description": "The experimental arm received dalpiciclib combined with endocrine therapy and metronomic capecitabine chemotherapy",
+          "armGroupLabels": [
+            "dalpiciclib + capecitabine + endocrine therapy"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "dalpiciclib + endocrine therapy",
+          "description": "Control group received dalpiciclib combined with endocrine therapy",
+          "armGroupLabels": [
+            "dalpiciclib + endocrine therapy"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "PFS",
+          "timeFrame": "From date of randomization until the date of first documented progression or date of death from any cause, whichever came first, assessed up to 20 months"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n1. postmenopausal or premenopausal/perimenopausal women ≥ 18 years of age who meet one of the following: a) prior bilateral oophorectomy, or ≥ 60 years of age; or b) age \\< 60 years, spontaneous postmenopausal status (defined as spontaneous cessation of regular menstruation for at least 12 consecutive months without other pathological or physiological causes), E2 and FSH at postmenopausal levels; or c) premenopausal or perimenopausal women must be willing to receive LHRH agonists between studies.\n2. Female breast cancer patients diagnosed as HR positive and HER2 negative by pathological examination are not suitable for surgical resection or radiation therapy with the purpose of cure.\n\n   A) ER-positive and/or PR-positive are defined as having positively stained tumor cells representing ≥ 1% of all tumor cells (reviewed and confirmed by the investigator at the site); b) HER2-negative are defined as having 0/1 + by standard immunohistochemistry (IHC); HER2/CEP17 ratio of less than 2.0 by ISH or HER2 gene copy number of less than 4 (reviewed and confirmed by the investigator at the site).\n3. ECOG score 0-2.\n4. Patients with new stage IV or recurrent metastases with visceral metastases are allowed to enroll patients with visceral crisis (visceral crisis definition includes but is not limited to meeting one of the following: pleural effusion; ascites; abdominal pain caused by liver or peritoneal metastases; rapid worsening of dyspnea at rest that cannot be relieved by pleural effusion drainage; rapid increase in bilirubin \\> 1.5 × ULN in the absence of Gilbert 's syndrome or biliary obstruction).\n5. adequate bone marrow function, defined as follows: a) neutrophil count (ANC) ≥ 1,500/mm3 (1.5 x 109 L) (no growth factors used within 14 days); b) platelet count (PLT) ≥ 100,000/mm3 (100 x 109 L) (no corrective treatment used within 7 days); c) hemoglobin (Hb) ≥ 8 g/dL (80 g/L) (no corrective treatment used within 14 days).\n6. Female subjects who are not postmenopausal or surgically sterile must have a negative serum pregnancy test within 7 days before the first dose and are willing to abstain from sexual intercourse or use a medically recognized highly effective contraceptive measure after signing informed consent, during the study, and for 1 year after the last dose of study drug.\n7. Voluntarily join this study, sign informed consent, have good compliance and are willing to cooperate with follow-up.\n\nExclusion Criteria:\n\n1. patients who have previously been treated with CDK4/6 inhibitors and/or capecitabine.\n2. patients who relapse within 2 years of adjuvant endocrine therapy.\n3. Patients with bone metastases alone regardless of recurrence, metastasis or new stage IV disease.\n4. patients with active brain metastases.\n5. Human immunodeficiency virus (HIV) infection or known acquired immunodeficiency syndrome (AIDS), hepatitis B surface antigen positive and HBV DNA ≥ 2000 IU/ml, hepatitis C (hepatitis C antibody positive, and HCV-RNA above the lower limit of detection of the analytical method) or combined hepatitis B and hepatitis C co-infection.\n6. The following conditions occurred 6 months before enrollment: myocardial infarction, severe/unstable angina pectoris, NYHA class 2 or higher cardiac insufficiency, ≥ grade 2 persistent arrhythmia (according to NCI CTCAE version 5.0), atrial fibrillation of any grade, coronary/peripheral artery bypass grafting, symptomatic congestive heart failure, cerebrovascular accident (including transient ischemic attack) or symptomatic pulmonary embolism, and new thrombosis.\n7. Complicated with severe infection within 4 weeks before the first dose (such as intravenous drip of antibiotics, antifungal or antiviral drugs according to clinical diagnosis and treatment specifications), or unexplained fever \\> 38.5℃ during screening/before the first dose.\n8. inability to swallow, bowel obstruction, or the presence of other factors that affect the administration and absorption of the drug.\n9. known hypersensitivity to regimen combination therapy drugs and any of their excipients.\n10. Known history of allogeneic organ transplantation or allogeneic hematopoietic stem cell transplantation;\n11. Known history of psychotropic substance abuse or drug abuse.\n12. Female patients who are pregnant or lactating.\n13. Any other condition that the investigator considers the subject unsuitable for participation in this study.",
+      "healthyVolunteers": false,
+      "sex": "FEMALE",
+      "minimumAge": "18 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "Chuangui Song",
+          "role": "CONTACT",
+          "phone": "+8613960709993",
+          "email": "songchuangui@yahoo.com"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "Fujian Cancer Hosptial",
+          "status": "RECRUITING",
+          "city": "Fuzhou",
+          "state": "Fujian",
+          "zip": "350001",
+          "country": "China",
+          "contacts": [
+            {
+              "name": "Chuangui Song",
+              "role": "CONTACT",
+              "phone": "13960709993",
+              "email": "songcg1971@outlook.com"
+            }
+          ],
+          "geoPoint": {
+            "lat": 26.06139,
+            "lon": 119.30611
+          }
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "NO"
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D001943",
+          "term": "Breast Neoplasms"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D009371",
+          "term": "Neoplasms by Site"
+        },
+        {
+          "id": "D009369",
+          "term": "Neoplasms"
+        },
+        {
+          "id": "D001941",
+          "term": "Breast Diseases"
+        },
+        {
+          "id": "D012871",
+          "term": "Skin Diseases"
+        },
+        {
+          "id": "D017437",
+          "term": "Skin and Connective Tissue Diseases"
+        }
+      ]
+    },
+    "interventionBrowseModule": {
+      "meshes": [
+        {
+          "id": "C000720752",
+          "term": "dalpiciclib"
+        },
+        {
+          "id": "D000069287",
+          "term": "Capecitabine"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D003841",
+          "term": "Deoxycytidine"
+        },
+        {
+          "id": "D003562",
+          "term": "Cytidine"
+        },
+        {
+          "id": "D011741",
+          "term": "Pyrimidine Nucleosides"
+        },
+        {
+          "id": "D011743",
+          "term": "Pyrimidines"
+        },
+        {
+          "id": "D006573",
+          "term": "Heterocyclic Compounds, 1-Ring"
+        },
+        {
+          "id": "D006571",
+          "term": "Heterocyclic Compounds"
+        },
+        {
+          "id": "D005472",
+          "term": "Fluorouracil"
+        },
+        {
+          "id": "D014498",
+          "term": "Uracil"
+        },
+        {
+          "id": "D011744",
+          "term": "Pyrimidinones"
+        },
+        {
+          "id": "D003853",
+          "term": "Deoxyribonucleosides"
+        },
+        {
+          "id": "D009705",
+          "term": "Nucleosides"
+        },
+        {
+          "id": "D009706",
+          "term": "Nucleic Acids, Nucleotides, and Nucleosides"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

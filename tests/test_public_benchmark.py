@@ -13,6 +13,7 @@ from clarifytrial.interactive import (
 
 
 CONFIG_PATH = Path("configs/interactive_public_benchmark_v1.json")
+SOURCE_SNAPSHOT = Path("data/interactive_public_benchmark_v1/source_snapshot")
 
 
 def _fake_source_cache(spec, destination: Path) -> Path:
@@ -66,6 +67,20 @@ def test_public_source_audit_checks_all_structured_criteria(tmp_path) -> None:
 
     assert len(audit) == 80
     assert all(item["source_token_coverage"] == 1 for item in audit)
+
+
+def test_tracked_public_source_snapshot_covers_all_structured_criteria() -> None:
+    spec = load_public_benchmark_spec(CONFIG_PATH)
+    metadata = json.loads(
+        (SOURCE_SNAPSHOT / "source_metadata.json").read_text(encoding="utf-8")
+    )
+
+    audit = audit_public_sources(spec, SOURCE_SNAPSHOT)
+
+    assert len(audit) == 80
+    assert all(item["source_token_coverage"] >= 0.65 for item in audit)
+    assert metadata["study_count"] == 15
+    assert all(item["record_sha256"] for item in metadata["studies"])
 
 
 def test_planning_weights_do_not_change_with_hidden_patient_answers() -> None:

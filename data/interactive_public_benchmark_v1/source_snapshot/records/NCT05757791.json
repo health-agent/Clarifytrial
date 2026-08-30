@@ -1,0 +1,241 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT05757791",
+      "orgStudyIdInfo": {
+        "id": "23-00027"
+      },
+      "organization": {
+        "fullName": "NYU Langone Health",
+        "class": "OTHER"
+      },
+      "briefTitle": "Sodium-Glucose Cotransporter-2 Inhibitor (SGLT2) in Major Depressive Disorder (MDD)",
+      "officialTitle": "A Pilot, Phase II, Open-Label, Single-Center Study of Sodium-Glucose Cotransporter-2 Inhibitor Empagliflozin in Major Depressive Disorder"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2025-12",
+      "overallStatus": "RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2023-03-17",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2026-04",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2026-05",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2023-02-24",
+      "studyFirstSubmitQcDate": "2023-02-24",
+      "studyFirstPostDateStruct": {
+        "date": "2023-03-07",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2025-12-02",
+      "lastUpdatePostDateStruct": {
+        "date": "2025-12-03",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "SPONSOR"
+      },
+      "leadSponsor": {
+        "name": "NYU Langone Health",
+        "class": "OTHER"
+      },
+      "collaborators": [
+        {
+          "name": "American Society of Clinical Psychopharmacology",
+          "class": "UNKNOWN"
+        }
+      ]
+    },
+    "oversightModule": {
+      "oversightHasDmc": false,
+      "isFdaRegulatedDrug": true,
+      "isFdaRegulatedDevice": false,
+      "isUsExport": false
+    },
+    "descriptionModule": {
+      "briefSummary": "The primary purpose of this study is to determine whether empagliflozin, a medication in a class known as sodium-glucose cotransporter-2 inhibitors (SGLT2) inhibitors, may reduce symptoms of depression. Since this medication helps the body make metabolites known as ketone bodies which can serve as an alternate energy source for the brain, the investigators can also test whether ketone bodies help with depressed mood."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Major Depressive Disorder"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE2"
+      ],
+      "designInfo": {
+        "allocation": "NA",
+        "interventionModel": "SINGLE_GROUP",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "NONE"
+        }
+      },
+      "enrollmentInfo": {
+        "count": 16,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "Participants with Major Depressive Disorder (MDD)",
+          "type": "EXPERIMENTAL",
+          "description": "Patients will receive empagliflozin 10mg daily for two weeks and then empagliflozin 25mg for four weeks, for a total treatment duration of 6 weeks. Patients will be instructed to take the medication each morning, daily, with or without food. The number of doses given may be increased to a small degree to allow for flexibility in the scheduling of follow-up visits.",
+          "interventionNames": [
+            "Drug: Empagliflozin"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DRUG",
+          "name": "Empagliflozin",
+          "description": "The full duration of therapy will be six-weeks. The route of administration will be oral. The starting dose of the medication will be 10mg daily for the first 14 days of the study, with a dose escalation to 25mg for the last 28 days of the study.",
+          "armGroupLabels": [
+            "Participants with Major Depressive Disorder (MDD)"
+          ],
+          "otherNames": [
+            "Jardiance"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Change from Baseline in Montgomery-Asberg Depression Rating Scale (MADRS) Score",
+          "description": "10-item physician-rated scale assessing depressive symptomology. Each item is rated on a Likert scale ranging from 0 to 6. The total score is the sum of responses and ranges from 0 to 60; higher scores indicate greater depressive symptomology. Specifically, a total score ranging from 0 to 6 indicates that the patient is in the normal range (no depression); a score ranging from 7 to 19 indicates \"mild depression;\" 20 to 34 indicates \"moderate depression;\" a score of 35 and greater indicates \"severe depression;\" and a total score of 60 or greater indicates \"very severe depression.\"",
+          "timeFrame": "Baseline, Week 6"
+        }
+      ],
+      "secondaryOutcomes": [
+        {
+          "measure": "Change from Baseline in Columbia Suicide Severity Rating Scale (C-SSRS) Score",
+          "description": "C-SSRS systematically tracks suicidal ideation and behavior. The total score range is 0 (no ideation is present) - 5 (active suicidal ideation with specific plan and intent). The higher the score, the greater one's suicidal ideation. Any score greater than 0 is important and may indicate the need for mental health intervention.",
+          "timeFrame": "Baseline, Week 6"
+        },
+        {
+          "measure": "Change from Baseline in Snaith-Hamilton Pleasure Scale (SHAPS) Score",
+          "description": "14- item questionnaire assessing four domains of pleasure response, aimed as a scale to measure anhedonia, or the inability to experience pleasure. Each item is rated on a Likert scale ranging from 1 (strongly disagree) to 4 (strongly agree). The total score is the sum of responses and ranges from 14 to 56; higher scores indicate lesser anhedonia.",
+          "timeFrame": "Baseline, Week 6"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* Provide written informed consent, as approved by the NYU Institutional Research Ethic Board (IRB).\n* Patients ages 18-65;\n* Current/acute Major Depressive Disorder (MDD) diagnosis, per MINI psychiatric interview;\n* At least moderate severity of depression (Montgomery-Åsberg Depression Rating Scale (MADRS) score of at least 20 at initial screen);\n\nExclusion Criteria:\n\n* DSM-5 diagnosis of Bipolar disorders, Cyclothymia, Schizoaffective disorder, Schizophrenia; any psychotic disorder or affective psychosis;\n* Subjects that have had more than two failures of adequate anti-depressant trials in the current MDD episode;\n* Subjects on psychotropic medications other than SSRIs, NDRIs, SNRIs, or mirtazapine (occasional use of sleep agents, equivalent to lorazepam 1 mg or zolpidem 10 mg, will be allowed);\n* Those that have previously been on SGLT2 inhibitors;\n* A significant history of non-adherence to treatments;\n* History of neurologic / seizure disorder;\n* A significant history of non-adherence to treatments;\n* History of dementia/cognitive dysfunction (MOCA \\< 22);\n* A primary diagnosis of a personality disorder, in the opinion of the screening clinician;\n* DSM-5 substance use disorder (drug/alcohol) active within the past 12 months, or positive urine toxicology at screening;\n* History of diabetic ketoacidosis;\n* History of recurrent genital mycotic infection;\n* GFR \\<45;\n* HgA1c.\\>8.0%\n* History of an allergic reaction to an SGLT2 inhibitor.\n* Pregnancy or lactation (women of reproductive age, ie \\<50 years old, should be on licensed hormonal or barrier method contraception).\n* Any known pancreatic disease resulting in insulin deficiency (T1D, history of pancreatitis, pancreatic surgery);\n* History of liver or kidney disease;\n* Hypersensitivity to empagliflozin or any of the excipients in JARDIANCE.",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "maximumAge": "65 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "Dan V Iosifescu, MD, MMSc",
+          "role": "CONTACT",
+          "phone": "(646) 754-5156",
+          "email": "dan.iosifescu@nyulangone.org"
+        },
+        {
+          "name": "David T Liebers, MD, MPhil, MPP",
+          "role": "CONTACT",
+          "phone": "212-263-7419",
+          "email": "david.liebers@nyulangone.org"
+        }
+      ],
+      "overallOfficials": [
+        {
+          "name": "Dan V Iosifescu, MD, MMSc",
+          "affiliation": "NYU Langone Health",
+          "role": "PRINCIPAL_INVESTIGATOR"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "NYU Langone Health",
+          "status": "RECRUITING",
+          "city": "New York",
+          "state": "New York",
+          "zip": "10016",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Dan Iosifescu, MD, MMSc",
+              "role": "CONTACT",
+              "phone": "646-754-5156",
+              "email": "dan.iosifescu@nyulangone.org"
+            }
+          ],
+          "geoPoint": {
+            "lat": 40.71427,
+            "lon": -74.00597
+          }
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "YES",
+      "description": "The de-identified participant data from the final research dataset used in the published manuscript will be shared upon reasonable request beginning 9 months and ending 36 months following article publication or as required by a condition of awards and agreements supporting the research provided the investigator who proposes to use the data executes a data use agreement with NYU Langone Health. Requests may be directed to David.Liebers@nyulangone.org. The protocol and statistical analysis plan will be made available on Clinicaltrials.gov only as required by federal regulation or as a condition of awards and agreements supporting the research.",
+      "infoTypes": [
+        "STUDY_PROTOCOL",
+        "SAP"
+      ],
+      "timeFrame": "Beginning 9 months and ending 36 months following article publication or as required by a condition of awards and agreements supporting the research.",
+      "accessCriteria": "The investigator who proposed to use the data will be granted access upon reasonable request. Requests should be directed to David.Liebers@nyulangone.org. To gain access, data requestors will need to sign a data access agreement."
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D003865",
+          "term": "Depressive Disorder, Major"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D003866",
+          "term": "Depressive Disorder"
+        },
+        {
+          "id": "D019964",
+          "term": "Mood Disorders"
+        },
+        {
+          "id": "D001523",
+          "term": "Mental Disorders"
+        }
+      ]
+    },
+    "interventionBrowseModule": {
+      "meshes": [
+        {
+          "id": "C570240",
+          "term": "empagliflozin"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

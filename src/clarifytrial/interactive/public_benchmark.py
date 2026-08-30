@@ -185,6 +185,13 @@ def audit_public_sources(
     }
     rows = []
     cache = Path(source_cache)
+    metadata_path = cache / "source_metadata.json"
+    metadata_by_id: dict[str, dict[str, Any]] = {}
+    if metadata_path.is_file():
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        metadata_by_id = {
+            item["nct_id"]: item for item in metadata.get("studies", [])
+        }
     for group in spec.groups:
         configured_ids = {item.nct_id for item in group.trials}
         if configured_ids != expected_ids.get(group.group_id):
@@ -192,12 +199,25 @@ def audit_public_sources(
         for trial in group.trials:
             record_path = cache / "records" / f"{trial.nct_id}.json"
             record = json.loads(record_path.read_text(encoding="utf-8"))
+            source_metadata = metadata_by_id.get(trial.nct_id)
+            if source_metadata:
+                expected_record_digest = source_metadata.get("record_sha256")
+                if expected_record_digest and hashlib.sha256(
+                    record_path.read_bytes()
+                ).hexdigest() != expected_record_digest:
+                    raise ValueError(f"source record hash mismatch for {trial.nct_id}")
             actual_id = record["protocolSection"]["identificationModule"]["nctId"]
             if actual_id != trial.nct_id:
                 raise ValueError(f"source record mismatch for {trial.nct_id}")
             eligibility = record["protocolSection"]["eligibilityModule"][
                 "eligibilityCriteria"
             ]
+            if source_metadata and hashlib.sha256(
+                eligibility.encode("utf-8")
+            ).hexdigest() != source_metadata.get("eligibility_sha256"):
+                raise ValueError(
+                    f"source eligibility hash mismatch for {trial.nct_id}"
+                )
             source_tokens = _normal_tokens(eligibility)
             for criterion in trial.criteria:
                 criterion_tokens = _normal_tokens(criterion.source_statement)

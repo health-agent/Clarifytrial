@@ -1,0 +1,332 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT06820723",
+      "orgStudyIdInfo": {
+        "id": "2025H0027"
+      },
+      "organization": {
+        "fullName": "Ohio State University",
+        "class": "OTHER"
+      },
+      "briefTitle": "A Mechanistic Study to Assess a Single Dose of CYB003 in Participants With Depression and Anxiety",
+      "officialTitle": "A Randomized, Double-Blind, Placebo-Controlled Mechanistic Study to Assess a Single Oral Dose of CYB003 in Participants With Major Depressive Disorder (MDD) and Moderate to Severe Anxiety"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2026-07",
+      "overallStatus": "RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2026-08-01",
+        "type": "ESTIMATED"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2028-09",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2028-11",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2025-01-29",
+      "studyFirstSubmitQcDate": "2025-02-05",
+      "studyFirstPostDateStruct": {
+        "date": "2025-02-11",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2026-07-21",
+      "lastUpdatePostDateStruct": {
+        "date": "2026-07-23",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "PRINCIPAL_INVESTIGATOR",
+        "investigatorFullName": "Kinh Luan Phan",
+        "investigatorTitle": "Professor and Chair, Department of Psychiatry and Behavioral Health",
+        "investigatorAffiliation": "Ohio State University"
+      },
+      "leadSponsor": {
+        "name": "Ohio State University",
+        "class": "OTHER"
+      }
+    },
+    "oversightModule": {
+      "oversightHasDmc": true,
+      "isFdaRegulatedDrug": true,
+      "isFdaRegulatedDevice": false
+    },
+    "descriptionModule": {
+      "briefSummary": "The goal of this study is to learn how psychedelics may help symptoms of depression and anxiety. Participants with major depressive disorder experiencing symptoms of depression and anxiety will receive one dose of either a drug related to psilocybin or a placebo. Assessments include interviews, self-report questionnaires, EEG and fMRI to measure symptoms and brain function.",
+      "detailedDescription": "Many patients with MDD do not respond or have an incomplete response to treatment with currently available antidepressants. The use of psychedelics (e.g. psilocybin) is being investigated as a new approach to improve depressive symptomatology, however their mechanism of action is still not well understood. Psilocin is the active metabolite of psilocybin responsible for the psychedelic effects of the parent compound. CYB003 is a synthetic, deuterated isotopomer of psilocin, being developed by Cybin for the treatment of MDD. The study will investigate the changes in brain activity, connectivity, and microstructural neuroplasticity assessed using electroencephalography (EEG)/electromyography (EMG) and functional magnetic resonance imaging (fMRI)/ diffusion-weighted magnetic resonance imaging (DWI) after administration of one oral dose of CYB003. Up to 40 participants will be enrolled and randomized into two groups: one receiving 16 mg of CYB003, and one group receiving placebo. Psychological support will be provided before, during and after the administration session. Assessments performed at Baseline and on Day 2 and Day 21 after administration will include EEG/EMG, MRI, clinician (MADRS, HAM-A, C-SSRS) scales and self-report questionnaires to assess depression and anxiety symptoms, cognitive testing, self-report questionnaires to evaluate the psychedelic effects of CYB003 administration, and blood draw of the Gsα-AC biomarker assay."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Depression",
+        "Anxiety",
+        "Major Depressive Disorder"
+      ],
+      "keywords": [
+        "psychedelics"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE2"
+      ],
+      "designInfo": {
+        "allocation": "RANDOMIZED",
+        "interventionModel": "PARALLEL",
+        "interventionModelDescription": "Participants will be randomized to drug or placebo (1:1)",
+        "primaryPurpose": "OTHER",
+        "maskingInfo": {
+          "masking": "TRIPLE",
+          "maskingDescription": "Only the research pharmacist and nurse providing drug will be unblinded.",
+          "whoMasked": [
+            "PARTICIPANT",
+            "INVESTIGATOR",
+            "OUTCOMES_ASSESSOR"
+          ]
+        }
+      },
+      "enrollmentInfo": {
+        "count": 40,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "CYB003",
+          "type": "EXPERIMENTAL",
+          "description": "Participants will receive one dose of CYB003",
+          "interventionNames": [
+            "Drug: CYB003"
+          ]
+        },
+        {
+          "label": "Placebo",
+          "type": "PLACEBO_COMPARATOR",
+          "description": "Participants will receive one dose of placebo",
+          "interventionNames": [
+            "Drug: Placebo"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DRUG",
+          "name": "CYB003",
+          "description": "synthetic, deuterated isotopomer of psilocin",
+          "armGroupLabels": [
+            "CYB003"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Placebo",
+          "description": "Placebo orange drink solution",
+          "armGroupLabels": [
+            "Placebo"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Changes in parameter estimate of regional brain activity measured by fMRI after one dose of CYB003 in participants with MDD and anxiety",
+          "description": "Change in Blood oxygenation level dependent (BOLD) fMRI signal after task comparing CYB003 group and placebo group",
+          "timeFrame": "Between Baseline and Time point 24 hours and 21 days post-Investigational Product or placebo"
+        },
+        {
+          "measure": "Changes in region-to-region connectivity measured by fMRI after one dose of CYB003 in patients with depression and anxiety",
+          "description": "Changes in resting state activity of brain areas comparing CYB003 group and placebo group",
+          "timeFrame": "Between Baseline and Time point 24 hours and 21 days post-Investigational Product or placebo"
+        },
+        {
+          "measure": "Changes in event related potentials (ERP) after one dose of CYB003 in participants with MDD and anxiety",
+          "description": "Change in ERP as assessed by Electroencephalography (EEG) after task comparing CYB003 group and placebo group",
+          "timeFrame": "Between Baseline and Time point 24 hours and 21 days post-Investigational Product or placebo."
+        },
+        {
+          "measure": "Changes in acoustic startle electromyographic (EMG) response after one dose of CYB003 in patients with depression and anxiety",
+          "description": "Changes in acoustic startle magnitude measured by EMG after task comparing CYB003 group and placebo group",
+          "timeFrame": "Between Baseline and Time point 24 hours and 21 days post-Investigational Product or placebo."
+        }
+      ],
+      "secondaryOutcomes": [
+        {
+          "measure": "Effect of CYB003 on depression symptoms",
+          "description": "Changes of Montgomery Asberg Depression Rating Scale (MADRS) score comparing CYB003 group and placebo group. Score varies between 0 and 60 with highest scores indicating more severe depression.",
+          "timeFrame": "Between Baseline and Time point 24 hours and 21 days post-Investigational Product administration or placebo"
+        },
+        {
+          "measure": "Effect of CYB003 on anxiety symptoms",
+          "description": "Changes of Hamilton Anxiety (HAM-A) scale score comparing CYB003 group and placebo group. Score varies between 0 and 56 with higher scores indicating higher levels of anxiety",
+          "timeFrame": "Between Baseline to 24 hours and 21 days post-Investigational Product administration or placebo"
+        },
+        {
+          "measure": "Effects of CYB003 on Patient Health Questionnaire (PHQ-9) self-report questionnaire of depression",
+          "description": "Changes of PHQ-9 total and individual item scores comparing CYB003 group and placebo group. Scores vary between 0 and 27 with higher scores indicating higher levels of depression.",
+          "timeFrame": "Between Baseline to 24 hours and 21 days post-Investigational Product administration or placebo"
+        },
+        {
+          "measure": "Effects of CYB003 on Beck Depression Inventory (BDI) self-report questionnaire of depression",
+          "description": "Changes of BDI II total and individual item scores comparing CYB003 group and placebo group. Scores vary between 0 and 63 with higher scores indicating more severe depression",
+          "timeFrame": "Between Baseline to 24 hours and 21 days post-Investigational Product administration or placebo"
+        },
+        {
+          "measure": "Effects of CYB003 on Generalized Anxiety Disorder (GAD)-7 self-report questionnaire of anxiety",
+          "description": "Changes of GAD-7 total scores comparing CYB003 group and placebo group. Scores vary between 0 and 21 with higher scores indicating more severe anxiety",
+          "timeFrame": "etween Baseline to 24 hours and 21 days post- Investigational Product administration"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* Participant is assigned female or male at birth.\n* Participant is aged between 21 to 65 years, inclusive, at Screening.\n* Participant has a BMI of 18 to 30 kg/m2, inclusive, at Screening.\n* Participant is ≥60 kg.\n* Participant has a diagnosis of MDD (as defined in the DSM-5 established through a clinician interview that includes the Mini-International Neuropsychiatric Interview)\n* Depression severity moderate to severe based on MADRS score ≥21.\n* Anxiety severity moderate to severe based on GAD-7 ≥10.\n* Inadequate response to current antidepressant medication in current episode of depression.\n* Participant has been on a stable dose (no more than 50% change) of antidepressant medication (SSRI or SNRI) in the last month prior to Screening.\n* Participants capable of producing sperm must use a condom during the trial and for 3 months after their dose of trial medication, if their partner is a person of childbearing potential. In addition, their partner of childbearing potential must use a highly effective method of contraception (i.e., failure rate less than 1% when used consistently and correctly) from dosing until 3 months following dosing.\n* Participants of childbearing potential must agree to use a highly effective method of contraception (i.e., failure rate less than 1% when used consistently and correctly) in combination with use of a condom by a partner who is capable of producing sperm, during the trial and for 3 months after dosing. Such participants must have a negative pregnancy test at Screening and Day 1.\n* Participants of non-childbearing potential who are or were capable of producing eggs (ova) must be postmenopausal or permanently sterile following hysterectomy, bilateral salpingectomy or bilateral oophorectomy. Postmenopausal is defined as spontaneous amenorrhea for at least 12 months, and a serum follicle stimulating hormone (FSH) level in the menopausal range, unless the participant is taking hormone replacement therapy or is using hormonal contraception.\n* Provision of giving written informed consent, which includes compliance with the requirements and restrictions listed in the consent form.\n\nExclusion Criteria:\n\n* A reduction in the MADRS score of 25% or more between Screening and Baseline.\n* Failure to respond to \\>2 antidepressant treatments given at an adequate dose for an adequate duration during the current episode of depression.\n* Current or previously diagnosis of schizophrenia spectrum or other psychotic disorders, including schizophrenia, schizoaffective disorder, schizotypal disorder, schizophreniform disorder or brief psychotic disorder; current or previous history of bipolar disorder, or current personality disorder (as determined by MINI at Screening).\n* Clinically significant risk of suicidality, as determined through a comprehensive psychiatric interview that incorporates the Columbia Suicide Severity Rating Scale (CSSRS); a score of 4 or higher on the suicidal ideation subscale of C-SSRS (past 6 months) or any suicidal behaviour (lifetime), would be exclusionary.\n* History of substance use disorder within the 12 months, as assessed by a structured clinical interview (Mini International Neuropsychiatric Interview \\[MINI\\], Version 7.0.2) or determined by self-report, or intake of \\>21 units of alcohol weekly, and the inability to refrain from alcohol use from 48 hours before Screening and each scheduled visit until discharge from the study site. One unit is equivalent to a 285 mL glass of full-strength beer or 1 (30 mL) measure of spirits or 1 glass (100 mL) of wine.\n* Currently receiving a monoamine oxidase inhibitor, tricyclic antidepressant, other non-SSRI or non-SNRI antidepressants (e.g. bupropion, mirtazapine, etc), an antipsychotic or a mood stabilizer.\n* Exposure to psilocin, or any other psychedelics, such as ayahuasca, mescaline, LSD or peyote more than 10 times in the last 10 years, or any psychedelic use within 6 months prior to Screening.\n* Use of psychotropic medicine/supplement (or medicine/supplement that would interact with psilocybin) during the 28 days before dosing. Participants may take a stable chronic dose of antidepressant medication(s) and/or sedatives/hypnotics. The Investigator and study team may review medication on a case-by-case basis to determine if its use would compromise participant safety or interfere with study procedures or data interpretation.\n* Family history of schizophrenia or schizoaffective disorder (first degree relatives), or bipolar disorder type 1 (first degree relatives).\n* Clinically relevant history of abnormal physical health interfering with the study as determined by medical history and physical examinations obtained during Screening as judged by the Investigator (including but not limited to, neurological, endocrine, cardiovascular, respiratory, gastrointestinal \\[including dyspepsia or gastroesophageal reflux disease\\], hepatic, or renal disorder).\n* Participant has a presence or relevant history of any of the following medical conditions: organic brain disorders (e.g., epilepsy, seizure, intracranial hypertension, intracranial bleed and aneurysmal disease, brain tumor or other medical conditions associated with seizures or convulsions).\n* Diagnosis of hypertension or arrhythmia.\n* Clinically relevant abnormal heart rate (resting supine heart rate \\>100 bpm) or blood pressure (resting supine systolic blood pressure (SBP) above 140 mmHg or diastolic blood pressure (DBP) above 90 mmHg) at screening. Screening supine SBP, DBP and heart rate for evaluation will be the average of 3 readings obtained after at least 5 minutes rest. Participants with abnormal vital signs which are out of range and deemed clinically significant by the Investigator at Day 1, following triplicate readings.\n* Presence of clinically significant ECG abnormalities at the Screening visit, as defined by medical judgement.\n* QT interval corrected for heart rate using Fridericia's formula (QTcF) \\>450 msec at Screening, following triplicate ECG readings.\n* Hypothyroidism and/or current abnormal thyroid function tests. In case of uncertain or questionable screening thyroid function test results, the TSH test may be repeated once during screening. The TSH test must be reviewed to ensure that it is within normal limits before randomizing a participant into the study.\n* Clinically relevant abnormal laboratory results (including hepatic and renal panels, complete blood count, chemistry panel and urinalysis), 12-lead ECG and vital signs, or physical findings at Screening. In case of uncertain or questionable results, tests performed during Screening may be repeated once to confirm eligibility or judged to be clinically irrelevant.\n* Other eligibility considerations (i.e., participant personal circumstances, behavior, and/or any current problem that might interfere with participation or that is incompatible with establishment of rapport or safe exposure to psilocin), as judged by the Investigator.\n* History or clinical evidence of any disease and/or existence of any surgical or medical condition which might interfere with the absorption, distribution, metabolism or excretion (ADME) of the study drug.\n* Any other concomitant disease or condition that could interfere with, or for which the treatment might interfere with, the conduct of the study as outlined in this Protocol, or that would, in the opinion of the Investigator, pose an unacceptable risk to the participant in this study.\n* Participant is not fluent in English.\n* Aspartate aminotransferase (AST), alanine transaminase (ALT), gamma-glutamyl transferase (GGT) or total bilirubin levels ≥1.5 x the upper limit of normal (ULN) at Screening. These laboratory evaluations may be repeated once at the discretion of the Investigator. If the repeat test is within the reference range, the participant may be included if the Investigator considers that the previous finding will not introduce additional risk factors.\n* Positive urine test for drugs of abuse or alcohol breath test at Screening or Day 1. A positive test for cannabinoids (e.g., marijuana) at Screening may not exclude a participant if after discussion with and evaluation by the Investigator, the participant agrees not to use any marijuana or other cannabinoid products during the study, and if allowed to participate, the participant must test negative for cannabinoids on Day 1.\n* Participant who consumes excessive amounts of caffeine (e.g., coffee, tea, caffeinated sodas) or (methyl) xanthines (e.g., chocolate) based on the Investigator's determination and discretion.\n* The participant has participated in a clinical study and has received a medication or a new chemical entity within 3 months prior to dosing of current study medication.\n* Known sensitivity to psilocin and/or any excipients present in the formulation. Known fructose malabsorption or intolerance, since the orange drink vehicle for study drug contains fructose.\n* Participant is taking or has taken any drugs known to inhibit monoamine oxidase within 28 days prior to study drug administration.\n* Participant is taking or has taken OTC doses of 5-hydroxytryptophan or St John's Wort within 28 days prior to study drug administration.\n* Strenuous exercise within 48 hours prior to each visit, and while at the study site.\n* Participants capable of producing sperm who will not abstain from sperm donation between first dosing and 3 months after final dosing.\n* Participants of childbearing potential who are pregnant, breastfeeding or planning to conceive.",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "21 Years",
+      "maximumAge": "65 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "Anne-Marie Duchemin",
+          "role": "CONTACT",
+          "phone": "6142935517",
+          "email": "anne-marie.duchemin@osumc.edu"
+        }
+      ],
+      "overallOfficials": [
+        {
+          "name": "Luan Phan, MD",
+          "affiliation": "Ohio State University",
+          "role": "PRINCIPAL_INVESTIGATOR"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "The Ohio State University Department of Psychiatry",
+          "status": "RECRUITING",
+          "city": "Columbus",
+          "state": "Ohio",
+          "zip": "43210",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Anne-Marie Duchemin",
+              "role": "CONTACT",
+              "phone": "6142935517",
+              "email": "anne-marie.duchemin@osumc.edu"
+            }
+          ],
+          "geoPoint": {
+            "lat": 39.96118,
+            "lon": -82.99879
+          }
+        }
+      ]
+    },
+    "referencesModule": {
+      "references": [
+        {
+          "pmid": "27210031",
+          "type": "RESULT",
+          "citation": "Carhart-Harris RL, Bolstridge M, Rucker J, Day CM, Erritzoe D, Kaelen M, Bloomfield M, Rickard JA, Forbes B, Feilding A, Taylor D, Pilling S, Curran VH, Nutt DJ. Psilocybin with psychological support for treatment-resistant depression: an open-label feasibility study. Lancet Psychiatry. 2016 Jul;3(7):619-27. doi: 10.1016/S2215-0366(16)30065-7. Epub 2016 May 17."
+        },
+        {
+          "pmid": "33146667",
+          "type": "RESULT",
+          "citation": "Davis AK, Barrett FS, May DG, Cosimano MP, Sepeda ND, Johnson MW, Finan PH, Griffiths RR. Effects of Psilocybin-Assisted Therapy on Major Depressive Disorder: A Randomized Clinical Trial. JAMA Psychiatry. 2021 May 1;78(5):481-489. doi: 10.1001/jamapsychiatry.2020.3285."
+        },
+        {
+          "pmid": "36322843",
+          "type": "RESULT",
+          "citation": "Goodwin GM, Aaronson ST, Alvarez O, Arden PC, Baker A, Bennett JC, Bird C, Blom RE, Brennan C, Brusch D, Burke L, Campbell-Coker K, Carhart-Harris R, Cattell J, Daniel A, DeBattista C, Dunlop BW, Eisen K, Feifel D, Forbes M, Haumann HM, Hellerstein DJ, Hoppe AI, Husain MI, Jelen LA, Kamphuis J, Kawasaki J, Kelly JR, Key RE, Kishon R, Knatz Peck S, Knight G, Koolen MHB, Lean M, Licht RW, Maples-Keller JL, Mars J, Marwood L, McElhiney MC, Miller TL, Mirow A, Mistry S, Mletzko-Crowe T, Modlin LN, Nielsen RE, Nielson EM, Offerhaus SR, O'Keane V, Palenicek T, Printz D, Rademaker MC, van Reemst A, Reinholdt F, Repantis D, Rucker J, Rudow S, Ruffell S, Rush AJ, Schoevers RA, Seynaeve M, Shao S, Soares JC, Somers M, Stansfield SC, Sterling D, Strockis A, Tsai J, Visser L, Wahba M, Williams S, Young AH, Ywema P, Zisook S, Malievskaia E. Single-Dose Psilocybin for a Treatment-Resistant Episode of Major Depression. N Engl J Med. 2022 Nov 3;387(18):1637-1648. doi: 10.1056/NEJMoa2206443."
+        },
+        {
+          "pmid": "31060042",
+          "type": "RESULT",
+          "citation": "Gorka SM, Young CB, Klumpp H, Kennedy AE, Francis J, Ajilore O, Langenecker SA, Shankman SA, Craske MG, Stein MB, Phan KL. Emotion-based brain mechanisms and predictors for SSRI and CBT treatment of anxiety and depression: a randomized trial. Neuropsychopharmacology. 2019 Aug;44(9):1639-1648. doi: 10.1038/s41386-019-0407-7. Epub 2019 May 6."
+        },
+        {
+          "pmid": "31636488",
+          "type": "RESULT",
+          "citation": "Nutt D. Psychedelic drugs-a new era in psychiatry? . Dialogues Clin Neurosci. 2019;21(2):139-147. doi: 10.31887/DCNS.2019.21.2/dnutt."
+        },
+        {
+          "pmid": "37651119",
+          "type": "RESULT",
+          "citation": "Raison CL, Sanacora G, Woolley J, Heinzerling K, Dunlop BW, Brown RT, Kakar R, Hassman M, Trivedi RP, Robison R, Gukasyan N, Nayak SM, Hu X, O'Donnell KC, Kelmendi B, Sloshower J, Penn AD, Bradley E, Kelly DF, Mletzko T, Nicholas CR, Hutson PR, Tarpley G, Utzinger M, Lenoch K, Warchol K, Gapasin T, Davis MC, Nelson-Douthit C, Wilson S, Brown C, Linton W, Ross S, Griffiths RR. Single-Dose Psilocybin Treatment for Major Depressive Disorder: A Randomized Clinical Trial. JAMA. 2023 Sep 5;330(9):843-853. doi: 10.1001/jama.2023.14530."
+        },
+        {
+          "pmid": "27909164",
+          "type": "RESULT",
+          "citation": "Ross S, Bossis A, Guss J, Agin-Liebes G, Malone T, Cohen B, Mennenga SE, Belser A, Kalliontzi K, Babb J, Su Z, Corby P, Schmidt BL. Rapid and sustained symptom reduction following psilocybin treatment for anxiety and depression in patients with life-threatening cancer: a randomized controlled trial. J Psychopharmacol. 2016 Dec;30(12):1165-1180. doi: 10.1177/0269881116675512."
+        },
+        {
+          "pmid": "20717121",
+          "type": "RESULT",
+          "citation": "Vollenweider FX, Kometer M. The neurobiology of psychedelic drugs: implications for the treatment of mood disorders. Nat Rev Neurosci. 2010 Sep;11(9):642-51. doi: 10.1038/nrn2884. Epub 2010 Aug 18."
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "NO"
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-08-28"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D003863",
+          "term": "Depression"
+        },
+        {
+          "id": "D001008",
+          "term": "Anxiety Disorders"
+        },
+        {
+          "id": "D003865",
+          "term": "Depressive Disorder, Major"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D001526",
+          "term": "Behavioral Symptoms"
+        },
+        {
+          "id": "D001519",
+          "term": "Behavior"
+        },
+        {
+          "id": "D001523",
+          "term": "Mental Disorders"
+        },
+        {
+          "id": "D003866",
+          "term": "Depressive Disorder"
+        },
+        {
+          "id": "D019964",
+          "term": "Mood Disorders"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}
