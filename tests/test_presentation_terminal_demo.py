@@ -7,9 +7,6 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
-SAMPLE = Path("runs/presentation-demo-interactive-20260830/result.json")
-
-
 def _run(input_path: Path, output_path: Path) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [
@@ -26,9 +23,11 @@ def _run(input_path: Path, output_path: Path) -> subprocess.CompletedProcess[str
     )
 
 
-def test_terminal_demo_uses_the_saved_interaction(tmp_path: Path) -> None:
+def test_terminal_demo_uses_the_saved_interaction(
+    tmp_path: Path, presentation_demo_result: Path
+) -> None:
     output = tmp_path / "terminal-demo.svg"
-    result = _run(SAMPLE, output)
+    result = _run(presentation_demo_result, output)
 
     assert result.returncode == 0, result.stderr
     root = ET.parse(output).getroot()
@@ -45,8 +44,10 @@ def test_terminal_demo_uses_the_saved_interaction(tmp_path: Path) -> None:
     assert "#FF6B6B" in contents
 
 
-def test_terminal_demo_rejects_a_result_without_shared_evidence(tmp_path: Path) -> None:
-    document = json.loads(SAMPLE.read_text(encoding="utf-8"))
+def test_terminal_demo_rejects_a_result_without_shared_evidence(
+    tmp_path: Path, presentation_demo_result: Path
+) -> None:
+    document = json.loads(presentation_demo_result.read_text(encoding="utf-8"))
     document["screening"]["final_decisions"][1]["criterion_assessments"][0][
         "evidence_ids"
     ] = ["different-evidence"]

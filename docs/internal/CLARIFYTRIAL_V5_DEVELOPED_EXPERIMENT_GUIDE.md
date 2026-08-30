@@ -97,7 +97,18 @@ python -m venv .venv
 .\.venv\Scripts\python.exe scripts\render_presentation_terminal_demo.py `
   --input runs\presentation-demo-interactive-20260830\result.json `
   --output docs\internal\diagrams\clarifytrial-terminal-demo.svg
+
+.\.venv\Scripts\python.exe scripts\render_presentation_web_demo.py `
+  --input runs\presentation-demo-interactive-20260830\result.json `
+  --output docs\internal\demo\clarifytrial-presentation-demo.html
 ```
+
+HTML 데모는 16:9 한 화면에서 `임상시험 후보 → 공통 정보 선택 → 확인 방법 → 관련
+조건 재판정 → 판단 갱신`을 단계별로 보여 준다. `자동 재생`, `다음`, `처음`, `전체 화면`
+버튼과 오른쪽 화살표·스페이스바·Home 키를 사용할 수 있다. 네트워크와 외부 모델을
+부르지 않는 한 파일짜리 화면이므로 브라우저에서 열어 녹화하거나 마지막 장면을 캡처해
+발표자료에 넣을 수 있다. 마지막 장면은
+`docs/internal/demo/clarifytrial-presentation-demo-final.png`에도 저장돼 있다.
 
 ## 4. 공개 조건에서 질문 전후 변화 확인
 

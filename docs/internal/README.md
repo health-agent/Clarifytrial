@@ -36,6 +36,7 @@
 |---|---|
 | [발표용 결과표](results/presentation-evidence-v2/) | 질문 전후 변화, 정보 연결 구조, 환자 제한과 확인 방법 표 |
 | [모델 역할 비교](results/independent-new-trial-agent-evaluation-v1/report.md) | 새 시험에서 코드와 언어모델 실행 결과, 호출 수와 토큰 |
+| [발표용 대화형 데모](demo/clarifytrial-presentation-demo.html) | 합성 환자 한 명의 공통 정보 선택, 기존 공식 결과 확인과 두 시험 재판정 |
 
 ## 용어
 

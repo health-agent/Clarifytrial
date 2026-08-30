@@ -42,6 +42,9 @@ class DemoTrial:
 @dataclass(frozen=True)
 class DemoData:
     question: str
+    historical_event_date: str
+    historical_value: float
+    historical_unit: str
     event_date: str
     source_label: str
     value: float
@@ -175,6 +178,31 @@ def load_demo_data(path: Path) -> DemoData:
     if fact.get("concept") != "hba1c":
         raise DemoDataError("발표 입력은 HbA1c 결과여야 합니다")
 
+    final_patient_state = _mapping(
+        screening.get("final_patient_state"), "final_patient_state"
+    )
+    historical_facts = [
+        _mapping(item, "final_patient_state.fact")
+        for item in _sequence(
+            final_patient_state.get("facts"), "final_patient_state.facts"
+        )
+        if _mapping(item, "final_patient_state.fact").get("concept") == "hba1c"
+        and _mapping(item, "final_patient_state.fact").get("evidence_id")
+        != evidence_id
+    ]
+    if len(historical_facts) != 1:
+        raise DemoDataError("발표 실행의 과거 HbA1c 근거는 한 개여야 합니다")
+    historical_fact = historical_facts[0]
+    historical_event_date = _text_value(
+        historical_fact.get("event_date"), "historical_fact.event_date"
+    )
+    historical_value = _number_value(
+        historical_fact.get("value"), "historical_fact.value"
+    )
+    historical_unit = _text_value(
+        historical_fact.get("unit"), "historical_fact.unit"
+    )
+
     trials: list[DemoTrial] = []
     expected_final = {
         "NCT-SYNTH-A": ("remove", "ineligible", "제외"),
@@ -228,6 +256,9 @@ def load_demo_data(path: Path) -> DemoData:
 
     return DemoData(
         question=question,
+        historical_event_date=historical_event_date,
+        historical_value=historical_value,
+        historical_unit=historical_unit,
         event_date=event_date,
         source_label="공식검사",
         value=value,
