@@ -46,6 +46,11 @@ ClarifyTrial은 후보 유지 여부와 현재 확인 상태를 분리한 채 �
 
 ## 그림 1. 삽입 문구와 캡션
 
+![ClarifyTrial 상호작용형 사전선별 흐름](diagrams/clarifytrial-kosmi-workflow.svg)
+
+삽입 파일: `diagrams/clarifytrial-kosmi-workflow.svg` 또는
+`diagrams/clarifytrial-kosmi-workflow.png`
+
 **도식 문구**
 
 > 환자·시험 입력 → 후보 검색·초기 조건 판단 → **후보 유지 여부｜현재 확인 상태** → 다음 정보 선택 → 허용된 확인 경로 선택 → 답·근거 획득 → 연결된 조건만 재판정 → 반복 또는 종료

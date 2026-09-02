@@ -43,6 +43,7 @@
 - ClinicalTrials.gov 공개 원문 15건의 고정 사본과 파일·참가 조건 해시 확인
 - source checkout과 wheel 설치 양쪽에서 같은 프롬프트와 CLI 사용
 - 상태 읽기부터 반복·종료 판단까지 단계별로 재생하는 16:9 합성 데모와 마지막 장면 PNG 생성
+- KOSMI 2쪽 원고용 상호작용 흐름 단색 SVG·PNG와 재생성 스크립트
 - 동료의 36장 자료를 검토한 이전 17+13 재배치안, 말하기 대본과 화면별 수정 참고표 보존
 
 기준 화면은 동료가 갱신한 [Google Slides 36장](https://docs.google.com/presentation/d/1h31cn4EuP3Rr9zdDGe6zM1jiZRmhIlDIEh1ccOyaB8o/edit)이다.

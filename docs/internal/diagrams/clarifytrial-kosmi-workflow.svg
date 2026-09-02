@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">ClarifyTrial 상호작용형 사전선별 흐름</title>
+  <desc id="desc">환자 정보와 후보 시험을 입력해 초기 상태를 만든 뒤, 미정 시험과 확인 기회가 남아 있으면 다음 정보와 허용된 확인 방법을 선택하고 답과 근거를 얻어 연결된 조건만 다시 판단하는 순환 구조다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M 1 1 L 11 6 L 1 11 z" fill="#17324D"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="760" fill="#FFFFFF"/>
+
+  <rect x="20" y="42" width="220" height="132" rx="18" fill="#F2F5F8" stroke="#17324D" stroke-width="3.2"/>
+<text x="130" y="97.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">환자·시험</text>
+<text x="130" y="144.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">입력</text>
+  <path d="M 240 108 L 270 108" fill="none" stroke="#17324D" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+  <rect x="270" y="42" width="245" height="132" rx="18" fill="#FFFFFF" stroke="#17324D" stroke-width="3.2"/>
+<text x="392.5" y="97.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">후보 검색</text>
+<text x="392.5" y="144.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">초기 판단</text>
+  <path d="M 515 108 L 545 108" fill="none" stroke="#17324D" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+
+  <rect x="545" y="28" width="315" height="160" rx="20" fill="#E6ECF1" stroke="#17324D" stroke-width="4"/>
+  <text x="702.5" y="72" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="41" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">현재 상태</text>
+  <line x1="570" y1="91" x2="835" y2="91" stroke="#17324D" stroke-width="2" opacity="0.35"/>
+  <line x1="702.5" y1="104" x2="702.5" y2="143" stroke="#17324D" stroke-width="2" opacity="0.35"/>
+  <text x="624" y="132" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="27" font-weight="600" fill="#17324D" text-anchor="middle" letter-spacing="0">후보 유지</text>
+  <text x="781" y="132" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="27" font-weight="600" fill="#17324D" text-anchor="middle" letter-spacing="0">확인 상태</text>
+  <text x="702.5" y="168" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="22" font-weight="400" fill="#17324D" text-anchor="middle" letter-spacing="0">미정 · 부족 정보 · 남은 횟수</text>
+
+  <path d="M 860 108 L 890 108" fill="none" stroke="#17324D" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<text x="1015" y="30" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="27" font-weight="500" fill="#17324D" text-anchor="middle" letter-spacing="0">종료</text>
+  <rect x="890" y="42" width="290" height="132" rx="18" fill="#17324D" stroke="#17324D" stroke-width="3.2"/>
+<text x="1035" y="97.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="0">결과·근거</text>
+<text x="1035" y="144.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="0">저장</text>
+
+  <path d="M 630 188 L 630 250 L 165 250 L 165 410" fill="none" stroke="#17324D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+  <text x="405" y="233" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="27" font-weight="500" fill="#17324D" text-anchor="middle" letter-spacing="0">미정 시험 · 확인 횟수 남음</text>
+
+  <rect x="20" y="305" width="1160" height="425" rx="26" fill="#F2F5F8" stroke="#17324D" stroke-width="3"/>
+  <text x="55" y="355" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="start" letter-spacing="0">추가 확인 순환</text>
+  <text x="1135" y="354" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="27" font-weight="500" fill="#17324D" text-anchor="end" letter-spacing="0">새 상태에서 반복</text>
+
+  <rect x="45" y="420" width="240" height="175" rx="18" fill="#FFFFFF" stroke="#17324D" stroke-width="3.2"/>
+<text x="165" y="479.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">다음 정보</text>
+<text x="165" y="526.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">선택</text>
+<text x="165" y="569.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="24" font-weight="400" fill="#17324D" text-anchor="middle" letter-spacing="0">영향 범위 비교</text>
+  <path d="M 285 507 L 330 507" fill="none" stroke="#17324D" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+  <rect x="330" y="420" width="240" height="175" rx="18" fill="#FFFFFF" stroke="#17324D" stroke-width="3.2"/>
+<text x="450" y="479.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">확인 경로</text>
+<text x="450" y="526.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">선택</text>
+<text x="450" y="569.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="24" font-weight="400" fill="#17324D" text-anchor="middle" letter-spacing="0">환자 제약 반영</text>
+  <path d="M 570 507 L 615 507" fill="none" stroke="#17324D" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+  <rect x="615" y="420" width="240" height="175" rx="18" fill="#FFFFFF" stroke="#17324D" stroke-width="3.2"/>
+<text x="735" y="479.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">확인 도구</text>
+<text x="735" y="526.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">실행</text>
+<text x="735" y="569.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="24" font-weight="400" fill="#17324D" text-anchor="middle" letter-spacing="0">답·근거 획득</text>
+  <path d="M 855 507 L 900 507" fill="none" stroke="#17324D" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+  <rect x="900" y="420" width="240" height="175" rx="18" fill="#E6ECF1" stroke="#17324D" stroke-width="3.2"/>
+<text x="1020" y="479.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">관련 조건만</text>
+<text x="1020" y="526.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="39" font-weight="700" fill="#17324D" text-anchor="middle" letter-spacing="0">갱신</text>
+<text x="1020" y="569.5" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="24" font-weight="400" fill="#17324D" text-anchor="middle" letter-spacing="0">상태 재계산</text>
+
+  <path d="M 1020 420 L 1020 390 L 775 390 L 775 192" fill="none" stroke="#17324D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+
+  <text x="600" y="675" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="27" font-weight="400" fill="#17324D" text-anchor="middle" letter-spacing="0">기존 기록 · 환자 답변 · 공식 결과 · 새 검사 · 의료진 확인</text>
+
+</svg>
