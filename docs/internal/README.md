@@ -12,7 +12,7 @@
 | [연구계획 v5](CLARIFYTRIAL_RESEARCH_PLAN_V5.md) | 연구 질문, 실험 방법과 결과 해석 기준 |
 | [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) | 자료 규모, 실행 조건, 수치와 해석 범위 |
 | [발표 구성과 연구 요약](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 발표 흐름, 화면 구성, 발표 대본과 질의응답 |
-| [KOSMI 포스터 논문 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md) | 2쪽 제출용 본문, 250단어 이하 초록과 표·그림 문구 |
+| [KOSMI 포스터 논문 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md) | 최신 PDF 기준 초록·본문·표·그림·참고문헌과 남은 2쪽 조판 상태 |
 
 ## 프로그램 구조
 
