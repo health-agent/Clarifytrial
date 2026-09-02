@@ -21,7 +21,7 @@
 
   <rect x="565" y="35" width="305" height="110" rx="8" fill="#FFFFFF" stroke="#000000" stroke-width="2"/>
 <text x="717.5" y="85" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="25" font-weight="500" fill="#000000" text-anchor="middle" letter-spacing="0">후보 유지 여부</text>
-<text x="717.5" y="121" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="25" font-weight="500" fill="#000000" text-anchor="middle" letter-spacing="0">근거 충분 여부</text>
+<text x="717.5" y="121" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="25" font-weight="500" fill="#000000" text-anchor="middle" letter-spacing="0">확인 완료 여부</text>
   <path d="M 870 90 L 910 90" fill="none" stroke="#000000" stroke-width="2.2" stroke-linecap="round" marker-end="url(#arrow)"/>
 
   <rect x="910" y="35" width="265" height="110" rx="8" fill="#FFFFFF" stroke="#000000" stroke-width="2"/>
