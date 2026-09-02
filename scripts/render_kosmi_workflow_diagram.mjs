@@ -20,10 +20,10 @@ const runtimeRequire = createRequire(path.join(runtimeModules, "runtime-loader.c
 const sharp = runtimeRequire("sharp");
 
 const W = 1200;
-const H = 760;
-const ink = "#17324D";
-const pale = "#F2F5F8";
-const tint = "#E6ECF1";
+const H = 620;
+const ink = "#000000";
+const pale = "#FFFFFF";
+const tint = "#FFFFFF";
 const white = "#FFFFFF";
 const font = "Malgun Gothic, Noto Sans KR, sans-serif";
 
@@ -39,8 +39,8 @@ function rect(x, y, width, height, options = {}) {
   const {
     fill = white,
     stroke = ink,
-    strokeWidth = 3,
-    radius = 18,
+    strokeWidth = 2,
+    radius = 8,
     dash = "",
   } = options;
   return `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`;
@@ -48,8 +48,8 @@ function rect(x, y, width, height, options = {}) {
 
 function textLine(x, y, value, options = {}) {
   const {
-    size = 34,
-    weight = 600,
+    size = 28,
+    weight = 500,
     anchor = "middle",
     fill = ink,
     letterSpacing = 0,
@@ -58,7 +58,7 @@ function textLine(x, y, value, options = {}) {
 }
 
 function arrow(x1, y1, x2, y2, options = {}) {
-  const { width = 4, label = "", labelX = (x1 + x2) / 2, labelY = y1 - 16 } = options;
+  const { width = 2.2, label = "", labelX = (x1 + x2) / 2, labelY = y1 - 16 } = options;
   return [
     `<path d="M ${x1} ${y1} L ${x2} ${y2}" fill="none" stroke="${ink}" stroke-width="${width}" stroke-linecap="round" marker-end="url(#arrow)"/>`,
     label ? textLine(labelX, labelY, label, { size: 27, weight: 500 }) : "",
@@ -66,7 +66,7 @@ function arrow(x1, y1, x2, y2, options = {}) {
 }
 
 function pathArrow(d, options = {}) {
-  const { width = 4, dash = "" } = options;
+  const { width = 2.2, dash = "" } = options;
   return `<path d="${d}" fill="none" stroke="${ink}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round"${dash ? ` stroke-dasharray="${dash}"` : ""} marker-end="url(#arrow)"/>`;
 }
 
@@ -88,21 +88,21 @@ function stackedNode(x, y, width, height, lines, options = {}) {
   const {
     fill = white,
     dark = false,
-    size = 39,
+    size = 31,
     subtitle = "",
-    subtitleSize = 25,
+    subtitleSize = 22,
   } = options;
   const fg = dark ? white : ink;
   const titleLines = Array.isArray(lines) ? lines : [lines];
-  const lineHeight = 47;
+  const lineHeight = 36;
   const subtitleGap = subtitle ? 35 : 0;
   const totalTitleHeight = (titleLines.length - 1) * lineHeight;
   const firstY = y + height / 2 - totalTitleHeight / 2 - subtitleGap / 2 + 13;
   const parts = [
-    rect(x, y, width, height, { fill: dark ? ink : fill, stroke: ink, strokeWidth: 3.2, radius: 18 }),
+    rect(x, y, width, height, { fill: dark ? ink : fill, stroke: ink, strokeWidth: 2, radius: 8 }),
   ];
   titleLines.forEach((line, index) => {
-    parts.push(textLine(x + width / 2, firstY + index * lineHeight, line, { size, weight: 700, fill: fg }));
+    parts.push(textLine(x + width / 2, firstY + index * lineHeight, line, { size, weight: 500, fill: fg }));
   });
   if (subtitle) {
     parts.push(textLine(x + width / 2, firstY + totalTitleHeight + 43, subtitle, { size: subtitleSize, weight: 400, fill: fg }));
@@ -115,46 +115,34 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
   <title id="title">ClarifyTrial 상호작용형 사전선별 흐름</title>
   <desc id="desc">환자 정보와 후보 시험을 입력해 초기 상태를 만든 뒤, 미정 시험과 확인 기회가 남아 있으면 다음 정보와 허용된 확인 방법을 선택하고 답과 근거를 얻어 연결된 조건만 다시 판단하는 순환 구조다.</desc>
   <defs>
-    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M 1 1 L 11 6 L 1 11 z" fill="${ink}"/>
     </marker>
   </defs>
   <rect width="${W}" height="${H}" fill="${white}"/>
 
-  ${stackedNode(20, 42, 220, 132, ["환자·시험", "입력"], { fill: pale, size: 39 })}
-  ${arrow(240, 108, 270, 108)}
-  ${stackedNode(270, 42, 245, 132, ["후보 검색", "초기 판단"], { size: 39 })}
-  ${arrow(515, 108, 545, 108)}
+  ${stackedNode(25, 35, 210, 110, ["환자·시험", "입력"], { size: 26 })}
+  ${arrow(235, 90, 275, 90)}
+  ${stackedNode(275, 35, 250, 110, ["후보 검색", "조건별 판단"], { size: 26 })}
+  ${arrow(525, 90, 565, 90)}
+  ${stackedNode(565, 35, 305, 110, ["후보 유지 여부", "근거 충분 여부"], { size: 25 })}
+  ${arrow(870, 90, 910, 90)}
+  ${stackedNode(910, 35, 265, 110, ["결과 저장"], { size: 26 })}
 
-  ${rect(545, 28, 315, 160, { fill: tint, strokeWidth: 4, radius: 20 })}
-  ${textLine(702.5, 72, "현재 상태", { size: 41, weight: 700 })}
-  <line x1="570" y1="91" x2="835" y2="91" stroke="${ink}" stroke-width="2" opacity="0.35"/>
-  <line x1="702.5" y1="104" x2="702.5" y2="143" stroke="${ink}" stroke-width="2" opacity="0.35"/>
-  ${textLine(624, 132, "후보 유지", { size: 27, weight: 600 })}
-  ${textLine(781, 132, "확인 상태", { size: 27, weight: 600 })}
-  ${textLine(702.5, 168, "미정 · 부족 정보 · 남은 횟수", { size: 22, weight: 400 })}
+  ${pathArrow("M 650 145 L 650 215 L 170 215 L 170 350")}
 
-  ${arrow(860, 108, 890, 108, { label: "종료", labelX: 1015, labelY: 30 })}
-  ${stackedNode(890, 42, 290, 132, ["결과·근거", "저장"], { dark: true, size: 39 })}
+  ${rect(25, 250, 1150, 335, { fill: white, strokeWidth: 2, radius: 10 })}
+  ${textLine(55, 295, "추가 확인", { size: 26, weight: 500, anchor: "start" })}
 
-  ${pathArrow("M 630 188 L 630 250 L 165 250 L 165 410", { width: 4 })}
-  ${textLine(405, 233, "미정 시험 · 확인 횟수 남음", { size: 27, weight: 500 })}
+  ${stackedNode(55, 360, 230, 130, ["정보 선택"], { size: 26 })}
+  ${arrow(285, 425, 335, 425)}
+  ${stackedNode(335, 360, 230, 130, ["확인 방법 선택"], { size: 25 })}
+  ${arrow(565, 425, 615, 425)}
+  ${stackedNode(615, 360, 230, 130, ["정보 확인"], { size: 26 })}
+  ${arrow(845, 425, 895, 425)}
+  ${stackedNode(895, 360, 230, 130, ["관련 조건", "재판단"], { size: 25 })}
 
-  ${rect(20, 305, 1160, 425, { fill: pale, strokeWidth: 3, radius: 26 })}
-  ${textLine(55, 355, "추가 확인 순환", { size: 39, weight: 700, anchor: "start" })}
-  ${textLine(1135, 354, "새 상태에서 반복", { size: 27, weight: 500, anchor: "end" })}
-
-  ${stackedNode(45, 420, 240, 175, ["다음 정보", "선택"], { size: 39, subtitle: "영향 범위 비교", subtitleSize: 24 })}
-  ${arrow(285, 507, 330, 507)}
-  ${stackedNode(330, 420, 240, 175, ["확인 경로", "선택"], { size: 39, subtitle: "환자 제약 반영", subtitleSize: 24 })}
-  ${arrow(570, 507, 615, 507)}
-  ${stackedNode(615, 420, 240, 175, ["확인 도구", "실행"], { size: 39, subtitle: "답·근거 획득", subtitleSize: 24 })}
-  ${arrow(855, 507, 900, 507)}
-  ${stackedNode(900, 420, 240, 175, ["관련 조건만", "갱신"], { fill: tint, size: 39, subtitle: "상태 재계산", subtitleSize: 24 })}
-
-  ${pathArrow("M 1020 420 L 1020 390 L 775 390 L 775 192", { width: 4 })}
-
-  ${textLine(600, 675, "기존 기록 · 환자 답변 · 공식 결과 · 새 검사 · 의료진 확인", { size: 27, weight: 400 })}
+  ${pathArrow("M 1010 360 L 1010 325 L 790 325 L 790 150")}
 
 </svg>`;
 
