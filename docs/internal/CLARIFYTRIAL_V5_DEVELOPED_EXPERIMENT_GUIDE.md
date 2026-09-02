@@ -175,6 +175,40 @@ HTML 데모는 16:9 한 화면에서 `현재 상태 읽기 → 다음 행동 결
   --output-dir runs\public-protocol-shared-facts-v1
 ```
 
+### 적격·부적격 방향별 확인 예산
+
+기본 문진 평가의 미정 22건은 전체 정보 기준 적격 사례에만 해당한다. 다음 실행은 별도
+공개 시험 15건과 초기 독립 합성 환자 20명에서 적격 복원과 부적격 정리를 함께 센다.
+PowerShell 7에서는 확인 한도 1·2·3회를 동시에 실행할 수 있다.
+
+```powershell
+$repoRoot = (Get-Location).Path
+
+1..3 | ForEach-Object -Parallel {
+  Set-Location $using:repoRoot
+  $checkCount = $_
+  .\.venv\Scripts\clarifytrial.exe run-public-interactive-benchmark `
+    --source-cache data\interactive_public_benchmark_v1\source_snapshot `
+    --action-budget $checkCount `
+    --output "runs\kosmi-transition-balance-20260902\budget-$checkCount"
+} -ThrottleLimit 3
+
+.\.venv\Scripts\python.exe scripts\build_kosmi_poster_measurements.py
+```
+
+`case-results.jsonl`에는 사례별 적격 복원 기회·해결 수와 부적격 정리 기회·해결 수가
+저장된다. 마지막 명령은 같은 환자의 두 정보 가림을 반복 측정으로 묶어 환자 단위 95%
+범위를 계산하고 다음 파일을 만든다.
+
+| 파일 | 내용 |
+|---|---|
+| `transition_budget_metrics.csv` | 확인 0~3회의 방향별 해결 수, 상태 일치와 질문 수 |
+| `transition_policy_comparisons.csv` | 영향 우선·가능한 순서 평균·정확 탐색의 환자 단위 차이 |
+| `transition_budget_auc_comparisons.csv` | 확인 0~3회 전체 곡선을 합친 환자 단위 비교 |
+| `summary.json` | 평가 분모, 원시 실행 위치와 해석 한계 |
+
+세 파일은 `docs/internal/results/kosmi-poster-evidence-v1/`에 저장된다.
+
 ## 5. 환자 상황에 따른 확인 방법 평가
 
 이 평가는 Git에 함께 넣은 공개 조건 원문을 사용한다. 최신 ClinicalTrials.gov 응답과

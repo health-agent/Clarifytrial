@@ -10,6 +10,9 @@ from clarifytrial.interactive import (
     load_public_benchmark_spec,
     run_public_grid_stress,
 )
+from clarifytrial.interactive.policies import NoQuestionPolicy
+from clarifytrial.interactive.public_benchmark import _actual_scenario, _aggregate
+from clarifytrial.interactive.stress import _simulate
 
 
 CONFIG_PATH = Path("configs/interactive_public_benchmark_v1.json")
@@ -120,6 +123,65 @@ def test_planning_weights_do_not_change_with_hidden_patient_answers() -> None:
         for answer in scenario.answers
     }
     assert authored_answer_ids.isdisjoint(planning_ids)
+
+
+def test_public_case_counts_confirming_and_excluding_transition_opportunities() -> None:
+    spec = load_public_benchmark_spec(CONFIG_PATH)
+    group = next(item for item in spec.groups if item.group_id == "type_2_diabetes")
+    profile = next(item for item in group.profiles if item.profile_id == "t2d-06")
+    mask = next(item for item in group.masks if item.mask_id == "A")
+    case = build_public_case(group, profile, mask, action_budget=1)
+
+    result = _simulate(
+        case.public_policy_view(),
+        case.initial_patient_state(),
+        _actual_scenario(case),
+        NoQuestionPolicy(),
+    )
+
+    assert result.rescue_opportunities == 1
+    assert result.cleanup_opportunities == 4
+    assert result.confirmed_rescues == 0
+    assert result.ineligible_cleanups == 0
+
+
+def test_public_aggregate_reports_directional_transition_rates() -> None:
+    common = {
+        "split": "heldout",
+        "policy_id": "example",
+        "trial_recovery": 0.6,
+        "candidate_recovery": 0.8,
+        "confirmation_recovery": 0.6,
+        "incremental_recovered_trial_count": 1,
+        "unsafe_decisions": 0,
+        "actions": 1,
+        "route_cost": 2,
+    }
+    rows = [
+        {
+            **common,
+            "rescue_opportunity_count": 1,
+            "confirmed_rescue_count": 1,
+            "cleanup_opportunity_count": 2,
+            "ineligible_cleanup_count": 1,
+        },
+        {
+            **common,
+            "rescue_opportunity_count": 2,
+            "confirmed_rescue_count": 1,
+            "cleanup_opportunity_count": 1,
+            "ineligible_cleanup_count": 1,
+        },
+    ]
+
+    result = _aggregate(rows, ("split", "policy_id"))[0]
+
+    assert result["rescue_opportunity_count"] == 3
+    assert result["confirmed_rescue_count"] == 2
+    assert result["confirmed_rescue_rate"] == 2 / 3
+    assert result["cleanup_opportunity_count"] == 3
+    assert result["ineligible_cleanup_count"] == 2
+    assert result["ineligible_cleanup_rate"] == 2 / 3
 
 
 def test_small_public_grid_run_writes_frozen_baseline_comparison(tmp_path) -> None:

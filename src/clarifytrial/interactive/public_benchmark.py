@@ -565,6 +565,10 @@ def _policy_rows(
                 "trial_recovery": result.trial_recovery,
                 "candidate_recovery": result.candidate_recovery,
                 "confirmation_recovery": result.confirmation_recovery,
+                "rescue_opportunity_count": result.rescue_opportunities,
+                "confirmed_rescue_count": result.confirmed_rescues,
+                "cleanup_opportunity_count": result.cleanup_opportunities,
+                "ineligible_cleanup_count": result.ineligible_cleanups,
                 "unsafe_decisions": result.unsafe_decisions,
                 "actions": result.actions,
                 "route_cost": result.route_cost,
@@ -609,6 +613,18 @@ def _policy_rows(
             "confirmation_recovery": mean(
                 item.confirmation_recovery for item in random_results
             ),
+            "rescue_opportunity_count": mean(
+                item.rescue_opportunities for item in random_results
+            ),
+            "confirmed_rescue_count": mean(
+                item.confirmed_rescues for item in random_results
+            ),
+            "cleanup_opportunity_count": mean(
+                item.cleanup_opportunities for item in random_results
+            ),
+            "ineligible_cleanup_count": mean(
+                item.ineligible_cleanups for item in random_results
+            ),
             "unsafe_decisions": mean(
                 item.unsafe_decisions for item in random_results
             ),
@@ -644,6 +660,18 @@ def _aggregate(
             float(item.get("incremental_recovered_trial_count", 0.0))
             for item in items
         )
+        rescue_opportunities = sum(
+            float(item.get("rescue_opportunity_count", 0.0)) for item in items
+        )
+        cleanup_opportunities = sum(
+            float(item.get("cleanup_opportunity_count", 0.0)) for item in items
+        )
+        confirmed_rescues = sum(
+            float(item.get("confirmed_rescue_count", 0.0)) for item in items
+        )
+        ineligible_cleanups = sum(
+            float(item.get("ineligible_cleanup_count", 0.0)) for item in items
+        )
         mean_recovery = mean(item["trial_recovery"] for item in items)
         result.append(
             {
@@ -665,6 +693,20 @@ def _aggregate(
                 ),
                 "mean_confirmation_recovery": mean(
                     item["confirmation_recovery"] for item in items
+                ),
+                "rescue_opportunity_count": rescue_opportunities,
+                "confirmed_rescue_count": confirmed_rescues,
+                "confirmed_rescue_rate": (
+                    confirmed_rescues / rescue_opportunities
+                    if rescue_opportunities
+                    else None
+                ),
+                "cleanup_opportunity_count": cleanup_opportunities,
+                "ineligible_cleanup_count": ineligible_cleanups,
+                "ineligible_cleanup_rate": (
+                    ineligible_cleanups / cleanup_opportunities
+                    if cleanup_opportunities
+                    else None
                 ),
                 "total_unsafe_decisions": sum(
                     item["unsafe_decisions"] for item in items

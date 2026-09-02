@@ -135,6 +135,10 @@ class _Simulation:
     trial_recovery: float
     candidate_recovery: float
     confirmation_recovery: float
+    rescue_opportunities: int
+    confirmed_rescues: int
+    cleanup_opportunities: int
+    ineligible_cleanups: int
     unsafe_decisions: int
     actions: int
     route_cost: int
@@ -386,6 +390,7 @@ def _simulate(
     answers = {item.fact_id: item.evidence for item in scenario.answers}
     state = initial_state
     snapshot = evaluate_policy_view(view, state)
+    initial_by_id = {item.trial_id: item for item in snapshot.decisions}
     revealed: set[str] = set()
     route_cost = 0
     action_count = 0
@@ -459,6 +464,30 @@ def _simulate(
         is full_by_id[item].confirmation_status
         for item in trial_ids
     )
+    rescue_ids = [
+        item
+        for item in trial_ids
+        if initial_by_id[item].candidate_status is CandidateStatus.RETAIN
+        and initial_by_id[item].confirmation_status
+        is ConfirmationStatus.NOT_CONFIRMED
+        and full_by_id[item].confirmation_status is ConfirmationStatus.CONFIRMED
+    ]
+    cleanup_ids = [
+        item
+        for item in trial_ids
+        if initial_by_id[item].candidate_status is CandidateStatus.RETAIN
+        and initial_by_id[item].confirmation_status
+        is ConfirmationStatus.NOT_CONFIRMED
+        and full_by_id[item].confirmation_status is ConfirmationStatus.INELIGIBLE
+    ]
+    confirmed_rescues = sum(
+        final_by_id[item].confirmation_status is ConfirmationStatus.CONFIRMED
+        for item in rescue_ids
+    )
+    ineligible_cleanups = sum(
+        final_by_id[item].confirmation_status is ConfirmationStatus.INELIGIBLE
+        for item in cleanup_ids
+    )
     unsafe = sum(
         (
             final_by_id[item].candidate_status is CandidateStatus.REMOVE
@@ -475,6 +504,10 @@ def _simulate(
         trial_recovery=status_matches / len(trial_ids),
         candidate_recovery=candidate_matches / len(trial_ids),
         confirmation_recovery=confirmation_matches / len(trial_ids),
+        rescue_opportunities=len(rescue_ids),
+        confirmed_rescues=confirmed_rescues,
+        cleanup_opportunities=len(cleanup_ids),
+        ineligible_cleanups=ineligible_cleanups,
         unsafe_decisions=unsafe,
         actions=action_count,
         route_cost=route_cost,
