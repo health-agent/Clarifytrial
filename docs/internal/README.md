@@ -4,6 +4,27 @@
 있다. 개발 과정에서 대체된 내용은 `trash`에 보관돼 있으며 현재 설계의 근거로 쓰지
 않는다.
 
+## 읽는 순서와 현행 기준
+
+새 세션은 저장소 `AGENTS.md`를 읽은 뒤 다음 순서로 이어간다.
+
+1. [현재 상태와 인계](CURRENT_STATUS.md) — 활성 요구사항, 연구 맥락, 원고 변경 상태와 다음 행동
+2. [최종 포스터 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md) — 최신 HWP의 실제 문장·표·참고문헌, 제안의 적용 여부
+3. [연구계획 v5](CLARIFYTRIAL_RESEARCH_PLAN_V5.md) — 연구 질문, 기여와 탐색적 확장의 범위
+4. [프로그램 설계](CLARIFYTRIAL_AGENT_ARCHITECTURE_REDESIGN.md) — 코드·모델 역할과 상태 갱신·종료 조건
+5. [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) — 분모, 비교 방법, 결과와 해석 범위
+6. [실험자료](CLARIFYTRIAL_DATASETS.md) — 자료 출처와 합성 환자·연결 구조·환자 제한의 구분
+7. 발표를 다룰 때만 [과거 발표 구성](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md)을 추가로 읽는다.
+
+2026-09-05의 원고 기준은 사용자가 최종본으로 지정한
+`C:\Users\kll45\Downloads\Clarifytrial 포스터.hwp`다. 내부 원고에는 02:07:54 저장본을
+옮겼다. 이후 원본 변경이 있으면 다시 읽는다. 예전 v2·v3 원고와 PDF, 대화에서 제안만
+한 문장은 현행 HWP를 대체하지 않는다. 실험의 원래 조건과 계산은 검증 문서·원자료가
+기준이며, 원고에 설명이 빠졌다면 그 차이를 밝힌다.
+
+각 역할에는 위 현행 파일 하나를 유지한다. 새로운 세션이라는 이유로 별도의 현행
+핸드오프 파일을 만들지 않는다. 문서에 있는 과거 실행·제출 계획은 새 작업 권한이 아니다.
+
 ## 연구와 현재 결과
 
 | 문서 | 내용 |
@@ -11,8 +32,8 @@
 | [현재 상태](CURRENT_STATUS.md) | 구현된 범위, 최신 결과와 남은 일 |
 | [연구계획 v5](CLARIFYTRIAL_RESEARCH_PLAN_V5.md) | 연구 질문, 실험 방법과 결과 해석 기준 |
 | [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) | 자료 규모, 실행 조건, 수치와 해석 범위 |
-| [발표 구성과 연구 요약](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 발표 흐름, 화면 구성, 발표 대본과 질의응답 |
-| [KOSMI 포스터 논문 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md) | 최신 PDF 기준 초록·본문·표·그림·참고문헌과 남은 2쪽 조판 상태 |
+| [발표 구성과 연구 요약](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 과거 발표 흐름·대본·질의응답 참고; 현행 포스터 지시가 아님 |
+| [KOSMI 포스터 논문 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md) | 최종 HWP의 초록·본문·표·그림 연결·참고문헌과 남은 편집 제안 |
 
 ## 프로그램 구조
 
