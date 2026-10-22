@@ -69,6 +69,7 @@
 | [모델 역할 비교](results/independent-new-trial-agent-evaluation-v1/report.md) | 새 시험에서 코드와 언어모델 실행 결과, 호출 수와 토큰 |
 | [선정 후 정보 선택 비교](results/acquisition-research-v1/) | 기존 환자 20명의 제약·횟수·선택 손실과 한 단계·전체 예산 계획 비교; 개발 진단 완료 |
 | [새 시험과 근거 획득 비교](results/paper-acquisition-v1/) | 완료. 새 평가 시험 24건·합성 기본 벡터 288개에서 경로 품질·분포·방문 민감도. 선택한 부분조건 범위 |
+| [같은 원문의 논리 확장](results/paper-logic-v2/) | 탐색 분석 완료. 범위·대안·예외, 시험별 상반된 변화·환자별 첫 후보·방문과 교차 재표집. 자동 NLP 정확도나 새 독립 시험 검증이 아님 |
 | [발표용 대화형 데모](demo/clarifytrial-presentation-demo.html) | 상태 읽기, 다음 행동 결정, 확인 도구 실행, 상태 갱신과 반복·종료 판단을 잇는 합성 실행 |
 
 ## 용어

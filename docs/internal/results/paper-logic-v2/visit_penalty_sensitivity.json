@@ -1,0 +1,764 @@
+{
+  "source_version": "paper-source-subsets-v2-logic",
+  "setting": "imperfect",
+  "visit_limit": 1,
+  "budget": 3,
+  "target_policy": "quality_penalty_0.5",
+  "scope": "Post hoc per-protocol and crossed resampling sensitivity; same expanded protocols, no new clinical cohort.",
+  "patient_goal_metrics": {
+    "coverage": {
+      "settings": 576,
+      "with_eligible_subset": 550,
+      "found_true_eligible_subset": 475,
+      "false_eligible_confirmation": 0,
+      "new_confirmation_opportunities": 324,
+      "found_after_no_initial_confirmation": 249,
+      "visits": 140,
+      "actions": 1392
+    },
+    "decision_myopic": {
+      "settings": 576,
+      "with_eligible_subset": 550,
+      "found_true_eligible_subset": 524,
+      "false_eligible_confirmation": 0,
+      "new_confirmation_opportunities": 324,
+      "found_after_no_initial_confirmation": 298,
+      "visits": 247,
+      "actions": 1415
+    },
+    "decision_budget": {
+      "settings": 576,
+      "with_eligible_subset": 550,
+      "found_true_eligible_subset": 517,
+      "false_eligible_confirmation": 0,
+      "new_confirmation_opportunities": 324,
+      "found_after_no_initial_confirmation": 291,
+      "visits": 209,
+      "actions": 1417
+    },
+    "quality_myopic": {
+      "settings": 576,
+      "with_eligible_subset": 550,
+      "found_true_eligible_subset": 515,
+      "false_eligible_confirmation": 0,
+      "new_confirmation_opportunities": 324,
+      "found_after_no_initial_confirmation": 289,
+      "visits": 557,
+      "actions": 1347
+    },
+    "quality_budget": {
+      "settings": 576,
+      "with_eligible_subset": 550,
+      "found_true_eligible_subset": 528,
+      "false_eligible_confirmation": 0,
+      "new_confirmation_opportunities": 324,
+      "found_after_no_initial_confirmation": 302,
+      "visits": 406,
+      "actions": 1418
+    },
+    "quality_penalty_0.1": {
+      "settings": 576,
+      "with_eligible_subset": 550,
+      "found_true_eligible_subset": 527,
+      "false_eligible_confirmation": 0,
+      "new_confirmation_opportunities": 324,
+      "found_after_no_initial_confirmation": 301,
+      "visits": 354,
+      "actions": 1405
+    },
+    "quality_penalty_0.25": {
+      "settings": 576,
+      "with_eligible_subset": 550,
+      "found_true_eligible_subset": 525,
+      "false_eligible_confirmation": 0,
+      "new_confirmation_opportunities": 324,
+      "found_after_no_initial_confirmation": 299,
+      "visits": 189,
+      "actions": 1406
+    },
+    "quality_penalty_0.5": {
+      "settings": 576,
+      "with_eligible_subset": 550,
+      "found_true_eligible_subset": 525,
+      "false_eligible_confirmation": 0,
+      "new_confirmation_opportunities": 324,
+      "found_after_no_initial_confirmation": 299,
+      "visits": 165,
+      "actions": 1404
+    }
+  },
+  "comparisons": [
+    {
+      "baseline": "coverage",
+      "crossed_resampling": {
+        "mean_difference": 0.04600694444444445,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.008680555555555556,
+          "upper": 0.10894097222222222
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "patient_resampling": {
+        "cluster_unit": "patient_averaged_over_masks_and_protocols",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.04600694444444445,
+        "bootstrap_95_ci": {
+          "lower": 0.03602430555555555,
+          "upper": 0.05642361111111111
+        },
+        "wins": 93,
+        "ties": 180,
+        "losses": 15,
+        "two_sided_exact_sign_test_p": 6.404555406738942e-15
+      },
+      "trial_effects": [
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT07889648",
+          "difference": 0
+        },
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT07814508",
+          "difference": 0
+        },
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT06072326",
+          "difference": 0
+        },
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT07654374",
+          "difference": 0
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT07884058",
+          "difference": 0
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT07058155",
+          "difference": -0.020833333333333332
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT07348601",
+          "difference": 0.041666666666666664
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT06722391",
+          "difference": 0
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT06906640",
+          "difference": 0.125
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT07115953",
+          "difference": -0.041666666666666664
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT07854561",
+          "difference": 0.03125
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT04557462",
+          "difference": 0
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT07188805",
+          "difference": -0.17708333333333334
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT06021860",
+          "difference": 0.5520833333333334
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT07214376",
+          "difference": -0.09375
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT07490067",
+          "difference": 0.17708333333333334
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT07828054",
+          "difference": 0.041666666666666664
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT04305834",
+          "difference": -0.0625
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT04222413",
+          "difference": -0.0625
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT07020780",
+          "difference": 0.3958333333333333
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT06498635",
+          "difference": 0.0625
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT07554339",
+          "difference": 0.0625
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT05099172",
+          "difference": 0.11458333333333333
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT02133196",
+          "difference": -0.041666666666666664
+        }
+      ],
+      "leave_one_protocol_out_range": {
+        "lower": 0.0240036231884058,
+        "upper": 0.05570652173913043
+      },
+      "protocol_wins": 10,
+      "protocol_ties": 7,
+      "protocol_losses": 7
+    },
+    {
+      "baseline": "decision_myopic",
+      "crossed_resampling": {
+        "mean_difference": 0.0026041666666666665,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.028645833333333332,
+          "upper": 0.03169487847222206
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "patient_resampling": {
+        "cluster_unit": "patient_averaged_over_masks_and_protocols",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0026041666666666665,
+        "bootstrap_95_ci": {
+          "lower": -0.00390625,
+          "upper": 0.009114583333333334
+        },
+        "wins": 17,
+        "ties": 257,
+        "losses": 14,
+        "two_sided_exact_sign_test_p": 0.720100131817162
+      },
+      "trial_effects": [
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT07889648",
+          "difference": 0
+        },
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT07814508",
+          "difference": 0
+        },
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT06072326",
+          "difference": 0
+        },
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT07654374",
+          "difference": 0
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT07884058",
+          "difference": 0
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT07058155",
+          "difference": 0
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT07348601",
+          "difference": 0
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT06722391",
+          "difference": 0
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT06906640",
+          "difference": 0
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT07115953",
+          "difference": 0
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT07854561",
+          "difference": 0
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT04557462",
+          "difference": 0
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT07188805",
+          "difference": 0.17708333333333334
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT06021860",
+          "difference": -0.020833333333333332
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT07214376",
+          "difference": -0.2708333333333333
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT07490067",
+          "difference": 0.16666666666666666
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT07828054",
+          "difference": 0.010416666666666666
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT04305834",
+          "difference": 0.0
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT04222413",
+          "difference": 0.010416666666666666
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT07020780",
+          "difference": 0
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT06498635",
+          "difference": 0
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT07554339",
+          "difference": 0
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT05099172",
+          "difference": -0.020833333333333332
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT02133196",
+          "difference": 0.010416666666666666
+        }
+      ],
+      "leave_one_protocol_out_range": {
+        "lower": -0.004981884057971015,
+        "upper": 0.014492753623188404
+      },
+      "protocol_wins": 5,
+      "protocol_ties": 16,
+      "protocol_losses": 3
+    },
+    {
+      "baseline": "decision_budget",
+      "crossed_resampling": {
+        "mean_difference": 0.009114583333333334,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.001736111111111111,
+          "upper": 0.021267361111111112
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "patient_resampling": {
+        "cluster_unit": "patient_averaged_over_masks_and_protocols",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.009114583333333334,
+        "bootstrap_95_ci": {
+          "lower": 0.003472222222222222,
+          "upper": 0.014756944444444444
+        },
+        "wins": 28,
+        "ties": 250,
+        "losses": 10,
+        "two_sided_exact_sign_test_p": 0.0050976432976312935
+      },
+      "trial_effects": [
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT07889648",
+          "difference": 0
+        },
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT07814508",
+          "difference": 0
+        },
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT06072326",
+          "difference": 0
+        },
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT07654374",
+          "difference": 0
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT07884058",
+          "difference": 0
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT07058155",
+          "difference": 0
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT07348601",
+          "difference": 0.020833333333333332
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT06722391",
+          "difference": 0
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT06906640",
+          "difference": 0.052083333333333336
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT07115953",
+          "difference": -0.010416666666666666
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT07854561",
+          "difference": 0
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT04557462",
+          "difference": 0
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT07188805",
+          "difference": 0
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT06021860",
+          "difference": -0.020833333333333332
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT07214376",
+          "difference": -0.041666666666666664
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT07490067",
+          "difference": 0.0
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT07828054",
+          "difference": 0.010416666666666666
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT04305834",
+          "difference": 0.020833333333333332
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT04222413",
+          "difference": 0.020833333333333332
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT07020780",
+          "difference": 0.09375
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT06498635",
+          "difference": 0
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT07554339",
+          "difference": 0
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT05099172",
+          "difference": 0.052083333333333336
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT02133196",
+          "difference": 0.020833333333333332
+        }
+      ],
+      "leave_one_protocol_out_range": {
+        "lower": 0.005434782608695652,
+        "upper": 0.011322463768115942
+      },
+      "protocol_wins": 8,
+      "protocol_ties": 13,
+      "protocol_losses": 3
+    },
+    {
+      "baseline": "quality_myopic",
+      "crossed_resampling": {
+        "mean_difference": 0.014756944444444444,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.017795138888888888,
+          "upper": 0.046875
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "patient_resampling": {
+        "cluster_unit": "patient_averaged_over_masks_and_protocols",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.014756944444444444,
+        "bootstrap_95_ci": {
+          "lower": 0.005208333333333333,
+          "upper": 0.024305555555555556
+        },
+        "wins": 50,
+        "ties": 209,
+        "losses": 29,
+        "two_sided_exact_sign_test_p": 0.023819792858001267
+      },
+      "trial_effects": [
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT07889648",
+          "difference": 0.13541666666666666
+        },
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT07814508",
+          "difference": 0
+        },
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT06072326",
+          "difference": 0.010416666666666666
+        },
+        {
+          "group": "type_2_diabetes",
+          "trial_id": "NCT07654374",
+          "difference": 0.07291666666666667
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT07884058",
+          "difference": 0
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT07058155",
+          "difference": -0.020833333333333332
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT07348601",
+          "difference": 0.10416666666666667
+        },
+        {
+          "group": "obesity",
+          "trial_id": "NCT06722391",
+          "difference": 0
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT06906640",
+          "difference": -0.010416666666666666
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT07115953",
+          "difference": 0.010416666666666666
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT07854561",
+          "difference": 0.010416666666666666
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "trial_id": "NCT04557462",
+          "difference": 0
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT07188805",
+          "difference": 0.17708333333333334
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT06021860",
+          "difference": -0.020833333333333332
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT07214376",
+          "difference": -0.23958333333333334
+        },
+        {
+          "group": "heart_failure",
+          "trial_id": "NCT07490067",
+          "difference": 0.17708333333333334
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT07828054",
+          "difference": -0.010416666666666666
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT04305834",
+          "difference": -0.010416666666666666
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT04222413",
+          "difference": 0.03125
+        },
+        {
+          "group": "breast_cancer",
+          "trial_id": "NCT07020780",
+          "difference": 0
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT06498635",
+          "difference": 0
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT07554339",
+          "difference": 0
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT05099172",
+          "difference": 0.0
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "trial_id": "NCT02133196",
+          "difference": -0.0625
+        }
+      ],
+      "leave_one_protocol_out_range": {
+        "lower": 0.007699275362318838,
+        "upper": 0.025815217391304348
+      },
+      "protocol_wins": 9,
+      "protocol_ties": 8,
+      "protocol_losses": 7
+    }
+  ]
+}

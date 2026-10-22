@@ -36,7 +36,7 @@ def build(source: Path, destination: Path):
     prior_ids = set()
     for root in (Path("configs"), Path("data")):
         for path in root.rglob("*.json"):
-            if destination in path.parents:
+            if destination in path.parents or any(part.startswith("paper_source_benchmark_v") for part in path.parts):
                 continue
             prior_ids.update(re.findall(r"NCT\d{8}", path.read_text(encoding="utf-8-sig")))
     used = set()

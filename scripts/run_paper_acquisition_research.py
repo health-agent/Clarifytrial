@@ -23,7 +23,7 @@ def csv_write(path, rows):
         writer.writerows(rows)
 
 
-def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_groups=None, penalties=(), stress=False):
+def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_groups=None, penalties=(), stress=False, settings_override=None, compact=False):
     if patients < 1 or bootstrap < 1 or (max_groups is not None and not 1 <= max_groups <= 6):
         raise ValueError("positive patients/bootstrap and one to six groups are required")
     if any(p < 0 for p in penalties) or len(set(penalties)) != len(penalties):
@@ -31,6 +31,10 @@ def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_gro
     data = json.loads(source.read_text(encoding="utf-8"))
     rows = []
     settings=("verified_value_error","value_dependent_failure") if stress else ("ideal","imperfect","value_shift","quality_shift")
+    if settings_override:
+        if not set(settings_override)<={"ideal","imperfect","value_shift","quality_shift","verified_value_error","value_dependent_failure"}:
+            raise ValueError("unknown evaluation setting")
+        settings=tuple(settings_override)
     output.mkdir(parents=True, exist_ok=True)
     for group in data["groups"][:max_groups]:
         model = make_model(group, split)
@@ -40,11 +44,11 @@ def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_gro
         seed = sum(map(ord, group["group_id"])) + (21000 if split == "heldout" else 11000)
         # Plans cached across repeated patients, never across different models.
         for setting in settings:
-            planners = {True: RoutePlanner(model, quality=(1.,1.) if setting == "ideal" else QUALITY_PRIORS),
-                        False: RoutePlanner(model, quality=(1.,1.))}
+            planners = {True: RoutePlanner(model, quality=(1.,1.) if setting == "ideal" else QUALITY_PRIORS,compact=compact),
+                        False: RoutePlanner(model, quality=(1.,1.),compact=compact)}
             for penalty in penalties:
                 planners[f"quality_penalty_{penalty:g}"] = RoutePlanner(model,
-                    quality=(1.,1.) if setting=="ideal" else QUALITY_PRIORS, visit_penalty=penalty)
+                    quality=(1.,1.) if setting=="ideal" else QUALITY_PRIORS, visit_penalty=penalty,compact=compact)
             actual_q = (1.,1.) if setting == "ideal" else ((.50,.85) if setting == "quality_shift" else QUALITY_PRIORS)
             population = generate_patients(model.domains, patients, seed=seed, shifted=setting == "value_shift")
             mean_rank=[mean(row[j]/(len(domain)-1) for row in population) for j,domain in enumerate(model.domains)]
@@ -172,7 +176,8 @@ def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_gro
         "base_synthetic_patients":patients*len(data["groups"][:max_groups]),
         "value_shift_variants":patients*len(data["groups"][:max_groups]) if "value_shift" in settings else 0,"replay_count":len(rows),
         "trial_count":sum(t["split"]==split for g in data["groups"][:max_groups] for t in g["trials"]),
-        "quality_priors":QUALITY_PRIORS,"visit_penalties":penalties,"settings":settings,
+        "quality_priors":QUALITY_PRIORS,"visit_penalties":penalties,"settings":settings,"compact_planning":compact,
+        "source_version":data["version"],"relation_to_v1":data.get("relation_to_v1"),
         "model":"Independent empirical feature marginals with Laplace smoothing; the planner does not model value-dependent missingness, informative failures, or factual errors in verified returns.",
         "uncertainty":"Patient bootstrap conditional on these fixed protocol subsets and synthetic generators; not a CI for new protocols or clinical deployment. Exploratory multiple comparisons, no confirmatory p-value claim.",
         "metrics":aggregates,"comparisons":comparisons}
@@ -190,5 +195,7 @@ if __name__=="__main__":
     parser.add_argument("--max-groups",type=int)
     parser.add_argument("--visit-penalties",type=float,nargs="*",default=[])
     parser.add_argument("--stress",action="store_true",help="Run verified-value errors and value-dependent failures separately from the original four settings")
+    parser.add_argument("--settings",nargs="*")
+    parser.add_argument("--compact-planning",action="store_true")
     args=parser.parse_args()
-    run(args.source,args.output,patients=args.patients,split=args.split,bootstrap=args.bootstrap,max_groups=args.max_groups,penalties=args.visit_penalties,stress=args.stress)
+    run(args.source,args.output,patients=args.patients,split=args.split,bootstrap=args.bootstrap,max_groups=args.max_groups,penalties=args.visit_penalties,stress=args.stress,settings_override=args.settings,compact=args.compact_planning)
