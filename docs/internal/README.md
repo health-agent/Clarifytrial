@@ -14,9 +14,10 @@
 4. [프로그램 설계](CLARIFYTRIAL_AGENT_ARCHITECTURE_REDESIGN.md) — 코드·모델 역할과 상태 갱신·종료 조건
 5. [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) — 분모, 비교 방법, 결과와 해석 범위
 6. [실험자료](CLARIFYTRIAL_DATASETS.md) — 자료 출처와 합성 환자·연결 구조·환자 제한의 구분
-   - 확장 연구를 이어갈 때 [확장 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md)를 추가로 읽는다.
-     활성 초안이며 선정된 HWP를 대체하지 않는다. 수치의 기준은 검증 결과 9–15절이다.
-7. 발표를 다룰 때만 [과거 발표 구성](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md)을 추가로 읽는다.
+   - 확장 연구를 이어갈 때 [통합 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md)를 추가로 읽는다.
+     계산 연구의 종합 초안이며 선정된 HWP를 대체하지 않는다. 수치의 기준은 검증 결과 9–15절이다.
+7. 발표를 다룰 때 [현행 설명·질의응답과 과거 발표 구성](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md)을
+   추가로 읽는다. 첫 절만 10월 연구의 현행 설명이며 뒤의 과거 슬라이드 지시는 참고 기록이다.
 
 2026-09-05의 원고 기준은 사용자가 최종본으로 지정한
 `C:\Users\kll45\Downloads\Clarifytrial 포스터.hwp`다. 내부 원고에는 02:07:54 저장본을
@@ -39,9 +40,9 @@
 | [현재 상태](CURRENT_STATUS.md) | 구현된 범위, 최신 결과와 남은 일 |
 | [연구계획 v5](CLARIFYTRIAL_RESEARCH_PLAN_V5.md) | 연구 질문, 실험 방법과 결과 해석 기준 |
 | [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) | 자료 규모, 실행 조건, 수치와 해석 범위 |
-| [발표 구성과 연구 요약](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 과거 발표 흐름·대본·질의응답 참고; 현행 포스터 지시가 아님 |
+| [연구 설명·질의응답](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 첫 절은 10월 연구의 쉬운 설명·3분 대본·분모·질의응답. 뒤는 과거 발표 기록. 실제 포스터 조판은 미완료 |
 | [KOSMI 포스터 논문 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md) | 최종 HWP의 초록·본문·표·그림 연결·참고문헌과 남은 편집 제안 |
-| [확장 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md) | 활성 초안. 새 시험의 부분조건·실패 가능한 경로·실제 방문 부담을 연결한 별도 연구 원고; 미완성 범위 명시 |
+| [통합 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md) | 계산 연구 종합 초안. 획득·대조·원문 준비의 세 질문, 핵심 표 5개·그림 3개, 상세 자료 S1–S7. 미제출·임상 검증 미완료 |
 
 ## 프로그램 구조
 

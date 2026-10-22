@@ -55,6 +55,8 @@ python scripts/analyze_leaf_protocol_probe.py --cases runs/leaf-followup/cases.j
 `runs/leaf-model-20261023/followup-old/`, `followup-v9/`다. 고정 v9 코드는 같은 상위
 폴더의 `baseline-v9-development/`에서 실행했다. 공용 실행기가 SDK 프로세스 트리에
 메모리 1.5GiB·동적 CPU 한도를 적용했고 두 실행은 종료 0으로 마쳤다. 진행 중인 호출은 없다.
+원문 준비 모듈과 v9 캐시는 공개 커밋 `72d4411`에 보존했다. 그 커밋의 최종 안내·종료
+표시는 실제 준비 호출 뒤의 수정도 포함하지만 원문 제안의 판정 점수는 바꾸지 않았다.
 
 주석은 UW Bio-NLP의 공개 Leaf 자료에서 왔으며 받은 날짜는 2026-10-23이다.
 MIT 허가 문구는 `LICENSE.upstream`, 원본·revision·수집 방법은 프로젝트 `DATA_SOURCES.md`를 따른다.
