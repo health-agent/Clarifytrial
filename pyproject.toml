@@ -36,6 +36,9 @@ retrieval = [
 dev = [
     "pytest>=8,<9",
 ]
+research-figures = [
+    "matplotlib>=3.9,<4",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

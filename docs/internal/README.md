@@ -14,6 +14,8 @@
 4. [프로그램 설계](CLARIFYTRIAL_AGENT_ARCHITECTURE_REDESIGN.md) — 코드·모델 역할과 상태 갱신·종료 조건
 5. [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) — 분모, 비교 방법, 결과와 해석 범위
 6. [실험자료](CLARIFYTRIAL_DATASETS.md) — 자료 출처와 합성 환자·연결 구조·환자 제한의 구분
+   - 확장 연구를 이어갈 때 [확장 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md)를 추가로 읽는다.
+     활성 초안이며 선정된 HWP를 대체하지 않는다. 수치의 기준은 검증 결과 9절이다.
 7. 발표를 다룰 때만 [과거 발표 구성](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md)을 추가로 읽는다.
 
 2026-09-05의 원고 기준은 사용자가 최종본으로 지정한
@@ -39,6 +41,7 @@
 | [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) | 자료 규모, 실행 조건, 수치와 해석 범위 |
 | [발표 구성과 연구 요약](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 과거 발표 흐름·대본·질의응답 참고; 현행 포스터 지시가 아님 |
 | [KOSMI 포스터 논문 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md) | 최종 HWP의 초록·본문·표·그림 연결·참고문헌과 남은 편집 제안 |
+| [확장 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md) | 활성 초안. 새 시험의 부분조건·실패 가능한 경로·실제 방문 부담을 연결한 별도 연구 원고; 미완성 범위 명시 |
 
 ## 프로그램 구조
 
@@ -65,6 +68,7 @@
 | [KOSMI 보완 측정](results/kosmi-poster-evidence-v1/) | 적격·부적격 방향별 확인 예산 결과와 환자 단위 비교 |
 | [모델 역할 비교](results/independent-new-trial-agent-evaluation-v1/report.md) | 새 시험에서 코드와 언어모델 실행 결과, 호출 수와 토큰 |
 | [선정 후 정보 선택 비교](results/acquisition-research-v1/) | 기존 환자 20명의 제약·횟수·선택 손실과 한 단계·전체 예산 계획 비교; 개발 진단 완료 |
+| [새 시험과 근거 획득 비교](results/paper-acquisition-v1/) | 완료. 새 평가 시험 24건·합성 기본 벡터 288개에서 경로 품질·분포·방문 민감도. 선택한 부분조건 범위 |
 | [발표용 대화형 데모](demo/clarifytrial-presentation-demo.html) | 상태 읽기, 다음 행동 결정, 확인 도구 실행, 상태 갱신과 반복·종료 판단을 잇는 합성 실행 |
 
 ## 용어

@@ -178,7 +178,9 @@ def plausible_numeric_range(
 
 
 def _source_unit(line: str, fallback: str) -> str | None:
-    normalized = line.casefold().replace("²", "2").replace("⁹", "9")
+    normalized = line.casefold().replace("²", "2").replace("⁹", "9").replace("\\", "")
+    if fallback == "mL/min/1.73m2":
+        return fallback if "1.73" in normalized else "mL/min"
     if fallback != "source-unit":
         return fallback
     if "10^9/l" in normalized or "10 9/l" in normalized or "10x9/l" in normalized:
@@ -187,12 +189,13 @@ def _source_unit(line: str, fallback: str) -> str | None:
         return "/uL"
     if "/mm3" in normalized or "/mm³" in line.casefold():
         return "/mm3"
-    if "g/dl" in normalized:
-        return "g/dL"
-    if "g/l" in normalized:
-        return "g/L"
-    if "mg/dl" in normalized:
+    # Match complete units: mg/dL contains the substring g/dL.
+    if re.search(r"\bmg/dl\b", normalized):
         return "mg/dL"
+    if re.search(r"\bg/dl\b", normalized):
+        return "g/dL"
+    if re.search(r"\bg/l\b", normalized):
+        return "g/L"
     if "μmol/l" in normalized or "µmol/l" in normalized or "umol/l" in normalized:
         return "umol/L"
     return None
@@ -354,14 +357,39 @@ def _numeric_rows(
         if len(concept_matches) != 1:
             continue
         fact_code, description, fallback_unit = concept_matches[0]
+        # These expressions describe a change/history or a conditional rule,
+        # rather than an unconditional measurement of the named concept.
+        if re.search(r"\b(?:if|allowed|may be included)\b", line, re.I):
+            continue
+        if fact_code == "body_weight" and re.search(
+            r"%|\b(?:change|loss|gain|reduction|reduced|stability|dry weight|above dry|liters?|lb\.?|pounds?)\b",
+            line, re.I,
+        ):
+            continue
+        # Do not turn a printed interval into a one-sided condition.
+        if re.search(r"\d\s*[-–]\s*\d", line):
+            continue
+        concept_pattern = next(item[3] for item in _CONCEPT_PATTERNS if item[0] == fact_code)
+        concept_match = re.search(concept_pattern, line, re.I)
+        match = comparisons[0]
+        if concept_match is None or match.start() < concept_match.end():
+            continue
+        # EGFR can mean a gene and not a renal measurement. A nearby time
+        # threshold must never acquire an inferred eGFR unit.
+        if fact_code == "egfr" and not re.search(r"ml\s*/\s*min", line, re.I):
+            continue
         unit = _source_unit(line, fallback_unit)
         if unit is None:
             continue
-        match = comparisons[0]
         operator = {">=": "gte", ">": "gt", "<=": "lte", "<": "lt"}[
             match.group("operator")
         ]
         threshold = float(match.group("value"))
+        tail = line[match.end():].replace("\\", "")
+        if unit in {"/uL", "/mm3"} and re.match(
+            r"\s*[x×*]\s*10\s*\^?\s*3\s*/", tail, re.I,
+        ):
+            threshold *= 1000
         unit_key = re.sub(r"[^a-z0-9]+", "_", unit.casefold()).strip("_")
         normalized_fact_code = (
             fact_code if not unit_key else f"{fact_code}_{unit_key}"
