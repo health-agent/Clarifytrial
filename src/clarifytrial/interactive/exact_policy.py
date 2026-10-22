@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from itertools import product
-from collections.abc import Mapping
+from collections.abc import Collection, Mapping
 from typing import Sequence
 
 from ..concepts import concepts_equivalent
@@ -226,6 +226,9 @@ class _ExactSolver:
         initial_state: PatientState,
         distribution: ScenarioDistribution,
         objective: ExactPolicyObjective,
+        *,
+        allowed_fact_ids: Collection[str] | None = None,
+        acquisition_units_by_fact: Mapping[str, int] | None = None,
     ) -> None:
         if view.case_id != distribution.case_id:
             raise ValueError("view and scenario distribution must share case_id")
@@ -250,6 +253,17 @@ class _ExactSolver:
             else None
         )
         public_ids = {item.fact_id for item in view.available_information}
+        self.allowed_fact_ids = (
+            public_ids if allowed_fact_ids is None else set(allowed_fact_ids)
+        )
+        if not self.allowed_fact_ids <= public_ids:
+            raise ValueError("allowed facts must belong to the public menu")
+        self.acquisition_units_by_fact = dict(acquisition_units_by_fact or {})
+        if not set(self.acquisition_units_by_fact) <= public_ids or any(
+            not isinstance(value, int) or isinstance(value, bool) or value < 0
+            for value in self.acquisition_units_by_fact.values()
+        ):
+            raise ValueError("acquisition units must be nonnegative integers for public facts")
         scenario_ids = set(self.answer_by_scenario[0])
         if public_ids != scenario_ids:
             raise ValueError("scenario facts must match the public information menu")
@@ -286,23 +300,32 @@ class _ExactSolver:
                     self.full_status_masks.get(status_key, 0) | bit
                 )
         self.memo: dict[
-            tuple[int, tuple[tuple[str, str], ...], int], _Plan
+            tuple[int, tuple[tuple[str, str], ...], int, int | None], _Plan
         ] = {}
         self.evaluated_states = 0
+        self._terminal_cache: dict[tuple[tuple[str, str], ...], _Value] = {}
 
     def solve(
         self,
         current_state: PatientState,
         revealed_fact_ids: frozenset[str],
         remaining_budget: int,
+        remaining_acquisition_units: int | None = None,
     ) -> ExactPolicyChoice:
+        if remaining_budget < 0 or (
+            remaining_acquisition_units is not None and remaining_acquisition_units < 0
+        ):
+            raise ValueError("remaining budgets must be nonnegative")
         observations = self._observations(current_state, revealed_fact_ids)
         belief = self.all_scenarios_mask
         for fact_id, outcome in observations.items():
             belief &= self.outcome_masks[fact_id].get(outcome, 0)
         if belief == 0:
             raise ValueError("observed answers are outside the planning scenarios")
-        plan = self._solve_state(belief, tuple(sorted(observations.items())), remaining_budget)
+        plan = self._solve_state(
+            belief, tuple(sorted(observations.items())), remaining_budget,
+            remaining_acquisition_units,
+        )
         return ExactPolicyChoice(
             target_fact_id=plan.fact_id,
             value=plan.value.public(self.objective),
@@ -316,8 +339,9 @@ class _ExactSolver:
         belief: int,
         observations: tuple[tuple[str, str], ...],
         remaining_budget: int,
+        remaining_acquisition_units: int | None,
     ) -> _Plan:
-        key = (belief, observations, remaining_budget)
+        key = (belief, observations, remaining_budget, remaining_acquisition_units)
         cached = self.memo.get(key)
         if cached is not None:
             return cached
@@ -326,7 +350,10 @@ class _ExactSolver:
         best = stop
         if remaining_budget > 0:
             observed_ids = {fact_id for fact_id, _ in observations}
-            for fact_id in sorted(set(self.public_by_id) - observed_ids):
+            for fact_id in sorted(self.allowed_fact_ids - observed_ids):
+                units = self.acquisition_units_by_fact.get(fact_id, 0)
+                if remaining_acquisition_units is not None and units > remaining_acquisition_units:
+                    continue
                 branches = self._partition(belief, fact_id)
                 branch_values: list[tuple[float, _Value]] = []
                 belief_probability = self._mask_probability(belief)
@@ -340,7 +367,9 @@ class _ExactSolver:
                         sorted((*observations, (fact_id, outcome)))
                     )
                     child = self._solve_state(
-                        scenario_mask, child_observations, remaining_budget - 1
+                        scenario_mask, child_observations, remaining_budget - 1,
+                        None if remaining_acquisition_units is None
+                        else remaining_acquisition_units - units,
                     )
                     branch_values.append((branch_weight, child.value))
                 route = self.public_by_id[fact_id].available_actions[0]
@@ -389,6 +418,9 @@ class _ExactSolver:
         belief: int,
         observations: tuple[tuple[str, str], ...],
     ) -> _Value:
+        cached = self._terminal_cache.get(observations)
+        if cached is not None:
+            return cached
         current = evaluate_policy_view(
             self.view,
             self._state_from_observations(
@@ -444,13 +476,15 @@ class _ExactSolver:
                 / (belief.bit_count() * len(trial_ids))
                 for item in matching_masks
             )
-        return _Value(
+        value = _Value(
             unsafe=unsafe,
             average_recovery=average_recovery,
             worst_recovery=worst_recovery,
             actions=0,
             route_cost=0,
         )
+        self._terminal_cache[observations] = value
+        return value
 
     @staticmethod
     def _extreme_count(
@@ -475,7 +509,7 @@ class _ExactSolver:
         state: PatientState,
         revealed_fact_ids: frozenset[str],
     ) -> dict[str, str]:
-        evidence_by_id = {item.evidence_id: item for item in state.facts}
+        initial_ids = {item.evidence_id for item in self.initial_state.facts}
         result = {}
         for fact_id in revealed_fact_ids:
             public = self.public_by_id[fact_id]
@@ -483,17 +517,15 @@ class _ExactSolver:
             constraint = criterion.numeric_constraint
             if constraint is None:
                 raise ValueError("exact policy observations require a numeric rule")
-            observed = next(
-                (
-                    item
-                    for item in reversed(tuple(evidence_by_id.values()))
-                    if concepts_equivalent(item.concept, constraint.concept)
-                ),
-                None,
-            )
-            if observed is None:
+            if not any(
+                item.evidence_id not in initial_ids
+                and concepts_equivalent(item.concept, constraint.concept)
+                for item in state.facts
+            ):
                 raise ValueError("revealed fact is absent from the patient state")
-            result[fact_id] = self._fact_outcome_key(fact_id, observed)
+            # The eligibility engine resolves date/source precedence.  List
+            # order must not select a stale provisional record over a new one.
+            result[fact_id] = self._state_outcome_key(fact_id, state)
         return result
 
     def _partition(
@@ -523,10 +555,13 @@ class _ExactSolver:
         return result
 
     def _fact_outcome_key(self, fact_id: str, evidence: EvidenceFact) -> str:
-        public = self.public_by_id[fact_id]
         state = self.initial_state.model_copy(
             update={"facts": [*self.initial_state.facts, evidence]}
         )
+        return self._state_outcome_key(fact_id, state)
+
+    def _state_outcome_key(self, fact_id: str, state: PatientState) -> str:
+        public = self.public_by_id[fact_id]
         results = []
         for criterion_id in sorted(public.related_criterion_ids):
             result = evaluate_criterion(self.criterion_by_id[criterion_id], state)
@@ -561,6 +596,142 @@ class _ExactSolver:
                 ]
             }
         )
+
+
+def compress_planning_distribution(
+    view: InteractivePolicyView,
+    initial_state: PatientState,
+    distribution: ScenarioDistribution,
+) -> ScenarioDistribution:
+    """Merge numeric scenarios with identical criterion outcomes, preserving mass.
+
+    This is exact for the structured numeric criteria used by this experiment.
+    It neither samples scenarios nor uses the actual evaluation patient's answers.
+    """
+
+    if view.case_id != distribution.case_id:
+        raise ValueError("view and scenario distribution must share case_id")
+    criteria = {
+        criterion.criterion_id: criterion
+        for trial in view.trials for criterion in trial.criteria
+    }
+    public = {item.fact_id: item for item in view.available_information}
+    if any(item.numeric_constraint is None for item in criteria.values()):
+        raise ValueError("scenario reduction requires numeric criteria")
+    linked = [criterion_id for item in public.values() for criterion_id in item.related_criterion_ids]
+    if len(linked) != len(set(linked)):
+        raise ValueError("scenario reduction requires one public request per numeric criterion")
+    cache: dict[tuple, tuple] = {}
+    grouped: dict[tuple, tuple[PatientScenario, float]] = {}
+    for scenario in distribution.scenarios:
+        if {answer.fact_id for answer in scenario.answers} != set(public):
+            raise ValueError("scenario facts must match the public information menu")
+        signatures = []
+        for answer in sorted(scenario.answers, key=lambda item: item.fact_id):
+            evidence = answer.evidence
+            key = (
+                answer.fact_id, evidence.concept, evidence.value, evidence.unit,
+                evidence.event_date, evidence.recorded_date,
+                evidence.source_type, evidence.verification_status,
+            )
+            signature = cache.get(key)
+            if signature is None:
+                state = initial_state.model_copy(update={
+                    "facts": [*initial_state.facts, evidence],
+                })
+                results = [
+                    evaluate_criterion(criteria[criterion_id], state)
+                    for criterion_id in sorted(public[answer.fact_id].related_criterion_ids)
+                ]
+                signature = tuple(
+                    (item.clinical_status.value, item.evidence_sufficiency.value)
+                    for item in results
+                )
+                cache[key] = signature
+            signatures.append((answer.fact_id, signature))
+        group_key = tuple(signatures)
+        representative, weight = grouped.get(group_key, (scenario, 0.0))
+        grouped[group_key] = representative, weight + scenario.probability
+    return ScenarioDistribution(
+        case_id=distribution.case_id,
+        scenarios=[
+            representative.model_copy(update={"probability": min(1.0, weight)})
+            for representative, weight in grouped.values()
+        ],
+    )
+
+
+class ConstrainedQuestionPlanner:
+    """Reuse scenario evaluation across budgets and repeated answers of one case."""
+
+    def __init__(self, view, initial_state, distribution):
+        if len(view.available_information) > 6:
+            raise ValueError("constrained exact planning supports at most 6 facts")
+        distribution = compress_planning_distribution(view, initial_state, distribution)
+        if len(view.available_information) > 6 or len(distribution.scenarios) > 4096:
+            raise ValueError("constrained exact planning supports at most 6 facts and 4096 scenarios")
+        self.case_id = view.case_id
+        self.view = view
+        self.initial_state = initial_state
+        self.distribution = distribution
+        self._solvers: dict[tuple, _ExactSolver] = {}
+
+    def choose(
+        self, *, snapshot, revealed_fact_ids, remaining_budget,
+        allowed_fact_ids, acquisition_units_by_fact,
+        remaining_acquisition_units=None,
+        objective=ExactPolicyObjective.EXPECTED,
+    ) -> ExactPolicyChoice:
+        if remaining_budget > 3:
+            raise ValueError("constrained exact planning supports at most 3 remaining actions")
+        if snapshot.patient_state.patient_id != self.initial_state.patient_id:
+            raise ValueError("planner and snapshot must belong to the same patient")
+        key = (
+            tuple(sorted(allowed_fact_ids)), tuple(sorted(acquisition_units_by_fact.items())),
+            objective,
+        )
+        solver = self._solvers.get(key)
+        if solver is None:
+            solver = _ExactSolver(
+                self.view, self.initial_state, self.distribution, objective,
+                allowed_fact_ids=allowed_fact_ids,
+                acquisition_units_by_fact=acquisition_units_by_fact,
+            )
+            self._solvers[key] = solver
+        return solver.solve(
+            snapshot.patient_state, revealed_fact_ids, remaining_budget,
+            remaining_acquisition_units,
+        )
+
+
+def plan_constrained_question_tree(
+    *,
+    view: InteractivePolicyView,
+    initial_state: PatientState,
+    snapshot: InteractiveSnapshot,
+    distribution: ScenarioDistribution,
+    revealed_fact_ids: frozenset[str],
+    remaining_budget: int,
+    allowed_fact_ids: Collection[str],
+    acquisition_units_by_fact: Mapping[str, int],
+    remaining_acquisition_units: int | None = None,
+    objective: ExactPolicyObjective = ExactPolicyObjective.EXPECTED,
+) -> ExactPolicyChoice:
+    """Plan using declared scenarios while retaining inaccessible uncertainty.
+
+    Restrictions remove actions, never possible patient values or trial criteria.
+    The shared integer resource can represent a cumulative visit allowance.
+    This small-case research planner has no access to actual hidden answers.
+    """
+
+    planner = ConstrainedQuestionPlanner(view, initial_state, distribution)
+    return planner.choose(
+        snapshot=snapshot, revealed_fact_ids=revealed_fact_ids,
+        remaining_budget=remaining_budget, allowed_fact_ids=allowed_fact_ids,
+        acquisition_units_by_fact=acquisition_units_by_fact,
+        remaining_acquisition_units=remaining_acquisition_units,
+        objective=objective,
+    )
 
 
 class ExactDecisionTreePolicy:

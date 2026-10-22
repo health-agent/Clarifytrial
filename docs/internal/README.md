@@ -27,6 +27,11 @@
 
 ## 연구와 현재 결과
 
+2026-10-22 사용자가 포스터 선정과 11월 말 발표를 알렸다. 현재 보완 방향은
+[연구계획 13절](CLARIFYTRIAL_RESEARCH_PLAN_V5.md), 첫 개발 비교는
+[검증 결과 8절](CLARIFYTRIAL_VALIDATION_RESULTS.md)에 있다. 선정된 9월 HWP와
+새 연구 결과를 구분한다.
+
 | 문서 | 내용 |
 |---|---|
 | [현재 상태](CURRENT_STATUS.md) | 구현된 범위, 최신 결과와 남은 일 |
@@ -59,6 +64,7 @@
 | [발표용 결과표](results/presentation-evidence-v2/) | 질문 전후 변화, 정보 연결 구조, 환자 제한과 확인 방법 표 |
 | [KOSMI 보완 측정](results/kosmi-poster-evidence-v1/) | 적격·부적격 방향별 확인 예산 결과와 환자 단위 비교 |
 | [모델 역할 비교](results/independent-new-trial-agent-evaluation-v1/report.md) | 새 시험에서 코드와 언어모델 실행 결과, 호출 수와 토큰 |
+| [선정 후 정보 선택 비교](results/acquisition-research-v1/) | 기존 환자 20명의 제약·횟수·선택 손실과 한 단계·전체 예산 계획 비교; 개발 진단 완료 |
 | [발표용 대화형 데모](demo/clarifytrial-presentation-demo.html) | 상태 읽기, 다음 행동 결정, 확인 도구 실행, 상태 갱신과 반복·종료 판단을 잇는 합성 실행 |
 
 ## 용어
