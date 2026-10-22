@@ -12,6 +12,7 @@ import re
 from pathlib import Path
 
 from clarifytrial.datasets.source_criteria import _numeric_rows
+from clarifytrial.datasets.protocol_scope import describe_protocol_scope
 from clarifytrial.preparation.team_trials import TeamTrialRecord
 from collect_paper_trial_sources import GROUPS
 
@@ -80,6 +81,7 @@ def build(source: Path, destination: Path):
             trial["split"] = "development" if i < 4 else "heldout"
             for j, row in enumerate(trial["criteria"]):
                 row["criterion_id"] = f"{trial['nct_id']}:numeric:{j + 1}"
+            trial["scope"] = describe_protocol_scope(trial)
         groups.append({"group_id": group, "query": GROUPS[group], "trials": selected})
     payload = {"version": "paper-source-subsets-v1", "seed": 20261022,
         "scope": "Selected unconditional numeric conditions only; not complete clinical eligibility. Query strata are not diagnosis adjudications.",

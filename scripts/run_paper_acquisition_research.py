@@ -23,13 +23,14 @@ def csv_write(path, rows):
         writer.writerows(rows)
 
 
-def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_groups=None, penalties=()):
+def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_groups=None, penalties=(), stress=False):
     if patients < 1 or bootstrap < 1 or (max_groups is not None and not 1 <= max_groups <= 6):
         raise ValueError("positive patients/bootstrap and one to six groups are required")
     if any(p < 0 for p in penalties) or len(set(penalties)) != len(penalties):
         raise ValueError("visit penalties must be unique and nonnegative")
     data = json.loads(source.read_text(encoding="utf-8"))
     rows = []
+    settings=("verified_value_error","value_dependent_failure") if stress else ("ideal","imperfect","value_shift","quality_shift")
     output.mkdir(parents=True, exist_ok=True)
     for group in data["groups"][:max_groups]:
         model = make_model(group, split)
@@ -38,7 +39,7 @@ def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_gro
         units = {r["fact_code"]:r["unit"] for t in group["trials"] for r in t["criteria"]}
         seed = sum(map(ord, group["group_id"])) + (21000 if split == "heldout" else 11000)
         # Plans cached across repeated patients, never across different models.
-        for setting in ("ideal", "imperfect", "value_shift", "quality_shift"):
+        for setting in settings:
             planners = {True: RoutePlanner(model, quality=(1.,1.) if setting == "ideal" else QUALITY_PRIORS),
                         False: RoutePlanner(model, quality=(1.,1.))}
             for penalty in penalties:
@@ -46,6 +47,7 @@ def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_gro
                     quality=(1.,1.) if setting=="ideal" else QUALITY_PRIORS, visit_penalty=penalty)
             actual_q = (1.,1.) if setting == "ideal" else ((.50,.85) if setting == "quality_shift" else QUALITY_PRIORS)
             population = generate_patients(model.domains, patients, seed=seed, shifted=setting == "value_shift")
+            mean_rank=[mean(row[j]/(len(domain)-1) for row in population) for j,domain in enumerate(model.domains)]
             for patient_index, truth in enumerate(population):
                 values = {code:model.domains[j][truth[j]] for j,code in enumerate(model.codes)}
                 gold = reference_statuses(trials, values, set(model.codes))
@@ -53,6 +55,7 @@ def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_gro
                 # available to the selector. Route success is independent of value.
                 rng = random.Random(seed * 10000 + patient_index)
                 draws = {(j,r):rng.random() for j in range(len(model.codes)) for r in range(2)}
+                corruption = {(j,r):rng.random() for j in range(len(model.codes)) for r in range(2)}
                 for mask in range(2):
                     initial = tuple(v if j % 3 == mask else -1 for j,v in enumerate(truth))
                     initial_status = model.statuses(initial)
@@ -86,21 +89,30 @@ def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_gro
                                     attempted |= 1 << (2*fact+route)
                                     visits += route
                                     assert visits <= visit_limit
-                                    success = draws[action] < actual_q[route]
+                                    q=actual_q[route]
+                                    if setting=="value_dependent_failure":
+                                        # Center within this fixed synthetic population
+                                        # to preserve each fact/route's marginal q.
+                                        q -= (.4 if route==0 else .05)*(truth[fact]/(len(model.domains[fact])-1)-mean_rank[fact])
+                                        assert 0 <= q <= 1
+                                    success = draws[action] < q
                                     outcome = "valid" if success else ("no_answer","stale","missing_date","wrong_source","unverified")[(patient_index+fact+route)%5]
+                                    corrupted=success and setting=="verified_value_error" and corruption[action]<.05
+                                    returned_index=(truth[fact]+2)%len(model.domains[fact]) if not success or corrupted else truth[fact]
                                     if success:
-                                        observed = observed[:fact]+(truth[fact],)+observed[fact+1:]
+                                        observed = observed[:fact]+(returned_index,)+observed[fact+1:]
                                     else:
                                         invalid += 1
                                     code = model.codes[fact]
                                     # Insufficient returns can contain an obsolete
                                     # value; the guard must not use it as current truth.
-                                    returned_value = values[code] if success else model.domains[fact][(truth[fact]+2)%len(model.domains[fact])]
+                                    returned_value = model.domains[fact][returned_index]
                                     facts.append(evidence(code, returned_value, units[code], outcome, step+1))
-                                    attempts.append({"fact":code,"route":route,"outcome":outcome})
+                                    attempts.append({"fact":code,"route":route,"outcome":"verified_value_error" if corrupted else outcome})
                                 statuses = model.statuses(observed)
                                 usable = {code for j,code in enumerate(model.codes) if observed[j]>=0}
-                                assert statuses == reference_statuses(trials,values,usable)
+                                accepted_values={code:model.domains[j][observed[j]] for j,code in enumerate(model.codes) if observed[j]>=0}
+                                assert statuses == reference_statuses(trials,accepted_values,usable)
                                 # Actual evidence processing is independently checked
                                 # for every replay, including invalid answers.
                                 runtime = runtime_statuses(view, facts)
@@ -141,7 +153,7 @@ def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_gro
         aggregates[-1].update(totals, replays=len(subset), recovery=totals["correct"]/totals["trials"])
     csv_write(output/"policy_metrics.csv",aggregates)
     comparisons=[]
-    for setting in ("ideal","imperfect","value_shift","quality_shift"):
+    for setting in settings:
         for visits in (0,1):
             for comparator in ("coverage","decision_myopic","decision_budget","quality_myopic"):
                 selected=[r for r in rows if r["setting"]==setting and r["visit_limit"]==visits and r["budget"]==3]
@@ -158,10 +170,10 @@ def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_gro
                 comparisons.append({"setting":setting,"visit_limit":visits,"comparator":comparator,"effect":ci})
     summary={"scope":data["scope"],"split":split,"patients_per_group":patients,"groups":len(data["groups"][:max_groups]),
         "base_synthetic_patients":patients*len(data["groups"][:max_groups]),
-        "value_shift_variants":patients*len(data["groups"][:max_groups]),"replay_count":len(rows),
+        "value_shift_variants":patients*len(data["groups"][:max_groups]) if "value_shift" in settings else 0,"replay_count":len(rows),
         "trial_count":sum(t["split"]==split for g in data["groups"][:max_groups] for t in g["trials"]),
-        "quality_priors":QUALITY_PRIORS,"visit_penalties":penalties,
-        "model":"Independent empirical feature marginals with Laplace smoothing; value-dependent missingness and informative failures not modeled.",
+        "quality_priors":QUALITY_PRIORS,"visit_penalties":penalties,"settings":settings,
+        "model":"Independent empirical feature marginals with Laplace smoothing; the planner does not model value-dependent missingness, informative failures, or factual errors in verified returns.",
         "uncertainty":"Patient bootstrap conditional on these fixed protocol subsets and synthetic generators; not a CI for new protocols or clinical deployment. Exploratory multiple comparisons, no confirmatory p-value claim.",
         "metrics":aggregates,"comparisons":comparisons}
     (output/"summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding="utf-8")
@@ -177,5 +189,6 @@ if __name__=="__main__":
     parser.add_argument("--bootstrap",type=int,default=2000)
     parser.add_argument("--max-groups",type=int)
     parser.add_argument("--visit-penalties",type=float,nargs="*",default=[])
+    parser.add_argument("--stress",action="store_true",help="Run verified-value errors and value-dependent failures separately from the original four settings")
     args=parser.parse_args()
-    run(args.source,args.output,patients=args.patients,split=args.split,bootstrap=args.bootstrap,max_groups=args.max_groups,penalties=args.visit_penalties)
+    run(args.source,args.output,patients=args.patients,split=args.split,bootstrap=args.bootstrap,max_groups=args.max_groups,penalties=args.visit_penalties,stress=args.stress)

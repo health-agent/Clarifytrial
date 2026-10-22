@@ -7,6 +7,7 @@ from clarifytrial.interactive.paper_benchmark import (
     PublicAcquisitionModel, RoutePlanner, ScalarRule, evidence, make_model,
     reference_statuses, runtime_statuses, runtime_view,
 )
+from clarifytrial.datasets.protocol_scope import describe_protocol_scope
 
 
 DATA = Path(__file__).resolve().parents[1] / "data/paper_source_benchmark_v1/protocol_subsets.json"
@@ -100,3 +101,30 @@ def test_source_threshold_boundaries_outside_the_patient_grid():
                     units={r["fact_code"]:r["unit"] for r in criteria}
                     facts=[evidence(code,value,units[code],sequence=j) for j,(code,value) in enumerate(values.items())]
                     assert runtime_statuses(view,facts)==reference_statuses(trials,values,set(values))
+
+
+def test_verified_metadata_cannot_establish_the_truth_of_a_numeric_value():
+    # A falsified but fresh/verified value passes the metadata guard. This
+    # counterexample bounds the safety claim; it is not an expected fix target.
+    row={"criterion_id":"synthetic-bmi", "fact_code":"body_mass_index_kg_m2", "operator":"gte",
+         "threshold":30., "kind":"inclusion", "unit":"kg/m2", "source_text":"Synthetic BMI >=30",
+         "source_location":"synthetic://criterion"}
+    trial={"nct_id":"synthetic-trial","split":"heldout","criteria":[row]}
+    view=runtime_view({"group_id":"synthetic","trials":[trial]},"heldout")
+    wrong_but_verified=evidence("body_mass_index_kg_m2",35.,"kg/m2")
+    assert runtime_statuses(view,[wrong_but_verified])==(1,)
+    assert reference_statuses([trial],{"body_mass_index_kg_m2":20.},{"body_mass_index_kg_m2"})==(0,)
+
+
+def test_subset_scope_keeps_every_unrepresented_line_and_never_certifies_protocol():
+    data=json.loads(DATA.read_text(encoding="utf-8"))
+    for group in data["groups"]:
+        for trial in group["trials"]:
+            scope=describe_protocol_scope(trial)
+            source={i for i,line in enumerate(trial["eligibility_text"].splitlines(),1) if line.strip()}
+            represented={r["line_number"] for r in trial["criteria"]}
+            assert set(scope["unrepresented_source_line_numbers"])==source-represented
+            assert scope["full_protocol_confirmation_allowed"] is False
+    damaged=dict(trial, criteria=[dict(trial["criteria"][0],source_text="invented source")])
+    with pytest.raises(ValueError,match="source span"):
+        describe_protocol_scope(damaged)
