@@ -188,7 +188,8 @@ _OPERATOR_PATTERNS: dict[ComparisonOperator, tuple[re.Pattern[str], ...]] = {
     ComparisonOperator.LTE: tuple(
         re.compile(pattern)
         for pattern in (
-            r"less\s+than\s+or\s+equal",
+            r"less\s+than\s+or\s+equal(?:\s+to)?",
+            r"equal(?:\s+to)?\s+or\s+less\s+than",
             r"at\s+most",
             r"no\s+more\s+than",
             r"not\s+greater\s+than",
@@ -201,7 +202,8 @@ _OPERATOR_PATTERNS: dict[ComparisonOperator, tuple[re.Pattern[str], ...]] = {
     ComparisonOperator.GTE: tuple(
         re.compile(pattern)
         for pattern in (
-            r"greater\s+than\s+or\s+equal",
+            r"greater\s+than\s+or\s+equal(?:\s+to)?",
+            r"equal(?:\s+to)?\s+or\s+greater\s+than",
             r"at\s+least",
             r"no\s+less\s+than",
             r"not\s+less\s+than",

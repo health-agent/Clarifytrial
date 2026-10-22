@@ -1,0 +1,7 @@
+﻿method,stratum,clauses,macro_clause_agreement,scored,agreement,reference_resolvable,resolved_agreement,abstained_resolvable,discordant_confirmation,discordant_exclusion,decisive_reference_unknown
+old,age_scalar,8,0.8125,32,26,24,18,6,0,0,0
+old,other_scalar,8,0.53125,32,17,24,9,15,0,0,0
+old,range,8,0.7291666666666666,48,35,40,27,13,0,0,0
+v9,age_scalar,8,0.71875,32,23,24,15,9,0,0,0
+v9,other_scalar,8,0.4375,32,14,24,6,18,0,0,0
+v9,range,8,0.5833333333333334,48,28,40,20,20,0,0,0

@@ -1,0 +1,228 @@
+{
+  "scope": "External numeric-annotation agreement on a bounded stratified subset; not clinical truth or full protocol eligibility",
+  "resampling": "One fixed source clause per protocol; synthetic boundary/missing worlds are not independent patients",
+  "clauses": 48,
+  "preflagged_reference_clauses": 9,
+  "always_abstain_macro_agreement": 0.22170744509043927,
+  "metrics": [
+    {
+      "method": "old",
+      "clauses": 48,
+      "macro_clause_agreement": 0.6422803617571059,
+      "scored": 361,
+      "agreement": 175,
+      "reference_resolvable": 289,
+      "resolved_agreement": 103,
+      "abstained_resolvable": 183,
+      "discordant_confirmation": 0,
+      "discordant_exclusion": 3,
+      "decisive_reference_unknown": 0,
+      "ambiguous_reference": 32,
+      "decisive_ambiguous_reference": 18,
+      "failed": 0,
+      "guard_unsupported": 11,
+      "all_scored_agree": 25,
+      "micro_world_agreement": 0.48476454293628807,
+      "provider_total_tokens": 710581,
+      "effective_models": [
+        "gpt-5.6-sol"
+      ]
+    },
+    {
+      "method": "v8",
+      "clauses": 48,
+      "macro_clause_agreement": 0.5389817506459949,
+      "scored": 361,
+      "agreement": 142,
+      "reference_resolvable": 289,
+      "resolved_agreement": 74,
+      "abstained_resolvable": 211,
+      "discordant_confirmation": 4,
+      "discordant_exclusion": 0,
+      "decisive_reference_unknown": 4,
+      "ambiguous_reference": 32,
+      "decisive_ambiguous_reference": 10,
+      "failed": 0,
+      "guard_unsupported": 23,
+      "all_scored_agree": 19,
+      "micro_world_agreement": 0.39335180055401664,
+      "provider_total_tokens": 759233,
+      "effective_models": [
+        "gpt-5.6-sol"
+      ]
+    },
+    {
+      "method": "old_proposals_v8",
+      "clauses": 48,
+      "macro_clause_agreement": 0.45217619509043927,
+      "scored": 361,
+      "agreement": 117,
+      "reference_resolvable": 289,
+      "resolved_agreement": 49,
+      "abstained_resolvable": 236,
+      "discordant_confirmation": 4,
+      "discordant_exclusion": 0,
+      "decisive_reference_unknown": 4,
+      "ambiguous_reference": 32,
+      "decisive_ambiguous_reference": 0,
+      "failed": 0,
+      "guard_unsupported": 24,
+      "all_scored_agree": 14,
+      "micro_world_agreement": 0.32409972299168976,
+      "provider_total_tokens": 0,
+      "effective_models": [
+        "scripted-local"
+      ]
+    },
+    {
+      "method": "v8_proposals_old",
+      "clauses": 48,
+      "macro_clause_agreement": 0.7117248062015504,
+      "scored": 361,
+      "agreement": 195,
+      "reference_resolvable": 289,
+      "resolved_agreement": 123,
+      "abstained_resolvable": 163,
+      "discordant_confirmation": 0,
+      "discordant_exclusion": 3,
+      "decisive_reference_unknown": 0,
+      "ambiguous_reference": 32,
+      "decisive_ambiguous_reference": 26,
+      "failed": 0,
+      "guard_unsupported": 11,
+      "all_scored_agree": 29,
+      "micro_world_agreement": 0.5401662049861495,
+      "provider_total_tokens": 0,
+      "effective_models": [
+        "scripted-local"
+      ]
+    },
+    {
+      "method": "v8_proposals_v9",
+      "clauses": 48,
+      "macro_clause_agreement": 0.6800407784237726,
+      "scored": 361,
+      "agreement": 179,
+      "reference_resolvable": 289,
+      "resolved_agreement": 107,
+      "abstained_resolvable": 179,
+      "discordant_confirmation": 0,
+      "discordant_exclusion": 3,
+      "decisive_reference_unknown": 0,
+      "ambiguous_reference": 32,
+      "decisive_ambiguous_reference": 24,
+      "failed": 0,
+      "guard_unsupported": 15,
+      "all_scored_agree": 27,
+      "micro_world_agreement": 0.49584487534626037,
+      "provider_total_tokens": 0,
+      "effective_models": [
+        "scripted-local"
+      ]
+    },
+    {
+      "method": "old_proposals_v9",
+      "clauses": 48,
+      "macro_clause_agreement": 0.48212411175710596,
+      "scored": 361,
+      "agreement": 122,
+      "reference_resolvable": 289,
+      "resolved_agreement": 50,
+      "abstained_resolvable": 239,
+      "discordant_confirmation": 0,
+      "discordant_exclusion": 0,
+      "decisive_reference_unknown": 0,
+      "ambiguous_reference": 32,
+      "decisive_ambiguous_reference": 0,
+      "failed": 0,
+      "guard_unsupported": 23,
+      "all_scored_agree": 16,
+      "micro_world_agreement": 0.3379501385041551,
+      "provider_total_tokens": 0,
+      "effective_models": [
+        "scripted-local"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "subset": "all_clauses",
+      "v8_minus_old_macro_agreement": {
+        "cluster_unit": "source_clause_unique_protocol_within_fixed_selection_stratum",
+        "strata": [
+          "age_scalar",
+          "multi_fact",
+          "other_scalar",
+          "range"
+        ],
+        "pair_count": 48,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.10329861111111112,
+        "bootstrap_95_ci": {
+          "lower": -0.21180555555555555,
+          "upper": 0.0008897569444441278
+        },
+        "wins": 3,
+        "ties": 35,
+        "losses": 10,
+        "two_sided_exact_sign_test_p": 0.09228515625
+      }
+    },
+    {
+      "subset": "without_preflagged_references",
+      "v8_minus_old_macro_agreement": {
+        "cluster_unit": "source_clause_unique_protocol_within_fixed_selection_stratum",
+        "strata": [
+          "age_scalar",
+          "other_scalar",
+          "range"
+        ],
+        "pair_count": 39,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.11111111111111112,
+        "bootstrap_95_ci": {
+          "lower": -0.23509615384615382,
+          "upper": 0.017094017094017096
+        },
+        "wins": 3,
+        "ties": 27,
+        "losses": 9,
+        "two_sided_exact_sign_test_p": 0.14599609375
+      }
+    },
+    {
+      "subset": "without_all_documented_reference_issues",
+      "v8_minus_old_macro_agreement": {
+        "cluster_unit": "source_clause_unique_protocol_within_fixed_selection_stratum",
+        "strata": [
+          "age_scalar",
+          "other_scalar",
+          "range"
+        ],
+        "pair_count": 38,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.10526315789473685,
+        "bootstrap_95_ci": {
+          "lower": -0.2324561403508772,
+          "upper": 0.024122807017543862
+        },
+        "wins": 3,
+        "ties": 27,
+        "losses": 8,
+        "two_sided_exact_sign_test_p": 0.2265625
+      }
+    }
+  ],
+  "posthoc_reference_issues": [
+    {
+      "case_id": "NCT03922503_8",
+      "observation": "Raw text says age 25 to 50 years; external annotation uses temporal_unit(MONTH).",
+      "interpretation": "The numeric reference and synthetic patient unit follow the annotation. Discordance cannot be treated as proof of clinical model error.",
+      "clinical_adjudication": false
+    }
+  ],
+  "all_calls_single_generation": "One generation per method and clause; model stochastic variation is unmeasured"
+}

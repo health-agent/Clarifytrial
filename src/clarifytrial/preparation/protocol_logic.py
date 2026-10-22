@@ -12,6 +12,8 @@ import re
 import unicodedata
 
 from ..contracts import CriterionKind,CriterionLogic,CriterionLogicOperator,TrialCriterion
+from ..concepts import normalized_concept
+from ..measurements import normalized_unit
 from .structured_value_validation import _CONCEPT_ALIASES
 
 
@@ -146,6 +148,9 @@ def _normalized_symbols(text):
 
 def _range_padding(text,concept,unit):
     text=_normalized_symbols(text)
+    if normalized_concept(concept) in {"age","ageyears"}:
+        text=re.sub(r"\b(?:patients?|participants?|subjects?)(?:['’]s|['’])"," ",text)
+        text=re.sub(r"\b(?:years?|yrs?)\s+old\b"," ",text)
     labels={concept.replace("_"," "),*_CONCEPT_ALIASES.get(concept,())}
     if "ecog" in concept.casefold():labels.update({"ecog","ecog performance status","ecog performance status score"})
     if concept.casefold() in {"age","age_years"}:labels.update({"age","aged","ages"})
@@ -153,11 +158,11 @@ def _range_padding(text,concept,unit):
         text=re.sub(r"(?<!\w)"+re.escape(label)+r"(?!\w)"," ",text,flags=re.I)
     units={_normalized_symbols(unit)}
     if unit=="%":units.add("percent")
-    if unit in {"years","year"}:units.update({"year","years"})
+    if normalized_unit(unit)=="year":units.update({"year","years","yr","yrs"})
     for value in sorted(units,key=len,reverse=True):
         text=re.sub(r"\s*".join(re.escape(c) for c in value)," ",text)
     text=re.sub(r"^\s*\d+[.)]\s*","",text)
-    text=re.sub(r"\b(?:a|an|the|of|is|be|must|have|having|has|participants?|patients?|subjects?|at|screening|baseline|visit|between|from)\b"," ",text)
+    text=re.sub(r"\b(?:a|an|the|of|is|be|must|have|having|has|participants?|patients?|subjects?|between|from)\b"," ",text)
     return re.sub(r"[\s*.,;:()\[\]]+","",text)
 
 
@@ -166,7 +171,7 @@ def _shared_range(fragment,atoms):
     if len(atoms)<2 or any(a.criterion.numeric_constraint is None for a in atoms):
         raise UnsupportedSourceLogic("overlapping source quotes cannot be assigned to distinct predicates")
     constraints=[a.criterion.numeric_constraint for a in atoms]
-    if len({(c.concept,c.unit) for c in constraints})!=1:
+    if len({(normalized_concept(c.concept),normalized_unit(c.unit)) for c in constraints})!=1:
         raise UnsupportedSourceLogic("shared bound has multiple concepts; source scope is not verified")
     text=_normalized_symbols(fragment)
     matches=list(re.finditer(r"(>=|<=|>|<)\s*(\d+(?:\.\d+)?)",text))
@@ -188,7 +193,13 @@ def _shared_range(fragment,atoms):
         if _range_padding(text[:matches[0].start()],concept,unit) or _range_padding(text[matches[1].end():],concept,unit):
             raise UnsupportedSourceLogic("range has unrepresented context or qualifiers")
     else:
-        interval=re.search(r"(?:\bbetween\s+(\d+(?:\.\d+)?)\s+and\s+(\d+(?:\.\d+)?)|(?:\bfrom\s+)?(\d+(?:\.\d+)?)\s*(?:-|–|\bto\b)\s*(\d+(?:\.\d+)?))",text)
+        unit_spellings={_normalized_symbols(unit)}
+        if normalized_unit(unit)=="year":unit_spellings.update({"year","years","yr","yrs"})
+        unit_pattern="(?:"+"|".join(r"\s*".join(re.escape(c) for c in u) for u in sorted(unit_spellings,key=len,reverse=True))+")"
+        optional_unit=r"(?:\s*"+unit_pattern+r")?"
+        number=r"(\d+(?:\.\d+)?)"
+        interval=re.search(r"(?:\bbetween\s+"+number+optional_unit+r"\s+and\s+"+number+
+            r"|(?:\bfrom\s+)?"+number+optional_unit+r"\s*(?:-|–|\bto\b)\s*"+number+r")",text)
         bounds=[float(v) for v in interval.groups() if v is not None] if interval else []
         if not interval or requested!={("gte",bounds[0]),("lte",bounds[1])}:
             raise UnsupportedSourceLogic("shared quote is not a supported closed interval")
@@ -217,7 +228,8 @@ def _parse_tokens(tokens,ids):
                 position+=1
                 expecting=True
                 continue
-            if not expecting:operators.append("and")
+            if not expecting:
+                raise UnsupportedSourceLogic("separate predicates have no explicit connective")
             if token=="(":
                 position+=1
                 term=level()
@@ -246,6 +258,39 @@ def _parse_tokens(tokens,ids):
     return result
 
 
+def _is_numeric_comparative_join(snippet,match):
+    prefix=re.compile(r"\b(?:(?:greater|less)\s+than\s+or\s+equal(?:\s+to)?|equal(?:\s+to)?\s+or\s+(?:greater|less)\s+than)\b",re.I)
+    for comparison in prefix.finditer(snippet):
+        if comparison.start()<=match.start() and match.end()<=comparison.end() and re.match(r"\s*[-+]?\d",snippet[comparison.end():]):
+            return True
+    tail=re.search(r"\b(?:and|or)\s+(?:older|younger|over|more|less|under|higher|lower)\b[\s.,;:)]*$",snippet,re.I)
+    return bool(tail and tail.start()<=match.start() and match.end()<=tail.end())
+
+
+def _separate_bullet_membership(fragment,start,ordered):
+    """Only distinct, fully quoted bullet lines establish a protocol list.
+
+    Inclusion list entries are all required. Exclusion list entries are separate
+    exclusion reasons, so their membership is OR before exclusion negation.
+    Commas, semicolons, plain adjacency, and parenthetical scope do not suffice.
+    """
+    offset=start;items=[]
+    for line in fragment.splitlines(keepends=True):
+        line_start,line_end=offset,offset+len(line.rstrip("\r\n"));offset+=len(line)
+        if not line.strip() or re.fullmatch(r"\s*(?:inclusion|exclusion)\s+criteria\s*:\s*",line,re.I):continue
+        marker=re.match(r"\s*(?:[-*+]|\d+[.)])\s+",line)
+        if not marker:return None
+        selected=[a for a in ordered if line_start<=a.start and a.end<=line_end]
+        if len(selected)!=1:return None
+        atom=selected[0]
+        remainder=line[marker.end():atom.start-line_start]+line[atom.end-line_start:]
+        if re.sub(r"[\s.,;:\[\]]+","",remainder):return None
+        items.append(atom)
+    if len(items)!=len(ordered) or len(items)<2:return None
+    operator="all" if ordered[0].criterion.kind is CriterionKind.INCLUSION else "any"
+    return _node(operator,[_leaf(a.criterion.criterion_id) for a in ordered])
+
+
 def parse_source_membership(text: str,start: int,end: int,atoms: list[GroundedLogicAtom]) -> CriterionLogic:
     if not atoms or len({a.criterion.kind for a in atoms})!=1:
         raise UnsupportedSourceLogic("a source group must contain one criterion kind")
@@ -262,9 +307,13 @@ def parse_source_membership(text: str,start: int,end: int,atoms: list[GroundedLo
         snippet=text[atom.start:atom.end]
         if atom.criterion.numeric_constraint is None and len(ordered)==1 and _QUANTIFIER.match(snippet):
             raise UnsupportedSourceLogic("a whole opaque clause does not prove the internal proposed group")
-        if atom.criterion.numeric_constraint is not None and re.search(r"\b(?:or|if|unless|except)\b",text[atom.start:atom.end],re.I):
-            if not re.search(r"\bor\s+(?:older|younger|over|more|less|under)\b",text[atom.start:atom.end],re.I):
-                raise UnsupportedSourceLogic("numeric atom contains an unrepresented alternative or qualifier")
+        if atom.criterion.numeric_constraint is not None:
+            for marker in re.finditer(r"\b(?:and|or|if|unless|except|between|whichever)\b",snippet,re.I):
+                if _is_numeric_comparative_join(snippet,marker):continue
+                if marker.group().casefold()=="and" and _safe_metadata_conjunction(atom,snippet):continue
+                raise UnsupportedSourceLogic("numeric atom contains an unrepresented relation or qualifier")
+    bullet_list=_separate_bullet_membership(fragment,start,ordered)
+    if bullet_list is not None:return bullet_list
     masked=fragment
     for i,atom in reversed(list(enumerate(ordered))):
         masked=masked[:atom.start-start]+f"§{i}§"+masked[atom.end-start:]
@@ -371,6 +420,11 @@ def compile_protocol_logic(text: str,atoms: list[GroundedLogicAtom],proposals: l
         covering=[a for a in atoms if a.start<=match.start() and match.end()<=a.end]
         if len(covering)==1 and covering[0].criterion.numeric_constraint is None:
             continue  # Preserve a whole prose condition; do not flatten its internals.
+        if len(covering)==1 and covering[0].criterion.numeric_constraint is not None:
+            snippet=text[covering[0].start:covering[0].end]
+            comparative=next((m for m in re.finditer(r"\b(?:and|or)\b",snippet,re.I)
+                if m.start()==match.start()-covering[0].start),None)
+            if comparative is not None and _is_numeric_comparative_join(snippet,comparative):continue
         if (len(covering)==1 and match.group().casefold()=="and" and
             _safe_metadata_conjunction(covering[0],text[covering[0].start:covering[0].end])):
             continue

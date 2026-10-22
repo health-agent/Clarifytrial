@@ -1,0 +1,3573 @@
+{
+  "mode": "model",
+  "source_root": "C:\\Users\\kll45\\.codex\\worktrees\\c7ec\\\ud5ec\uc2a4 \uc5d0\uc774\uc804\ud2b8\\runs\\natural-logic-20261023\\baseline-c25e002",
+  "runtime": {
+    "sdk_version": "0.147.0",
+    "runtime_name": "Codex Desktop",
+    "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+    "user_agent": "Codex Desktop/0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+    "platform_family": "windows",
+    "platform_os": "windows"
+  },
+  "model": "gpt-5.6-sol",
+  "effort": "medium",
+  "strip_logic_draft": false,
+  "cases_file": "docs\\internal\\results\\leaf-protocol-holdout-v1\\cases.json",
+  "scope": "Exploratory source-clause component probe against supplied numeric reference; synthetic values, no clinical inference or prose judgment model.",
+  "summary": {
+    "cases": 24,
+    "failed_cases": 0,
+    "scorable_cases": 24,
+    "scorable_worlds": 112,
+    "correct_worlds": 78,
+    "all_worlds_correct_cases": 9,
+    "mean_case_agreement": 0.6302083333333334,
+    "resolvable_worlds": 88,
+    "correct_resolved": 54,
+    "abstained_resolvable": 34,
+    "failed_resolvable": 0,
+    "false_confirmed": 0,
+    "false_excluded": 0,
+    "prematurely_decisive": 0,
+    "unscored_scope_worlds": 16,
+    "decisive_on_unscored_scope": 10,
+    "provider_total_tokens": 353614,
+    "effective_models": [
+      "gpt-5.6-sol"
+    ]
+  },
+  "cases": [
+    {
+      "case_id": "NCT03925844_1",
+      "source_text": "Inclusion Criteria:\n-  population aged 55 to 74 years from NEDICES 2 study",
+      "reference_formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          55.0
+        ],
+        [
+          "lte",
+          "f0",
+          74.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            55.0
+          ],
+          [
+            "lte",
+            "f0",
+            74.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            55.0
+          ],
+          [
+            "lte",
+            "f0",
+            74.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            55.0
+          ],
+          [
+            "lt",
+            "f0",
+            74.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            55.0
+          ],
+          [
+            "lt",
+            "f0",
+            74.0
+          ]
+        ]
+      ],
+      "domains": {
+        "f0": [
+          54.45,
+          55.0,
+          55.55,
+          64.5,
+          73.26,
+          74.0,
+          74.74
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 54.45
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 55.0
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 55.55
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 64.5
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 73.26
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 74.0
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 74.74
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 3,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "Age must be at least 55 years.",
+            "source_quote": "aged 55 to 74 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 55.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "patient_age_years",
+                "description": "Patient's age in years.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "ASK_PATIENT"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "statement": "Age must be no more than 74 years.",
+            "source_quote": "aged 55 to 74 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "lte",
+              "threshold": 74.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "patient_age_years",
+                "description": "Patient's age in years.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "ASK_PATIENT"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "statement": "Must be from the NEDICES 2 study population.",
+            "source_quote": "population aged 55 to 74 years from NEDICES 2 study",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": null,
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "nedices_2_study_participation",
+                "description": "Whether the patient belongs to the NEDICES 2 study population.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "ASK_PATIENT"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 12975,
+        "output_tokens": 591,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 4480,
+        "thinking_tokens": 273,
+        "total_tokens": 13566,
+        "latency_ms": 7398,
+        "finish_reason": "completed",
+        "request_id": "6ca7344c-16c4-4ffe-a746-14c926eea97e",
+        "attempts": 1,
+        "thread_id": "01a164f9-1187-7db0-b34a-c478c05eecf2",
+        "turn_id": "01a164f9-1345-7bf0-a72f-6577a6326011",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03862508_2",
+      "source_text": "Inclusion Criteria:\n-  Age between 18 and 40 years",
+      "reference_formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          18.0
+        ],
+        [
+          "lte",
+          "f0",
+          40.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            40.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            40.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            40.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            40.0
+          ]
+        ]
+      ],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18,
+          29.0,
+          39.6,
+          40.0,
+          40.4
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 17.82
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 18.0
+          },
+          "expected": null,
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.18
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 29.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 39.6
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 40.0
+          },
+          "expected": null,
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 40.4
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 2,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "Age must be at least 18 years.",
+            "source_quote": "Age between 18 and 40 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "Patient age in years",
+                "acceptable_actions": [
+                  "ASK_PATIENT"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "statement": "Age must be at most 40 years.",
+            "source_quote": "Age between 18 and 40 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "lte",
+              "threshold": 40.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "Patient age in years",
+                "acceptable_actions": [
+                  "ASK_PATIENT"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14562,
+        "output_tokens": 370,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 10496,
+        "thinking_tokens": 173,
+        "total_tokens": 14932,
+        "latency_ms": 5141,
+        "finish_reason": "completed",
+        "request_id": "296c4c54-8f37-4529-ba8c-950554bf32e2",
+        "attempts": 1,
+        "thread_id": "01a164f9-2e66-71d3-a67c-7f9da7286ec9",
+        "turn_id": "01a164f9-30a5-77b2-aa4f-bd76ae4cd19f",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03927638_8",
+      "source_text": "Exclusion Criteria:\n-  Are not between 18 and 50 years of age .",
+      "reference_formula": [
+        "not",
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            50.0
+          ]
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "not",
+          [
+            "and",
+            [
+              "gte",
+              "f0",
+              18.0
+            ],
+            [
+              "lte",
+              "f0",
+              50.0
+            ]
+          ]
+        ],
+        [
+          "not",
+          [
+            "and",
+            [
+              "gt",
+              "f0",
+              18.0
+            ],
+            [
+              "lte",
+              "f0",
+              50.0
+            ]
+          ]
+        ],
+        [
+          "not",
+          [
+            "and",
+            [
+              "gte",
+              "f0",
+              18.0
+            ],
+            [
+              "lt",
+              "f0",
+              50.0
+            ]
+          ]
+        ],
+        [
+          "not",
+          [
+            "and",
+            [
+              "gt",
+              "f0",
+              18.0
+            ],
+            [
+              "lt",
+              "f0",
+              50.0
+            ]
+          ]
+        ]
+      ],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18,
+          34.0,
+          49.5,
+          50.0,
+          50.5
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 17.82
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.0
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.18
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 34.0
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 49.5
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 50.0
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 50.5
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 0,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "statement": "18\uc138 \uc774\uc0c1 50\uc138 \uc774\ud558\uac00 \uc544\ub2d8",
+            "source_quote": "Are not between 18 and 50 years of age",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": null,
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age_years",
+                "description": "\ud658\uc790\uc758 \uc5f0\ub839(\ub144)",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14566,
+        "output_tokens": 104,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 10496,
+        "thinking_tokens": 0,
+        "total_tokens": 14670,
+        "latency_ms": 2495,
+        "finish_reason": "completed",
+        "request_id": "7b9d678e-ffb6-4ab3-8747-844502246913",
+        "attempts": 1,
+        "thread_id": "01a164f9-4293-7982-a233-970e588c1179",
+        "turn_id": "01a164f9-4361-78c3-a7a5-a0f54b66c415",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03934424_2",
+      "source_text": "Inclusion Criteria:\n-  BMI 25 - 35 kg / m 2 will be recruited",
+      "reference_formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          25.0
+        ],
+        [
+          "lte",
+          "f0",
+          35.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            25.0
+          ],
+          [
+            "lte",
+            "f0",
+            35.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            25.0
+          ],
+          [
+            "lte",
+            "f0",
+            35.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            25.0
+          ],
+          [
+            "lt",
+            "f0",
+            35.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            25.0
+          ],
+          [
+            "lt",
+            "f0",
+            35.0
+          ]
+        ]
+      ],
+      "domains": {
+        "f0": [
+          24.75,
+          25.0,
+          25.25,
+          30.0,
+          34.65,
+          35.0,
+          35.35
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 24.75
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 25.0
+          },
+          "expected": null,
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 25.25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 30.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 34.65
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 35.0
+          },
+          "expected": null,
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 35.35
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 2,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "BMI must be at least 25 kg / m 2.",
+            "source_quote": "BMI 25 - 35 kg / m 2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "BMI",
+              "operator": "gte",
+              "threshold": 25.0,
+              "unit": "kg / m 2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "bmi",
+                "description": "Patient's BMI in kg / m 2.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "ASK_PATIENT"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "statement": "BMI must be no more than 35 kg / m 2.",
+            "source_quote": "BMI 25 - 35 kg / m 2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "BMI",
+              "operator": "lte",
+              "threshold": 35.0,
+              "unit": "kg / m 2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "bmi",
+                "description": "Patient's BMI in kg / m 2.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "ASK_PATIENT"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14568,
+        "output_tokens": 397,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 157,
+        "total_tokens": 14965,
+        "latency_ms": 4660,
+        "finish_reason": "completed",
+        "request_id": "43e71707-2687-4507-b78f-007e8499156b",
+        "attempts": 1,
+        "thread_id": "01a164f9-4c5a-7523-a777-0769d229cbe7",
+        "turn_id": "01a164f9-4d32-7ec2-824e-6ed00b4def6a",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03923192_1",
+      "source_text": "Inclusion Criteria:\n-  Patients aged from 15 to 50 years .",
+      "reference_formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          15.0
+        ],
+        [
+          "lte",
+          "f0",
+          50.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            15.0
+          ],
+          [
+            "lte",
+            "f0",
+            50.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            15.0
+          ],
+          [
+            "lte",
+            "f0",
+            50.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            15.0
+          ],
+          [
+            "lt",
+            "f0",
+            50.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            15.0
+          ],
+          [
+            "lt",
+            "f0",
+            50.0
+          ]
+        ]
+      ],
+      "domains": {
+        "f0": [
+          14.85,
+          15.0,
+          15.15,
+          32.5,
+          49.5,
+          50.0,
+          50.5
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 14.85
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 15.0
+          },
+          "expected": null,
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 15.15
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 32.5
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 49.5
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 50.0
+          },
+          "expected": null,
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 50.5
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 2,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "Patient age is at least 15 years.",
+            "source_quote": "Patients aged from 15 to 50 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 15.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "patient_age_years",
+                "description": "Patient's age in years.",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "statement": "Patient age is at most 50 years.",
+            "source_quote": "Patients aged from 15 to 50 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "lte",
+              "threshold": 50.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "patient_age_years",
+                "description": "Patient's age in years.",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14564,
+        "output_tokens": 389,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 174,
+        "total_tokens": 14953,
+        "latency_ms": 5013,
+        "finish_reason": "completed",
+        "request_id": "5eba5e15-f9d8-4548-8074-b366bbe8b521",
+        "attempts": 1,
+        "thread_id": "01a164f9-5e99-71f2-bde1-a68c1e2a510f",
+        "turn_id": "01a164f9-5f5b-79d0-9987-ff2dcfcdaa9b",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03866681_1",
+      "source_text": "Inclusion Criteria:\n-  age 18 - 70 years",
+      "reference_formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          18.0
+        ],
+        [
+          "lte",
+          "f0",
+          70.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            70.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            70.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            70.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            70.0
+          ]
+        ]
+      ],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18,
+          44.0,
+          69.3,
+          70.0,
+          70.7
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 17.82
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.0
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.18
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 44.0
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 69.3
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 70.0
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 70.7
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 0,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "Age must be between 18 and 70 years.",
+            "source_quote": "age 18 - 70 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": null,
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "Patient age in years",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "ASK_PATIENT"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14561,
+        "output_tokens": 95,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 10496,
+        "thinking_tokens": 0,
+        "total_tokens": 14656,
+        "latency_ms": 2335,
+        "finish_reason": "completed",
+        "request_id": "0c2a182a-78c6-48f0-8377-70a21dabfed5",
+        "attempts": 1,
+        "thread_id": "01a164f9-7238-7190-900f-88aba01176e3",
+        "turn_id": "01a164f9-72fa-7d12-94ca-4a2f40a813ce",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03929419_3",
+      "source_text": "Inclusion Criteria:\n-  Age between 18 and 30 years",
+      "reference_formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          18.0
+        ],
+        [
+          "lte",
+          "f0",
+          30.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            30.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            30.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            30.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            30.0
+          ]
+        ]
+      ],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18,
+          24.0,
+          29.7,
+          30.0,
+          30.3
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 17.82
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 18.0
+          },
+          "expected": null,
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.18
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 24.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 29.7
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 30.0
+          },
+          "expected": null,
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 30.3
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 2,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "Age must be at least 18 years.",
+            "source_quote": "Age between 18 and 30 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "patient_age_years",
+                "description": "Patient's age in years",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "statement": "Age must be at most 30 years.",
+            "source_quote": "Age between 18 and 30 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "lte",
+              "threshold": 30.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "patient_age_years",
+                "description": "Patient's age in years",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14562,
+        "output_tokens": 470,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 257,
+        "total_tokens": 15032,
+        "latency_ms": 5328,
+        "finish_reason": "completed",
+        "request_id": "9a2b6ddf-4643-48d9-b728-3b7702c43fb4",
+        "attempts": 1,
+        "thread_id": "01a164f9-7b5f-7ba2-9c0c-de623a4bbd3f",
+        "turn_id": "01a164f9-7c2c-7e40-b23c-48d427a23a7a",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03927794_4",
+      "source_text": "Inclusion Criteria:\n-  Patients aged between 3 - 5 years .",
+      "reference_formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          3.0
+        ],
+        [
+          "lte",
+          "f0",
+          5.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            3.0
+          ],
+          [
+            "lte",
+            "f0",
+            5.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            3.0
+          ],
+          [
+            "lte",
+            "f0",
+            5.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            3.0
+          ],
+          [
+            "lt",
+            "f0",
+            5.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            3.0
+          ],
+          [
+            "lt",
+            "f0",
+            5.0
+          ]
+        ]
+      ],
+      "domains": {
+        "f0": [
+          2.97,
+          3.0,
+          3.03,
+          4.0,
+          4.95,
+          5.0,
+          5.05
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 2.97
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 3.0
+          },
+          "expected": null,
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 3.03
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 4.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 4.95
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 5.0
+          },
+          "expected": null,
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 5.05
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 2,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "Patient age is at least 3 years.",
+            "source_quote": "Patients aged between 3 - 5 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 3.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "Patient's age in years.",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "statement": "Patient age is at most 5 years.",
+            "source_quote": "Patients aged between 3 - 5 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "lte",
+              "threshold": 5.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "Patient's age in years.",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14564,
+        "output_tokens": 316,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 107,
+        "total_tokens": 14880,
+        "latency_ms": 4077,
+        "finish_reason": "completed",
+        "request_id": "d7fc46c2-fc18-4d62-af94-8779e3c0622a",
+        "attempts": 1,
+        "thread_id": "01a164f9-9062-7e92-bf3c-b06bf53499c1",
+        "turn_id": "01a164f9-915f-7d61-8d9b-304dce74b9f1",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03924687_1",
+      "source_text": "Inclusion Criteria:\n-  being 18 years of age or older",
+      "reference_formula": [
+        "gte",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          18.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 17.82
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 18.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.18
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "\ub9cc 18\uc138 \uc774\uc0c1\uc774\uc5b4\uc57c \ud55c\ub2e4.",
+            "source_quote": "18 years of age or older",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "\ud658\uc790\uc758 \ud604\uc7ac \uc5f0\ub839",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14562,
+        "output_tokens": 108,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 0,
+        "total_tokens": 14670,
+        "latency_ms": 2368,
+        "finish_reason": "completed",
+        "request_id": "51160c29-8b19-40f7-ae59-b97a534067f3",
+        "attempts": 1,
+        "thread_id": "01a164f9-a04a-7903-8fe3-f46cf5b1e6c7",
+        "turn_id": "01a164f9-a10c-7b82-bc4e-39e556a050db",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03921489_5",
+      "source_text": "Exclusion Criteria:\n-  Patient < 18 years of age",
+      "reference_formula": [
+        "lt",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          18.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 17.82
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 18.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.18
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "statement": "Patient is younger than 18 years of age.",
+            "source_quote": "Patient < 18 years of age",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "lt",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "patient_age_years",
+                "description": "Patient age in years",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14561,
+        "output_tokens": 112,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 0,
+        "total_tokens": 14673,
+        "latency_ms": 2439,
+        "finish_reason": "completed",
+        "request_id": "686aaf92-92d5-4fbf-9b09-9481839a42c6",
+        "attempts": 1,
+        "thread_id": "01a164f9-a993-7763-b197-046d3aff0fb2",
+        "turn_id": "01a164f9-aa5f-74b0-80a0-ea6bd2b8dcf2",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03922828_3",
+      "source_text": "Inclusion Criteria:\n2.  Age > 21 years old",
+      "reference_formula": [
+        "gt",
+        "f0",
+        21.0
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          21.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          20.79,
+          21.0,
+          21.21
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 20.79
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 21.0
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 21.21
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "Age must be greater than 21 years.",
+            "source_quote": "Age > 21 years old",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gt",
+              "threshold": 21.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "Patient's age in years",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14561,
+        "output_tokens": 191,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 10496,
+        "thinking_tokens": 81,
+        "total_tokens": 14752,
+        "latency_ms": 3788,
+        "finish_reason": "completed",
+        "request_id": "e40091bc-a5a6-4a52-91c8-74555ba7c56b",
+        "attempts": 1,
+        "thread_id": "01a164f9-b322-7bd2-a882-65be20c7d472",
+        "turn_id": "01a164f9-b3ef-7c63-a23c-b12449237b77",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03869814_1",
+      "source_text": "Inclusion Criteria:\n1.  Age greater than or equal to 21 years old",
+      "reference_formula": [
+        "gte",
+        "f0",
+        21.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          21.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          20.79,
+          21.0,
+          21.21
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 20.79
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 21.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 21.21
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "Age greater than or equal to 21 years old",
+            "source_quote": "Age greater than or equal to 21 years old",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 21.0,
+              "unit": "years old"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "Patient age in years",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14565,
+        "output_tokens": 114,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 10496,
+        "thinking_tokens": 0,
+        "total_tokens": 14679,
+        "latency_ms": 2862,
+        "finish_reason": "completed",
+        "request_id": "2399f358-42c2-4154-aa09-716cb64f5ef9",
+        "attempts": 1,
+        "thread_id": "01a164f9-c1f7-7fd3-9e7f-d04839da7d36",
+        "turn_id": "01a164f9-c2c7-7f42-85c3-01f0a90e7564",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03865316_1",
+      "source_text": "Inclusion Criteria:\n-  Patients 18 years old and older at the time of consent .",
+      "reference_formula": [
+        "gte",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          18.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 17.82
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.0
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.18
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": false,
+      "issues": [
+        "\uc6d0\ubb38\uc5d0\uc11c \uc790\ub3d9 \uacc4\uc0b0\uc6a9 \uc218\uce58 \uc870\uac74\uc744 \ud655\uc778\ud558\uc9c0 \ubabb\ud574 \ubb38\uc7a5 \ud310\ub2e8\uc73c\ub85c \ub0a8\uacbc\ub2e4."
+      ],
+      "numeric_count": 0,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "Patient is 18 years old or older at the time of consent.",
+            "source_quote": "Patients 18 years old and older at the time of consent",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age_at_consent",
+              "operator": "gte",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age_at_consent",
+                "description": "Patient's age at the time of consent.",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14567,
+        "output_tokens": 196,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 66,
+        "total_tokens": 14763,
+        "latency_ms": 3306,
+        "finish_reason": "completed",
+        "request_id": "4bccef2d-1c59-4619-b7c7-6d03b620437d",
+        "attempts": 1,
+        "thread_id": "01a164f9-cd2e-75e0-8722-fe6435217260",
+        "turn_id": "01a164f9-ce08-7eb1-8688-bddf764ec56e",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03922451_4",
+      "source_text": "Exclusion Criteria:\n-  > = 18 years",
+      "reference_formula": [
+        "gte",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          18.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 17.82
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.0
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.18
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": false,
+      "issues": [
+        "\uc6d0\ubb38\uc5d0\uc11c \uc790\ub3d9 \uacc4\uc0b0\uc6a9 \uc218\uce58 \uc870\uac74\uc744 \ud655\uc778\ud558\uc9c0 \ubabb\ud574 \ubb38\uc7a5 \ud310\ub2e8\uc73c\ub85c \ub0a8\uacbc\ub2e4."
+      ],
+      "numeric_count": 0,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "statement": "Age is greater than or equal to 18 years.",
+            "source_quote": "> = 18 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "Patient age in years.",
+                "acceptable_actions": [
+                  "ASK_PATIENT"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14559,
+        "output_tokens": 204,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 98,
+        "total_tokens": 14763,
+        "latency_ms": 3682,
+        "finish_reason": "completed",
+        "request_id": "be871e85-0bf1-40bc-9afa-8f71da47c800",
+        "attempts": 1,
+        "thread_id": "01a164f9-da21-7ea3-b7c1-52fe8a9f0d6c",
+        "turn_id": "01a164f9-db0f-7322-9220-b8bb41a775dd",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03863015_2",
+      "source_text": "Inclusion Criteria:\n1.  Age \u2265 18 years",
+      "reference_formula": [
+        "gte",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          18.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 17.82
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 18.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.18
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "Age must be at least 18 years.",
+            "source_quote": "Age \u2265 18 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "Patient age in years",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14560,
+        "output_tokens": 106,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 0,
+        "total_tokens": 14666,
+        "latency_ms": 2864,
+        "finish_reason": "completed",
+        "request_id": "5c9ebcdf-91c9-48ef-80be-56ebb387cab7",
+        "attempts": 1,
+        "thread_id": "01a164f9-e88e-7170-a852-8a91b1fe0c4c",
+        "turn_id": "01a164f9-e94c-7a63-be06-611d406dad52",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03866642_3",
+      "source_text": "Exclusion Criteria:\n-  Under 18 years of age",
+      "reference_formula": [
+        "lt",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          18.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 17.82
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 18.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 18.18
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "statement": "18\uc138 \ubbf8\ub9cc",
+            "source_quote": "Under 18 years of age",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "lt",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age_years",
+                "description": "\ud658\uc790\uc758 \uc5f0\ub839(\ub144)",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14560,
+        "output_tokens": 108,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 0,
+        "total_tokens": 14668,
+        "latency_ms": 2466,
+        "finish_reason": "completed",
+        "request_id": "c90f2036-8290-4af0-bc49-cce8750fbf7e",
+        "attempts": 1,
+        "thread_id": "01a164f9-f3c8-7841-bd60-c3187fc8a81b",
+        "turn_id": "01a164f9-f49d-75b3-a560-6b860eff70f9",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03924908_2",
+      "source_text": "Inclusion Criteria:\n-  Burn surface area > or = 5 % of the total body surface area",
+      "reference_formula": [
+        "gte",
+        "f0",
+        5.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          5.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          4.95,
+          5.0,
+          5.05
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 4.95
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 5.0
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 5.05
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": false,
+      "issues": [
+        "\uc6d0\ubb38\uc5d0\uc11c \uc790\ub3d9 \uacc4\uc0b0\uc6a9 \uc218\uce58 \uc870\uac74\uc744 \ud655\uc778\ud558\uc9c0 \ubabb\ud574 \ubb38\uc7a5 \ud310\ub2e8\uc73c\ub85c \ub0a8\uacbc\ub2e4."
+      ],
+      "numeric_count": 0,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "Burn surface area is greater than or equal to 5% of the total body surface area.",
+            "source_quote": "Burn surface area > or = 5 % of the total body surface area",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "burn surface area",
+              "operator": "gte",
+              "threshold": 5.0,
+              "unit": "% of the total body surface area"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "burn_surface_area_percent_tbsa",
+                "description": "Burn surface area as a percentage of total body surface area",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14569,
+        "output_tokens": 234,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 86,
+        "total_tokens": 14803,
+        "latency_ms": 3707,
+        "finish_reason": "completed",
+        "request_id": "a5ea4441-2d62-4090-a49c-9560770febd5",
+        "attempts": 1,
+        "thread_id": "01a164f9-fd74-7e52-b356-78095d740a7a",
+        "turn_id": "01a164f9-fe2f-76b2-9d87-1412fe7085d8",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03861156_14",
+      "source_text": "Exclusion Criteria:\n-  QTcF > 470 msec during the screening period .",
+      "reference_formula": [
+        "gt",
+        "f0",
+        470.0
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          470.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          465.3,
+          470.0,
+          474.7
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 465.3
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 470.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 474.7
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "statement": "Screening period QTcF greater than 470 msec.",
+            "source_quote": "QTcF > 470 msec during the screening period",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "QTcF",
+              "operator": "gt",
+              "threshold": 470.0,
+              "unit": "msec"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "qtcf_screening_period",
+                "description": "QTcF value measured during the screening period.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14567,
+        "output_tokens": 129,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 0,
+        "total_tokens": 14696,
+        "latency_ms": 3269,
+        "finish_reason": "completed",
+        "request_id": "e4811095-0a6d-4f36-ae4e-33662818c8c3",
+        "attempts": 1,
+        "thread_id": "01a164fa-0c04-7220-83da-b32b0e6cdf11",
+        "turn_id": "01a164fa-0ce3-7001-bd2f-a7ded2ddddc5",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03865537_11",
+      "source_text": "Exclusion Criteria:\n-  Inadequate bowel preparation ( Boston Bowel Prep Scale , total score \u2264 2 )",
+      "reference_formula": [
+        "lte",
+        "f0",
+        2.0
+      ],
+      "reference_alternatives": [
+        [
+          "lte",
+          "f0",
+          2.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          1.98,
+          2.0,
+          2.02
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 1.98
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 2.0
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 2.02
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "statement": "Inadequate bowel preparation with a Boston Bowel Prep Scale total score of 2 or less.",
+            "source_quote": "Inadequate bowel preparation ( Boston Bowel Prep Scale , total score \u2264 2 )",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "Boston Bowel Prep Scale total score",
+              "operator": "lte",
+              "threshold": 2.0,
+              "unit": "score"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "boston_bowel_prep_scale_total_score",
+                "description": "Boston Bowel Prep Scale total score",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14572,
+        "output_tokens": 281,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 10496,
+        "thinking_tokens": 132,
+        "total_tokens": 14853,
+        "latency_ms": 4014,
+        "finish_reason": "completed",
+        "request_id": "86a5f1c0-9cf9-496c-a1e7-ae3a1325d5c7",
+        "attempts": 1,
+        "thread_id": "01a164fa-18d4-7ee0-bf8f-082ed0a906f8",
+        "turn_id": "01a164fa-198c-7911-a650-69aa7778c5a0",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03920150_1",
+      "source_text": "Inclusion Criteria:\n-  vitamin D deficiency by serum level < 50 nmol / l",
+      "reference_formula": [
+        "lt",
+        "f0",
+        50.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          50.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          49.5,
+          50.0,
+          50.5
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 49.5
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 50.0
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 50.5
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "statement": "Serum vitamin D level must be less than 50 nmol/l, indicating vitamin D deficiency.",
+            "source_quote": "vitamin D deficiency by serum level < 50 nmol / l",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "serum vitamin D level",
+              "operator": "lt",
+              "threshold": 50.0,
+              "unit": "nmol / l"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "serum_vitamin_d_level",
+                "description": "Serum vitamin D level in nmol/l",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14567,
+        "output_tokens": 276,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 130,
+        "total_tokens": 14843,
+        "latency_ms": 4619,
+        "finish_reason": "completed",
+        "request_id": "9448f334-5afd-49f1-8a8a-ce0e50a0d7fa",
+        "attempts": 1,
+        "thread_id": "01a164fa-288d-7f60-997f-1216055f1aa7",
+        "turn_id": "01a164fa-2955-7492-94cc-ef23d71cc27e",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03931941_14",
+      "source_text": "Exclusion Criteria:\n7.  An absolute neutrophil count of < 1000 cells / \u00b5L during Screening .",
+      "reference_formula": [
+        "lt",
+        "f0",
+        1000.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          1000.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          990.0,
+          1000.0,
+          1010.0
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 990.0
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "f0": 1000.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 1010.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "statement": "Screening \uc911 \uc808\ub300\ud638\uc911\uad6c\uc218(ANC)\uac00 1000 cells/\u00b5L \ubbf8\ub9cc\uc778 \uacbd\uc6b0 \uc81c\uc678\ud55c\ub2e4.",
+            "source_quote": "An absolute neutrophil count of < 1000 cells / \u00b5L during Screening",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "absolute_neutrophil_count",
+              "operator": "lt",
+              "threshold": 1000.0,
+              "unit": "cells / \u00b5L"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "absolute_neutrophil_count_screening",
+                "description": "Screening \uc911 \uce21\uc815\ub41c \uc808\ub300\ud638\uc911\uad6c\uc218(ANC)\ub97c \ud655\uc778\ud55c\ub2e4.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14573,
+        "output_tokens": 164,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 0,
+        "total_tokens": 14737,
+        "latency_ms": 3022,
+        "finish_reason": "completed",
+        "request_id": "2c30ff3a-5e6b-4a2d-adf9-8417bd91ca2a",
+        "attempts": 1,
+        "thread_id": "01a164fa-3aa2-79a3-a008-2aed18f6aa64",
+        "turn_id": "01a164fa-3b72-73d2-9d15-364034f53773",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03862027_7",
+      "source_text": "Exclusion Criteria:\n5.  Pre - enrollment CPP < 60 mm Hg",
+      "reference_formula": [
+        "lt",
+        "f0",
+        60.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          60.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          59.4,
+          60.0,
+          60.6
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 59.4
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 60.0
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 60.6
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "statement": "Pre-enrollment CPP is less than 60 mm Hg.",
+            "source_quote": "Pre - enrollment CPP < 60 mm Hg",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "pre-enrollment CPP",
+              "operator": "lt",
+              "threshold": 60.0,
+              "unit": "mm Hg"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "pre_enrollment_cpp",
+                "description": "Pre-enrollment CPP value in mm Hg",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14564,
+        "output_tokens": 205,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 79,
+        "total_tokens": 14769,
+        "latency_ms": 3205,
+        "finish_reason": "completed",
+        "request_id": "5ad71e09-651b-440c-80d8-243554e760c2",
+        "attempts": 1,
+        "thread_id": "01a164fa-4677-77d2-bde8-a4a243ed13d5",
+        "turn_id": "01a164fa-4741-7740-abc7-193a40a25cf3",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03862469_9",
+      "source_text": "Exclusion Criteria:\n-  Breath alcohol concentration > 0.00 %",
+      "reference_formula": [
+        "gt",
+        "f0",
+        0.0
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          0.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          -0.01,
+          0.0,
+          0.01
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": -0.01
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 0.0
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "f0": 0.01
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "statement": "Breath alcohol concentration greater than 0.00%.",
+            "source_quote": "Breath alcohol concentration > 0.00 %",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "breath_alcohol_concentration",
+              "operator": "gt",
+              "threshold": 0.0,
+              "unit": "%"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "breath_alcohol_concentration",
+                "description": "Breath alcohol concentration result",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14563,
+        "output_tokens": 189,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 60,
+        "total_tokens": 14752,
+        "latency_ms": 3168,
+        "finish_reason": "completed",
+        "request_id": "72812a58-b92d-4a15-83d9-25e8cf416378",
+        "attempts": 1,
+        "thread_id": "01a164fa-5309-76c3-8bb8-9025921c625c",
+        "turn_id": "01a164fa-53db-71e1-94dd-e86101e913a5",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "NCT03860194_5",
+      "source_text": "Exclusion Criteria:\n-  Subject\\'s life expectancy was shorter than 6 months",
+      "reference_formula": [
+        "lt",
+        "f0",
+        6.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          6.0
+        ]
+      ],
+      "domains": {
+        "f0": [
+          5.94,
+          6.0,
+          6.06
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "f0": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 5.94
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 6.0
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "f0": 6.06
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": false,
+      "issues": [
+        "\uc6d0\ubb38\uc5d0\uc11c \uc790\ub3d9 \uacc4\uc0b0\uc6a9 \uc218\uce58 \uc870\uac74\uc744 \ud655\uc778\ud558\uc9c0 \ubabb\ud574 \ubb38\uc7a5 \ud310\ub2e8\uc73c\ub85c \ub0a8\uacbc\ub2e4."
+      ],
+      "numeric_count": 0,
+      "criterion_count": 1,
+      "compiled_logic": null,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "statement": "Subject's life expectancy is shorter than 6 months.",
+            "source_quote": "Subject\\'s life expectancy was shorter than 6 months",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "life_expectancy",
+              "operator": "lt",
+              "threshold": 6.0,
+              "unit": "months"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "life_expectancy_months",
+                "description": "Clinician-assessed life expectancy in months",
+                "acceptable_actions": [
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 14566,
+        "output_tokens": 307,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 14208,
+        "thinking_tokens": 184,
+        "total_tokens": 14873,
+        "latency_ms": 4130,
+        "finish_reason": "completed",
+        "request_id": "3ca2e6b2-0934-4d82-a801-7aefc620e29f",
+        "attempts": 1,
+        "thread_id": "01a164fa-5f72-7d60-8bdc-62d850024fd0",
+        "turn_id": "01a164fa-6053-7cc0-9819-1092ff46d628",
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    }
+  ]
+}

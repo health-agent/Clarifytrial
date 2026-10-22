@@ -1,0 +1,128 @@
+{
+  "scope": "External numeric-annotation agreement on a bounded stratified subset; not clinical truth or full protocol eligibility",
+  "resampling": "One fixed source clause per protocol; synthetic boundary/missing worlds are not independent patients",
+  "clauses": 24,
+  "preflagged_reference_clauses": 6,
+  "always_abstain_macro_agreement": 0.2222222222222222,
+  "metrics": [
+    {
+      "method": "old",
+      "clauses": 24,
+      "macro_clause_agreement": 0.6909722222222222,
+      "scored": 112,
+      "agreement": 78,
+      "reference_resolvable": 88,
+      "resolved_agreement": 54,
+      "abstained_resolvable": 34,
+      "discordant_confirmation": 0,
+      "discordant_exclusion": 0,
+      "decisive_reference_unknown": 0,
+      "ambiguous_reference": 16,
+      "decisive_ambiguous_reference": 10,
+      "failed": 0,
+      "guard_unsupported": 4,
+      "all_scored_agree": 14,
+      "micro_world_agreement": 0.6964285714285714,
+      "provider_total_tokens": 353614,
+      "effective_models": [
+        "gpt-5.6-sol"
+      ]
+    },
+    {
+      "method": "v9",
+      "clauses": 24,
+      "macro_clause_agreement": 0.5798611111111112,
+      "scored": 112,
+      "agreement": 65,
+      "reference_resolvable": 88,
+      "resolved_agreement": 41,
+      "abstained_resolvable": 47,
+      "discordant_confirmation": 0,
+      "discordant_exclusion": 0,
+      "decisive_reference_unknown": 0,
+      "ambiguous_reference": 16,
+      "decisive_ambiguous_reference": 8,
+      "failed": 0,
+      "guard_unsupported": 9,
+      "all_scored_agree": 11,
+      "micro_world_agreement": 0.5803571428571429,
+      "provider_total_tokens": 377956,
+      "effective_models": [
+        "gpt-5.6-sol"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "subset": "all_clauses",
+      "v9_minus_old_macro_agreement": {
+        "cluster_unit": "source_clause_unique_protocol_within_fixed_selection_stratum",
+        "strata": [
+          "age_scalar",
+          "other_scalar",
+          "range"
+        ],
+        "pair_count": 24,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.11111111111111112,
+        "bootstrap_95_ci": {
+          "lower": -0.25703125000000004,
+          "upper": 0.024305555555555556
+        },
+        "wins": 1,
+        "ties": 18,
+        "losses": 5,
+        "two_sided_exact_sign_test_p": 0.21875
+      }
+    },
+    {
+      "subset": "without_preflagged_references",
+      "v9_minus_old_macro_agreement": {
+        "cluster_unit": "source_clause_unique_protocol_within_fixed_selection_stratum",
+        "strata": [
+          "age_scalar",
+          "other_scalar",
+          "range"
+        ],
+        "pair_count": 18,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.08796296296296297,
+        "bootstrap_95_ci": {
+          "lower": -0.2638888888888889,
+          "upper": 0.0925925925925926
+        },
+        "wins": 1,
+        "ties": 14,
+        "losses": 3,
+        "two_sided_exact_sign_test_p": 0.625
+      }
+    },
+    {
+      "subset": "without_all_documented_reference_issues",
+      "v9_minus_old_macro_agreement": {
+        "cluster_unit": "source_clause_unique_protocol_within_fixed_selection_stratum",
+        "strata": [
+          "age_scalar",
+          "other_scalar",
+          "range"
+        ],
+        "pair_count": 18,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.08796296296296297,
+        "bootstrap_95_ci": {
+          "lower": -0.2638888888888889,
+          "upper": 0.0925925925925926
+        },
+        "wins": 1,
+        "ties": 14,
+        "losses": 3,
+        "two_sided_exact_sign_test_p": 0.625
+      }
+    }
+  ],
+  "posthoc_reference_issues": [],
+  "all_calls_single_generation": "One generation per method and clause; model stochastic variation is unmeasured"
+}

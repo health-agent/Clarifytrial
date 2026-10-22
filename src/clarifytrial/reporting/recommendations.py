@@ -35,9 +35,13 @@ def _missing_information(decision: TrialDecision) -> list[MissingInformationSumm
         MissingInformationSummary(
             fact_id=item.fact_id,
             description=item.description,
-            confirmation_methods=[
-                _ACTION_LABELS[action.value] for action in item.acceptable_actions
-            ],
+            confirmation_methods=(
+                ["시험 원문 또는 시험 담당자 확인"]
+                if item.fact_id == f"protocol:{decision.trial_id}:source-meaning"
+                else [
+                    _ACTION_LABELS[action.value] for action in item.acceptable_actions
+                ]
+            ),
         )
         for item in decision.pending_information
     ]

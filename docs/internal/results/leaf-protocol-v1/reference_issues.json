@@ -1,0 +1,11 @@
+{
+  "phase": "identified after the fixed model comparison; sensitivity only; source cases and primary labels unchanged",
+  "issues": [
+    {
+      "case_id": "NCT03922503_8",
+      "observation": "Raw text says age 25 to 50 years; external annotation uses temporal_unit(MONTH).",
+      "interpretation": "The numeric reference and synthetic patient unit follow the annotation. Discordance cannot be treated as proof of clinical model error.",
+      "clinical_adjudication": false
+    }
+  ]
+}

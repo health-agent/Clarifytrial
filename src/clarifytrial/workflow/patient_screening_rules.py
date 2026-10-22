@@ -180,11 +180,30 @@ def aggregate_screening_trial(
     )
     if trial.protocol_logic_supported:
         return decision
+    # Source interpretation is missing even when every numeric patient fact is
+    # known. Keep an explicit protocol question; it is not a request to repeat a
+    # patient test. It enters no acquisition tool unless a caller deliberately
+    # registers a matching route in the public request registry.
+    source_question_id = f"protocol:{trial.trial_id}:source-meaning"
+    source_pending = list(pending)
+    if not any(item.fact_id == source_question_id for item in source_pending):
+        source_pending.append(
+            NextEvidenceRequest(
+                fact_id=source_question_id,
+                description=(
+                    "시험 원문의 조건 연결(AND/OR), 범위·예외·시점은 무엇을 뜻하나요? "
+                    "원문과 시험 담당자의 확인이 필요합니다."
+                ),
+                related_criterion_ids=[c.criterion_id for c in trial.criteria],
+                acceptable_actions=[NextAction.REQUEST_VERIFICATION],
+                reason="환자 검사값의 추가 수집만으로 원문 해석의 불확실성을 해결할 수 없습니다.",
+            )
+        )
     return decision.model_copy(
         update={
             "candidate_status": CandidateStatus.RETAIN,
             "confirmation_status": ConfirmationStatus.NOT_CONFIRMED,
-            "pending_information": pending,
+            "pending_information": source_pending,
             "next_action": AgentAction(
                 action=NextAction.NONE,
                 reason=(
@@ -241,6 +260,14 @@ def natural_stop_reason(
     if resolved:
         return PatientScreeningStopReason.ALL_TRIALS_RESOLVED
     if any(item.review_required for item in decisions.values()):
+        return PatientScreeningStopReason.HUMAN_REVIEW
+    if not pending and any(
+        request.fact_id == f"protocol:{decision.trial_id}:source-meaning"
+        for decision in decisions.values()
+        for request in decision.pending_information
+    ):
+        # A manual source question remains even though the executable patient
+        # acquisition registry has no more requests. Do not report it as empty.
         return PatientScreeningStopReason.HUMAN_REVIEW
     if pending and action_count >= settings.max_external_actions:
         return PatientScreeningStopReason.ACTION_LIMIT

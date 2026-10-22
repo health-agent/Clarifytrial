@@ -1,0 +1,5503 @@
+{
+  "status": "fixed before model comparison; annotation agreement, not clinical truth",
+  "source": "UW Bio-NLP leaf-corpora, fixed revision in DATA_SOURCES.md",
+  "seed": 20261023,
+  "prior_protocol_ids": 184,
+  "unique_raw_clauses": 1999,
+  "exclusions": {
+    "no_numeric_filter": 1529,
+    "numeric filter is not one eq expression": 14,
+    "annotation omits measurement unit": 30,
+    "unrepresented nonnumeric conjunct or disjunct": 106,
+    "unrepresented equivalent cannot be discarded": 53,
+    "unsupported method or nested numeric filter: found_by": 2,
+    "unsupported method or nested numeric filter: chronic": 2,
+    "multiple_annotation_syntaxes": 13,
+    "unsupported method or nested numeric filter: temporality": 15,
+    "unsupported operator/value cardinality": 8,
+    "missing value or multiple comparison operators": 7,
+    "unsupported method or nested numeric filter: caused_by": 6,
+    "unsupported method or nested numeric filter: mod": 10,
+    "unsupported method or nested numeric filter: loc": 3,
+    "not a supported annotation call": 1,
+    "unsupported method or nested numeric filter: pol": 5,
+    "numeric filter on unsupported entity": 9,
+    "unsupported function target": 1,
+    "unsupported method or nested numeric filter: duration": 6,
+    "temporal or contextual comparison": 1,
+    "nonnumeric or ambiguous numeric notation": 18,
+    "unsupported method or nested numeric filter: except_": 1,
+    "unsupported method or nested numeric filter: severity": 2,
+    "unsupported method or nested numeric filter: for_": 1,
+    "unsupported method or nested numeric filter: change": 1,
+    "unsupported method or nested numeric filter: min_count": 2
+  },
+  "representable_candidates": 153,
+  "candidate_strata": {
+    "age_scalar": 59,
+    "other_scalar": 53,
+    "range": 39,
+    "multi_fact": 2
+  },
+  "quotas": {
+    "multi_fact": 2,
+    "range": 16,
+    "age_scalar": 15,
+    "other_scalar": 15
+  },
+  "selected_strata": {
+    "multi_fact": 2,
+    "range": 16,
+    "age_scalar": 15,
+    "other_scalar": 15
+  },
+  "unique_selected_protocols": 48,
+  "cases": [
+    {
+      "case_id": "NCT03868852_10",
+      "nct_id": "NCT03868852",
+      "stratum": "multi_fact",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\nA .  BIL < 1.25 times normal upper limit ( ULN ) ; B .  ALT and AST < 2.5 ULN; C .  Serum Cr < 1 ULN , endogenous creatinine clearance > 50 ml / min",
+      "quote": "A .  BIL < 1.25 times normal upper limit ( ULN ) ; B .  ALT and AST < 2.5 ULN; C .  Serum Cr < 1 ULN , endogenous creatinine clearance > 50 ml / min",
+      "formula": [
+        "and",
+        [
+          "lt",
+          "f0",
+          1.25
+        ],
+        [
+          "or",
+          [
+            "lt",
+            "f1",
+            2.5
+          ],
+          [
+            "lt",
+            "f2",
+            2.5
+          ]
+        ],
+        [
+          "lt",
+          "f3",
+          1.0
+        ],
+        [
+          "gt",
+          "f4",
+          50.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "lt",
+            "f0",
+            1.25
+          ],
+          [
+            "or",
+            [
+              "lt",
+              "f1",
+              2.5
+            ],
+            [
+              "lt",
+              "f2",
+              2.5
+            ]
+          ],
+          [
+            "lt",
+            "f3",
+            1.0
+          ],
+          [
+            "gt",
+            "f4",
+            50.0
+          ]
+        ]
+      ],
+      "reference_notes": [
+        "Raw ALT and AST is represented by union in the external annotation; not clinically adjudicated or repaired."
+      ],
+      "domains": {
+        "f0": [
+          1.2375,
+          1.25,
+          1.2625
+        ],
+        "f1": [
+          2.475,
+          2.5,
+          2.525
+        ],
+        "f2": [
+          2.475,
+          2.5,
+          2.525
+        ],
+        "f3": [
+          0.99,
+          1.0,
+          1.01
+        ],
+        "f4": [
+          49.5,
+          50.0,
+          50.5
+        ]
+      },
+      "units": {
+        "f0": "xULN",
+        "f1": "xULN",
+        "f2": "xULN",
+        "f3": "xULN",
+        "f4": "mL/min"
+      },
+      "fact_labels": {
+        "f0": "BIL",
+        "f1": "ALT",
+        "f2": "AST",
+        "f3": "Serum Cr",
+        "f4": "endogenous creatinine clearance"
+      },
+      "atoms": [
+        [
+          "A .  BIL < 1.25 times normal upper limit ( ULN ) ; B .  ALT and AST < 2.5 ULN; C .  Serum Cr < 1 ULN , endogenous creatinine clearance > 50 ml / min",
+          "f0",
+          "lt",
+          1.25
+        ],
+        [
+          "A .  BIL < 1.25 times normal upper limit ( ULN ) ; B .  ALT and AST < 2.5 ULN; C .  Serum Cr < 1 ULN , endogenous creatinine clearance > 50 ml / min",
+          "f1",
+          "lt",
+          2.5
+        ],
+        [
+          "A .  BIL < 1.25 times normal upper limit ( ULN ) ; B .  ALT and AST < 2.5 ULN; C .  Serum Cr < 1 ULN , endogenous creatinine clearance > 50 ml / min",
+          "f2",
+          "lt",
+          2.5
+        ],
+        [
+          "A .  BIL < 1.25 times normal upper limit ( ULN ) ; B .  ALT and AST < 2.5 ULN; C .  Serum Cr < 1 ULN , endogenous creatinine clearance > 50 ml / min",
+          "f3",
+          "lt",
+          1.0
+        ],
+        [
+          "A .  BIL < 1.25 times normal upper limit ( ULN ) ; B .  ALT and AST < 2.5 ULN; C .  Serum Cr < 1 ULN , endogenous creatinine clearance > 50 ml / min",
+          "f4",
+          "gt",
+          50.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null,
+          "f1": null,
+          "f2": null,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": 1.2375,
+          "f1": null,
+          "f2": null,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": 1.25,
+          "f1": null,
+          "f2": null,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": 1.2625,
+          "f1": null,
+          "f2": null,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": 2.475,
+          "f2": null,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": 2.5,
+          "f2": null,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": 2.525,
+          "f2": null,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": 2.475,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": 2.5,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": 2.525,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": null,
+          "f3": 0.99,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": null,
+          "f3": 1.0,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": null,
+          "f3": 1.01,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": null,
+          "f3": null,
+          "f4": 49.5
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": null,
+          "f3": null,
+          "f4": 50.0
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": null,
+          "f3": null,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.525,
+          "f2": 2.475,
+          "f3": 0.99,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2375,
+          "f1": null,
+          "f2": 2.475,
+          "f3": null,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.475,
+          "f2": 2.525,
+          "f3": 1.0,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": 2.475,
+          "f2": 2.525,
+          "f3": 0.99,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.525,
+          "f2": 2.475,
+          "f3": 0.99,
+          "f4": null
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.475,
+          "f2": null,
+          "f3": 1.01,
+          "f4": null
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.5,
+          "f2": null,
+          "f3": 0.99,
+          "f4": 49.5
+        },
+        {
+          "f0": null,
+          "f1": 2.5,
+          "f2": null,
+          "f3": 1.0,
+          "f4": 49.5
+        },
+        {
+          "f0": null,
+          "f1": 2.475,
+          "f2": 2.475,
+          "f3": 1.0,
+          "f4": null
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.5,
+          "f2": 2.475,
+          "f3": 0.99,
+          "f4": null
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.475,
+          "f2": null,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.525,
+          "f2": 2.5,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": 2.5,
+          "f2": 2.5,
+          "f3": 1.01,
+          "f4": 50.5
+        },
+        {
+          "f0": null,
+          "f1": 2.525,
+          "f2": null,
+          "f3": 0.99,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2375,
+          "f1": null,
+          "f2": 2.5,
+          "f3": 1.0,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.5,
+          "f2": 2.525,
+          "f3": 0.99,
+          "f4": null
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.475,
+          "f2": 2.475,
+          "f3": null,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.475,
+          "f2": 2.525,
+          "f3": null,
+          "f4": 50.5
+        },
+        {
+          "f0": null,
+          "f1": 2.525,
+          "f2": 2.525,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.475,
+          "f2": 2.475,
+          "f3": null,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.525,
+          "f2": 2.475,
+          "f3": 1.0,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.475,
+          "f2": 2.5,
+          "f3": 1.0,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.475,
+          "f2": 2.525,
+          "f3": 0.99,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.525,
+          "f2": 2.5,
+          "f3": 1.01,
+          "f4": 49.5
+        },
+        {
+          "f0": null,
+          "f1": 2.475,
+          "f2": 2.5,
+          "f3": null,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": null,
+          "f2": 2.525,
+          "f3": 1.0,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.525,
+          "f2": 2.525,
+          "f3": null,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.475,
+          "f2": 2.5,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": 2.475,
+          "f2": null,
+          "f3": 1.01,
+          "f4": 50.5
+        },
+        {
+          "f0": null,
+          "f1": 2.525,
+          "f2": 2.5,
+          "f3": 1.0,
+          "f4": null
+        },
+        {
+          "f0": 1.2625,
+          "f1": null,
+          "f2": null,
+          "f3": 0.99,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.475,
+          "f2": null,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2375,
+          "f1": null,
+          "f2": 2.475,
+          "f3": 1.0,
+          "f4": 50.5
+        },
+        {
+          "f0": null,
+          "f1": 2.475,
+          "f2": 2.525,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": null,
+          "f1": 2.525,
+          "f2": null,
+          "f3": 0.99,
+          "f4": 49.5
+        },
+        {
+          "f0": null,
+          "f1": 2.475,
+          "f2": 2.5,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.5,
+          "f2": 2.475,
+          "f3": 1.01,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.475,
+          "f2": 2.5,
+          "f3": 1.01,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.5,
+          "f2": null,
+          "f3": 0.99,
+          "f4": null
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.475,
+          "f2": 2.475,
+          "f3": null,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": null,
+          "f2": 2.525,
+          "f3": 0.99,
+          "f4": 49.5
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": 2.5,
+          "f3": 0.99,
+          "f4": null
+        },
+        {
+          "f0": 1.2625,
+          "f1": null,
+          "f2": 2.5,
+          "f3": 0.99,
+          "f4": 50.5
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": 2.525,
+          "f3": 1.01,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.525,
+          "f2": 2.475,
+          "f3": null,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.475,
+          "f2": 2.5,
+          "f3": 0.99,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.5,
+          "f2": 2.475,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": null,
+          "f1": 2.5,
+          "f2": 2.525,
+          "f3": 0.99,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.25,
+          "f1": null,
+          "f2": 2.5,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.5,
+          "f2": 2.475,
+          "f3": 1.0,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": 2.525,
+          "f2": 2.475,
+          "f3": 1.0,
+          "f4": null
+        },
+        {
+          "f0": 1.2625,
+          "f1": null,
+          "f2": null,
+          "f3": 1.01,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": null,
+          "f2": 2.475,
+          "f3": 0.99,
+          "f4": null
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.525,
+          "f2": null,
+          "f3": 1.0,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": 2.525,
+          "f2": 2.5,
+          "f3": 1.0,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.25,
+          "f1": null,
+          "f2": 2.475,
+          "f3": 1.0,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.25,
+          "f1": null,
+          "f2": null,
+          "f3": 1.01,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.475,
+          "f2": null,
+          "f3": null,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.475,
+          "f2": 2.475,
+          "f3": 1.01,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": 2.475,
+          "f2": null,
+          "f3": 0.99,
+          "f4": null
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.475,
+          "f2": 2.525,
+          "f3": null,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.25,
+          "f1": null,
+          "f2": 2.525,
+          "f3": 1.0,
+          "f4": 50.0
+        },
+        {
+          "f0": null,
+          "f1": 2.525,
+          "f2": 2.525,
+          "f3": 1.01,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": 2.475,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2375,
+          "f1": null,
+          "f2": 2.5,
+          "f3": 1.0,
+          "f4": null
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.525,
+          "f2": 2.5,
+          "f3": 1.0,
+          "f4": null
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.525,
+          "f2": null,
+          "f3": 1.0,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.25,
+          "f1": null,
+          "f2": 2.5,
+          "f3": null,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.5,
+          "f2": null,
+          "f3": 1.0,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.525,
+          "f2": 2.475,
+          "f3": 1.01,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.475,
+          "f2": null,
+          "f3": null,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.475,
+          "f2": 2.525,
+          "f3": 1.0,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.475,
+          "f2": null,
+          "f3": null,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.475,
+          "f2": 2.525,
+          "f3": 0.99,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.5,
+          "f2": null,
+          "f3": 0.99,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2375,
+          "f1": null,
+          "f2": 2.525,
+          "f3": null,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.525,
+          "f2": 2.475,
+          "f3": null,
+          "f4": null
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.5,
+          "f2": 2.475,
+          "f3": null,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.525,
+          "f2": 2.525,
+          "f3": 1.0,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.5,
+          "f2": 2.5,
+          "f3": 1.01,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": 2.475,
+          "f3": 1.01,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.2375,
+          "f1": null,
+          "f2": 2.525,
+          "f3": 1.01,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.525,
+          "f2": null,
+          "f3": 1.0,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.5,
+          "f2": 2.5,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": null,
+          "f1": 2.525,
+          "f2": 2.525,
+          "f3": 1.0,
+          "f4": null
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.525,
+          "f2": 2.5,
+          "f3": null,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.5,
+          "f2": 2.475,
+          "f3": null,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.525,
+          "f2": 2.475,
+          "f3": null,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.5,
+          "f2": 2.5,
+          "f3": 0.99,
+          "f4": null
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.525,
+          "f2": 2.5,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.525,
+          "f2": 2.5,
+          "f3": 0.99,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.475,
+          "f2": 2.5,
+          "f3": 0.99,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.5,
+          "f2": 2.475,
+          "f3": 0.99,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2625,
+          "f1": 2.475,
+          "f2": 2.475,
+          "f3": 1.0,
+          "f4": null
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.475,
+          "f2": 2.525,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": null,
+          "f1": null,
+          "f2": 2.525,
+          "f3": 0.99,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2625,
+          "f1": null,
+          "f2": 2.475,
+          "f3": 1.01,
+          "f4": null
+        },
+        {
+          "f0": null,
+          "f1": 2.525,
+          "f2": 2.475,
+          "f3": 0.99,
+          "f4": null
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.5,
+          "f2": null,
+          "f3": 1.0,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.5,
+          "f2": null,
+          "f3": 0.99,
+          "f4": 50.5
+        },
+        {
+          "f0": null,
+          "f1": 2.525,
+          "f2": 2.475,
+          "f3": 1.01,
+          "f4": null
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.475,
+          "f2": null,
+          "f3": null,
+          "f4": 50.5
+        },
+        {
+          "f0": 1.25,
+          "f1": null,
+          "f2": null,
+          "f3": null,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2625,
+          "f1": null,
+          "f2": 2.525,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.475,
+          "f2": 2.475,
+          "f3": 1.01,
+          "f4": null
+        },
+        {
+          "f0": 1.2625,
+          "f1": null,
+          "f2": 2.5,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": null,
+          "f1": 2.5,
+          "f2": 2.5,
+          "f3": 1.01,
+          "f4": null
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.475,
+          "f2": 2.475,
+          "f3": 0.99,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.25,
+          "f1": null,
+          "f2": 2.5,
+          "f3": 0.99,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.2375,
+          "f1": 2.475,
+          "f2": 2.525,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.475,
+          "f2": 2.475,
+          "f3": 1.01,
+          "f4": 50.0
+        },
+        {
+          "f0": 1.25,
+          "f1": null,
+          "f2": 2.475,
+          "f3": null,
+          "f4": 49.5
+        },
+        {
+          "f0": 1.25,
+          "f1": 2.5,
+          "f2": 2.525,
+          "f3": 1.01,
+          "f4": 49.5
+        }
+      ],
+      "exhaustive_world_count": 1024,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 5,
+      "reference_annotation": "intersect(\n    lab(\"BIL\")\n        .num_filter(\n            eq(op(LT), val(\"1.25\"), unit(REF_RANGE_NORMAL))\n        ),\n    union(\n        lab(\"ALT\"),\n        lab(\"AST\")\n    )\n        .num_filter(\n            eq(op(LT), val(\"2.5\"), unit(REF_RANGE_NORMAL))\n        ), \n    lab(\"Serum Cr\")\n        .num_filter(\n            eq(op(LT), val(\"1\"), unit(REF_RANGE_NORMAL))\n        ), \n    lab(\"endogenous creatinine clearance\")\n        .num_filter(\n            eq(op(GT), val(\"50\"), unit(\"ml\"), per(MINUTE))\n        )\n)",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch2/NCT03868852_10.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch2/NCT03868852_10.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03867344_17",
+      "nct_id": "NCT03867344",
+      "stratum": "multi_fact",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n-  LDL > 130 mg / dL ; Triglycerides > 150 mg / dL",
+      "quote": "-  LDL > 130 mg / dL ; Triglycerides > 150 mg / dL",
+      "formula": [
+        "or",
+        [
+          "gt",
+          "f0",
+          130.0
+        ],
+        [
+          "gt",
+          "f1",
+          150.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "or",
+          [
+            "gt",
+            "f0",
+            130.0
+          ],
+          [
+            "gt",
+            "f1",
+            150.0
+          ]
+        ]
+      ],
+      "reference_notes": [
+        "External annotation uses union across semicolon-separated lab conditions; raw text does not explicitly say OR."
+      ],
+      "domains": {
+        "f0": [
+          128.7,
+          130.0,
+          131.3
+        ],
+        "f1": [
+          148.5,
+          150.0,
+          151.5
+        ]
+      },
+      "units": {
+        "f0": "mg/dL",
+        "f1": "mg/dL"
+      },
+      "fact_labels": {
+        "f0": "LDL",
+        "f1": "Triglycerides"
+      },
+      "atoms": [
+        [
+          "-  LDL > 130 mg / dL ; Triglycerides > 150 mg / dL",
+          "f0",
+          "gt",
+          130.0
+        ],
+        [
+          "-  LDL > 130 mg / dL ; Triglycerides > 150 mg / dL",
+          "f1",
+          "gt",
+          150.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null,
+          "f1": null
+        },
+        {
+          "f0": null,
+          "f1": 148.5
+        },
+        {
+          "f0": null,
+          "f1": 150.0
+        },
+        {
+          "f0": null,
+          "f1": 151.5
+        },
+        {
+          "f0": 128.7,
+          "f1": null
+        },
+        {
+          "f0": 128.7,
+          "f1": 148.5
+        },
+        {
+          "f0": 128.7,
+          "f1": 150.0
+        },
+        {
+          "f0": 128.7,
+          "f1": 151.5
+        },
+        {
+          "f0": 130.0,
+          "f1": null
+        },
+        {
+          "f0": 130.0,
+          "f1": 148.5
+        },
+        {
+          "f0": 130.0,
+          "f1": 150.0
+        },
+        {
+          "f0": 130.0,
+          "f1": 151.5
+        },
+        {
+          "f0": 131.3,
+          "f1": null
+        },
+        {
+          "f0": 131.3,
+          "f1": 148.5
+        },
+        {
+          "f0": 131.3,
+          "f1": 150.0
+        },
+        {
+          "f0": 131.3,
+          "f1": 151.5
+        }
+      ],
+      "exhaustive_world_count": 16,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "union(\n    lab(\"LDL\")\n        .num_filter(\n            eq(op(GT), val(\"130\"), unit(\"mg\"), unit(\"dL\"))\n        ),\n    lab(\"Triglycerides\")\n        .num_filter(\n            eq(op(GT), val(\"150\"), unit(\"mg\"), unit(\"dL\"))\n        )\n)",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch3/NCT03867344_17.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch3/NCT03867344_17.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03864913_3",
+      "nct_id": "NCT03864913",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  14 - 19 years old",
+      "quote": "-  14 - 19 years old",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          14.0
+        ],
+        [
+          "lte",
+          "f0",
+          19.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            14.0
+          ],
+          [
+            "lte",
+            "f0",
+            19.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            14.0
+          ],
+          [
+            "lte",
+            "f0",
+            19.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            14.0
+          ],
+          [
+            "lt",
+            "f0",
+            19.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            14.0
+          ],
+          [
+            "lt",
+            "f0",
+            19.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          13.86,
+          14.0,
+          14.14,
+          16.5,
+          18.81,
+          19.0,
+          19.19
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  14 - 19 years old",
+          "f0",
+          "gte",
+          14.0
+        ],
+        [
+          "-  14 - 19 years old",
+          "f0",
+          "lte",
+          19.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 13.86
+        },
+        {
+          "f0": 14.0
+        },
+        {
+          "f0": 14.14
+        },
+        {
+          "f0": 16.5
+        },
+        {
+          "f0": 18.81
+        },
+        {
+          "f0": 19.0
+        },
+        {
+          "f0": 19.19
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"14\"), op(BETWEEN), val(\"19\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_3/batch2/NCT03864913_3.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_3/batch2/NCT03864913_3.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03923075_2",
+      "nct_id": "NCT03923075",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  age 4 - 12 years old",
+      "quote": "-  age 4 - 12 years old",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          4.0
+        ],
+        [
+          "lte",
+          "f0",
+          12.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            4.0
+          ],
+          [
+            "lte",
+            "f0",
+            12.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            4.0
+          ],
+          [
+            "lte",
+            "f0",
+            12.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            4.0
+          ],
+          [
+            "lt",
+            "f0",
+            12.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            4.0
+          ],
+          [
+            "lt",
+            "f0",
+            12.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          3.96,
+          4.0,
+          4.04,
+          8.0,
+          11.88,
+          12.0,
+          12.12
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  age 4 - 12 years old",
+          "f0",
+          "gte",
+          4.0
+        ],
+        [
+          "-  age 4 - 12 years old",
+          "f0",
+          "lte",
+          12.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 3.96
+        },
+        {
+          "f0": 4.0
+        },
+        {
+          "f0": 4.04
+        },
+        {
+          "f0": 8.0
+        },
+        {
+          "f0": 11.88
+        },
+        {
+          "f0": 12.0
+        },
+        {
+          "f0": 12.12
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"4\"), op(BETWEEN), val(\"12\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_3/batch2/NCT03923075_2.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_3/batch2/NCT03923075_2.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03861377_2",
+      "nct_id": "NCT03861377",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Age 18 - 50 years",
+      "quote": "-  Age 18 - 50 years",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          18.0
+        ],
+        [
+          "lte",
+          "f0",
+          50.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            50.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            50.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            50.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            50.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18,
+          34.0,
+          49.5,
+          50.0,
+          50.5
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  Age 18 - 50 years",
+          "f0",
+          "gte",
+          18.0
+        ],
+        [
+          "-  Age 18 - 50 years",
+          "f0",
+          "lte",
+          50.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        },
+        {
+          "f0": 34.0
+        },
+        {
+          "f0": 49.5
+        },
+        {
+          "f0": 50.0
+        },
+        {
+          "f0": 50.5
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"18\"), op(BETWEEN), val(\"50\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_3/batch1/NCT03861377_2.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_3/batch1/NCT03861377_2.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03929458_1",
+      "nct_id": "NCT03929458",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Both sexes aged between 20 - 90 years .",
+      "quote": "-  Both sexes aged between 20 - 90 years .",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          20.0
+        ],
+        [
+          "lte",
+          "f0",
+          90.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            20.0
+          ],
+          [
+            "lte",
+            "f0",
+            90.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            20.0
+          ],
+          [
+            "lte",
+            "f0",
+            90.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            20.0
+          ],
+          [
+            "lt",
+            "f0",
+            90.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            20.0
+          ],
+          [
+            "lt",
+            "f0",
+            90.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          19.8,
+          20.0,
+          20.2,
+          55.0,
+          89.1,
+          90.0,
+          90.9
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  Both sexes aged between 20 - 90 years .",
+          "f0",
+          "gte",
+          20.0
+        ],
+        [
+          "-  Both sexes aged between 20 - 90 years .",
+          "f0",
+          "lte",
+          90.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 19.8
+        },
+        {
+          "f0": 20.0
+        },
+        {
+          "f0": 20.2
+        },
+        {
+          "f0": 55.0
+        },
+        {
+          "f0": 89.1
+        },
+        {
+          "f0": 90.0
+        },
+        {
+          "f0": 90.9
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"20\"), op(BETWEEN), val(\"90\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch5/NCT03929458_1.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch5/NCT03929458_1.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03864094_2",
+      "nct_id": "NCT03864094",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Age 18 - 50 years",
+      "quote": "-  Age 18 - 50 years",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          18.0
+        ],
+        [
+          "lte",
+          "f0",
+          50.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            50.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            50.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            50.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            50.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18,
+          34.0,
+          49.5,
+          50.0,
+          50.5
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  Age 18 - 50 years",
+          "f0",
+          "gte",
+          18.0
+        ],
+        [
+          "-  Age 18 - 50 years",
+          "f0",
+          "lte",
+          50.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        },
+        {
+          "f0": 34.0
+        },
+        {
+          "f0": 49.5
+        },
+        {
+          "f0": 50.0
+        },
+        {
+          "f0": 50.5
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"18\"), op(BETWEEN), val(\"50\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch4/NCT03864094_2.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch4/NCT03864094_2.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03869879_1",
+      "nct_id": "NCT03869879",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  60 - 89 years old",
+      "quote": "-  60 - 89 years old",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          60.0
+        ],
+        [
+          "lte",
+          "f0",
+          89.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            60.0
+          ],
+          [
+            "lte",
+            "f0",
+            89.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            60.0
+          ],
+          [
+            "lte",
+            "f0",
+            89.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            60.0
+          ],
+          [
+            "lt",
+            "f0",
+            89.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            60.0
+          ],
+          [
+            "lt",
+            "f0",
+            89.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          59.4,
+          60.0,
+          60.6,
+          74.5,
+          88.11,
+          89.0,
+          89.89
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  60 - 89 years old",
+          "f0",
+          "gte",
+          60.0
+        ],
+        [
+          "-  60 - 89 years old",
+          "f0",
+          "lte",
+          89.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 59.4
+        },
+        {
+          "f0": 60.0
+        },
+        {
+          "f0": 60.6
+        },
+        {
+          "f0": 74.5
+        },
+        {
+          "f0": 88.11
+        },
+        {
+          "f0": 89.0
+        },
+        {
+          "f0": 89.89
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"60\"), op(BETWEEN), val(\"89\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch3/NCT03869879_1.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch3/NCT03869879_1.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03924804_2",
+      "nct_id": "NCT03924804",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  2.  age , 18 to 65 years old ;",
+      "quote": "-  2.  age , 18 to 65 years old ;",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          18.0
+        ],
+        [
+          "lte",
+          "f0",
+          65.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            65.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            65.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            65.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            65.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18,
+          41.5,
+          64.35,
+          65.0,
+          65.65
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  2.  age , 18 to 65 years old ;",
+          "f0",
+          "gte",
+          18.0
+        ],
+        [
+          "-  2.  age , 18 to 65 years old ;",
+          "f0",
+          "lte",
+          65.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        },
+        {
+          "f0": 41.5
+        },
+        {
+          "f0": 64.35
+        },
+        {
+          "f0": 65.0
+        },
+        {
+          "f0": 65.65
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"18\"), op(BETWEEN), val(\"65\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_3/batch1/NCT03924804_2.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_3/batch1/NCT03924804_2.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03862625_1",
+      "nct_id": "NCT03862625",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  the participant 6 to 15 years of age during inclusion",
+      "quote": "-  the participant 6 to 15 years of age during inclusion",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          6.0
+        ],
+        [
+          "lte",
+          "f0",
+          15.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            6.0
+          ],
+          [
+            "lte",
+            "f0",
+            15.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            6.0
+          ],
+          [
+            "lte",
+            "f0",
+            15.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            6.0
+          ],
+          [
+            "lt",
+            "f0",
+            15.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            6.0
+          ],
+          [
+            "lt",
+            "f0",
+            15.0
+          ]
+        ]
+      ],
+      "reference_notes": [
+        "Raw inclusion timepoint is not represented in the numeric annotation."
+      ],
+      "domains": {
+        "f0": [
+          5.94,
+          6.0,
+          6.06,
+          10.5,
+          14.85,
+          15.0,
+          15.15
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  the participant 6 to 15 years of age during inclusion",
+          "f0",
+          "gte",
+          6.0
+        ],
+        [
+          "-  the participant 6 to 15 years of age during inclusion",
+          "f0",
+          "lte",
+          15.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 5.94
+        },
+        {
+          "f0": 6.0
+        },
+        {
+          "f0": 6.06
+        },
+        {
+          "f0": 10.5
+        },
+        {
+          "f0": 14.85
+        },
+        {
+          "f0": 15.0
+        },
+        {
+          "f0": 15.15
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"6\"), op(BETWEEN), val(\"15\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch8/NCT03862625_1.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch8/NCT03862625_1.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03861715_1",
+      "nct_id": "NCT03861715",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  age 20 - 34 years ;",
+      "quote": "-  age 20 - 34 years ;",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          20.0
+        ],
+        [
+          "lte",
+          "f0",
+          34.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            20.0
+          ],
+          [
+            "lte",
+            "f0",
+            34.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            20.0
+          ],
+          [
+            "lte",
+            "f0",
+            34.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            20.0
+          ],
+          [
+            "lt",
+            "f0",
+            34.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            20.0
+          ],
+          [
+            "lt",
+            "f0",
+            34.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          19.8,
+          20.0,
+          20.2,
+          27.0,
+          33.66,
+          34.0,
+          34.34
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  age 20 - 34 years ;",
+          "f0",
+          "gte",
+          20.0
+        ],
+        [
+          "-  age 20 - 34 years ;",
+          "f0",
+          "lte",
+          34.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 19.8
+        },
+        {
+          "f0": 20.0
+        },
+        {
+          "f0": 20.2
+        },
+        {
+          "f0": 27.0
+        },
+        {
+          "f0": 33.66
+        },
+        {
+          "f0": 34.0
+        },
+        {
+          "f0": 34.34
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"20\"), op(BETWEEN), val(\"34\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch1/NCT03861715_1.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch1/NCT03861715_1.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03928587_2",
+      "nct_id": "NCT03928587",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n2.  Age 5 - 8 years , both inclusive , at inclusion",
+      "quote": "2.  Age 5 - 8 years , both inclusive , at inclusion",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          5.0
+        ],
+        [
+          "lte",
+          "f0",
+          8.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            5.0
+          ],
+          [
+            "lte",
+            "f0",
+            8.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            5.0
+          ],
+          [
+            "lte",
+            "f0",
+            8.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            5.0
+          ],
+          [
+            "lt",
+            "f0",
+            8.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            5.0
+          ],
+          [
+            "lt",
+            "f0",
+            8.0
+          ]
+        ]
+      ],
+      "reference_notes": [
+        "Raw text explicitly includes both bounds and refers to inclusion; generic annotated BETWEEN still retains endpoint alternatives."
+      ],
+      "domains": {
+        "f0": [
+          4.95,
+          5.0,
+          5.05,
+          6.5,
+          7.92,
+          8.0,
+          8.08
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "2.  Age 5 - 8 years , both inclusive , at inclusion",
+          "f0",
+          "gte",
+          5.0
+        ],
+        [
+          "2.  Age 5 - 8 years , both inclusive , at inclusion",
+          "f0",
+          "lte",
+          8.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 4.95
+        },
+        {
+          "f0": 5.0
+        },
+        {
+          "f0": 5.05
+        },
+        {
+          "f0": 6.5
+        },
+        {
+          "f0": 7.92
+        },
+        {
+          "f0": 8.0
+        },
+        {
+          "f0": 8.08
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"5\"), op(BETWEEN), val(\"8\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch5/NCT03928587_2.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch5/NCT03928587_2.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03863977_1",
+      "nct_id": "NCT03863977",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Patients\\' age from 18 to 60 years old ,",
+      "quote": "-  Patients\\' age from 18 to 60 years old ,",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          18.0
+        ],
+        [
+          "lte",
+          "f0",
+          60.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            60.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            60.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            60.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            60.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18,
+          39.0,
+          59.4,
+          60.0,
+          60.6
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  Patients\\' age from 18 to 60 years old ,",
+          "f0",
+          "gte",
+          18.0
+        ],
+        [
+          "-  Patients\\' age from 18 to 60 years old ,",
+          "f0",
+          "lte",
+          60.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        },
+        {
+          "f0": 39.0
+        },
+        {
+          "f0": 59.4
+        },
+        {
+          "f0": 60.0
+        },
+        {
+          "f0": 60.6
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"18\"), op(BETWEEN), val(\"60\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch2/NCT03863977_1.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch2/NCT03863977_1.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03928340_4",
+      "nct_id": "NCT03928340",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Haemoglobin A 1 C ( HbA 1c ) level between 7 % to 11 %",
+      "quote": "-  Haemoglobin A 1 C ( HbA 1c ) level between 7 % to 11 %",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          7.0
+        ],
+        [
+          "lte",
+          "f0",
+          11.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            7.0
+          ],
+          [
+            "lte",
+            "f0",
+            11.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            7.0
+          ],
+          [
+            "lte",
+            "f0",
+            11.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            7.0
+          ],
+          [
+            "lt",
+            "f0",
+            11.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            7.0
+          ],
+          [
+            "lt",
+            "f0",
+            11.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          6.93,
+          7.0,
+          7.07,
+          9.0,
+          10.89,
+          11.0,
+          11.11
+        ]
+      },
+      "units": {
+        "f0": "%"
+      },
+      "fact_labels": {
+        "f0": "Haemoglobin A 1 C"
+      },
+      "atoms": [
+        [
+          "-  Haemoglobin A 1 C ( HbA 1c ) level between 7 % to 11 %",
+          "f0",
+          "gte",
+          7.0
+        ],
+        [
+          "-  Haemoglobin A 1 C ( HbA 1c ) level between 7 % to 11 %",
+          "f0",
+          "lte",
+          11.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 6.93
+        },
+        {
+          "f0": 7.0
+        },
+        {
+          "f0": 7.07
+        },
+        {
+          "f0": 9.0
+        },
+        {
+          "f0": 10.89
+        },
+        {
+          "f0": 11.0
+        },
+        {
+          "f0": 11.11
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "lab(\"Haemoglobin A 1 C\")\n    .equiv(\n        lab(\"HbA 1c\")\n    )\n    .num_filter(\n        eq(op(BETWEEN), val(\"7\"), unit(\"%\"), val(\"11\"), unit(\"%\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_3/batch2/NCT03928340_4.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_3/batch2/NCT03928340_4.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03866811_2",
+      "nct_id": "NCT03866811",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  age 14 - 19 years",
+      "quote": "-  age 14 - 19 years",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          14.0
+        ],
+        [
+          "lte",
+          "f0",
+          19.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            14.0
+          ],
+          [
+            "lte",
+            "f0",
+            19.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            14.0
+          ],
+          [
+            "lte",
+            "f0",
+            19.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            14.0
+          ],
+          [
+            "lt",
+            "f0",
+            19.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            14.0
+          ],
+          [
+            "lt",
+            "f0",
+            19.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          13.86,
+          14.0,
+          14.14,
+          16.5,
+          18.81,
+          19.0,
+          19.19
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  age 14 - 19 years",
+          "f0",
+          "gte",
+          14.0
+        ],
+        [
+          "-  age 14 - 19 years",
+          "f0",
+          "lte",
+          19.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 13.86
+        },
+        {
+          "f0": 14.0
+        },
+        {
+          "f0": 14.14
+        },
+        {
+          "f0": 16.5
+        },
+        {
+          "f0": 18.81
+        },
+        {
+          "f0": 19.0
+        },
+        {
+          "f0": 19.19
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"14\"), op(BETWEEN), val(\"19\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_3/batch2/NCT03866811_2.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_3/batch2/NCT03866811_2.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03860311_1",
+      "nct_id": "NCT03860311",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Age 8 yr - 18 yrs",
+      "quote": "-  Age 8 yr - 18 yrs",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          8.0
+        ],
+        [
+          "lte",
+          "f0",
+          18.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            8.0
+          ],
+          [
+            "lte",
+            "f0",
+            18.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            8.0
+          ],
+          [
+            "lte",
+            "f0",
+            18.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            8.0
+          ],
+          [
+            "lt",
+            "f0",
+            18.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            8.0
+          ],
+          [
+            "lt",
+            "f0",
+            18.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          7.92,
+          8.0,
+          8.08,
+          13.0,
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  Age 8 yr - 18 yrs",
+          "f0",
+          "gte",
+          8.0
+        ],
+        [
+          "-  Age 8 yr - 18 yrs",
+          "f0",
+          "lte",
+          18.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 7.92
+        },
+        {
+          "f0": 8.0
+        },
+        {
+          "f0": 8.08
+        },
+        {
+          "f0": 13.0
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"8\"), temporal_unit(YEAR), op(BETWEEN), val(\"18\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_3/batch1/NCT03860311_1.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_3/batch1/NCT03860311_1.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03922503_8",
+      "nct_id": "NCT03922503",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Patients age between 25 and 50 years old .",
+      "quote": "-  Patients age between 25 and 50 years old .",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          25.0
+        ],
+        [
+          "lte",
+          "f0",
+          50.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            25.0
+          ],
+          [
+            "lte",
+            "f0",
+            50.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            25.0
+          ],
+          [
+            "lte",
+            "f0",
+            50.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            25.0
+          ],
+          [
+            "lt",
+            "f0",
+            50.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            25.0
+          ],
+          [
+            "lt",
+            "f0",
+            50.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          24.75,
+          25.0,
+          25.25,
+          37.5,
+          49.5,
+          50.0,
+          50.5
+        ]
+      },
+      "units": {
+        "f0": "months"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  Patients age between 25 and 50 years old .",
+          "f0",
+          "gte",
+          25.0
+        ],
+        [
+          "-  Patients age between 25 and 50 years old .",
+          "f0",
+          "lte",
+          50.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 24.75
+        },
+        {
+          "f0": 25.0
+        },
+        {
+          "f0": 25.25
+        },
+        {
+          "f0": 37.5
+        },
+        {
+          "f0": 49.5
+        },
+        {
+          "f0": 50.0
+        },
+        {
+          "f0": 50.5
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(BETWEEN), val(\"25\"), val(\"50\"), temporal_unit(MONTH))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_3/batch1/NCT03922503_8.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_3/batch1/NCT03922503_8.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03865797_3",
+      "nct_id": "NCT03865797",
+      "stratum": "range",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  From 18 to 40 years old",
+      "quote": "-  From 18 to 40 years old",
+      "formula": [
+        "and",
+        [
+          "gte",
+          "f0",
+          18.0
+        ],
+        [
+          "lte",
+          "f0",
+          40.0
+        ]
+      ],
+      "reference_alternatives": [
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            40.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lte",
+            "f0",
+            40.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            40.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "f0",
+            18.0
+          ],
+          [
+            "lt",
+            "f0",
+            40.0
+          ]
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18,
+          29.0,
+          39.6,
+          40.0,
+          40.4
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  From 18 to 40 years old",
+          "f0",
+          "gte",
+          18.0
+        ],
+        [
+          "-  From 18 to 40 years old",
+          "f0",
+          "lte",
+          40.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        },
+        {
+          "f0": 29.0
+        },
+        {
+          "f0": 39.6
+        },
+        {
+          "f0": 40.0
+        },
+        {
+          "f0": 40.4
+        }
+      ],
+      "exhaustive_world_count": 8,
+      "ambiguous_range_count": 1,
+      "reference_numeric_atom_count": 2,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"18\"), op(BETWEEN), val(\"40\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch1/NCT03865797_3.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch1/NCT03865797_3.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03864952_5",
+      "nct_id": "NCT03864952",
+      "stratum": "age_scalar",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n-  to be under 18 years old",
+      "quote": "-  to be under 18 years old",
+      "formula": [
+        "lt",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          18.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  to be under 18 years old",
+          "f0",
+          "lt",
+          18.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(LT), val(\"18\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch4/NCT03864952_5.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch4/NCT03864952_5.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03923543_3",
+      "nct_id": "NCT03923543",
+      "stratum": "age_scalar",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n-  age older than 1 month not to be operated",
+      "quote": "-  age older than 1 month not to be operated",
+      "formula": [
+        "gt",
+        "f0",
+        1.0
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          1.0
+        ]
+      ],
+      "reference_notes": [
+        "Raw text includes a procedure-related qualifier absent from the numeric annotation."
+      ],
+      "domains": {
+        "f0": [
+          0.99,
+          1.0,
+          1.01
+        ]
+      },
+      "units": {
+        "f0": "months"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  age older than 1 month not to be operated",
+          "f0",
+          "gt",
+          1.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 0.99
+        },
+        {
+          "f0": 1.0
+        },
+        {
+          "f0": 1.01
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(GT), val(\"1\"), temporal_unit(MONTH))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_3/batch1/NCT03923543_3.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_3/batch1/NCT03923543_3.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03921060_6",
+      "nct_id": "NCT03921060",
+      "stratum": "age_scalar",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n-  Less than 18 years of age",
+      "quote": "-  Less than 18 years of age",
+      "formula": [
+        "lt",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          18.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  Less than 18 years of age",
+          "f0",
+          "lt",
+          18.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(LT), val(\"18\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch5/NCT03921060_6.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch5/NCT03921060_6.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03861325_3",
+      "nct_id": "NCT03861325",
+      "stratum": "age_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  The patient is at least 18 years old .",
+      "quote": "-  The patient is at least 18 years old .",
+      "formula": [
+        "gte",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          18.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  The patient is at least 18 years old .",
+          "f0",
+          "gte",
+          18.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(GTEQ), val(\"18\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch1/NCT03861325_3.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch1/NCT03861325_3.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03861429_6",
+      "nct_id": "NCT03861429",
+      "stratum": "age_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Age > 65 years",
+      "quote": "-  Age > 65 years",
+      "formula": [
+        "gt",
+        "f0",
+        65.0
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          65.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          64.35,
+          65.0,
+          65.65
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  Age > 65 years",
+          "f0",
+          "gt",
+          65.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 64.35
+        },
+        {
+          "f0": 65.0
+        },
+        {
+          "f0": 65.65
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(GT), val(\"65\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_3/batch2/NCT03861429_6.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_3/batch2/NCT03861429_6.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03869021_2",
+      "nct_id": "NCT03869021",
+      "stratum": "age_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n2.  Patients younger than 25 years old .",
+      "quote": "2.  Patients younger than 25 years old .",
+      "formula": [
+        "lt",
+        "f0",
+        25.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          25.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          24.75,
+          25.0,
+          25.25
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "2.  Patients younger than 25 years old .",
+          "f0",
+          "lt",
+          25.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 24.75
+        },
+        {
+          "f0": 25.0
+        },
+        {
+          "f0": 25.25
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(LT), val(\"25\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch1/NCT03869021_2.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch1/NCT03869021_2.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03865355_2",
+      "nct_id": "NCT03865355",
+      "stratum": "age_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n2.  Patient aged 18 years or older",
+      "quote": "2.  Patient aged 18 years or older",
+      "formula": [
+        "gte",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          18.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "2.  Patient aged 18 years or older",
+          "f0",
+          "gte",
+          18.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"18\"), temporal_unit(YEAR), op(GTEQ))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch3/NCT03865355_2.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch3/NCT03865355_2.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03860428_3",
+      "nct_id": "NCT03860428",
+      "stratum": "age_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Age less than 72 hours",
+      "quote": "-  Age less than 72 hours",
+      "formula": [
+        "lt",
+        "f0",
+        72.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          72.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          71.28,
+          72.0,
+          72.72
+        ]
+      },
+      "units": {
+        "f0": "hours"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  Age less than 72 hours",
+          "f0",
+          "lt",
+          72.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 71.28
+        },
+        {
+          "f0": 72.0
+        },
+        {
+          "f0": 72.72
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(LT), val(\"72\"), temporal_unit(HOUR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch1/NCT03860428_3.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch1/NCT03860428_3.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03924362_3",
+      "nct_id": "NCT03924362",
+      "stratum": "age_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n1.  Age > 18 years",
+      "quote": "1.  Age > 18 years",
+      "formula": [
+        "gt",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          18.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "1.  Age > 18 years",
+          "f0",
+          "gt",
+          18.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(GT), val(\"18\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch1/NCT03924362_3.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch1/NCT03924362_3.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03925961_3",
+      "nct_id": "NCT03925961",
+      "stratum": "age_scalar",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n-  Patients less than 18 years of age",
+      "quote": "-  Patients less than 18 years of age",
+      "formula": [
+        "lt",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          18.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  Patients less than 18 years of age",
+          "f0",
+          "lt",
+          18.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(LT), val(\"18\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch6/NCT03925961_3.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch6/NCT03925961_3.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03922256_1",
+      "nct_id": "NCT03922256",
+      "stratum": "age_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Age > 18 years ;",
+      "quote": "-  Age > 18 years ;",
+      "formula": [
+        "gt",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          18.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  Age > 18 years ;",
+          "f0",
+          "gt",
+          18.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(GT), val(\"18\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_3/batch1/NCT03922256_1.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_3/batch1/NCT03922256_1.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03865342_2",
+      "nct_id": "NCT03865342",
+      "stratum": "age_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  18 years of age and older",
+      "quote": "-  18 years of age and older",
+      "formula": [
+        "gte",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          18.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  18 years of age and older",
+          "f0",
+          "gte",
+          18.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(val(\"18\"), temporal_unit(YEAR), op(GTEQ))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch4/NCT03865342_2.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch4/NCT03865342_2.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03927781_2",
+      "nct_id": "NCT03927781",
+      "stratum": "age_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\nAge > = 18 years",
+      "quote": "Age > = 18 years",
+      "formula": [
+        "gte",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          18.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "Age > = 18 years",
+          "f0",
+          "gte",
+          18.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(GTEQ), val(\"18\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch3/NCT03927781_2.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch3/NCT03927781_2.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03864120_1",
+      "nct_id": "NCT03864120",
+      "stratum": "age_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n1.  Age > 18 years",
+      "quote": "1.  Age > 18 years",
+      "formula": [
+        "gt",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          18.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "1.  Age > 18 years",
+          "f0",
+          "gt",
+          18.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(GT), val(\"18\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch5/NCT03864120_1.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch5/NCT03864120_1.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03868397_1",
+      "nct_id": "NCT03868397",
+      "stratum": "age_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  older than 18 years",
+      "quote": "-  older than 18 years",
+      "formula": [
+        "gt",
+        "f0",
+        18.0
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          18.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          17.82,
+          18.0,
+          18.18
+        ]
+      },
+      "units": {
+        "f0": "years"
+      },
+      "fact_labels": {
+        "f0": "age"
+      },
+      "atoms": [
+        [
+          "-  older than 18 years",
+          "f0",
+          "gt",
+          18.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 17.82
+        },
+        {
+          "f0": 18.0
+        },
+        {
+          "f0": 18.18
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "age()\n    .num_filter(\n        eq(op(GT), val(\"18\"), temporal_unit(YEAR))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch2/NCT03868397_1.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch2/NCT03868397_1.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03866837_8",
+      "nct_id": "NCT03866837",
+      "stratum": "other_scalar",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n-  hemoglobin < 70 g / L",
+      "quote": "-  hemoglobin < 70 g / L",
+      "formula": [
+        "lt",
+        "f0",
+        70.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          70.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          69.3,
+          70.0,
+          70.7
+        ]
+      },
+      "units": {
+        "f0": "g/L"
+      },
+      "fact_labels": {
+        "f0": "hemoglobin"
+      },
+      "atoms": [
+        [
+          "-  hemoglobin < 70 g / L",
+          "f0",
+          "lt",
+          70.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 69.3
+        },
+        {
+          "f0": 70.0
+        },
+        {
+          "f0": 70.7
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "lab(\"hemoglobin\")\n    .num_filter(\n        eq(op(LT), val(\"70\"), unit(\"g\"), unit(\"L\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch4/NCT03866837_8.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch4/NCT03866837_8.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03864484_4",
+      "nct_id": "NCT03864484",
+      "stratum": "other_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Mini Mental State Examination score ≥ 24",
+      "quote": "-  Mini Mental State Examination score ≥ 24",
+      "formula": [
+        "gte",
+        "f0",
+        24.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          24.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          23.76,
+          24.0,
+          24.24
+        ]
+      },
+      "units": {
+        "f0": "score"
+      },
+      "fact_labels": {
+        "f0": "Mini Mental State Examination score"
+      },
+      "atoms": [
+        [
+          "-  Mini Mental State Examination score ≥ 24",
+          "f0",
+          "gte",
+          24.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 23.76
+        },
+        {
+          "f0": 24.0
+        },
+        {
+          "f0": 24.24
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "clin_score(\"Mini Mental State Examination score\")\n    .num_filter(\n        eq(op(GTEQ), val(\"24\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch4/NCT03864484_4.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch4/NCT03864484_4.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03864133_8",
+      "nct_id": "NCT03864133",
+      "stratum": "other_scalar",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n-  Macular thickness above 300 microns at baseline",
+      "quote": "-  Macular thickness above 300 microns at baseline",
+      "formula": [
+        "gt",
+        "f0",
+        300.0
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          300.0
+        ]
+      ],
+      "reference_notes": [
+        "Raw baseline timepoint is not represented in the numeric annotation."
+      ],
+      "domains": {
+        "f0": [
+          297.0,
+          300.0,
+          303.0
+        ]
+      },
+      "units": {
+        "f0": "microns"
+      },
+      "fact_labels": {
+        "f0": "Macular thickness"
+      },
+      "atoms": [
+        [
+          "-  Macular thickness above 300 microns at baseline",
+          "f0",
+          "gt",
+          300.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 297.0
+        },
+        {
+          "f0": 300.0
+        },
+        {
+          "f0": 303.0
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "measurement(\"Macular thickness\")\n    .num_filter(\n        eq(op(GT), val(\"300\"), unit(\"microns\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch4/NCT03864133_8.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch4/NCT03864133_8.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03924843_4",
+      "nct_id": "NCT03924843",
+      "stratum": "other_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  FEV 1 > 0.8 L and ability to produce sputum after hypertonic saline production",
+      "quote": "-  FEV 1 > 0.8 L and ability to produce sputum after hypertonic saline production",
+      "formula": [
+        "gt",
+        "f0",
+        0.8
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          0.8
+        ]
+      ],
+      "reference_notes": [
+        "Raw text also requires sputum production ability; the external numeric reference does not represent that conjunct."
+      ],
+      "domains": {
+        "f0": [
+          0.79,
+          0.8,
+          0.81
+        ]
+      },
+      "units": {
+        "f0": "L"
+      },
+      "fact_labels": {
+        "f0": "FEV 1"
+      },
+      "atoms": [
+        [
+          "-  FEV 1 > 0.8 L and ability to produce sputum after hypertonic saline production",
+          "f0",
+          "gt",
+          0.8
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 0.79
+        },
+        {
+          "f0": 0.8
+        },
+        {
+          "f0": 0.81
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "lab(\"FEV 1\")\n    .num_filter(\n        eq(op(GT), val(\"0.8\"), unit(\"L\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch7/NCT03924843_4.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch7/NCT03924843_4.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03869203_4",
+      "nct_id": "NCT03869203",
+      "stratum": "other_scalar",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n-  1.  ASA class > 3",
+      "quote": "-  1.  ASA class > 3",
+      "formula": [
+        "gt",
+        "f0",
+        3.0
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          3.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          2.97,
+          3.0,
+          3.03
+        ]
+      },
+      "units": {
+        "f0": "class"
+      },
+      "fact_labels": {
+        "f0": "ASA"
+      },
+      "atoms": [
+        [
+          "-  1.  ASA class > 3",
+          "f0",
+          "gt",
+          3.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 2.97
+        },
+        {
+          "f0": 3.0
+        },
+        {
+          "f0": 3.03
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "clin_score(\"ASA\")\n    .num_filter(\n        eq(unit(\"class\"), op(GT), val(\"3\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch4/NCT03869203_4.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch4/NCT03869203_4.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03928015_4",
+      "nct_id": "NCT03928015",
+      "stratum": "other_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n4.  Baseline pain assessed at screening of ≥ 5 on the pain numeric rating score ( NRS )",
+      "quote": "4.  Baseline pain assessed at screening of ≥ 5 on the pain numeric rating score ( NRS )",
+      "formula": [
+        "gte",
+        "f0",
+        5.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          5.0
+        ]
+      ],
+      "reference_notes": [
+        "Raw baseline/screening timepoint is not represented in the numeric annotation."
+      ],
+      "domains": {
+        "f0": [
+          4.95,
+          5.0,
+          5.05
+        ]
+      },
+      "units": {
+        "f0": "score"
+      },
+      "fact_labels": {
+        "f0": "pain numeric rating score"
+      },
+      "atoms": [
+        [
+          "4.  Baseline pain assessed at screening of ≥ 5 on the pain numeric rating score ( NRS )",
+          "f0",
+          "gte",
+          5.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 4.95
+        },
+        {
+          "f0": 5.0
+        },
+        {
+          "f0": 5.05
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "obs(\"pain\")\n    .equiv(\n        clin_score(\"pain numeric rating score\")\n            .num_filter(\n                eq(op(GTEQ), val(\"5\"))\n            )\n            .equiv(\n                obs(\"NRS\")\n            )\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch5/NCT03928015_4.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch5/NCT03928015_4.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03924778_4",
+      "nct_id": "NCT03924778",
+      "stratum": "other_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  BMI > = 30 kg / m^ 2",
+      "quote": "-  BMI > = 30 kg / m^ 2",
+      "formula": [
+        "gte",
+        "f0",
+        30.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          30.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          29.7,
+          30.0,
+          30.3
+        ]
+      },
+      "units": {
+        "f0": "kg/m^2"
+      },
+      "fact_labels": {
+        "f0": "BMI"
+      },
+      "atoms": [
+        [
+          "-  BMI > = 30 kg / m^ 2",
+          "f0",
+          "gte",
+          30.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 29.7
+        },
+        {
+          "f0": 30.0
+        },
+        {
+          "f0": 30.3
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "vital(\"BMI\")\n    .num_filter(\n        eq(op(GTEQ), val(\"30\"), unit(\"kg\"), unit(\"m^ 2\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch4/NCT03924778_4.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch4/NCT03924778_4.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03924375_5",
+      "nct_id": "NCT03924375",
+      "stratum": "other_scalar",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n-  Anemia ( serum hemoglobin level < 10 g / dL )",
+      "quote": "-  Anemia ( serum hemoglobin level < 10 g / dL )",
+      "formula": [
+        "lt",
+        "f0",
+        10.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          10.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          9.9,
+          10.0,
+          10.1
+        ]
+      },
+      "units": {
+        "f0": "g/dL"
+      },
+      "fact_labels": {
+        "f0": "serum hemoglobin level"
+      },
+      "atoms": [
+        [
+          "-  Anemia ( serum hemoglobin level < 10 g / dL )",
+          "f0",
+          "lt",
+          10.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 9.9
+        },
+        {
+          "f0": 10.0
+        },
+        {
+          "f0": 10.1
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "cond(\"Anemia\")\n    .equiv(\n        lab(\"serum hemoglobin level\")\n            .num_filter(\n                eq(op(LT), val(\"10\"), unit(\"g\"), unit(\"dL\"))\n            )\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch6/NCT03924375_5.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch6/NCT03924375_5.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03863509_20",
+      "nct_id": "NCT03863509",
+      "stratum": "other_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  > / = 5 ppm CO",
+      "quote": "-  > / = 5 ppm CO",
+      "formula": [
+        "gte",
+        "f0",
+        5.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          5.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          4.95,
+          5.0,
+          5.05
+        ]
+      },
+      "units": {
+        "f0": "ppm"
+      },
+      "fact_labels": {
+        "f0": "CO"
+      },
+      "atoms": [
+        [
+          "-  > / = 5 ppm CO",
+          "f0",
+          "gte",
+          5.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 4.95
+        },
+        {
+          "f0": 5.0
+        },
+        {
+          "f0": 5.05
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "obs(\"CO\")\n    .num_filter(\n        eq(op(GTEQ), val(\"5\"), unit(\"ppm\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_1/batch1/NCT03863509_20.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_1/batch1/NCT03863509_20.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03925610_1",
+      "nct_id": "NCT03925610",
+      "stratum": "other_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Body mass index ( BMI ) equal or greater than 35 kg / m 2 .",
+      "quote": "-  Body mass index ( BMI ) equal or greater than 35 kg / m 2 .",
+      "formula": [
+        "gte",
+        "f0",
+        35.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          35.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          34.65,
+          35.0,
+          35.35
+        ]
+      },
+      "units": {
+        "f0": "kg/m2"
+      },
+      "fact_labels": {
+        "f0": "Body mass index"
+      },
+      "atoms": [
+        [
+          "-  Body mass index ( BMI ) equal or greater than 35 kg / m 2 .",
+          "f0",
+          "gte",
+          35.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 34.65
+        },
+        {
+          "f0": 35.0
+        },
+        {
+          "f0": 35.35
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "vital(\"Body mass index\")\n    .equiv(\n        vital(\"BMI\")\n    )\n    .num_filter(\n        eq(op(GTEQ), val(\"35\"), unit(\"kg\"), unit(\"m 2\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_3/batch1/NCT03925610_1.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_3/batch1/NCT03925610_1.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03929575_8",
+      "nct_id": "NCT03929575",
+      "stratum": "other_scalar",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n-  BMI greater than or equal to 35 kg / m^ 2",
+      "quote": "-  BMI greater than or equal to 35 kg / m^ 2",
+      "formula": [
+        "gte",
+        "f0",
+        35.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          35.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          34.65,
+          35.0,
+          35.35
+        ]
+      },
+      "units": {
+        "f0": "kg/m^2"
+      },
+      "fact_labels": {
+        "f0": "BMI"
+      },
+      "atoms": [
+        [
+          "-  BMI greater than or equal to 35 kg / m^ 2",
+          "f0",
+          "gte",
+          35.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 34.65
+        },
+        {
+          "f0": 35.0
+        },
+        {
+          "f0": 35.35
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "vital(\"BMI\")\n    .num_filter(\n        eq(op(GTEQ), val(\"35\"), unit(\"kg\"), unit(\"m^ 2\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch3/NCT03929575_8.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch3/NCT03929575_8.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03867565_8",
+      "nct_id": "NCT03867565",
+      "stratum": "other_scalar",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n-  TBSA < 2 % .",
+      "quote": "-  TBSA < 2 % .",
+      "formula": [
+        "lt",
+        "f0",
+        2.0
+      ],
+      "reference_alternatives": [
+        [
+          "lt",
+          "f0",
+          2.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          1.98,
+          2.0,
+          2.02
+        ]
+      },
+      "units": {
+        "f0": "%"
+      },
+      "fact_labels": {
+        "f0": "TBSA"
+      },
+      "atoms": [
+        [
+          "-  TBSA < 2 % .",
+          "f0",
+          "lt",
+          2.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 1.98
+        },
+        {
+          "f0": 2.0
+        },
+        {
+          "f0": 2.02
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "obs(\"TBSA\")\n    .num_filter(\n        eq(op(LT), val(\"2\"), unit(\"%\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch5/NCT03867565_8.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch5/NCT03867565_8.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03861637_6",
+      "nct_id": "NCT03861637",
+      "stratum": "other_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Transferrin saturation ( TSAT ) ≥ 20 % ( during the screening phase ) ,",
+      "quote": "-  Transferrin saturation ( TSAT ) ≥ 20 % ( during the screening phase ) ,",
+      "formula": [
+        "gte",
+        "f0",
+        20.0
+      ],
+      "reference_alternatives": [
+        [
+          "gte",
+          "f0",
+          20.0
+        ]
+      ],
+      "reference_notes": [
+        "Raw screening phase is not represented in the numeric annotation."
+      ],
+      "domains": {
+        "f0": [
+          19.8,
+          20.0,
+          20.2
+        ]
+      },
+      "units": {
+        "f0": "%"
+      },
+      "fact_labels": {
+        "f0": "Transferrin saturation"
+      },
+      "atoms": [
+        [
+          "-  Transferrin saturation ( TSAT ) ≥ 20 % ( during the screening phase ) ,",
+          "f0",
+          "gte",
+          20.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 19.8
+        },
+        {
+          "f0": 20.0
+        },
+        {
+          "f0": 20.2
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "lab(\"Transferrin saturation\")\n    .equiv(\n        lab(\"TSAT\")\n    )\n    .num_filter(\n        eq(op(GTEQ), val(\"20\"), unit(\"%\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch7/NCT03861637_6.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch7/NCT03861637_6.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03860584_6",
+      "nct_id": "NCT03860584",
+      "stratum": "other_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  Serum Endotoxin > 25 EU / ml",
+      "quote": "-  Serum Endotoxin > 25 EU / ml",
+      "formula": [
+        "gt",
+        "f0",
+        25.0
+      ],
+      "reference_alternatives": [
+        [
+          "gt",
+          "f0",
+          25.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          24.75,
+          25.0,
+          25.25
+        ]
+      },
+      "units": {
+        "f0": "EU/ml"
+      },
+      "fact_labels": {
+        "f0": "Serum Endotoxin"
+      },
+      "atoms": [
+        [
+          "-  Serum Endotoxin > 25 EU / ml",
+          "f0",
+          "gt",
+          25.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 24.75
+        },
+        {
+          "f0": 25.0
+        },
+        {
+          "f0": 25.25
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "lab(\"Serum Endotoxin\")\n    .num_filter(\n        eq(op(GT), val(\"25\"), unit(\"EU\"), unit(\"ml\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch3/NCT03860584_6.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch3/NCT03860584_6.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    },
+    {
+      "case_id": "NCT03921931_9",
+      "nct_id": "NCT03921931",
+      "stratum": "other_scalar",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n-  MD < = 10 dB",
+      "quote": "-  MD < = 10 dB",
+      "formula": [
+        "lte",
+        "f0",
+        10.0
+      ],
+      "reference_alternatives": [
+        [
+          "lte",
+          "f0",
+          10.0
+        ]
+      ],
+      "reference_notes": [],
+      "domains": {
+        "f0": [
+          9.9,
+          10.0,
+          10.1
+        ]
+      },
+      "units": {
+        "f0": "dB"
+      },
+      "fact_labels": {
+        "f0": "MD"
+      },
+      "atoms": [
+        [
+          "-  MD < = 10 dB",
+          "f0",
+          "lte",
+          10.0
+        ]
+      ],
+      "world_values": [
+        {
+          "f0": null
+        },
+        {
+          "f0": 9.9
+        },
+        {
+          "f0": 10.0
+        },
+        {
+          "f0": 10.1
+        }
+      ],
+      "exhaustive_world_count": 4,
+      "ambiguous_range_count": 0,
+      "reference_numeric_atom_count": 1,
+      "reference_annotation": "obs(\"MD\")\n    .num_filter(\n        eq(op(LTEQ), val(\"10\"), unit(\"dB\"))\n    )",
+      "source_location": "https://github.com/uw-bionlp/leaf-corpora/blob/461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e/leaf_logical_forms/annotator_2/batch2/NCT03921931_9.js",
+      "annotation_paths": [
+        "leaf_logical_forms/annotator_2/batch2/NCT03921931_9.js"
+      ],
+      "full_protocol_confirmation_allowed": false
+    }
+  ]
+}

@@ -326,6 +326,42 @@ def test_patient_workflow_connects_agents_burden_rules_and_two_output_views() ->
     assert sum(item.actor == "coordinator_rules" for item in trace.events) == 5
 
 
+def test_source_question_survives_to_manual_review_without_patient_acquisition() -> None:
+    from clarifytrial.disclaimer import DEFAULT_MEDICAL_DISCLAIMER
+
+    case = _case()
+    trial = case.trials[0].model_copy(
+        update={
+            "protocol_logic_supported": False,
+            "protocol_logic_issues": ["ambiguous source relation"],
+        }
+    )
+    case = case.model_copy(
+        update={"trials": [trial], "evidence_requests": [], "acquisition_options": []}
+    )
+    model = _model()
+    result = PatientScreeningRunner(
+        _agents(model),
+        EpisodeSettings(max_external_actions=3, max_selective_reviews=0, max_cycles=8),
+    ).run(case, _tools(case))
+
+    assert result.stop_reason is PatientScreeningStopReason.HUMAN_REVIEW
+    decision = result.final_decisions[0]
+    assert decision.confirmation_status.value == "not_confirmed"
+    assert decision.candidate_status.value == "retain"
+    assert decision.criterion_assessments[0].evidence_ids == ["known-a"]
+    assert decision.next_action.action.value == "NONE"
+    assert result.action_history == []
+    assert model.call_count == {}
+    views = result.guidance.recommendation_views
+    assert views.current_evidence.trials == []
+    missing = views.broader_review.trials[0].missing_information
+    assert [item.fact_id for item in missing] == ["protocol:TRIAL-A:source-meaning"]
+    assert "AND/OR" in missing[0].description
+    assert missing[0].confirmation_methods == ["시험 원문 또는 시험 담당자 확인"]
+    assert result.guidance.medical_disclaimer == DEFAULT_MEDICAL_DISCLAIMER
+
+
 def test_unavailable_answer_does_not_block_other_missing_facts() -> None:
     case = _case()
     options = [

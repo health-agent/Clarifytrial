@@ -315,3 +315,13 @@ TrialGPT 저장소가 공개한 GPT-4 검색어와 논문의 공개 순위 결�
   마쳤다고 주장하지 않으며, 외부 주석을 원문의 의학적 진실로 자동 승격하지 않는다.
 
 재현: `python scripts/prepare_leaf_reference_corpus.py --download --source runs/leaf-source/upstream --output runs/leaf-prepared`.
+
+고정한 후속 원문 48개와 외부 주석·주석 기반 수치 참고식은
+`docs/internal/results/leaf-protocol-v1/cases.json`에 있다. 배포 허가 문구를 같은 폴더의
+`LICENSE.upstream`에 함께 보존했다. 주석의 경계 관례와 원문/참고식의 차이를 별도로
+기록하며 의학적 정답으로 재명명하지 않는다. 추가 API 수집이나 환자 자료는 없다.
+
+수정 코드 고정 후 겹치지 않는 새 시험 24문구도 같은 원본에서 선택했다. 고정 입력·
+실제 모델 제안은 `docs/internal/results/leaf-protocol-holdout-v1/`에 있고 MIT 허가를
+함께 보존했다. 첫 48문구의 결과 후 발견한 years/MONTH 주석 차이는 원래 입력·
+정답을 교정하지 않은 별도 민감도다. 새 원본 수집이나 실제 환자 주석이 아니다.

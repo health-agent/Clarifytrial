@@ -83,15 +83,20 @@ def truth(node, values):
 def expected(case, values):
     if case["formula"] is None:
         return None
-    missing = [c for c, value in values.items() if value is None]
-    possible = set()
-    for completion in product(*(case["domains"][c] for c in missing)):
-        full = {**values, **dict(zip(missing, completion))}
-        member = truth(case["formula"], full)
-        possible.add(member if case["kind"] == "inclusion" else not member)
-        if len(possible) == 2:
-            break
-    return "not_confirmed" if len(possible) == 2 else ("confirmed" if possible.pop() else "ineligible")
+    references=case.get("reference_alternatives",[case["formula"]])
+    outcomes=set()
+    for reference in references:
+        missing = [c for c, value in values.items() if value is None]
+        possible = set()
+        for completion in product(*(case["domains"][c] for c in missing)):
+            full = {**values, **dict(zip(missing, completion))}
+            member = truth(reference, full)
+            possible.add(member if case["kind"] == "inclusion" else not member)
+            if len(possible) == 2:
+                break
+        outcomes.add("not_confirmed" if len(possible) == 2 else ("confirmed" if possible.pop() else "ineligible"))
+    # A reference convention ambiguity is not a patient-information unknown.
+    return outcomes.pop() if len(outcomes)==1 else None
 
 
 def fixture(case):
@@ -190,7 +195,8 @@ def main():
         rows = previous["cases"]
         current = {case["case_id"]: case for case in cases}
         if any(row["case_id"] not in current or row["source_text"] != current[row["case_id"]]["text"]
-               or row["reference_formula"] != current[row["case_id"]]["formula"] for row in rows):
+               or row["reference_formula"] != current[row["case_id"]]["formula"]
+               or row.get("reference_alternatives") != current[row["case_id"]].get("reference_alternatives") for row in rows):
             raise ValueError("output belongs to a different source cohort")
     done = {r["case_id"] for r in rows}
     try:
@@ -199,6 +205,7 @@ def main():
                 continue
             trace = TraceRecorder(case["case_id"])
             row = {"case_id": case["case_id"], "source_text": case["text"], "reference_formula": case["formula"],
+                   "reference_alternatives":case.get("reference_alternatives"),
                    "domains": case["domains"], "worlds": [], "error": None}
             try:
                 selected_model = model
@@ -250,7 +257,7 @@ def main():
                 "model": args.model if args.mode == "model" else None, "effort": args.effort if args.mode == "model" else None,
                 "strip_logic_draft": args.strip_logic_draft,
                 "cases_file": str(args.cases) if args.cases else None,
-                "scope": "Exploratory source-clause component probe against author-selected numeric interpretation; synthetic values, no clinical inference or prose judgment model.",
+                "scope": "Exploratory source-clause component probe against supplied numeric reference; synthetic values, no clinical inference or prose judgment model.",
                 "summary": summarize(rows), "cases": rows}, indent=2), encoding="utf-8")
             print(case["case_id"], row["error"] or (str(len(row["worlds"])) + " worlds"), flush=True)
     finally:

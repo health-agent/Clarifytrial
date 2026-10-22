@@ -205,3 +205,84 @@ def test_a_relation_crossing_chunks_is_not_assumed_to_be_all():
         TrialProtocolStructurerAgent(ScriptedStructuredModel({"trial_protocol_structurer":respond})),
         trace=TraceRecorder("cross-chunk"),chunk_char_limit=35)
     assert not prepared.trial.protocol_logic_supported
+
+
+@pytest.mark.parametrize("kind",["inclusion","exclusion"])
+@pytest.mark.parametrize("separator",[" ; "," , "," "])
+def test_bare_punctuation_or_adjacency_does_not_prove_and_or_or(kind,separator):
+    quote=separator.join(a[0] for a in ATOMS[:2])
+    for operator in ("all","any"):
+        group={"source_quote":quote,"predicate_logic":{"operator":operator,"children":[
+            {"operator":"criterion","criterion_id":"p0"},{"operator":"criterion","criterion_id":"p1"}]}}
+        prepared,_=prepare(kind.title()+" Criteria:\n"+quote,drafts(kind),[group])
+        assert not prepared.trial.protocol_logic_supported
+        assert decide(prepared,{"egfr":50,"hba1c":8}).confirmation_status.value=="not_confirmed"
+
+
+@pytest.mark.parametrize("kind",["inclusion","exclusion"])
+def test_distinct_bullet_requirements_keep_section_semantics_with_a_model_group(kind):
+    quote="\n".join("* "+a[0] for a in ATOMS[:2])
+    group={"source_quote":quote,"predicate_logic":{"operator":"all","children":[
+        {"operator":"criterion","criterion_id":"p0"},{"operator":"criterion","criterion_id":"p1"}]}}
+    prepared,_=prepare(kind.title()+" Criteria:\n"+quote,drafts(kind),[group])
+    assert prepared.trial.protocol_logic_supported,prepared.trial.protocol_logic_issues
+    for a,b in product((False,True),repeat=2):
+        eligible=a and b if kind=="inclusion" else not (a or b)
+        assert decide(prepared,{"egfr":50 if a else 20,"hba1c":6 if b else 8}).confirmation_status.value==("confirmed" if eligible else "ineligible")
+
+
+@pytest.mark.parametrize("quote,units",[
+    ("Age from 20 to 40 years old",("years","years")),
+    ("Patients' age from 20 to 40 years old",("years","years")),
+    ("Age 20 yr - 40 yrs",("yr","yrs")),
+])
+def test_age_spelling_and_year_notation_do_not_force_range_abstention(quote,units):
+    items=drafts("inclusion",[(quote,"age","gte",20,units[0]),(quote,"age","lte",40,units[1])])
+    prepared,_=prepare("Inclusion Criteria:\n"+quote,items)
+    assert prepared.trial.protocol_logic_supported,prepared.trial.protocol_logic_issues
+    for value,status in ((19,"ineligible"),(20,"confirmed"),(30,"confirmed"),(40,"confirmed"),(41,"ineligible")):
+        assert decide(prepared,{"age":value}).confirmation_status.value==status
+
+
+@pytest.mark.parametrize("tail",[" at screening"," at baseline"," during inclusion"])
+def test_range_padding_keeps_unrepresented_timepoint_qualifiers(tail):
+    quote="eGFR >=30 and <60 mL/min/1.73m2"+tail
+    items=drafts("inclusion",[(quote,"egfr","gte",30,"mL/min/1.73m2"),(quote,"egfr","lt",60,"mL/min/1.73m2")])
+    prepared,_=prepare("Inclusion Criteria:\n"+quote,items)
+    assert not prepared.trial.protocol_logic_supported
+
+
+@pytest.mark.parametrize("operator,phrase",[("gte","equal to or greater than"),("gte","greater than or equal to"),
+    ("lte","equal or less than"),("lte","less than or equal to")])
+def test_comparative_or_is_one_operator_and_not_a_clinical_alternative(operator,phrase):
+    quote="Age "+phrase+" 18 years"
+    prepared,_=prepare("Inclusion Criteria:\n"+quote,drafts("inclusion",[(quote,"age",operator,18,"years")]))
+    assert prepared.trial.protocol_logic_supported,prepared.trial.protocol_logic_issues
+    assert decide(prepared,{"age":18}).confirmation_status.value=="confirmed"
+
+
+def test_numeric_atom_inside_a_group_cannot_hide_an_unrepresented_clinical_and():
+    bad=ATOMS[0][0]+" and no active infection"
+    quote=bad+" or "+ATOMS[1][0]
+    items=drafts("inclusion",[(bad,"egfr","gte",30,"mL/min/1.73m2"),ATOMS[1]])
+    group={"source_quote":quote,"predicate_logic":{"operator":"any","children":[
+        {"operator":"criterion","criterion_id":"p0"},{"operator":"criterion","criterion_id":"p1"}]}}
+    prepared,_=prepare("Inclusion Criteria:\n"+quote,items,[group])
+    assert not prepared.trial.protocol_logic_supported
+
+
+def test_source_ambiguity_keeps_its_own_question_without_repeating_patient_acquisition():
+    from clarifytrial.contracts import TrialDecision
+    from clarifytrial.workflow.patient_screening_rules import pending_requests
+    quote=" ; ".join(a[0] for a in ATOMS[:2])
+    prepared,_=prepare("Inclusion Criteria:\n"+quote,drafts("inclusion"))
+    decision=decide(prepared,{"egfr":50,"hba1c":6})
+    assert decision.confirmation_status.value=="not_confirmed"
+    assert len(decision.pending_information)==1
+    question=decision.pending_information[0]
+    assert question.fact_id.startswith("protocol:") and "AND/OR" in question.description
+    assert set(question.related_criterion_ids)=={c.criterion_id for c in prepared.trial.criteria}
+    assert all(a.evidence_ids for a in decision.criterion_assessments)
+    assert decision.next_action.action.value=="NONE"
+    assert pending_requests({decision.trial_id:decision},{},set())==[]
+    assert TrialDecision.model_validate_json(decision.model_dump_json())==decision
