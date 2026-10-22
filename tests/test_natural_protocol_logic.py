@@ -84,6 +84,49 @@ def test_wrong_model_relation_is_corrected_from_the_source_not_trusted():
     assert event.output["source_logic_groups"][0]["model_relation_corrected"]
 
 
+@pytest.mark.parametrize("kind,connector",product(("inclusion","exclusion"),("and","or")))
+def test_overlapping_full_quotes_keep_explicit_numeric_atoms_and_their_relation(kind,connector):
+    quote=f" {connector} ".join(a[0] for a in ATOMS[:2])
+    items=drafts(kind)
+    for item in items:item["source_quote"]=quote
+    prepared,trace=prepare(kind.title()+" Criteria:\n"+quote,items)
+    assert prepared.trial.protocol_logic_supported,prepared.trial.protocol_logic_issues
+    event=next(e for e in trace.events if e.event=="trial_protocol_structured")
+    assert len(event.output["atomic_span_refinements"])==2
+    for left,right in product((False,True),repeat=2):
+        member=(left and right) if connector=="and" else (left or right)
+        eligible=member if kind=="inclusion" else not member
+        assert decide(prepared,{"egfr":50 if left else 20,"hba1c":6 if right else 8}).confirmation_status.value==("confirmed" if eligible else "ineligible")
+
+
+def test_numeric_anchors_do_not_erase_unrepresented_scope_after_the_unit():
+    quote=" or ".join(a[0] for a in ATOMS[:2])+" if no active infection."
+    items=drafts("inclusion")
+    for item in items:item["source_quote"]=quote
+    prepared,_=prepare("Inclusion Criteria:\n"+quote,items)
+    assert not prepared.trial.protocol_logic_supported
+    assert decide(prepared,{"egfr":50,"hba1c":6}).confirmation_status.value=="not_confirmed"
+
+
+def test_numeric_anchor_does_not_accept_the_prefix_of_an_indexed_unit():
+    from clarifytrial.contracts import TrialCriterion
+    from clarifytrial.preparation.protocol_logic import GroundedLogicAtom,_literal_numeric_span
+    text="eGFR >=30 mL/min/1.73m2"
+    criterion=TrialCriterion(criterion_id="c",trial_id="synthetic",kind="inclusion",statement=text,
+        source_location="synthetic://unit",numeric_constraint={"concept":"egfr","operator":"gte","threshold":30,"unit":"mL/min"})
+    assert _literal_numeric_span(text,GroundedLogicAtom(criterion,0,len(text))) is None
+
+
+@pytest.mark.parametrize("kind",["inclusion","exclusion"])
+def test_line_final_or_preserves_an_explicit_continuation_without_a_model_group(kind):
+    text=kind.title()+" Criteria:\n* "+ATOMS[0][0]+" or\n* "+ATOMS[1][0]
+    prepared,_=prepare(text,drafts(kind))
+    assert prepared.trial.protocol_logic_supported,prepared.trial.protocol_logic_issues
+    for left,right in product((False,True),repeat=2):
+        eligible=(left or right) if kind=="inclusion" else not (left or right)
+        assert decide(prepared,{"egfr":50 if left else 20,"hba1c":6 if right else 8}).confirmation_status.value==("confirmed" if eligible else "ineligible")
+
+
 @pytest.mark.parametrize("kind",["inclusion","exclusion"])
 def test_two_of_three_source_list_keeps_threshold_under_negation(kind):
     quote="At least two of the following must apply:\n"+"\n".join("* "+a[0] for a in ATOMS)

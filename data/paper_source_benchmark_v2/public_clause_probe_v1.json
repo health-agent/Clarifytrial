@@ -1,0 +1,4251 @@
+{
+  "selection": "one clause per reused heldout trial; most author-declared leaves, earliest source line tie break",
+  "clinical_adjudication": false,
+  "full_protocol_confirmation_allowed": false,
+  "world_cap": 129,
+  "cases": [
+    {
+      "case_id": "NCT07889648",
+      "group_id": "type_2_diabetes",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* Have a HbA1c of \u22657.5% to \u226410.5% (or 58 millimole (mmol)/mol to 91 mmol/mol) at screening",
+      "quote": "* Have a HbA1c of \u22657.5% to \u226410.5% (or 58 millimole (mmol)/mol to 91 mmol/mol) at screening",
+      "title": "A Clinical Study to Evaluate the Effects of Enicepatide Versus Tirzepatide in Participants With Type 2 Diabetes and Inadequate Blood Sugar Control on Oral Glucose-Lowering Medications",
+      "source_location": "https://clinicaltrials.gov/study/NCT07889648#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:25.187952+00:00",
+      "source_lines": [
+        4
+      ],
+      "formula": [
+        "and",
+        [
+          "gte",
+          "hba1c",
+          7.5
+        ],
+        [
+          "lte",
+          "hba1c",
+          10.5
+        ]
+      ],
+      "domains": {
+        "hba1c": [
+          7.4,
+          7.5,
+          7.6,
+          10.395,
+          10.5,
+          10.605
+        ]
+      },
+      "units": {
+        "hba1c": "%"
+      },
+      "fact_labels": {
+        "hba1c": "hba1c"
+      },
+      "atoms": [
+        [
+          "* Have a HbA1c of \u22657.5% to \u226410.5% (or 58 millimole (mmol)/mol to 91 mmol/mol) at screening",
+          "hba1c",
+          "gte",
+          7.5
+        ],
+        [
+          "* Have a HbA1c of \u22657.5% to \u226410.5% (or 58 millimole (mmol)/mol to 91 mmol/mol) at screening",
+          "hba1c",
+          "lte",
+          10.5
+        ]
+      ],
+      "reference_leaf_count": 2,
+      "exhaustive_world_count": 7,
+      "world_values": [
+        {
+          "hba1c": null
+        },
+        {
+          "hba1c": 7.4
+        },
+        {
+          "hba1c": 7.5
+        },
+        {
+          "hba1c": 7.6
+        },
+        {
+          "hba1c": 10.395
+        },
+        {
+          "hba1c": 10.5
+        },
+        {
+          "hba1c": 10.605
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07814508",
+      "group_id": "type_2_diabetes",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* HbA1c \\< 10%",
+      "quote": "* HbA1c \\< 10%",
+      "title": "Changes in Person-reported Outcomes and Behavior Using the Accu-Chek SmartGuide CGM and Predict App",
+      "source_location": "https://clinicaltrials.gov/study/NCT07814508#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:25.187952+00:00",
+      "source_lines": [
+        6
+      ],
+      "formula": [
+        "lt",
+        "hba1c",
+        10.0
+      ],
+      "domains": {
+        "hba1c": [
+          9.9,
+          10.0,
+          10.1
+        ]
+      },
+      "units": {
+        "hba1c": "%"
+      },
+      "fact_labels": {
+        "hba1c": "hba1c"
+      },
+      "atoms": [
+        [
+          "* HbA1c \\< 10%",
+          "hba1c",
+          "lt",
+          10.0
+        ]
+      ],
+      "reference_leaf_count": 1,
+      "exhaustive_world_count": 4,
+      "world_values": [
+        {
+          "hba1c": null
+        },
+        {
+          "hba1c": 9.9
+        },
+        {
+          "hba1c": 10.0
+        },
+        {
+          "hba1c": 10.1
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT06072326",
+      "group_id": "type_2_diabetes",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* Urinary albumin:creatinine ratio \u2265 50 mg/g and \\<3000 mg/g",
+      "quote": "* Urinary albumin:creatinine ratio \u2265 50 mg/g and \\<3000 mg/g",
+      "title": "dApagliflozin SC0062 and Prevention of Renal Injury; a Randomized Evaluation",
+      "source_location": "https://clinicaltrials.gov/study/NCT06072326#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:25.187952+00:00",
+      "source_lines": [
+        10
+      ],
+      "formula": [
+        "and",
+        [
+          "gte",
+          "uacr_mg_g",
+          50.0
+        ],
+        [
+          "lt",
+          "uacr_mg_g",
+          3000.0
+        ]
+      ],
+      "domains": {
+        "uacr_mg_g": [
+          49.5,
+          50.0,
+          50.5,
+          2970.0,
+          3000.0,
+          3030.0
+        ]
+      },
+      "units": {
+        "uacr_mg_g": "mg/g"
+      },
+      "fact_labels": {
+        "uacr_mg_g": "uacr"
+      },
+      "atoms": [
+        [
+          "* Urinary albumin:creatinine ratio \u2265 50 mg/g and \\<3000 mg/g",
+          "uacr_mg_g",
+          "gte",
+          50.0
+        ],
+        [
+          "* Urinary albumin:creatinine ratio \u2265 50 mg/g and \\<3000 mg/g",
+          "uacr_mg_g",
+          "lt",
+          3000.0
+        ]
+      ],
+      "reference_leaf_count": 2,
+      "exhaustive_world_count": 7,
+      "world_values": [
+        {
+          "uacr_mg_g": null
+        },
+        {
+          "uacr_mg_g": 49.5
+        },
+        {
+          "uacr_mg_g": 50.0
+        },
+        {
+          "uacr_mg_g": 50.5
+        },
+        {
+          "uacr_mg_g": 2970.0
+        },
+        {
+          "uacr_mg_g": 3000.0
+        },
+        {
+          "uacr_mg_g": 3030.0
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07654374",
+      "group_id": "type_2_diabetes",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* Have a diagnosis of T2DM according to the WHO classification or other locally applicable standards, with HbA1c \u22656.5% (\u226553 mmol/mol) to \u226410% (86 mmol/mol) at Screening",
+      "quote": "* Have a diagnosis of T2DM according to the WHO classification or other locally applicable standards, with HbA1c \u22656.5% (\u226553 mmol/mol) to \u226410% (86 mmol/mol) at Screening",
+      "title": "A Study of Aleniglipron in Adults With Obesity or Overweight and Type 2 Diabetes Mellitus (ACCOMPLISH-2)",
+      "source_location": "https://clinicaltrials.gov/study/NCT07654374#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:25.187952+00:00",
+      "source_lines": [
+        5
+      ],
+      "formula": [
+        "and",
+        [
+          "gte",
+          "hba1c",
+          6.5
+        ],
+        [
+          "lte",
+          "hba1c",
+          10.0
+        ]
+      ],
+      "domains": {
+        "hba1c": [
+          6.4,
+          6.5,
+          6.6,
+          9.9,
+          10.0,
+          10.1
+        ]
+      },
+      "units": {
+        "hba1c": "%"
+      },
+      "fact_labels": {
+        "hba1c": "hba1c"
+      },
+      "atoms": [
+        [
+          "* Have a diagnosis of T2DM according to the WHO classification or other locally applicable standards, with HbA1c \u22656.5% (\u226553 mmol/mol) to \u226410% (86 mmol/mol) at Screening",
+          "hba1c",
+          "gte",
+          6.5
+        ],
+        [
+          "* Have a diagnosis of T2DM according to the WHO classification or other locally applicable standards, with HbA1c \u22656.5% (\u226553 mmol/mol) to \u226410% (86 mmol/mol) at Screening",
+          "hba1c",
+          "lte",
+          10.0
+        ]
+      ],
+      "reference_leaf_count": 2,
+      "exhaustive_world_count": 7,
+      "world_values": [
+        {
+          "hba1c": null
+        },
+        {
+          "hba1c": 6.4
+        },
+        {
+          "hba1c": 6.5
+        },
+        {
+          "hba1c": 6.6
+        },
+        {
+          "hba1c": 9.9
+        },
+        {
+          "hba1c": 10.0
+        },
+        {
+          "hba1c": 10.1
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07884058",
+      "group_id": "obesity",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* Males and females with BMI between 25 and 34 kg/m\u00b2",
+      "quote": "* Males and females with BMI between 25 and 34 kg/m\u00b2",
+      "title": "IGOB131 As A GLP-1 Modulator For Metabolic Disorders In Adults With Obesity",
+      "source_location": "https://clinicaltrials.gov/study/NCT07884058#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:26.699837+00:00",
+      "source_lines": [
+        3
+      ],
+      "formula": [
+        "and",
+        [
+          "gte",
+          "body_mass_index_kg_m2",
+          25.0
+        ],
+        [
+          "lte",
+          "body_mass_index_kg_m2",
+          34.0
+        ]
+      ],
+      "domains": {
+        "body_mass_index_kg_m2": [
+          24.75,
+          25.0,
+          25.25,
+          33.66,
+          34.0,
+          34.34
+        ]
+      },
+      "units": {
+        "body_mass_index_kg_m2": "kg/m2"
+      },
+      "fact_labels": {
+        "body_mass_index_kg_m2": "body_mass_index"
+      },
+      "atoms": [
+        [
+          "* Males and females with BMI between 25 and 34 kg/m\u00b2",
+          "body_mass_index_kg_m2",
+          "gte",
+          25.0
+        ],
+        [
+          "* Males and females with BMI between 25 and 34 kg/m\u00b2",
+          "body_mass_index_kg_m2",
+          "lte",
+          34.0
+        ]
+      ],
+      "reference_leaf_count": 2,
+      "exhaustive_world_count": 7,
+      "world_values": [
+        {
+          "body_mass_index_kg_m2": null
+        },
+        {
+          "body_mass_index_kg_m2": 24.75
+        },
+        {
+          "body_mass_index_kg_m2": 25.0
+        },
+        {
+          "body_mass_index_kg_m2": 25.25
+        },
+        {
+          "body_mass_index_kg_m2": 33.66
+        },
+        {
+          "body_mass_index_kg_m2": 34.0
+        },
+        {
+          "body_mass_index_kg_m2": 34.34
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07058155",
+      "group_id": "obesity",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n3. Has a BMI \u226535 and \u226485 kg/m2 at the time of first study visit",
+      "quote": "3. Has a BMI \u226535 and \u226485 kg/m2 at the time of first study visit",
+      "title": "Optimizing Portal Hypertension With TIPS and Interval Metabolic Surgery for Advanced Liver Disease",
+      "source_location": "https://clinicaltrials.gov/study/NCT07058155#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:26.699837+00:00",
+      "source_lines": [
+        5
+      ],
+      "formula": [
+        "and",
+        [
+          "gte",
+          "body_mass_index_kg_m2",
+          35.0
+        ],
+        [
+          "lte",
+          "body_mass_index_kg_m2",
+          85.0
+        ]
+      ],
+      "domains": {
+        "body_mass_index_kg_m2": [
+          34.65,
+          35.0,
+          35.35,
+          84.15,
+          85.0,
+          85.85
+        ]
+      },
+      "units": {
+        "body_mass_index_kg_m2": "kg/m2"
+      },
+      "fact_labels": {
+        "body_mass_index_kg_m2": "body_mass_index"
+      },
+      "atoms": [
+        [
+          "3. Has a BMI \u226535 and \u226485 kg/m2 at the time of first study visit",
+          "body_mass_index_kg_m2",
+          "gte",
+          35.0
+        ],
+        [
+          "3. Has a BMI \u226535 and \u226485 kg/m2 at the time of first study visit",
+          "body_mass_index_kg_m2",
+          "lte",
+          85.0
+        ]
+      ],
+      "reference_leaf_count": 2,
+      "exhaustive_world_count": 7,
+      "world_values": [
+        {
+          "body_mass_index_kg_m2": null
+        },
+        {
+          "body_mass_index_kg_m2": 34.65
+        },
+        {
+          "body_mass_index_kg_m2": 35.0
+        },
+        {
+          "body_mass_index_kg_m2": 35.35
+        },
+        {
+          "body_mass_index_kg_m2": 84.15
+        },
+        {
+          "body_mass_index_kg_m2": 85.0
+        },
+        {
+          "body_mass_index_kg_m2": 85.85
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07348601",
+      "group_id": "obesity",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n16. Uncontrolled Type 2 diabetes as defined by HbA1c \u2265 9% at Screening.",
+      "quote": "16. Uncontrolled Type 2 diabetes as defined by HbA1c \u2265 9% at Screening.",
+      "title": "A Study of CSTI-500 in Patients With Prader-Willi Syndrome",
+      "source_location": "https://clinicaltrials.gov/study/NCT07348601#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:26.699837+00:00",
+      "source_lines": [
+        51
+      ],
+      "formula": [
+        "not",
+        [
+          "not",
+          [
+            "gte",
+            "hba1c",
+            9.0
+          ]
+        ]
+      ],
+      "domains": {
+        "hba1c": [
+          8.9,
+          9.0,
+          9.1
+        ]
+      },
+      "units": {
+        "hba1c": "%"
+      },
+      "fact_labels": {
+        "hba1c": "hba1c"
+      },
+      "atoms": [
+        [
+          "16. Uncontrolled Type 2 diabetes as defined by HbA1c \u2265 9% at Screening.",
+          "hba1c",
+          "gte",
+          9.0
+        ]
+      ],
+      "reference_leaf_count": 1,
+      "exhaustive_world_count": 4,
+      "world_values": [
+        {
+          "hba1c": null
+        },
+        {
+          "hba1c": 8.9
+        },
+        {
+          "hba1c": 9.0
+        },
+        {
+          "hba1c": 9.1
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT06722391",
+      "group_id": "obesity",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* Overweight/Obese (BMI \u226525)",
+      "quote": "* Overweight/Obese (BMI \u226525)",
+      "title": "Neuromuscular Electrical Stimulation: A Novel Treatment for Improving Metabolism",
+      "source_location": "https://clinicaltrials.gov/study/NCT06722391#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:26.699837+00:00",
+      "source_lines": [
+        3
+      ],
+      "formula": [
+        "gte",
+        "body_mass_index_kg_m2",
+        25.0
+      ],
+      "domains": {
+        "body_mass_index_kg_m2": [
+          24.75,
+          25.0,
+          25.25
+        ]
+      },
+      "units": {
+        "body_mass_index_kg_m2": "kg/m2"
+      },
+      "fact_labels": {
+        "body_mass_index_kg_m2": "body_mass_index"
+      },
+      "atoms": [
+        [
+          "* Overweight/Obese (BMI \u226525)",
+          "body_mass_index_kg_m2",
+          "gte",
+          25.0
+        ]
+      ],
+      "reference_leaf_count": 1,
+      "exhaustive_world_count": 4,
+      "world_values": [
+        {
+          "body_mass_index_kg_m2": null
+        },
+        {
+          "body_mass_index_kg_m2": 24.75
+        },
+        {
+          "body_mass_index_kg_m2": 25.0
+        },
+        {
+          "body_mass_index_kg_m2": 25.25
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT06906640",
+      "group_id": "chronic_kidney_disease",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* UACR \\>300 mg/g or\n* eGFR \\<45 ml/min/1.73 m2 or\n* UACR \u226530 mg/g with eGFR \\<60 ml/min/1.73 m2",
+      "quote": "* UACR \\>300 mg/g or\n* eGFR \\<45 ml/min/1.73 m2 or\n* UACR \u226530 mg/g with eGFR \\<60 ml/min/1.73 m2",
+      "title": "Implementation pRogram to Improve Screening and Management for CKD in Diabetes (IRIS-CKD) (Program 2)",
+      "source_location": "https://clinicaltrials.gov/study/NCT06906640#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:28.335923+00:00",
+      "source_lines": [
+        9
+      ],
+      "formula": [
+        "or",
+        [
+          "gt",
+          "uacr_mg_g",
+          300.0
+        ],
+        [
+          "lt",
+          "egfr_ml_min_1_73m2",
+          45.0
+        ],
+        [
+          "and",
+          [
+            "gte",
+            "uacr_mg_g",
+            30.0
+          ],
+          [
+            "lt",
+            "egfr_ml_min_1_73m2",
+            60.0
+          ]
+        ]
+      ],
+      "domains": {
+        "uacr_mg_g": [
+          29.7,
+          30.0,
+          30.3,
+          297.0,
+          300.0,
+          303.0
+        ],
+        "egfr_ml_min_1_73m2": [
+          44.55,
+          45.0,
+          45.45,
+          59.4,
+          60.0,
+          60.6
+        ]
+      },
+      "units": {
+        "uacr_mg_g": "mg/g",
+        "egfr_ml_min_1_73m2": "mL/min/1.73m2"
+      },
+      "fact_labels": {
+        "uacr_mg_g": "uacr",
+        "egfr_ml_min_1_73m2": "egfr"
+      },
+      "atoms": [
+        [
+          "* UACR \\>300 mg/g or\n* eGFR \\<45 ml/min/1.73 m2 or\n* UACR \u226530 mg/g with eGFR \\<60 ml/min/1.73 m2",
+          "uacr_mg_g",
+          "gt",
+          300.0
+        ],
+        [
+          "* UACR \\>300 mg/g or\n* eGFR \\<45 ml/min/1.73 m2 or\n* UACR \u226530 mg/g with eGFR \\<60 ml/min/1.73 m2",
+          "egfr_ml_min_1_73m2",
+          "lt",
+          45.0
+        ],
+        [
+          "* UACR \\>300 mg/g or\n* eGFR \\<45 ml/min/1.73 m2 or\n* UACR \u226530 mg/g with eGFR \\<60 ml/min/1.73 m2",
+          "uacr_mg_g",
+          "gte",
+          30.0
+        ],
+        [
+          "* UACR \\>300 mg/g or\n* eGFR \\<45 ml/min/1.73 m2 or\n* UACR \u226530 mg/g with eGFR \\<60 ml/min/1.73 m2",
+          "egfr_ml_min_1_73m2",
+          "lt",
+          60.0
+        ]
+      ],
+      "reference_leaf_count": 4,
+      "exhaustive_world_count": 49,
+      "world_values": [
+        {
+          "uacr_mg_g": null,
+          "egfr_ml_min_1_73m2": null
+        },
+        {
+          "uacr_mg_g": null,
+          "egfr_ml_min_1_73m2": 44.55
+        },
+        {
+          "uacr_mg_g": null,
+          "egfr_ml_min_1_73m2": 45.0
+        },
+        {
+          "uacr_mg_g": null,
+          "egfr_ml_min_1_73m2": 45.45
+        },
+        {
+          "uacr_mg_g": null,
+          "egfr_ml_min_1_73m2": 59.4
+        },
+        {
+          "uacr_mg_g": null,
+          "egfr_ml_min_1_73m2": 60.0
+        },
+        {
+          "uacr_mg_g": null,
+          "egfr_ml_min_1_73m2": 60.6
+        },
+        {
+          "uacr_mg_g": 29.7,
+          "egfr_ml_min_1_73m2": null
+        },
+        {
+          "uacr_mg_g": 29.7,
+          "egfr_ml_min_1_73m2": 44.55
+        },
+        {
+          "uacr_mg_g": 29.7,
+          "egfr_ml_min_1_73m2": 45.0
+        },
+        {
+          "uacr_mg_g": 29.7,
+          "egfr_ml_min_1_73m2": 45.45
+        },
+        {
+          "uacr_mg_g": 29.7,
+          "egfr_ml_min_1_73m2": 59.4
+        },
+        {
+          "uacr_mg_g": 29.7,
+          "egfr_ml_min_1_73m2": 60.0
+        },
+        {
+          "uacr_mg_g": 29.7,
+          "egfr_ml_min_1_73m2": 60.6
+        },
+        {
+          "uacr_mg_g": 30.0,
+          "egfr_ml_min_1_73m2": null
+        },
+        {
+          "uacr_mg_g": 30.0,
+          "egfr_ml_min_1_73m2": 44.55
+        },
+        {
+          "uacr_mg_g": 30.0,
+          "egfr_ml_min_1_73m2": 45.0
+        },
+        {
+          "uacr_mg_g": 30.0,
+          "egfr_ml_min_1_73m2": 45.45
+        },
+        {
+          "uacr_mg_g": 30.0,
+          "egfr_ml_min_1_73m2": 59.4
+        },
+        {
+          "uacr_mg_g": 30.0,
+          "egfr_ml_min_1_73m2": 60.0
+        },
+        {
+          "uacr_mg_g": 30.0,
+          "egfr_ml_min_1_73m2": 60.6
+        },
+        {
+          "uacr_mg_g": 30.3,
+          "egfr_ml_min_1_73m2": null
+        },
+        {
+          "uacr_mg_g": 30.3,
+          "egfr_ml_min_1_73m2": 44.55
+        },
+        {
+          "uacr_mg_g": 30.3,
+          "egfr_ml_min_1_73m2": 45.0
+        },
+        {
+          "uacr_mg_g": 30.3,
+          "egfr_ml_min_1_73m2": 45.45
+        },
+        {
+          "uacr_mg_g": 30.3,
+          "egfr_ml_min_1_73m2": 59.4
+        },
+        {
+          "uacr_mg_g": 30.3,
+          "egfr_ml_min_1_73m2": 60.0
+        },
+        {
+          "uacr_mg_g": 30.3,
+          "egfr_ml_min_1_73m2": 60.6
+        },
+        {
+          "uacr_mg_g": 297.0,
+          "egfr_ml_min_1_73m2": null
+        },
+        {
+          "uacr_mg_g": 297.0,
+          "egfr_ml_min_1_73m2": 44.55
+        },
+        {
+          "uacr_mg_g": 297.0,
+          "egfr_ml_min_1_73m2": 45.0
+        },
+        {
+          "uacr_mg_g": 297.0,
+          "egfr_ml_min_1_73m2": 45.45
+        },
+        {
+          "uacr_mg_g": 297.0,
+          "egfr_ml_min_1_73m2": 59.4
+        },
+        {
+          "uacr_mg_g": 297.0,
+          "egfr_ml_min_1_73m2": 60.0
+        },
+        {
+          "uacr_mg_g": 297.0,
+          "egfr_ml_min_1_73m2": 60.6
+        },
+        {
+          "uacr_mg_g": 300.0,
+          "egfr_ml_min_1_73m2": null
+        },
+        {
+          "uacr_mg_g": 300.0,
+          "egfr_ml_min_1_73m2": 44.55
+        },
+        {
+          "uacr_mg_g": 300.0,
+          "egfr_ml_min_1_73m2": 45.0
+        },
+        {
+          "uacr_mg_g": 300.0,
+          "egfr_ml_min_1_73m2": 45.45
+        },
+        {
+          "uacr_mg_g": 300.0,
+          "egfr_ml_min_1_73m2": 59.4
+        },
+        {
+          "uacr_mg_g": 300.0,
+          "egfr_ml_min_1_73m2": 60.0
+        },
+        {
+          "uacr_mg_g": 300.0,
+          "egfr_ml_min_1_73m2": 60.6
+        },
+        {
+          "uacr_mg_g": 303.0,
+          "egfr_ml_min_1_73m2": null
+        },
+        {
+          "uacr_mg_g": 303.0,
+          "egfr_ml_min_1_73m2": 44.55
+        },
+        {
+          "uacr_mg_g": 303.0,
+          "egfr_ml_min_1_73m2": 45.0
+        },
+        {
+          "uacr_mg_g": 303.0,
+          "egfr_ml_min_1_73m2": 45.45
+        },
+        {
+          "uacr_mg_g": 303.0,
+          "egfr_ml_min_1_73m2": 59.4
+        },
+        {
+          "uacr_mg_g": 303.0,
+          "egfr_ml_min_1_73m2": 60.0
+        },
+        {
+          "uacr_mg_g": 303.0,
+          "egfr_ml_min_1_73m2": 60.6
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07115953",
+      "group_id": "chronic_kidney_disease",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n1. Individual is diagnosed with hypertension and has a baseline office systolic blood pressure \u2265140 mmHg",
+      "quote": "1. Individual is diagnosed with hypertension and has a baseline office systolic blood pressure \u2265140 mmHg",
+      "title": "Streamlined Denervation With spYral For an Optimized Treatment (SPYRAL SWYFT) in Subjects With Uncontrolled Hypertension",
+      "source_location": "https://clinicaltrials.gov/study/NCT07115953#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:28.335923+00:00",
+      "source_lines": [
+        3
+      ],
+      "formula": [
+        "gte",
+        "office_systolic_bp_mmhg",
+        140.0
+      ],
+      "domains": {
+        "office_systolic_bp_mmhg": [
+          138.6,
+          140.0,
+          141.4
+        ]
+      },
+      "units": {
+        "office_systolic_bp_mmhg": "mmHg"
+      },
+      "fact_labels": {
+        "office_systolic_bp_mmhg": "office_systolic_blood_pressure"
+      },
+      "atoms": [
+        [
+          "1. Individual is diagnosed with hypertension and has a baseline office systolic blood pressure \u2265140 mmHg",
+          "office_systolic_bp_mmhg",
+          "gte",
+          140.0
+        ]
+      ],
+      "reference_leaf_count": 1,
+      "exhaustive_world_count": 4,
+      "world_values": [
+        {
+          "office_systolic_bp_mmhg": null
+        },
+        {
+          "office_systolic_bp_mmhg": 138.6
+        },
+        {
+          "office_systolic_bp_mmhg": 140.0
+        },
+        {
+          "office_systolic_bp_mmhg": 141.4
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07854561",
+      "group_id": "chronic_kidney_disease",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n3. Cardiovascular diseases, such as stroke or myocardial infarction, in the past 6 months, or poorly controlled hypertension, i.e., systolic blood pressure \\>160 mmHg or diastolic blood pressure \\>100 mmHg.",
+      "quote": "3. Cardiovascular diseases, such as stroke or myocardial infarction, in the past 6 months, or poorly controlled hypertension, i.e., systolic blood pressure \\>160 mmHg or diastolic blood pressure \\>100 mmHg.",
+      "title": "Combination Therapy of Romiplostim and Erythropoiesis-stimulating Agents",
+      "source_location": "https://clinicaltrials.gov/study/NCT07854561#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:28.335923+00:00",
+      "source_lines": [
+        21
+      ],
+      "formula": [
+        "not",
+        [
+          "and",
+          [
+            "not",
+            [
+              "gt",
+              "systolic_bp_mmhg",
+              160.0
+            ]
+          ],
+          [
+            "not",
+            [
+              "gt",
+              "diastolic_bp_mmhg",
+              100.0
+            ]
+          ]
+        ]
+      ],
+      "domains": {
+        "systolic_bp_mmhg": [
+          158.4,
+          160.0,
+          161.6
+        ],
+        "diastolic_bp_mmhg": [
+          99.0,
+          100.0,
+          101.0
+        ]
+      },
+      "units": {
+        "systolic_bp_mmhg": "mmHg",
+        "diastolic_bp_mmhg": "mmHg"
+      },
+      "fact_labels": {
+        "systolic_bp_mmhg": "systolic_blood_pressure",
+        "diastolic_bp_mmhg": "diastolic_blood_pressure"
+      },
+      "atoms": [
+        [
+          "3. Cardiovascular diseases, such as stroke or myocardial infarction, in the past 6 months, or poorly controlled hypertension, i.e., systolic blood pressure \\>160 mmHg or diastolic blood pressure \\>100 mmHg.",
+          "systolic_bp_mmhg",
+          "gt",
+          160.0
+        ],
+        [
+          "3. Cardiovascular diseases, such as stroke or myocardial infarction, in the past 6 months, or poorly controlled hypertension, i.e., systolic blood pressure \\>160 mmHg or diastolic blood pressure \\>100 mmHg.",
+          "diastolic_bp_mmhg",
+          "gt",
+          100.0
+        ]
+      ],
+      "reference_leaf_count": 2,
+      "exhaustive_world_count": 16,
+      "world_values": [
+        {
+          "systolic_bp_mmhg": null,
+          "diastolic_bp_mmhg": null
+        },
+        {
+          "systolic_bp_mmhg": null,
+          "diastolic_bp_mmhg": 99.0
+        },
+        {
+          "systolic_bp_mmhg": null,
+          "diastolic_bp_mmhg": 100.0
+        },
+        {
+          "systolic_bp_mmhg": null,
+          "diastolic_bp_mmhg": 101.0
+        },
+        {
+          "systolic_bp_mmhg": 158.4,
+          "diastolic_bp_mmhg": null
+        },
+        {
+          "systolic_bp_mmhg": 158.4,
+          "diastolic_bp_mmhg": 99.0
+        },
+        {
+          "systolic_bp_mmhg": 158.4,
+          "diastolic_bp_mmhg": 100.0
+        },
+        {
+          "systolic_bp_mmhg": 158.4,
+          "diastolic_bp_mmhg": 101.0
+        },
+        {
+          "systolic_bp_mmhg": 160.0,
+          "diastolic_bp_mmhg": null
+        },
+        {
+          "systolic_bp_mmhg": 160.0,
+          "diastolic_bp_mmhg": 99.0
+        },
+        {
+          "systolic_bp_mmhg": 160.0,
+          "diastolic_bp_mmhg": 100.0
+        },
+        {
+          "systolic_bp_mmhg": 160.0,
+          "diastolic_bp_mmhg": 101.0
+        },
+        {
+          "systolic_bp_mmhg": 161.6,
+          "diastolic_bp_mmhg": null
+        },
+        {
+          "systolic_bp_mmhg": 161.6,
+          "diastolic_bp_mmhg": 99.0
+        },
+        {
+          "systolic_bp_mmhg": 161.6,
+          "diastolic_bp_mmhg": 100.0
+        },
+        {
+          "systolic_bp_mmhg": 161.6,
+          "diastolic_bp_mmhg": 101.0
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT04557462",
+      "group_id": "chronic_kidney_disease",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* eGFR\\* \u2265 20 ml/min/1.73m2",
+      "quote": "* eGFR\\* \u2265 20 ml/min/1.73m2",
+      "title": "A Rollover Extension Program (REP) to Evaluate the Long-term Safety and Tolerability of Open Label Iptacopan/LNP023 in Participants With Primary IgA Nephropathy",
+      "source_location": "https://clinicaltrials.gov/study/NCT04557462#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:28.335923+00:00",
+      "source_lines": [
+        4
+      ],
+      "formula": [
+        "gte",
+        "egfr_ml_min_1_73m2",
+        20.0
+      ],
+      "domains": {
+        "egfr_ml_min_1_73m2": [
+          19.8,
+          20.0,
+          20.2
+        ]
+      },
+      "units": {
+        "egfr_ml_min_1_73m2": "mL/min/1.73m2"
+      },
+      "fact_labels": {
+        "egfr_ml_min_1_73m2": "egfr"
+      },
+      "atoms": [
+        [
+          "* eGFR\\* \u2265 20 ml/min/1.73m2",
+          "egfr_ml_min_1_73m2",
+          "gte",
+          20.0
+        ]
+      ],
+      "reference_leaf_count": 1,
+      "exhaustive_world_count": 4,
+      "world_values": [
+        {
+          "egfr_ml_min_1_73m2": null
+        },
+        {
+          "egfr_ml_min_1_73m2": 19.8
+        },
+        {
+          "egfr_ml_min_1_73m2": 20.0
+        },
+        {
+          "egfr_ml_min_1_73m2": 20.2
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07188805",
+      "group_id": "heart_failure",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* Left ventricular systolic dysfunction (LVSD) with left ventricular ejection fraction (LVEF) \u2264 50% at screening assessed by echocardiography.",
+      "quote": "* Left ventricular systolic dysfunction (LVSD) with left ventricular ejection fraction (LVEF) \u2264 50% at screening assessed by echocardiography.",
+      "title": "A Study to Learn More About How Well Finerenone Works, How Safe it is, and How it Moves Into, Through, and Out of the Body Compared to Placebo When Taken With Standard Treatment in Children With Heart Failure and Left Ventricular Systolic Dysfunction",
+      "source_location": "https://clinicaltrials.gov/study/NCT07188805#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:30.038234+00:00",
+      "source_lines": [
+        4
+      ],
+      "formula": [
+        "lte",
+        "lvef_percent",
+        50.0
+      ],
+      "domains": {
+        "lvef_percent": [
+          49.5,
+          50.0,
+          50.5
+        ]
+      },
+      "units": {
+        "lvef_percent": "%"
+      },
+      "fact_labels": {
+        "lvef_percent": "lvef"
+      },
+      "atoms": [
+        [
+          "* Left ventricular systolic dysfunction (LVSD) with left ventricular ejection fraction (LVEF) \u2264 50% at screening assessed by echocardiography.",
+          "lvef_percent",
+          "lte",
+          50.0
+        ]
+      ],
+      "reference_leaf_count": 1,
+      "exhaustive_world_count": 4,
+      "world_values": [
+        {
+          "lvef_percent": null
+        },
+        {
+          "lvef_percent": 49.5
+        },
+        {
+          "lvef_percent": 50.0
+        },
+        {
+          "lvef_percent": 50.5
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT06021860",
+      "group_id": "heart_failure",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n* Has poorly controlled diabetes (HbA1c \\>8.5%).",
+      "quote": "* Has poorly controlled diabetes (HbA1c \\>8.5%).",
+      "title": "A Phase IV, Two-part, Open-label Study Assessing the Pharmacokinetics, Safety and Pharmacodynamics of Spironolactone Oral Suspension in Pediatric Patients",
+      "source_location": "https://clinicaltrials.gov/study/NCT06021860#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:30.038234+00:00",
+      "source_lines": [
+        20
+      ],
+      "formula": [
+        "not",
+        [
+          "not",
+          [
+            "gt",
+            "hba1c",
+            8.5
+          ]
+        ]
+      ],
+      "domains": {
+        "hba1c": [
+          8.4,
+          8.5,
+          8.6
+        ]
+      },
+      "units": {
+        "hba1c": "%"
+      },
+      "fact_labels": {
+        "hba1c": "hba1c"
+      },
+      "atoms": [
+        [
+          "* Has poorly controlled diabetes (HbA1c \\>8.5%).",
+          "hba1c",
+          "gt",
+          8.5
+        ]
+      ],
+      "reference_leaf_count": 1,
+      "exhaustive_world_count": 4,
+      "world_values": [
+        {
+          "hba1c": null
+        },
+        {
+          "hba1c": 8.4
+        },
+        {
+          "hba1c": 8.5
+        },
+        {
+          "hba1c": 8.6
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07214376",
+      "group_id": "heart_failure",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n7. Subject has NT-proBNP \u2265600 pg/mL for patients with LVEF \u226440% or \u2265200 pg/mL for patients with LVEF \\>40% at the time of screening (a central lab will be made available for sites that cannot measure NT-proBNP)",
+      "quote": "7. Subject has NT-proBNP \u2265600 pg/mL for patients with LVEF \u226440% or \u2265200 pg/mL for patients with LVEF \\>40% at the time of screening (a central lab will be made available for sites that cannot measure NT-proBNP)",
+      "title": "A Randomized Placebo-procedure Controlled Trial of the Enhancor System (PULmonary Artery Denervation) to Evaluate Safety and Efficacy in Patients With Combined Pre- and Post-capillary Pulmonary Hypertension Associated With Left Heart Disease",
+      "source_location": "https://clinicaltrials.gov/study/NCT07214376#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:30.038234+00:00",
+      "source_lines": [
+        12
+      ],
+      "formula": [
+        "or",
+        [
+          "and",
+          [
+            "lte",
+            "lvef_percent",
+            40.0
+          ],
+          [
+            "gte",
+            "ntprobnp_pg_ml",
+            600.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "gt",
+            "lvef_percent",
+            40.0
+          ],
+          [
+            "gte",
+            "ntprobnp_pg_ml",
+            200.0
+          ]
+        ]
+      ],
+      "domains": {
+        "lvef_percent": [
+          39.6,
+          40.0,
+          40.4
+        ],
+        "ntprobnp_pg_ml": [
+          198.0,
+          200.0,
+          202.0,
+          594.0,
+          600.0,
+          606.0
+        ]
+      },
+      "units": {
+        "lvef_percent": "%",
+        "ntprobnp_pg_ml": "pg/mL"
+      },
+      "fact_labels": {
+        "lvef_percent": "lvef",
+        "ntprobnp_pg_ml": "ntprobnp"
+      },
+      "atoms": [
+        [
+          "7. Subject has NT-proBNP \u2265600 pg/mL for patients with LVEF \u226440% or \u2265200 pg/mL for patients with LVEF \\>40% at the time of screening (a central lab will be made available for sites that cannot measure NT-proBNP)",
+          "lvef_percent",
+          "lte",
+          40.0
+        ],
+        [
+          "7. Subject has NT-proBNP \u2265600 pg/mL for patients with LVEF \u226440% or \u2265200 pg/mL for patients with LVEF \\>40% at the time of screening (a central lab will be made available for sites that cannot measure NT-proBNP)",
+          "ntprobnp_pg_ml",
+          "gte",
+          600.0
+        ],
+        [
+          "7. Subject has NT-proBNP \u2265600 pg/mL for patients with LVEF \u226440% or \u2265200 pg/mL for patients with LVEF \\>40% at the time of screening (a central lab will be made available for sites that cannot measure NT-proBNP)",
+          "lvef_percent",
+          "gt",
+          40.0
+        ],
+        [
+          "7. Subject has NT-proBNP \u2265600 pg/mL for patients with LVEF \u226440% or \u2265200 pg/mL for patients with LVEF \\>40% at the time of screening (a central lab will be made available for sites that cannot measure NT-proBNP)",
+          "ntprobnp_pg_ml",
+          "gte",
+          200.0
+        ]
+      ],
+      "reference_leaf_count": 4,
+      "exhaustive_world_count": 28,
+      "world_values": [
+        {
+          "lvef_percent": null,
+          "ntprobnp_pg_ml": null
+        },
+        {
+          "lvef_percent": null,
+          "ntprobnp_pg_ml": 198.0
+        },
+        {
+          "lvef_percent": null,
+          "ntprobnp_pg_ml": 200.0
+        },
+        {
+          "lvef_percent": null,
+          "ntprobnp_pg_ml": 202.0
+        },
+        {
+          "lvef_percent": null,
+          "ntprobnp_pg_ml": 594.0
+        },
+        {
+          "lvef_percent": null,
+          "ntprobnp_pg_ml": 600.0
+        },
+        {
+          "lvef_percent": null,
+          "ntprobnp_pg_ml": 606.0
+        },
+        {
+          "lvef_percent": 39.6,
+          "ntprobnp_pg_ml": null
+        },
+        {
+          "lvef_percent": 39.6,
+          "ntprobnp_pg_ml": 198.0
+        },
+        {
+          "lvef_percent": 39.6,
+          "ntprobnp_pg_ml": 200.0
+        },
+        {
+          "lvef_percent": 39.6,
+          "ntprobnp_pg_ml": 202.0
+        },
+        {
+          "lvef_percent": 39.6,
+          "ntprobnp_pg_ml": 594.0
+        },
+        {
+          "lvef_percent": 39.6,
+          "ntprobnp_pg_ml": 600.0
+        },
+        {
+          "lvef_percent": 39.6,
+          "ntprobnp_pg_ml": 606.0
+        },
+        {
+          "lvef_percent": 40.0,
+          "ntprobnp_pg_ml": null
+        },
+        {
+          "lvef_percent": 40.0,
+          "ntprobnp_pg_ml": 198.0
+        },
+        {
+          "lvef_percent": 40.0,
+          "ntprobnp_pg_ml": 200.0
+        },
+        {
+          "lvef_percent": 40.0,
+          "ntprobnp_pg_ml": 202.0
+        },
+        {
+          "lvef_percent": 40.0,
+          "ntprobnp_pg_ml": 594.0
+        },
+        {
+          "lvef_percent": 40.0,
+          "ntprobnp_pg_ml": 600.0
+        },
+        {
+          "lvef_percent": 40.0,
+          "ntprobnp_pg_ml": 606.0
+        },
+        {
+          "lvef_percent": 40.4,
+          "ntprobnp_pg_ml": null
+        },
+        {
+          "lvef_percent": 40.4,
+          "ntprobnp_pg_ml": 198.0
+        },
+        {
+          "lvef_percent": 40.4,
+          "ntprobnp_pg_ml": 200.0
+        },
+        {
+          "lvef_percent": 40.4,
+          "ntprobnp_pg_ml": 202.0
+        },
+        {
+          "lvef_percent": 40.4,
+          "ntprobnp_pg_ml": 594.0
+        },
+        {
+          "lvef_percent": 40.4,
+          "ntprobnp_pg_ml": 600.0
+        },
+        {
+          "lvef_percent": 40.4,
+          "ntprobnp_pg_ml": 606.0
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07490067",
+      "group_id": "heart_failure",
+      "kind": "exclusion",
+      "text": "Exclusion Criteria:\n* Systolic blood pressure \\< 95 millimeters of mercury (mmHg)",
+      "quote": "* Systolic blood pressure \\< 95 millimeters of mercury (mmHg)",
+      "title": "Mechanistic Clinical Trial Comparing the Pharmacokinetics/Pharmacodynamics of Metoprolol in Heart Failure With Reduced Ejection Fraction Patients With Low vs. High Polygenic Score",
+      "source_location": "https://clinicaltrials.gov/study/NCT07490067#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:30.038234+00:00",
+      "source_lines": [
+        18
+      ],
+      "formula": [
+        "not",
+        [
+          "not",
+          [
+            "lt",
+            "systolic_bp_mmhg",
+            95.0
+          ]
+        ]
+      ],
+      "domains": {
+        "systolic_bp_mmhg": [
+          94.05,
+          95.0,
+          95.95
+        ]
+      },
+      "units": {
+        "systolic_bp_mmhg": "mmHg"
+      },
+      "fact_labels": {
+        "systolic_bp_mmhg": "systolic_blood_pressure"
+      },
+      "atoms": [
+        [
+          "* Systolic blood pressure \\< 95 millimeters of mercury (mmHg)",
+          "systolic_bp_mmhg",
+          "lt",
+          95.0
+        ]
+      ],
+      "reference_leaf_count": 1,
+      "exhaustive_world_count": 4,
+      "world_values": [
+        {
+          "systolic_bp_mmhg": null
+        },
+        {
+          "systolic_bp_mmhg": 94.05
+        },
+        {
+          "systolic_bp_mmhg": 95.0
+        },
+        {
+          "systolic_bp_mmhg": 95.95
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07828054",
+      "group_id": "breast_cancer",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+      "quote": "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+      "title": "Premedication With Dexamethasone for Preventing Interstitial Lung Disease in Patients With Breast Cancer Treated With Trastuzumab Deruxtecan",
+      "source_location": "https://clinicaltrials.gov/study/NCT07828054#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:31.684166+00:00",
+      "source_lines": [
+        17
+      ],
+      "formula": [
+        "and",
+        [
+          "gte",
+          "serum_albumin_g_dl",
+          2.5
+        ],
+        [
+          "lte",
+          "alkaline_phosphatase_xuln",
+          2.5
+        ],
+        [
+          "lt",
+          "inr_ratio",
+          1.5
+        ],
+        [
+          "or",
+          [
+            "lte",
+            "bilirubin_xuln",
+            1.5
+          ],
+          [
+            "and",
+            [
+              "or",
+              [
+                "eq",
+                "liver_metastases",
+                1.0
+              ],
+              [
+                "eq",
+                "gilbert_syndrome",
+                1.0
+              ]
+            ],
+            [
+              "lte",
+              "bilirubin_xuln",
+              3.0
+            ]
+          ]
+        ],
+        [
+          "or",
+          [
+            "and",
+            [
+              "lte",
+              "ast_xuln",
+              3.0
+            ],
+            [
+              "lte",
+              "alt_xuln",
+              3.0
+            ]
+          ],
+          [
+            "and",
+            [
+              "eq",
+              "liver_metastases",
+              1.0
+            ],
+            [
+              "lte",
+              "ast_xuln",
+              5.0
+            ],
+            [
+              "lte",
+              "alt_xuln",
+              5.0
+            ]
+          ]
+        ]
+      ],
+      "domains": {
+        "serum_albumin_g_dl": [
+          2.4,
+          2.5,
+          2.6
+        ],
+        "alkaline_phosphatase_xuln": [
+          2.4,
+          2.5,
+          2.6
+        ],
+        "inr_ratio": [
+          1.4,
+          1.5,
+          1.6
+        ],
+        "bilirubin_xuln": [
+          1.4,
+          1.5,
+          1.6,
+          2.9,
+          3.0,
+          3.1
+        ],
+        "liver_metastases": [
+          0.0,
+          1.0
+        ],
+        "gilbert_syndrome": [
+          0.0,
+          1.0
+        ],
+        "ast_xuln": [
+          2.9,
+          3.0,
+          3.1,
+          4.9,
+          5.0,
+          5.1
+        ],
+        "alt_xuln": [
+          2.9,
+          3.0,
+          3.1,
+          4.9,
+          5.0,
+          5.1
+        ]
+      },
+      "units": {
+        "serum_albumin_g_dl": "g/dL",
+        "alkaline_phosphatase_xuln": "xULN",
+        "inr_ratio": "ratio",
+        "bilirubin_xuln": "xULN",
+        "liver_metastases": "bool",
+        "gilbert_syndrome": "bool",
+        "ast_xuln": "xULN",
+        "alt_xuln": "xULN"
+      },
+      "fact_labels": {
+        "serum_albumin_g_dl": "serum_albumin",
+        "alkaline_phosphatase_xuln": "alkaline_phosphatase",
+        "inr_ratio": "inr",
+        "bilirubin_xuln": "bilirubin",
+        "liver_metastases": "liver_metastases",
+        "gilbert_syndrome": "gilbert_syndrome",
+        "ast_xuln": "ast",
+        "alt_xuln": "alt"
+      },
+      "atoms": [
+        [
+          "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+          "serum_albumin_g_dl",
+          "gte",
+          2.5
+        ],
+        [
+          "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+          "alkaline_phosphatase_xuln",
+          "lte",
+          2.5
+        ],
+        [
+          "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+          "inr_ratio",
+          "lt",
+          1.5
+        ],
+        [
+          "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+          "bilirubin_xuln",
+          "lte",
+          1.5
+        ],
+        [
+          "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+          "liver_metastases",
+          "eq",
+          1.0
+        ],
+        [
+          "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+          "gilbert_syndrome",
+          "eq",
+          1.0
+        ],
+        [
+          "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+          "bilirubin_xuln",
+          "lte",
+          3.0
+        ],
+        [
+          "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+          "ast_xuln",
+          "lte",
+          3.0
+        ],
+        [
+          "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+          "alt_xuln",
+          "lte",
+          3.0
+        ],
+        [
+          "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+          "liver_metastases",
+          "eq",
+          1.0
+        ],
+        [
+          "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+          "ast_xuln",
+          "lte",
+          5.0
+        ],
+        [
+          "7. Adequate hepatic function: Serum albumin \u2265 2.5 g/dL; total bilirubin \u2264 1.5 times upper limit of normal (ULN) (\u2264 3 in patients with liver metastases or know history of Gilbert's disease); alkaline phosphatase (ALP) \u2264 2.5 times ULN; aspartate transaminase (AST) and alanine transaminase (ALT) \u2264 3 times ULN (\u2264 5 in patients with liver metastases); international normalized ratio (INR) \\< 1.5.",
+          "alt_xuln",
+          "lte",
+          5.0
+        ]
+      ],
+      "reference_leaf_count": 12,
+      "exhaustive_world_count": 197568,
+      "world_values": [
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": null,
+          "bilirubin_xuln": null,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": null,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 3.1
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": null,
+          "liver_metastases": null,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": null,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": null,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 4.9,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": null,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 4.9,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": 3.1
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": null,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": null,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 5.1,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 2.9,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 5.0,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": null,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": 4.9,
+          "alt_xuln": 3.1
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": null,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 5.0,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": null,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 5.1,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": null,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": null,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": 5.0,
+          "alt_xuln": 3.1
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": null,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 4.9,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 3.1,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": null,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": null,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": null,
+          "bilirubin_xuln": null,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": null,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 3.1
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": null,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": 2.9,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": null,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 4.9,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": null,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": null,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 2.9,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": 5.1,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": null,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": null,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": null,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": null,
+          "bilirubin_xuln": null,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": 2.9,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": null,
+          "bilirubin_xuln": null,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": null,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": null,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": null,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": null,
+          "liver_metastases": null,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 4.9,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": null,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 2.9,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": null,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": null,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": null,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 2.9,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": 3.0,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.4,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": null,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": null,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": null,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 2.9,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 3.0,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": null,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": null,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 3.1
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": null,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": 5.1,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": null,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 3.1
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 4.9,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": null,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": null,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 3.0,
+          "alt_xuln": 3.1
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.5,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": null,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": 2.9,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": null,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": 5.0,
+          "alt_xuln": 5.0
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": null,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.0,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 4.9,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 3.0,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 5.0,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": null,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 2.9,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": null,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": null,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": null,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.4,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": null,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 2.9,
+          "alt_xuln": 5.1
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 4.9,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.5,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 2.9,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": null,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.4,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": null
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.5,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": 3.0,
+          "alt_xuln": 4.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": null,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": null,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": null,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": null,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": 3.1,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 2.9,
+          "liver_metastases": 0.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 3.0,
+          "alt_xuln": 3.0
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.4,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": null,
+          "ast_xuln": 5.0,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": null,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.0,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.5,
+          "liver_metastases": null,
+          "gilbert_syndrome": null,
+          "ast_xuln": 5.1,
+          "alt_xuln": 3.1
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 1.6,
+          "liver_metastases": null,
+          "gilbert_syndrome": 0.0,
+          "ast_xuln": null,
+          "alt_xuln": 2.9
+        },
+        {
+          "serum_albumin_g_dl": 2.6,
+          "alkaline_phosphatase_xuln": 2.6,
+          "inr_ratio": 1.6,
+          "bilirubin_xuln": 3.1,
+          "liver_metastases": 1.0,
+          "gilbert_syndrome": 1.0,
+          "ast_xuln": 5.1,
+          "alt_xuln": 5.1
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT04305834",
+      "group_id": "breast_cancer",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* In the absence of liver metastases, alanine aminotransferase (ALT) and aspartate aminotransferase (AST) =\\< 3.0 x upper limit of normal (ULN)\n* If the patient has liver metastases, ALT and AST \\< 5 x ULN",
+      "quote": "* In the absence of liver metastases, alanine aminotransferase (ALT) and aspartate aminotransferase (AST) =\\< 3.0 x upper limit of normal (ULN)\n* If the patient has liver metastases, ALT and AST \\< 5 x ULN",
+      "title": "Abemaciclib and Endocrine Therapy in Older Patients With Breast Cancer.",
+      "source_location": "https://clinicaltrials.gov/study/NCT04305834#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:31.684166+00:00",
+      "source_lines": [
+        29
+      ],
+      "formula": [
+        "or",
+        [
+          "and",
+          [
+            "lte",
+            "alt_xuln",
+            3.0
+          ],
+          [
+            "lte",
+            "ast_xuln",
+            3.0
+          ]
+        ],
+        [
+          "and",
+          [
+            "eq",
+            "liver_metastases",
+            1.0
+          ],
+          [
+            "lt",
+            "alt_xuln",
+            5.0
+          ],
+          [
+            "lt",
+            "ast_xuln",
+            5.0
+          ]
+        ]
+      ],
+      "domains": {
+        "alt_xuln": [
+          2.9,
+          3.0,
+          3.1,
+          4.9,
+          5.0,
+          5.1
+        ],
+        "ast_xuln": [
+          2.9,
+          3.0,
+          3.1,
+          4.9,
+          5.0,
+          5.1
+        ],
+        "liver_metastases": [
+          0.0,
+          1.0
+        ]
+      },
+      "units": {
+        "alt_xuln": "xULN",
+        "ast_xuln": "xULN",
+        "liver_metastases": "bool"
+      },
+      "fact_labels": {
+        "alt_xuln": "alt",
+        "ast_xuln": "ast",
+        "liver_metastases": "liver_metastases"
+      },
+      "atoms": [
+        [
+          "* In the absence of liver metastases, alanine aminotransferase (ALT) and aspartate aminotransferase (AST) =\\< 3.0 x upper limit of normal (ULN)\n* If the patient has liver metastases, ALT and AST \\< 5 x ULN",
+          "alt_xuln",
+          "lte",
+          3.0
+        ],
+        [
+          "* In the absence of liver metastases, alanine aminotransferase (ALT) and aspartate aminotransferase (AST) =\\< 3.0 x upper limit of normal (ULN)\n* If the patient has liver metastases, ALT and AST \\< 5 x ULN",
+          "ast_xuln",
+          "lte",
+          3.0
+        ],
+        [
+          "* In the absence of liver metastases, alanine aminotransferase (ALT) and aspartate aminotransferase (AST) =\\< 3.0 x upper limit of normal (ULN)\n* If the patient has liver metastases, ALT and AST \\< 5 x ULN",
+          "liver_metastases",
+          "eq",
+          1.0
+        ],
+        [
+          "* In the absence of liver metastases, alanine aminotransferase (ALT) and aspartate aminotransferase (AST) =\\< 3.0 x upper limit of normal (ULN)\n* If the patient has liver metastases, ALT and AST \\< 5 x ULN",
+          "alt_xuln",
+          "lt",
+          5.0
+        ],
+        [
+          "* In the absence of liver metastases, alanine aminotransferase (ALT) and aspartate aminotransferase (AST) =\\< 3.0 x upper limit of normal (ULN)\n* If the patient has liver metastases, ALT and AST \\< 5 x ULN",
+          "ast_xuln",
+          "lt",
+          5.0
+        ]
+      ],
+      "reference_leaf_count": 5,
+      "exhaustive_world_count": 147,
+      "world_values": [
+        {
+          "alt_xuln": null,
+          "ast_xuln": null,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": null,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": null,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 2.9,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 2.9,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 3.0,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 3.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 3.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 3.1,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 3.1,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 3.1,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 4.9,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 4.9,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 4.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 5.0,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 5.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 5.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 5.1,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 5.1,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": null,
+          "ast_xuln": 5.1,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": null,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": null,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 2.9,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 2.9,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 2.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 3.0,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 3.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 3.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 3.1,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 3.1,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 3.1,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 4.9,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 4.9,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 4.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 5.0,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 5.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 5.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 5.1,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 5.1,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 2.9,
+          "ast_xuln": 5.1,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": null,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": null,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": null,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 2.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 3.0,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 3.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 3.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 3.1,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 3.1,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 4.9,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 4.9,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 4.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 5.0,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 5.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 5.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 5.1,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 5.1,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 3.0,
+          "ast_xuln": 5.1,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": null,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": null,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 2.9,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 2.9,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 2.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 3.0,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 3.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 3.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 3.1,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 3.1,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 4.9,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 4.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 5.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 5.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 5.1,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 3.1,
+          "ast_xuln": 5.1,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": null,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": null,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": null,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 2.9,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 2.9,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 2.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 3.0,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 3.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 3.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 3.1,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 3.1,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 3.1,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 4.9,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 4.9,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 4.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 5.0,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 5.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 5.1,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 5.1,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 4.9,
+          "ast_xuln": 5.1,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": null,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": null,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": null,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 2.9,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 2.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 3.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 3.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 3.1,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 3.1,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 4.9,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 4.9,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 4.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 5.0,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 5.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 5.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.0,
+          "ast_xuln": 5.1,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": null,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": null,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": null,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 2.9,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 2.9,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 2.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 3.0,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 3.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 3.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 3.1,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 3.1,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 3.1,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 4.9,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 4.9,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 5.0,
+          "liver_metastases": null
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 5.0,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 5.0,
+          "liver_metastases": 1.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 5.1,
+          "liver_metastases": 0.0
+        },
+        {
+          "alt_xuln": 5.1,
+          "ast_xuln": 5.1,
+          "liver_metastases": 1.0
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT04222413",
+      "group_id": "breast_cancer",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* absolute neutrophil count (ANC) \\>= 1.0 x 10(9)/L,",
+      "quote": "* absolute neutrophil count (ANC) \\>= 1.0 x 10(9)/L,",
+      "title": "Metarrestin (ML-246) in Subjects With Metastatic Solid Tumors",
+      "source_location": "https://clinicaltrials.gov/study/NCT04222413#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:31.684166+00:00",
+      "source_lines": [
+        26
+      ],
+      "formula": [
+        "gte",
+        "absolute_neutrophil_count_10_9_l",
+        1.0
+      ],
+      "domains": {
+        "absolute_neutrophil_count_10_9_l": [
+          0.9,
+          1.0,
+          1.1
+        ]
+      },
+      "units": {
+        "absolute_neutrophil_count_10_9_l": "10^9/L"
+      },
+      "fact_labels": {
+        "absolute_neutrophil_count_10_9_l": "absolute_neutrophil_count"
+      },
+      "atoms": [
+        [
+          "* absolute neutrophil count (ANC) \\>= 1.0 x 10(9)/L,",
+          "absolute_neutrophil_count_10_9_l",
+          "gte",
+          1.0
+        ]
+      ],
+      "reference_leaf_count": 1,
+      "exhaustive_world_count": 4,
+      "world_values": [
+        {
+          "absolute_neutrophil_count_10_9_l": null
+        },
+        {
+          "absolute_neutrophil_count_10_9_l": 0.9
+        },
+        {
+          "absolute_neutrophil_count_10_9_l": 1.0
+        },
+        {
+          "absolute_neutrophil_count_10_9_l": 1.1
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07020780",
+      "group_id": "breast_cancer",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n7. PS (ECOG) \u22642",
+      "quote": "7. PS (ECOG) \u22642",
+      "title": "5 fr Ultrahypofractionated WBI and SIB for Breast Cancer With Unfavorable Characteristics",
+      "source_location": "https://clinicaltrials.gov/study/NCT07020780#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:31.684166+00:00",
+      "source_lines": [
+        9
+      ],
+      "formula": [
+        "lte",
+        "ecog_score",
+        2.0
+      ],
+      "domains": {
+        "ecog_score": [
+          1.9,
+          2.0,
+          2.1
+        ]
+      },
+      "units": {
+        "ecog_score": "score"
+      },
+      "fact_labels": {
+        "ecog_score": "ecog"
+      },
+      "atoms": [
+        [
+          "7. PS (ECOG) \u22642",
+          "ecog_score",
+          "lte",
+          2.0
+        ]
+      ],
+      "reference_leaf_count": 1,
+      "exhaustive_world_count": 4,
+      "world_values": [
+        {
+          "ecog_score": null
+        },
+        {
+          "ecog_score": 1.9
+        },
+        {
+          "ecog_score": 2.0
+        },
+        {
+          "ecog_score": 2.1
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT06498635",
+      "group_id": "non_small_cell_lung_cancer",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* Participants must have body weight \\> 30 kg",
+      "quote": "* Participants must have body weight \\> 30 kg",
+      "title": "Immunotherapy After Surgery for People Who Have No Remaining Cancer Cells After Standard Treatment for Early-Stage Non-Small Cell Lung Cancer, INSIGHT Trial",
+      "source_location": "https://clinicaltrials.gov/study/NCT06498635#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:33.440766+00:00",
+      "source_lines": [
+        17
+      ],
+      "formula": [
+        "gt",
+        "body_weight_kg",
+        30.0
+      ],
+      "domains": {
+        "body_weight_kg": [
+          29.7,
+          30.0,
+          30.3
+        ]
+      },
+      "units": {
+        "body_weight_kg": "kg"
+      },
+      "fact_labels": {
+        "body_weight_kg": "body_weight"
+      },
+      "atoms": [
+        [
+          "* Participants must have body weight \\> 30 kg",
+          "body_weight_kg",
+          "gt",
+          30.0
+        ]
+      ],
+      "reference_leaf_count": 1,
+      "exhaustive_world_count": 4,
+      "world_values": [
+        {
+          "body_weight_kg": null
+        },
+        {
+          "body_weight_kg": 29.7
+        },
+        {
+          "body_weight_kg": 30.0
+        },
+        {
+          "body_weight_kg": 30.3
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT07554339",
+      "group_id": "non_small_cell_lung_cancer",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* Has a body weight \u226535 kg.",
+      "quote": "* Has a body weight \u226535 kg.",
+      "title": "A Clinical Trial of Calderasib (MK-1084) and Durvalumab in People With Non-Small Cell Lung Cancer (MK-1084-015/KANDLELIT-015)",
+      "source_location": "https://clinicaltrials.gov/study/NCT07554339#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:33.440766+00:00",
+      "source_lines": [
+        12
+      ],
+      "formula": [
+        "gte",
+        "body_weight_kg",
+        35.0
+      ],
+      "domains": {
+        "body_weight_kg": [
+          34.65,
+          35.0,
+          35.35
+        ]
+      },
+      "units": {
+        "body_weight_kg": "kg"
+      },
+      "fact_labels": {
+        "body_weight_kg": "body_weight"
+      },
+      "atoms": [
+        [
+          "* Has a body weight \u226535 kg.",
+          "body_weight_kg",
+          "gte",
+          35.0
+        ]
+      ],
+      "reference_leaf_count": 1,
+      "exhaustive_world_count": 4,
+      "world_values": [
+        {
+          "body_weight_kg": null
+        },
+        {
+          "body_weight_kg": 34.65
+        },
+        {
+          "body_weight_kg": 35.0
+        },
+        {
+          "body_weight_kg": 35.35
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT05099172",
+      "group_id": "non_small_cell_lung_cancer",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n* Eastern Cooperative Oncology Group (ECOG) performance status 0 or 1.",
+      "quote": "* Eastern Cooperative Oncology Group (ECOG) performance status 0 or 1.",
+      "title": "First in Human Study of BAY2927088 in Participants Who Have Advanced Non-small Cell Lung Cancer (NSCLC) With Mutations in the Genes of Epidermal Growth Factor Receptor (EGFR) and/or Human Epidermal Growth Factor Receptor 2 (HER2)",
+      "source_location": "https://clinicaltrials.gov/study/NCT05099172#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:33.440766+00:00",
+      "source_lines": [
+        11
+      ],
+      "formula": [
+        "or",
+        [
+          "eq",
+          "ecog_score",
+          0.0
+        ],
+        [
+          "eq",
+          "ecog_score",
+          1.0
+        ]
+      ],
+      "domains": {
+        "ecog_score": [
+          -0.1,
+          0.0,
+          0.1,
+          0.9,
+          1.0,
+          1.1
+        ]
+      },
+      "units": {
+        "ecog_score": "score"
+      },
+      "fact_labels": {
+        "ecog_score": "ecog"
+      },
+      "atoms": [
+        [
+          "* Eastern Cooperative Oncology Group (ECOG) performance status 0 or 1.",
+          "ecog_score",
+          "eq",
+          0.0
+        ],
+        [
+          "* Eastern Cooperative Oncology Group (ECOG) performance status 0 or 1.",
+          "ecog_score",
+          "eq",
+          1.0
+        ]
+      ],
+      "reference_leaf_count": 2,
+      "exhaustive_world_count": 7,
+      "world_values": [
+        {
+          "ecog_score": null
+        },
+        {
+          "ecog_score": -0.1
+        },
+        {
+          "ecog_score": 0.0
+        },
+        {
+          "ecog_score": 0.1
+        },
+        {
+          "ecog_score": 0.9
+        },
+        {
+          "ecog_score": 1.0
+        },
+        {
+          "ecog_score": 1.1
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    },
+    {
+      "case_id": "NCT02133196",
+      "group_id": "non_small_cell_lung_cancer",
+      "kind": "inclusion",
+      "text": "Inclusion Criteria:\n4. Clinical performance status of ECOG 0 or 1.",
+      "quote": "4. Clinical performance status of ECOG 0 or 1.",
+      "title": "T Cell Receptor Immunotherapy for Patients With Metastatic Non-Small Cell Lung Cancer",
+      "source_location": "https://clinicaltrials.gov/study/NCT02133196#participation-criteria",
+      "retrieved_at": "2026-10-22T12:59:33.440766+00:00",
+      "source_lines": [
+        6
+      ],
+      "formula": [
+        "or",
+        [
+          "eq",
+          "ecog_score",
+          0.0
+        ],
+        [
+          "eq",
+          "ecog_score",
+          1.0
+        ]
+      ],
+      "domains": {
+        "ecog_score": [
+          -0.1,
+          0.0,
+          0.1,
+          0.9,
+          1.0,
+          1.1
+        ]
+      },
+      "units": {
+        "ecog_score": "score"
+      },
+      "fact_labels": {
+        "ecog_score": "ecog"
+      },
+      "atoms": [
+        [
+          "4. Clinical performance status of ECOG 0 or 1.",
+          "ecog_score",
+          "eq",
+          0.0
+        ],
+        [
+          "4. Clinical performance status of ECOG 0 or 1.",
+          "ecog_score",
+          "eq",
+          1.0
+        ]
+      ],
+      "reference_leaf_count": 2,
+      "exhaustive_world_count": 7,
+      "world_values": [
+        {
+          "ecog_score": null
+        },
+        {
+          "ecog_score": -0.1
+        },
+        {
+          "ecog_score": 0.0
+        },
+        {
+          "ecog_score": 0.1
+        },
+        {
+          "ecog_score": 0.9
+        },
+        {
+          "ecog_score": 1.0
+        },
+        {
+          "ecog_score": 1.1
+        }
+      ],
+      "assessment_scope": "selected_source_clause_numeric_interpretation",
+      "full_protocol_confirmation_allowed": false,
+      "scope": "Author-selected numeric interpretation only; full source qualifiers retained, not clinical truth."
+    }
+  ]
+}

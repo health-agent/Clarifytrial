@@ -7,6 +7,7 @@ tree is never treated as semantic proof just because its JSON references exist.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 import re
 import unicodedata
 
@@ -38,6 +39,71 @@ class CompiledSourceLogic:
     verified_spans: tuple[tuple[int,int],...]
     issues: tuple[str,...]
     records: tuple[dict,...]
+
+
+def _literal_numeric_span(text: str, atom: GroundedLogicAtom) -> tuple[int, int] | None:
+    """Locate an explicit concept/operator/value/unit inside a cited quote.
+
+    No inherited concepts/units or clinical words are removed. A unique explicit
+    match is needed; the remaining words still enter the source grammar.
+    """
+    constraint = atom.criterion.numeric_constraint
+    if constraint is None:
+        return None
+    compact = lambda value: re.sub(r"[^a-z0-9]+", "", value.casefold())
+    names = {constraint.concept}
+    for key, aliases in _CONCEPT_ALIASES.items():
+        if compact(constraint.concept) in {compact(key), *(compact(a) for a in aliases)}:
+            names.update(aliases)
+    name_patterns = []
+    for name in names:
+        words = re.findall(r"[a-zA-Z0-9]+", name)
+        if words:
+            name_patterns.append(r"[\s:_-]*".join(re.escape(word) for word in words))
+    if not name_patterns:
+        return None
+    concept = r"(?<!\w)(?:" + "|".join(sorted(name_patterns, key=len, reverse=True)) + r")(?!\w)"
+    number = r"(?P<number>[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)"
+    operators = {"gte": r"(?:>=|≥)", "gt": ">", "lte": r"(?:<=|≤)", "lt": "<", "eq": r"(?:==|=)"}
+    # Flexible whitespace/superscript spelling only; no physical unit conversion.
+    unit_parts = []
+    for character in unicodedata.normalize("NFKC", constraint.unit):
+        if character.isspace() or character == "^":
+            continue
+        unit_parts.append(r"(?:2|²)" if character == "2" else re.escape(character))
+    unit = r"\s*".join(unit_parts)
+    pattern = re.compile(concept + r"\s*(?:(?:is|of)\s*)?(?:\\)?" +
+                         operators[constraint.operator.value] + r"\s*" + number + r"\s*" + unit + r"(?![\w/])", re.I)
+    matches = [match for match in pattern.finditer(text, atom.start, atom.end)
+               if math.isclose(float(match["number"].replace(",", "")), constraint.threshold, rel_tol=1e-9, abs_tol=1e-9)]
+    return (matches[0].start(), matches[0].end()) if len(matches) == 1 else None
+
+
+def refine_overlapping_numeric_spans(text: str, atoms: list[GroundedLogicAtom]):
+    """Refine a whole overlap component only if all atoms have disjoint anchors."""
+    ordered = sorted(atoms, key=lambda atom: (atom.start, atom.end))
+    components = []
+    for atom in ordered:
+        if not components or atom.start >= max(a.end for a in components[-1]):
+            components.append([atom])
+        else:
+            components[-1].append(atom)
+    replacements, records = {}, []
+    for component in components:
+        if len(component) < 2:
+            continue
+        anchors = [_literal_numeric_span(text, atom) for atom in component]
+        if any(span is None for span in anchors):
+            continue
+        sorted_spans = sorted(anchors)
+        if any(left[1] > right[0] for left, right in zip(sorted_spans, sorted_spans[1:])):
+            continue
+        for atom, (start, end) in zip(component, anchors):
+            cid = atom.criterion.criterion_id
+            replacements[cid] = GroundedLogicAtom(atom.criterion, start, end)
+            if (start, end) != (atom.start, atom.end):
+                records.append({"criterion_id": cid, "quoted_span": [atom.start, atom.end], "atomic_span": [start, end]})
+    return [replacements.get(a.criterion.criterion_id, a) for a in atoms], records
 
 
 def _node(operator,children,minimum=None):
@@ -241,6 +307,23 @@ def _safe_metadata_conjunction(atom,snippet):
     return bool(tails) and all(not re.sub(r"[\s\d.,;:\-]+","",allowed.sub("",tail)) for tail in tails)
 
 
+def _explicit_continuation_spans(text):
+    """Only literal line-final connectors establish an automatic multiline group."""
+    lines = text.splitlines(keepends=True)
+    offsets, offset = [], 0
+    for line in lines:
+        offsets.append(offset)
+        offset += len(line)
+    index = 0
+    while index < len(lines):
+        start = index
+        while re.search(r"\b(?:or|and|with)\s*[,;]?\s*$", lines[index], re.I) and index + 1 < len(lines):
+            index += 1
+        if index > start:
+            yield offsets[start], offsets[index] + len(lines[index].rstrip("\r\n"))
+        index += 1
+
+
 def compile_protocol_logic(text: str,atoms: list[GroundedLogicAtom],proposals: list[GroundedLogicProposal]) -> CompiledSourceLogic:
     consumed=set()
     spans=[]
@@ -268,6 +351,12 @@ def compile_protocol_logic(text: str,atoms: list[GroundedLogicAtom],proposals: l
             accept(proposal.start,proposal.end,selected,proposal.predicate)
         except (UnsupportedSourceLogic,KeyError) as error:
             issues.append(f"모델이 제안한 원문 논리 묶음을 검증하지 못했다: {error}")
+    for start,end in _explicit_continuation_spans(text):
+        selected=[a for a in atoms if a.criterion.criterion_id not in consumed and start<=a.start and a.end<=end]
+        if len(selected)<2:continue
+        try:accept(start,end,selected)
+        except UnsupportedSourceLogic as error:
+            issues.append(f"여러 행에 명시된 조건 연결을 검증하지 못했다: {error}")
     offset=0
     for line in text.splitlines(keepends=True):
         start,end=offset,offset+len(line.rstrip("\r\n"))

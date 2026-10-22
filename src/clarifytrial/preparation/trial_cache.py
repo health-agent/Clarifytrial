@@ -24,7 +24,7 @@ from .trial_protocol import (
 
 
 _CACHE_FORMAT_VERSION = 1
-_VALIDATION_VERSION = "trial-protocol-source-logic-v7"
+_VALIDATION_VERSION = "trial-protocol-source-logic-v8"
 
 
 class CachedInformationNeed(ContractModel):

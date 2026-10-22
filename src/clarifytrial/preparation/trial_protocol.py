@@ -7,7 +7,7 @@ import re
 from dataclasses import dataclass
 
 from ..agents.base import StructuredAgent
-from ..contracts import CriterionLogic, NextAction, NextEvidenceRequest, TrialCriterion
+from ..contracts import NextAction, NextEvidenceRequest, TrialCriterion
 from ..interactive.burden_contracts import AcquisitionOption
 from ..trace import TraceRecorder
 from ..workflow import ScreeningTrial
@@ -27,7 +27,7 @@ from .source_validation import (
     validate_trial_criterion_source,
 )
 from .protocol_logic import (
-    GroundedLogicAtom,GroundedLogicProposal,compile_protocol_logic,
+    GroundedLogicAtom,GroundedLogicProposal,compile_protocol_logic,refine_overlapping_numeric_spans,
 )
 
 
@@ -443,9 +443,8 @@ def structure_trial_protocol(
                 source_location=(
                     f"{source.source_location}#chars={global_start}-{global_end}"
                 ),
-                # Every eligibility item extracted from prose is a condition to
-                # evaluate. Optional grouping is only accepted in manually
-                # authored structured inputs, where the grouping is explicit.
+                # Every extracted item participates in evaluation. Verified
+                # source logic below determines its combination with other items.
                 required=True,
                 numeric_constraint=item.numeric_constraint,
                 evidence_requirement=item.evidence_requirement,
@@ -498,6 +497,7 @@ def structure_trial_protocol(
                 chunk.start_char+match.end_char,remap(group.predicate_logic)))
         except (SourceValidationError,KeyError) as error:
             protocol_logic_issues.append(f"논리 묶음의 원문 또는 조건 참조를 연결하지 못했다: {error}")
+    grounded_atoms,atomic_span_refinements=refine_overlapping_numeric_spans(source.eligibility_text,grounded_atoms)
     compiled_logic=compile_protocol_logic(source.eligibility_text,grounded_atoms,grounded_groups)
     protocol_logic_issues.extend(_unsupported_logic_issues(source.eligibility_text,compiled_logic.verified_spans))
     protocol_logic_issues.extend(compiled_logic.issues)
@@ -516,6 +516,7 @@ def structure_trial_protocol(
             "protocol_logic_supported": not protocol_logic_issues,
             "protocol_logic_issues": protocol_logic_issues,
             "source_logic_groups":list(compiled_logic.records),
+            "atomic_span_refinements":atomic_span_refinements,
         },
     )
     return PreparedTrial(

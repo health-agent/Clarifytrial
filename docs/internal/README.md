@@ -15,7 +15,7 @@
 5. [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) — 분모, 비교 방법, 결과와 해석 범위
 6. [실험자료](CLARIFYTRIAL_DATASETS.md) — 자료 출처와 합성 환자·연결 구조·환자 제한의 구분
    - 확장 연구를 이어갈 때 [확장 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md)를 추가로 읽는다.
-     활성 초안이며 선정된 HWP를 대체하지 않는다. 수치의 기준은 검증 결과 9–11절이다.
+     활성 초안이며 선정된 HWP를 대체하지 않는다. 수치의 기준은 검증 결과 9–12절이다.
 7. 발표를 다룰 때만 [과거 발표 구성](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md)을 추가로 읽는다.
 
 2026-09-05의 원고 기준은 사용자가 최종본으로 지정한

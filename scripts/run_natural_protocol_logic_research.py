@@ -67,6 +67,8 @@ def cohort():
 
 def truth(node, values):
     op = node[0]
+    if op == "not":
+        return not truth(node[1], values)
     if op == "and":
         return all(truth(child, values) for child in node[1:])
     if op == "or":
@@ -87,6 +89,8 @@ def expected(case, values):
         full = {**values, **dict(zip(missing, completion))}
         member = truth(case["formula"], full)
         possible.add(member if case["kind"] == "inclusion" else not member)
+        if len(possible) == 2:
+            break
     return "not_confirmed" if len(possible) == 2 else ("confirmed" if possible.pop() else "ineligible")
 
 
@@ -95,9 +99,16 @@ def fixture(case):
     # versions receive the same proposals; multilines require explicit grouping
     # from a model and are therefore conservatively withheld by the new code.
     return {"criteria": [{"kind": case["kind"], "statement": quote, "source_quote": quote,
-                           "numeric_constraint": {"concept": concept, "operator": op,
-                                                  "threshold": value, "unit": UNITS[concept]}}
+                           "numeric_constraint": {"concept": case.get("fact_labels", {}).get(concept, concept), "operator": op,
+                                                  "threshold": value, "unit": case.get("units", UNITS)[concept]}}
                           for quote, concept, op, value in case["atoms"]]}
+
+
+def world_values(case):
+    if "world_values" in case:
+        return case["world_values"]
+    return [dict(zip(case["domains"], values))
+            for values in product(*([None, *domain] for domain in case["domains"].values()))]
 
 
 def summarize(rows):
@@ -110,6 +121,8 @@ def summarize(rows):
         "scorable_cases": len(scored_cases), "scorable_worlds": len(worlds),
         "correct_worlds": sum(w["expected"] == w["observed"] for w in worlds),
         "all_worlds_correct_cases": sum(bool(r["worlds"]) and all(w["expected"] == w["observed"] for w in r["worlds"]) for r in scored_cases),
+        "mean_case_agreement": (sum(sum(w["expected"] == w["observed"] for w in r["worlds"])/len(r["worlds"])
+                                     for r in scored_cases if r["worlds"])/len(scored_cases)) if scored_cases else None,
         "resolvable_worlds": len(resolvable),
         "correct_resolved": sum(w["expected"] == w["observed"] for w in resolvable),
         "abstained_resolvable": sum(w["observed"] == "not_confirmed" for w in resolvable),
@@ -129,6 +142,7 @@ def main():
     parser.add_argument("--mode", choices=("scripted", "model", "replay"), required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--source-root", type=Path)
+    parser.add_argument("--cases", type=Path, help="Alternative fixed source-clause cohort; no labels enter model payloads.")
     parser.add_argument("--replay", type=Path)
     parser.add_argument("--strip-logic-draft", action="store_true",
                         help="Replay new atom proposals through the old list-only schema; remove only local keys/groups.")
@@ -136,6 +150,7 @@ def main():
     parser.add_argument("--effort", default="medium")
     parser.add_argument("--runtime-catalog", type=Path)
     args = parser.parse_args()
+    cases = json.loads(args.cases.read_text(encoding="utf-8"))["cases"] if args.cases else cohort()
     source_root = (args.source_root or Path(__file__).resolve().parents[1]).resolve()
     sys.path.insert(0, str(source_root / "src"))
     from clarifytrial.contracts import CriterionAssessment, EvidenceFact, PatientState
@@ -173,9 +188,13 @@ def main():
         if previous["mode"] != args.mode or previous["source_root"] != str(source_root):
             raise ValueError("output belongs to a different run")
         rows = previous["cases"]
+        current = {case["case_id"]: case for case in cases}
+        if any(row["case_id"] not in current or row["source_text"] != current[row["case_id"]]["text"]
+               or row["reference_formula"] != current[row["case_id"]]["formula"] for row in rows):
+            raise ValueError("output belongs to a different source cohort")
     done = {r["case_id"] for r in rows}
     try:
-        for case in cohort():
+        for case in cases:
             if case["case_id"] in done:
                 continue
             trace = TraceRecorder(case["case_id"])
@@ -192,7 +211,8 @@ def main():
                                                   for item in proposed["criteria"]]}
                     selected_model = ScriptedStructuredModel({"trial_protocol_structurer": lambda _, p=proposed: p})
                 prepared = structure_trial_protocol(TrialProtocolSource(trial_id=case["case_id"],
-                    title="Synthetic clause probe", eligibility_text=case["text"], source_location="synthetic://" + case["case_id"]),
+                    title=case.get("title", "Synthetic clause probe"), eligibility_text=case["text"],
+                    source_location=case.get("source_location", "synthetic://" + case["case_id"])),
                     TrialProtocolStructurerAgent(selected_model), trace=trace)
                 row["supported"] = prepared.trial.protocol_logic_supported
                 row["issues"] = prepared.trial.protocol_logic_issues
@@ -200,12 +220,12 @@ def main():
                 row["criterion_count"] = len(prepared.trial.criteria)
                 row["compiled_logic"] = (prepared.trial.eligibility_logic.model_dump(mode="json")
                                          if prepared.trial.eligibility_logic is not None else None)
-                for values_tuple in product(*([None, *domain] for domain in case["domains"].values())):
-                    values = dict(zip(case["domains"], values_tuple))
+                for values in world_values(case):
                     state = PatientState(patient_id="synthetic-world", as_of=datetime(2026, 10, 22, 12, tzinfo=timezone.utc),
                         facts=[EvidenceFact(evidence_id=c, statement="Synthetic " + c, source_type="medical_record",
                             source_location="synthetic://patient", verification_status="verified", event_date=date(2026, 10, 22),
-                            concept=c, value=v, unit=UNITS[c]) for c, v in values.items() if v is not None])
+                            concept=case.get("fact_labels", {}).get(c, c), value=v,
+                            unit=case.get("units", UNITS)[c]) for c, v in values.items() if v is not None])
                     assessments = {}
                     for criterion in prepared.trial.criteria:
                         checked = evaluate_criterion(criterion, state)
@@ -219,9 +239,8 @@ def main():
             except Exception as error:
                 # Never serialize raw provider errors, which can contain payloads.
                 row["error"] = type(error).__name__
-                row["worlds"] = [{"values": dict(zip(case["domains"], values)),
-                    "expected": expected(case, dict(zip(case["domains"], values))), "observed": "preparation_failed"}
-                    for values in product(*([None, *domain] for domain in case["domains"].values()))]
+                row["worlds"] = [{"values": values, "expected": expected(case, values), "observed": "preparation_failed"}
+                                 for values in world_values(case)]
             calls = [e for e in trace.events if e.event == "structured_model_completed"]
             row["proposal"] = calls[0].output["response"] if calls else None
             row["usage"] = calls[0].usage if calls else None
@@ -230,7 +249,8 @@ def main():
             output_file.write_text(json.dumps({"mode": args.mode, "source_root": str(source_root), "runtime": runtime,
                 "model": args.model if args.mode == "model" else None, "effort": args.effort if args.mode == "model" else None,
                 "strip_logic_draft": args.strip_logic_draft,
-                "scope": "Exploratory author-created synthetic numeric component probe; no clinical inference, no prose judgment model.",
+                "cases_file": str(args.cases) if args.cases else None,
+                "scope": "Exploratory source-clause component probe against author-selected numeric interpretation; synthetic values, no clinical inference or prose judgment model.",
                 "summary": summarize(rows), "cases": rows}, indent=2), encoding="utf-8")
             print(case["case_id"], row["error"] or (str(len(row["worlds"])) + " worlds"), flush=True)
     finally:
