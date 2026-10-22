@@ -54,6 +54,14 @@ QUALITY_PRIORS = (.70, .95)  # Existing record, verification requiring a visit.
 POLICIES = ("coverage", "decision_myopic", "decision_budget", "quality_myopic", "quality_budget")
 
 
+def erroneous_value_index(index: int, domain_size: int, *, shift: int = 2) -> int:
+    """A fixed, nonidentity synthetic error channel, including binary facts."""
+    if domain_size < 2 or not 0 <= index < domain_size or shift < 1:
+        raise ValueError("content errors require a valid index in a nonsingleton domain")
+    displacement = shift % domain_size or 1
+    return (index + displacement) % domain_size
+
+
 @dataclass(frozen=True)
 class ScalarRule:
     fact: int

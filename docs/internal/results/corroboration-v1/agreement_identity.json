@@ -1,0 +1,56 @@
+[
+  {
+    "source_error_probability": 0.01,
+    "shared_component": 0.0,
+    "agreement_probability": 0.9802,
+    "wrong_given_agreement": 0.00010201999591920018
+  },
+  {
+    "source_error_probability": 0.01,
+    "shared_component": 0.5,
+    "agreement_probability": 0.9901,
+    "wrong_given_agreement": 0.0051004948995051
+  },
+  {
+    "source_error_probability": 0.01,
+    "shared_component": 1.0,
+    "agreement_probability": 1.0,
+    "wrong_given_agreement": 0.01
+  },
+  {
+    "source_error_probability": 0.05,
+    "shared_component": 0.0,
+    "agreement_probability": 0.905,
+    "wrong_given_agreement": 0.0027624309392265197
+  },
+  {
+    "source_error_probability": 0.05,
+    "shared_component": 0.5,
+    "agreement_probability": 0.9525,
+    "wrong_given_agreement": 0.02755905511811024
+  },
+  {
+    "source_error_probability": 0.05,
+    "shared_component": 1.0,
+    "agreement_probability": 1.0,
+    "wrong_given_agreement": 0.05
+  },
+  {
+    "source_error_probability": 0.15,
+    "shared_component": 0.0,
+    "agreement_probability": 0.745,
+    "wrong_given_agreement": 0.030201342281879193
+  },
+  {
+    "source_error_probability": 0.15,
+    "shared_component": 0.5,
+    "agreement_probability": 0.8725,
+    "wrong_given_agreement": 0.09885386819484239
+  },
+  {
+    "source_error_probability": 0.15,
+    "shared_component": 1.0,
+    "agreement_probability": 1.0,
+    "wrong_given_agreement": 0.15
+  }
+]

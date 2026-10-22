@@ -11,7 +11,7 @@ from statistics import mean
 
 from clarifytrial.interactive.paper_benchmark import (
     POLICIES, QUALITY_PRIORS, RoutePlanner, evidence, generate_patients, make_model,
-    reference_statuses, runtime_statuses, runtime_view,
+    reference_statuses, runtime_statuses, runtime_view, erroneous_value_index,
 )
 from clarifytrial.interactive.statistics import stratified_bootstrap_mean
 
@@ -102,7 +102,8 @@ def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_gro
                                     success = draws[action] < q
                                     outcome = "valid" if success else ("no_answer","stale","missing_date","wrong_source","unverified")[(patient_index+fact+route)%5]
                                     corrupted=success and setting=="verified_value_error" and corruption[action]<.05
-                                    returned_index=(truth[fact]+2)%len(model.domains[fact]) if not success or corrupted else truth[fact]
+                                    returned_index=(erroneous_value_index(truth[fact],len(model.domains[fact])) if corrupted else
+                                        ((truth[fact]+2)%len(model.domains[fact]) if not success else truth[fact]))
                                     if success:
                                         observed = observed[:fact]+(returned_index,)+observed[fact+1:]
                                     else:
@@ -178,6 +179,7 @@ def run(source, output, *, patients=48, split="heldout", bootstrap=2000, max_gro
         "trial_count":sum(t["split"]==split for g in data["groups"][:max_groups] for t in g["trials"]),
         "quality_priors":QUALITY_PRIORS,"visit_penalties":penalties,"settings":settings,"compact_planning":compact,
         "source_version":data["version"],"relation_to_v1":data.get("relation_to_v1"),
+        "verified_error_channel":"shift_two_with_binary_flip_v2; earlier saved runs used shift by two, which left binary values unchanged",
         "model":"Independent empirical feature marginals with Laplace smoothing; the planner does not model value-dependent missingness, informative failures, or factual errors in verified returns.",
         "uncertainty":"Patient bootstrap conditional on these fixed protocol subsets and synthetic generators; not a CI for new protocols or clinical deployment. Exploratory multiple comparisons, no confirmatory p-value claim.",
         "metrics":aggregates,"comparisons":comparisons}

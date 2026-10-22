@@ -1,0 +1,225 @@
+[
+  {
+    "example": "shared_errors_pass_source_comparison",
+    "scope": "Post-hoc synthetic illustration, not clinical validation",
+    "group": "type_2_diabetes",
+    "patient": 3,
+    "mask": 0,
+    "setting": "shared_all",
+    "policies": [
+      {
+        "policy": "trust_first",
+        "correct": 1,
+        "unsafe": 3,
+        "wrong_confirmed": 1,
+        "wrong_excluded": 2,
+        "actions": 1,
+        "visits": 0,
+        "trace": [
+          {
+            "fact": "hba1c",
+            "route": 0,
+            "outcome": "valid",
+            "reported_index": 0,
+            "content_error": true,
+            "synthetic_true_value": 10.2,
+            "reported_value": 5.8
+          }
+        ]
+      },
+      {
+        "policy": "file_quorum",
+        "correct": 1,
+        "unsafe": 3,
+        "wrong_confirmed": 1,
+        "wrong_excluded": 2,
+        "actions": 3,
+        "visits": 1,
+        "trace": [
+          {
+            "fact": "egfr_ml_min_1_73m2",
+            "route": 0,
+            "outcome": "unverified",
+            "reported_index": 4,
+            "content_error": false,
+            "synthetic_true_value": 35.0,
+            "reported_value": 65.0
+          },
+          {
+            "fact": "hba1c",
+            "route": 0,
+            "outcome": "valid",
+            "reported_index": 0,
+            "content_error": true,
+            "synthetic_true_value": 10.2,
+            "reported_value": 5.8
+          },
+          {
+            "fact": "hba1c",
+            "route": 1,
+            "outcome": "valid",
+            "reported_index": 0,
+            "content_error": true,
+            "synthetic_true_value": 10.2,
+            "reported_value": 5.8
+          }
+        ]
+      },
+      {
+        "policy": "two_step_sources",
+        "correct": 1,
+        "unsafe": 3,
+        "wrong_confirmed": 1,
+        "wrong_excluded": 2,
+        "actions": 2,
+        "visits": 1,
+        "trace": [
+          {
+            "fact": "hba1c",
+            "route": 0,
+            "outcome": "valid",
+            "reported_index": 0,
+            "content_error": true,
+            "synthetic_true_value": 10.2,
+            "reported_value": 5.8
+          },
+          {
+            "fact": "hba1c",
+            "route": 1,
+            "outcome": "valid",
+            "reported_index": 0,
+            "content_error": true,
+            "synthetic_true_value": 10.2,
+            "reported_value": 5.8
+          }
+        ]
+      },
+      {
+        "policy": "budget_sources",
+        "correct": 1,
+        "unsafe": 3,
+        "wrong_confirmed": 1,
+        "wrong_excluded": 2,
+        "actions": 3,
+        "visits": 1,
+        "trace": [
+          {
+            "fact": "egfr_ml_min_1_73m2",
+            "route": 0,
+            "outcome": "unverified",
+            "reported_index": 4,
+            "content_error": false,
+            "synthetic_true_value": 35.0,
+            "reported_value": 65.0
+          },
+          {
+            "fact": "hba1c",
+            "route": 0,
+            "outcome": "valid",
+            "reported_index": 0,
+            "content_error": true,
+            "synthetic_true_value": 10.2,
+            "reported_value": 5.8
+          },
+          {
+            "fact": "hba1c",
+            "route": 1,
+            "outcome": "valid",
+            "reported_index": 0,
+            "content_error": true,
+            "synthetic_true_value": 10.2,
+            "reported_value": 5.8
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "example": "copied_records_pass_file_counting",
+    "scope": "Post-hoc synthetic illustration, not clinical validation",
+    "group": "type_2_diabetes",
+    "patient": 3,
+    "mask": 0,
+    "setting": "copied_source",
+    "policies": [
+      {
+        "policy": "trust_first",
+        "correct": 1,
+        "unsafe": 3,
+        "wrong_confirmed": 1,
+        "wrong_excluded": 2,
+        "actions": 1,
+        "visits": 0,
+        "trace": [
+          {
+            "fact": "hba1c",
+            "route": 0,
+            "outcome": "valid",
+            "reported_index": 0,
+            "content_error": true,
+            "synthetic_true_value": 10.2,
+            "reported_value": 5.8
+          }
+        ]
+      },
+      {
+        "policy": "file_quorum",
+        "correct": 1,
+        "unsafe": 3,
+        "wrong_confirmed": 1,
+        "wrong_excluded": 2,
+        "actions": 3,
+        "visits": 1,
+        "trace": [
+          {
+            "fact": "egfr_ml_min_1_73m2",
+            "route": 0,
+            "outcome": "unverified",
+            "reported_index": 4,
+            "content_error": false,
+            "synthetic_true_value": 35.0,
+            "reported_value": 65.0
+          },
+          {
+            "fact": "hba1c",
+            "route": 0,
+            "outcome": "valid",
+            "reported_index": 0,
+            "content_error": true,
+            "synthetic_true_value": 10.2,
+            "reported_value": 5.8
+          },
+          {
+            "fact": "hba1c",
+            "route": 1,
+            "outcome": "valid",
+            "reported_index": 0,
+            "content_error": true,
+            "synthetic_true_value": 10.2,
+            "reported_value": 5.8
+          }
+        ]
+      },
+      {
+        "policy": "two_step_sources",
+        "correct": 0,
+        "unsafe": 0,
+        "wrong_confirmed": 0,
+        "wrong_excluded": 0,
+        "actions": 0,
+        "visits": 0,
+        "trace": []
+      },
+      {
+        "policy": "budget_sources",
+        "correct": 0,
+        "unsafe": 0,
+        "wrong_confirmed": 0,
+        "wrong_excluded": 0,
+        "actions": 0,
+        "visits": 0,
+        "trace": []
+      }
+    ]
+  }
+]

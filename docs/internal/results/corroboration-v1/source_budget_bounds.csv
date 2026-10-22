@@ -1,0 +1,13 @@
+﻿setting,policy,correct,trials,initial_correct,first_confirmed,first_opportunity,oracle_correct,oracle_first_confirmed,gap_to_oracle
+independent,file_quorum,1294,2304,729,174,324,1361,190,67
+independent,two_step_sources,1295,2304,729,174,324,1361,190,66
+independent,budget_sources,1294,2304,729,174,324,1361,190,67
+shared_half,file_quorum,1316,2304,729,181,324,1381,198,65
+shared_half,two_step_sources,1317,2304,729,181,324,1381,198,64
+shared_half,budget_sources,1316,2304,729,181,324,1381,198,65
+shared_all,file_quorum,1350,2304,729,187,324,1406,207,56
+shared_all,two_step_sources,1349,2304,729,187,324,1406,207,57
+shared_all,budget_sources,1350,2304,729,187,324,1406,207,56
+copied_source,file_quorum,1350,2304,729,187,324,1406,207,56
+copied_source,two_step_sources,729,2304,729,0,324,729,0,0
+copied_source,budget_sources,729,2304,729,0,324,729,0,0
