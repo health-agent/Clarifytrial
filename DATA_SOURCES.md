@@ -291,3 +291,27 @@ TrialGPT 저장소가 공개한 GPT-4 검색어와 논문의 공개 순위 결�
 내용·환자 기록을 추가로 수집하지 않았으며 원본의 수집일·API 조건·권리는 위와 같다.
 오류 확률과 공유 정도는 저자의 가정이고 두 자료원 ID를 실제 독립성 주석으로 쓰지 않는다.
 결과는 `docs/internal/results/direction-corroboration-v1/`에 있다.
+
+## Leaf 공개 논리 주석 — 후속 원문 평가 준비
+
+- 원본: [UW Bio-NLP leaf-corpora](https://github.com/uw-bionlp/leaf-corpora),
+  `leaf_logical_forms/`. 관련 논문은
+  [LeafAI, JAMIA 2023](https://doi.org/10.1093/jamia/ocad149), 형식 설명은
+  [주석 지침](https://github.com/ndobb/clinical-trials-seq2seq-annotation/wiki)이다.
+- 받은 날짜: 2026-10-23(한국 시간). 공개 GitHub API로 파일 구조를 읽고
+  `codeload.github.com`의 고정 revision `461288aeba8b37fabd43bd7c55f0e1cb1bb10b9e` ZIP을 받았다.
+  인증·환자 자료 제출 없이 공개 읽기 요청만 했으며 별도 임상 데이터 API는 사용하지 않았다.
+- 이용 조건: [배포 저장소의 MIT License](https://github.com/uw-bionlp/leaf-corpora/blob/main/LICENSE).
+  `Copyright (c) 2023 UW Bio-NLP`와 허가 문구를 원본 및 준비 출력의 `LICENSE.upstream`에 보존한다.
+  원래 ClinicalTrials.gov의 참가 조건과 외부 저자의 주석이며 실제 환자 기록이 아니다.
+- 원시: `runs/leaf-source-20261023/`, 정리 출력: `runs/leaf-reference-prepared-20261023/`.
+  원본 JavaScript 모양의 표현은 실행·import하지 않고 토큰과 AST 자료로만 읽는다.
+- 주석 파일 2,060개, 서로 다른 원문 묶음 1,999개와 시험 번호 885개다. 중복 주석의
+  문구 21개와 그중 구문이 다른 13개를 보존한다. 구문 차이를 곧바로 의미 차이·임상 오류로
+  해석하지 않는다. 단일 표현 파서가 처리한 2,054개 중 수치 필터가 있는 주석은 479개,
+  제한한 구문 후보는 218개다. 이는 아직 평가 문구·독립 환자 수가 아니다.
+- 현재 상태는 **자료 준비**다. 주석과 원문의 경계·연결 불일치 가능성, 중복·예전 사용 시험의
+  제외, 평가 범위와 표집 규칙을 정한 뒤 모델을 비교한다. 새 모델 평가나 임상 검증을
+  마쳤다고 주장하지 않으며, 외부 주석을 원문의 의학적 진실로 자동 승격하지 않는다.
+
+재현: `python scripts/prepare_leaf_reference_corpus.py --download --source runs/leaf-source/upstream --output runs/leaf-prepared`.
