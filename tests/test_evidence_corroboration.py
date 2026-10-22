@@ -23,10 +23,10 @@ def fact(eid,value=50,**updates):
         "source_location":"synthetic://"+eid,"event_date":date(2026,10,22),"verification_status":"verified","concept":"egfr","value":value,"unit":"mL/min",**updates})
 
 
-def check(facts,groups,scopes=None,minimum=2):
+def check(facts,groups,scopes=None,minimum=2,mode="exact_value"):
     origins={eid:EvidenceOrigin(group,(scopes or {}).get(eid,"target")) for eid,group in groups.items()}
     return evaluate_corroborated_criterion(criterion(),PatientState(patient_id="synthetic",as_of=AS_OF,facts=facts),
-        origins=origins,comparison_scope="target",minimum_source_groups=minimum)
+        origins=origins,comparison_scope="target",minimum_source_groups=minimum,agreement_mode=mode)
 
 
 def test_two_declared_sources_agree_with_all_ids_and_no_pending_question():
@@ -38,15 +38,17 @@ def test_two_declared_sources_agree_with_all_ids_and_no_pending_question():
 
 @pytest.mark.parametrize("groups,scopes",[({"a":"same","b":"same"},None),({"a":"same","b":"same "},None),({"a":"A"},None),
     ({"a":"A","b":"B"},{"b":"different-target"})])
-def test_files_unknown_origins_and_different_scopes_are_not_two_sources(groups,scopes):
-    r=check([fact("a"),fact("b")],groups,scopes)
+@pytest.mark.parametrize("mode",["exact_value","criterion_direction"])
+def test_files_unknown_origins_and_different_scopes_are_not_two_sources(groups,scopes,mode):
+    r=check([fact("a"),fact("b")],groups,scopes,mode=mode)
     assert r.assessment.evidence_sufficiency.value=="insufficient" and r.question
 
 
 @pytest.mark.parametrize("update",[{"event_date":date(2026,8,1)},{"event_date":None},
     {"event_date":date(2026,10,24)},{"verification_status":"pending"},{"source_type":"patient_report"},{"unit":"mg/dL"}])
-def test_bad_metadata_or_unit_cannot_complete_the_quorum(update):
-    r=check([fact("a"),fact("b",**update)],{"a":"A","b":"B"})
+@pytest.mark.parametrize("mode",["exact_value","criterion_direction"])
+def test_bad_metadata_or_unit_cannot_complete_the_quorum(update,mode):
+    r=check([fact("a"),fact("b",**update)],{"a":"A","b":"B"},mode=mode)
     assert r.assessment.evidence_sufficiency.value=="insufficient"
 
 
@@ -129,3 +131,81 @@ def test_nonuniform_report_posterior_preserves_the_error_channel(shift):
             y1=erroneous_value_index(true_index,3,shift=shift) if e1 else true_index
             direct+=prior[true_index]*(.05 if e0 else .95)*(.05 if e1 else .95)*.7*.95*(y0==y1==2)
     assert value[0]==pytest.approx(direct) and action==(0,0)
+
+
+def test_direction_agreement_preserves_distinct_values_and_can_accept_two_different_errors():
+    r=check([fact("a",50),fact("b",55)],{"a":"A","b":"B"},mode="criterion_direction")
+    assert r.assessment.clinical_status.value=="supports" and r.question is None
+    assert "values_differ_but_criterion_direction_agrees" in r.issues
+    # With latent truth 50, two different erroneous reports can both fail >=30.
+    # Direction agreement accepts this wrong predicate; exact agreement withholds.
+    bad=[fact("a",20),fact("b",25)]
+    assert check(bad,{"a":"A","b":"B"},mode="criterion_direction").assessment.clinical_status.value=="violates"
+    assert check(bad,{"a":"A","b":"B"}).assessment.evidence_sufficiency.value=="conflicting"
+    assert check([fact("a",20),fact("b",50)],{"a":"A","b":"B"},mode="criterion_direction").assessment.clinical_status.value=="unknown"
+
+
+def test_direction_for_exclusion_and_current_explicit_conflict():
+    c=TrialCriterion.model_validate({**criterion().model_dump(),"kind":"exclusion"})
+    state=PatientState(patient_id="synthetic",as_of=AS_OF,facts=[fact("a",50),fact("b",55)])
+    origins={eid:EvidenceOrigin(group,"target") for eid,group in (("a","A"),("b","B"),("c","C"))}
+    r=evaluate_corroborated_criterion(c,state,origins=origins,comparison_scope="target",agreement_mode="criterion_direction")
+    assert r.assessment.clinical_status.value=="violates"
+    state=state.model_copy(update={"facts":state.facts+[fact("c",20,event_date=date(2026,10,23),verification_status="conflicting")]})
+    r=evaluate_corroborated_criterion(c,state,origins=origins,comparison_scope="target",agreement_mode="criterion_direction")
+    assert r.assessment.evidence_sufficiency.value=="conflicting" and "c" in r.assessment.evidence_ids
+
+
+def test_one_report_pair_can_resolve_one_trial_but_leave_another_predicate_pending():
+    from clarifytrial.interactive.contracts import InteractivePolicyView,InteractiveTrial
+    from clarifytrial.interactive.corroboration_runtime import evaluate_corroborated_view
+    c=criterion()
+    d=TrialCriterion.model_validate({**c.model_dump(),"criterion_id":"higher-minimum","trial_id":"other-trial",
+        "numeric_constraint":{**c.numeric_constraint.model_dump(),"threshold":52}})
+    view=InteractivePolicyView(case_id="synthetic",disease_group="synthetic",action_budget=3,
+        trials=[InteractiveTrial(trial_id="synthetic",criteria=[c]),InteractiveTrial(trial_id="other-trial",criteria=[d])])
+    result=evaluate_corroborated_view(view,PatientState(patient_id="synthetic",as_of=AS_OF,facts=[fact("a",50),fact("b",55)]),
+        origins={eid:EvidenceOrigin(group,"target") for eid,group in (("a","A"),("b","B"))},
+        scope_by_concept={"egfr":"target"},agreement_mode="criterion_direction")
+    assert [d.confirmation_status.value for d in result.decisions]==["confirmed","uncertain"]
+    assert result.criteria["synthetic-c"].assessment.evidence_ids==["a","b"]
+    assert result.pending_evidence_requests[0].related_criterion_ids==["higher-minimum"]
+    assert not result.full_protocol_confirmation_allowed and result.medical_disclaimer
+
+
+@pytest.mark.parametrize("mode",["exact_value","criterion_direction"])
+@pytest.mark.parametrize("channel",["cyclic","uniform_wrong"])
+def test_pair_planner_matches_complete_latent_report_enumeration(mode,channel):
+    from clarifytrial.interactive.direction_corroboration import SourcePairModel,SourcePairPlanner,report_channel
+    prior=(.6,.3,.1); p=.15
+    base=PublicAcquisitionModel(("x",),((0.,1.,2.),),(prior,),
+        ((ScalarRule(0,"gte",1,False),),(ScalarRule(0,"gte",2,True),)))
+    model=SourcePairModel(base,mode=mode)
+    planner=SourcePairPlanner(model,error_probability=p,channel=channel)
+    direct=0.
+    for t,y,z in product(range(3),repeat=3):
+        def likelihood(report):
+            return 1-p if report==t else p/2 if channel=="uniform_wrong" else p if report==(t+2)%3 else 0.
+        if mode=="exact_value" and y!=z:continue
+        resolved=int((y>=1)==(z>=1))+int((y<2)==(z<2))
+        direct+=prior[t]*likelihood(y)*likelihood(z)*.7*.95*resolved
+    value,action=planner.solve((-1,),(-1,),0,1,2)
+    assert value[0]==pytest.approx(direct) and action==(0,0)
+    assert planner.solve((-1,),(-1,),0,1,1)[1] is None
+    for row in report_channel(3,p,kind=channel):assert sum(row)==pytest.approx(1.)
+    # The same pair resolves >=1, but leaves the >=2 predicate unresolved.
+    pair=model.encode(0,1,2)
+    assert model.decode(0,pair)==(1,2)
+    assert model.statuses((pair,))==((1,-1) if mode=="criterion_direction" else (-1,-1))
+
+
+@pytest.mark.parametrize("prior",[(.6,.3,.1),(.2,.2,.6)])
+def test_new_exact_pair_channel_retains_legacy_cyclic_policy(prior):
+    from clarifytrial.interactive.direction_corroboration import SourcePairModel,SourcePairPlanner
+    from clarifytrial.interactive.paper_benchmark import LogicalRule
+    base=PublicAcquisitionModel(("x","blocked"),((0.,1.,2.),(0.,1.)),(prior,(.5,.5)),
+        ((ScalarRule(0,"gte",2,False),ScalarRule(1,"gte",1,False)),),
+        (LogicalRule("any",children=(LogicalRule("criterion",0),LogicalRule("criterion",1))),))
+    old=CorroborationPlanner(base)
+    new=SourcePairPlanner(SourcePairModel(base,mode="exact_value"),channel="cyclic")
+    assert new.solve((-1,-1),(-1,-1),12,1,3)==old.solve((-1,-1),(-1,-1),12,1,3)

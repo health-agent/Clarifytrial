@@ -1,0 +1,2904 @@
+{
+  "source_version": "paper-source-subsets-v2-logic",
+  "assessment_scope": "exploratory reuse of selected numeric protocol subsets",
+  "full_protocol_confirmation_allowed": false,
+  "channel": "uniform_wrong",
+  "error_probabilities": [
+    0.05,
+    0.15
+  ],
+  "patients": 288,
+  "replays": 11520,
+  "budget": 3,
+  "visit_limit": 1,
+  "quality_priors": [
+    0.7,
+    0.95
+  ],
+  "initial_evidence": "Correct paired reports; only new returns may err",
+  "planner": "Independent per-source content errors and development marginals; source error correlation is misspecification",
+  "metrics": [
+    {
+      "setting": "independent_p05",
+      "policy": "trust_first",
+      "trials": 2304,
+      "correct": 1886,
+      "confirmed": 959,
+      "excluded": 927,
+      "wrong_confirmed": 15,
+      "wrong_excluded": 11,
+      "unsafe": 26,
+      "unresolved": 392,
+      "initial_correct": 729,
+      "actions": 1412,
+      "visits": 401,
+      "invalid": 325,
+      "first_opportunity": 324,
+      "first_confirmed": 297,
+      "recovery": 0.8185763888888888,
+      "new_decisions": 1183,
+      "wrong_among_new": 0.02197802197802198
+    },
+    {
+      "setting": "independent_p05",
+      "policy": "exact_sources",
+      "trials": 2304,
+      "correct": 1294,
+      "confirmed": 571,
+      "excluded": 723,
+      "wrong_confirmed": 0,
+      "wrong_excluded": 0,
+      "unsafe": 0,
+      "unresolved": 1010,
+      "initial_correct": 729,
+      "actions": 1294,
+      "visits": 420,
+      "invalid": 283,
+      "first_opportunity": 324,
+      "first_confirmed": 175,
+      "recovery": 0.5616319444444444,
+      "new_decisions": 565,
+      "wrong_among_new": 0.0
+    },
+    {
+      "setting": "independent_p05",
+      "policy": "direction_same_trace",
+      "trials": 2304,
+      "correct": 1324,
+      "confirmed": 590,
+      "excluded": 734,
+      "wrong_confirmed": 0,
+      "wrong_excluded": 0,
+      "unsafe": 0,
+      "unresolved": 980,
+      "initial_correct": 729,
+      "actions": 1294,
+      "visits": 420,
+      "invalid": 283,
+      "first_opportunity": 324,
+      "first_confirmed": 186,
+      "recovery": 0.5746527777777778,
+      "new_decisions": 595,
+      "wrong_among_new": 0.0
+    },
+    {
+      "setting": "independent_p05",
+      "policy": "direction_two_step",
+      "trials": 2304,
+      "correct": 1323,
+      "confirmed": 594,
+      "excluded": 729,
+      "wrong_confirmed": 0,
+      "wrong_excluded": 0,
+      "unsafe": 0,
+      "unresolved": 981,
+      "initial_correct": 729,
+      "actions": 1244,
+      "visits": 428,
+      "invalid": 262,
+      "first_opportunity": 324,
+      "first_confirmed": 189,
+      "recovery": 0.57421875,
+      "new_decisions": 594,
+      "wrong_among_new": 0.0
+    },
+    {
+      "setting": "independent_p05",
+      "policy": "direction_sources",
+      "trials": 2304,
+      "correct": 1323,
+      "confirmed": 594,
+      "excluded": 729,
+      "wrong_confirmed": 0,
+      "wrong_excluded": 0,
+      "unsafe": 0,
+      "unresolved": 981,
+      "initial_correct": 729,
+      "actions": 1261,
+      "visits": 393,
+      "invalid": 279,
+      "first_opportunity": 324,
+      "first_confirmed": 189,
+      "recovery": 0.57421875,
+      "new_decisions": 594,
+      "wrong_among_new": 0.0
+    },
+    {
+      "setting": "shared_all_p05",
+      "policy": "trust_first",
+      "trials": 2304,
+      "correct": 1887,
+      "confirmed": 947,
+      "excluded": 940,
+      "wrong_confirmed": 7,
+      "wrong_excluded": 31,
+      "unsafe": 38,
+      "unresolved": 379,
+      "initial_correct": 729,
+      "actions": 1400,
+      "visits": 397,
+      "invalid": 321,
+      "first_opportunity": 324,
+      "first_confirmed": 297,
+      "recovery": 0.8190104166666666,
+      "new_decisions": 1196,
+      "wrong_among_new": 0.03177257525083612
+    },
+    {
+      "setting": "shared_all_p05",
+      "policy": "exact_sources",
+      "trials": 2304,
+      "correct": 1354,
+      "confirmed": 593,
+      "excluded": 761,
+      "wrong_confirmed": 4,
+      "wrong_excluded": 21,
+      "unsafe": 25,
+      "unresolved": 925,
+      "initial_correct": 729,
+      "actions": 1287,
+      "visits": 424,
+      "invalid": 280,
+      "first_opportunity": 324,
+      "first_confirmed": 188,
+      "recovery": 0.5876736111111112,
+      "new_decisions": 650,
+      "wrong_among_new": 0.038461538461538464
+    },
+    {
+      "setting": "shared_all_p05",
+      "policy": "direction_same_trace",
+      "trials": 2304,
+      "correct": 1354,
+      "confirmed": 593,
+      "excluded": 761,
+      "wrong_confirmed": 4,
+      "wrong_excluded": 21,
+      "unsafe": 25,
+      "unresolved": 925,
+      "initial_correct": 729,
+      "actions": 1287,
+      "visits": 424,
+      "invalid": 280,
+      "first_opportunity": 324,
+      "first_confirmed": 188,
+      "recovery": 0.5876736111111112,
+      "new_decisions": 650,
+      "wrong_among_new": 0.038461538461538464
+    },
+    {
+      "setting": "shared_all_p05",
+      "policy": "direction_two_step",
+      "trials": 2304,
+      "correct": 1357,
+      "confirmed": 601,
+      "excluded": 756,
+      "wrong_confirmed": 4,
+      "wrong_excluded": 22,
+      "unsafe": 26,
+      "unresolved": 921,
+      "initial_correct": 729,
+      "actions": 1243,
+      "visits": 432,
+      "invalid": 262,
+      "first_opportunity": 324,
+      "first_confirmed": 195,
+      "recovery": 0.5889756944444444,
+      "new_decisions": 654,
+      "wrong_among_new": 0.039755351681957186
+    },
+    {
+      "setting": "shared_all_p05",
+      "policy": "direction_sources",
+      "trials": 2304,
+      "correct": 1355,
+      "confirmed": 601,
+      "excluded": 754,
+      "wrong_confirmed": 4,
+      "wrong_excluded": 21,
+      "unsafe": 25,
+      "unresolved": 924,
+      "initial_correct": 729,
+      "actions": 1257,
+      "visits": 396,
+      "invalid": 279,
+      "first_opportunity": 324,
+      "first_confirmed": 195,
+      "recovery": 0.5881076388888888,
+      "new_decisions": 651,
+      "wrong_among_new": 0.03840245775729647
+    },
+    {
+      "setting": "independent_p15",
+      "policy": "trust_first",
+      "trials": 2304,
+      "correct": 1829,
+      "confirmed": 925,
+      "excluded": 904,
+      "wrong_confirmed": 30,
+      "wrong_excluded": 54,
+      "unsafe": 84,
+      "unresolved": 391,
+      "initial_correct": 729,
+      "actions": 1411,
+      "visits": 402,
+      "invalid": 322,
+      "first_opportunity": 324,
+      "first_confirmed": 291,
+      "recovery": 0.7938368055555556,
+      "new_decisions": 1184,
+      "wrong_among_new": 0.07094594594594594
+    },
+    {
+      "setting": "independent_p15",
+      "policy": "exact_sources",
+      "trials": 2304,
+      "correct": 1205,
+      "confirmed": 521,
+      "excluded": 684,
+      "wrong_confirmed": 0,
+      "wrong_excluded": 2,
+      "unsafe": 2,
+      "unresolved": 1097,
+      "initial_correct": 729,
+      "actions": 1327,
+      "visits": 399,
+      "invalid": 300,
+      "first_opportunity": 324,
+      "first_confirmed": 151,
+      "recovery": 0.5230034722222222,
+      "new_decisions": 478,
+      "wrong_among_new": 0.0041841004184100415
+    },
+    {
+      "setting": "independent_p15",
+      "policy": "direction_same_trace",
+      "trials": 2304,
+      "correct": 1271,
+      "confirmed": 566,
+      "excluded": 705,
+      "wrong_confirmed": 0,
+      "wrong_excluded": 2,
+      "unsafe": 2,
+      "unresolved": 1031,
+      "initial_correct": 729,
+      "actions": 1327,
+      "visits": 399,
+      "invalid": 300,
+      "first_opportunity": 324,
+      "first_confirmed": 176,
+      "recovery": 0.5516493055555556,
+      "new_decisions": 544,
+      "wrong_among_new": 0.003676470588235294
+    },
+    {
+      "setting": "independent_p15",
+      "policy": "direction_two_step",
+      "trials": 2304,
+      "correct": 1271,
+      "confirmed": 573,
+      "excluded": 698,
+      "wrong_confirmed": 0,
+      "wrong_excluded": 2,
+      "unsafe": 2,
+      "unresolved": 1031,
+      "initial_correct": 729,
+      "actions": 1248,
+      "visits": 395,
+      "invalid": 271,
+      "first_opportunity": 324,
+      "first_confirmed": 181,
+      "recovery": 0.5516493055555556,
+      "new_decisions": 544,
+      "wrong_among_new": 0.003676470588235294
+    },
+    {
+      "setting": "independent_p15",
+      "policy": "direction_sources",
+      "trials": 2304,
+      "correct": 1273,
+      "confirmed": 572,
+      "excluded": 701,
+      "wrong_confirmed": 0,
+      "wrong_excluded": 2,
+      "unsafe": 2,
+      "unresolved": 1029,
+      "initial_correct": 729,
+      "actions": 1241,
+      "visits": 395,
+      "invalid": 268,
+      "first_opportunity": 324,
+      "first_confirmed": 180,
+      "recovery": 0.5525173611111112,
+      "new_decisions": 546,
+      "wrong_among_new": 0.003663003663003663
+    },
+    {
+      "setting": "shared_all_p15",
+      "policy": "trust_first",
+      "trials": 2304,
+      "correct": 1820,
+      "confirmed": 901,
+      "excluded": 919,
+      "wrong_confirmed": 27,
+      "wrong_excluded": 89,
+      "unsafe": 116,
+      "unresolved": 368,
+      "initial_correct": 729,
+      "actions": 1397,
+      "visits": 390,
+      "invalid": 319,
+      "first_opportunity": 324,
+      "first_confirmed": 286,
+      "recovery": 0.7899305555555556,
+      "new_decisions": 1207,
+      "wrong_among_new": 0.09610604805302403
+    },
+    {
+      "setting": "shared_all_p15",
+      "policy": "exact_sources",
+      "trials": 2304,
+      "correct": 1317,
+      "confirmed": 579,
+      "excluded": 738,
+      "wrong_confirmed": 15,
+      "wrong_excluded": 51,
+      "unsafe": 66,
+      "unresolved": 921,
+      "initial_correct": 729,
+      "actions": 1317,
+      "visits": 403,
+      "invalid": 296,
+      "first_opportunity": 324,
+      "first_confirmed": 181,
+      "recovery": 0.5716145833333334,
+      "new_decisions": 654,
+      "wrong_among_new": 0.10091743119266056
+    },
+    {
+      "setting": "shared_all_p15",
+      "policy": "direction_same_trace",
+      "trials": 2304,
+      "correct": 1317,
+      "confirmed": 579,
+      "excluded": 738,
+      "wrong_confirmed": 15,
+      "wrong_excluded": 51,
+      "unsafe": 66,
+      "unresolved": 921,
+      "initial_correct": 729,
+      "actions": 1317,
+      "visits": 403,
+      "invalid": 296,
+      "first_opportunity": 324,
+      "first_confirmed": 181,
+      "recovery": 0.5716145833333334,
+      "new_decisions": 654,
+      "wrong_among_new": 0.10091743119266056
+    },
+    {
+      "setting": "shared_all_p15",
+      "policy": "direction_two_step",
+      "trials": 2304,
+      "correct": 1325,
+      "confirmed": 585,
+      "excluded": 740,
+      "wrong_confirmed": 15,
+      "wrong_excluded": 54,
+      "unsafe": 69,
+      "unresolved": 910,
+      "initial_correct": 729,
+      "actions": 1250,
+      "visits": 402,
+      "invalid": 272,
+      "first_opportunity": 324,
+      "first_confirmed": 185,
+      "recovery": 0.5750868055555556,
+      "new_decisions": 665,
+      "wrong_among_new": 0.1037593984962406
+    },
+    {
+      "setting": "shared_all_p15",
+      "policy": "direction_sources",
+      "trials": 2304,
+      "correct": 1320,
+      "confirmed": 587,
+      "excluded": 733,
+      "wrong_confirmed": 15,
+      "wrong_excluded": 50,
+      "unsafe": 65,
+      "unresolved": 919,
+      "initial_correct": 729,
+      "actions": 1237,
+      "visits": 399,
+      "invalid": 269,
+      "first_opportunity": 324,
+      "first_confirmed": 187,
+      "recovery": 0.5729166666666666,
+      "new_decisions": 656,
+      "wrong_among_new": 0.09908536585365854
+    }
+  ],
+  "comparisons": [
+    {
+      "setting": "independent_p05",
+      "candidate": "direction_sources",
+      "comparator": "exact_sources",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.012586805555555556,
+        "bootstrap_95_ci": {
+          "lower": 0.006510416666666667,
+          "upper": 0.020399305555555556
+        },
+        "wins": 19,
+        "ties": 268,
+        "losses": 1,
+        "two_sided_exact_sign_test_p": 4.00543212890625e-05
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.012586805555555556,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.002170138888888889,
+          "upper": 0.024739583333333332
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.046875,
+        "bootstrap_95_ci": {
+          "lower": -0.059027777777777776,
+          "upper": -0.034722222222222224
+        },
+        "wins": 0,
+        "ties": 261,
+        "losses": 27,
+        "two_sided_exact_sign_test_p": 1.4901161193847656e-08
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.057291666666666664,
+        "bootstrap_95_ci": {
+          "lower": -0.0798611111111111,
+          "upper": -0.034722222222222224
+        },
+        "wins": 9,
+        "ties": 237,
+        "losses": 42,
+        "two_sided_exact_sign_test_p": 3.3888279489246997e-06
+      }
+    },
+    {
+      "setting": "independent_p05",
+      "candidate": "direction_same_trace",
+      "comparator": "exact_sources",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.013020833333333334,
+        "bootstrap_95_ci": {
+          "lower": 0.006944444444444444,
+          "upper": 0.020833333333333332
+        },
+        "wins": 19,
+        "ties": 269,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 3.814697265625e-06
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.013020833333333334,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.004774305555555556,
+          "upper": 0.0234375
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      }
+    },
+    {
+      "setting": "independent_p05",
+      "candidate": "direction_sources",
+      "comparator": "direction_same_trace",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.00043402777777777775,
+        "bootstrap_95_ci": {
+          "lower": -0.0013020833333333333,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 287,
+        "losses": 1,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": -0.00043402777777777775,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.005208333333333333,
+          "upper": 0.004340277777777778
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.046875,
+        "bootstrap_95_ci": {
+          "lower": -0.059027777777777776,
+          "upper": -0.034722222222222224
+        },
+        "wins": 0,
+        "ties": 261,
+        "losses": 27,
+        "two_sided_exact_sign_test_p": 1.4901161193847656e-08
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.057291666666666664,
+        "bootstrap_95_ci": {
+          "lower": -0.0798611111111111,
+          "upper": -0.034722222222222224
+        },
+        "wins": 9,
+        "ties": 237,
+        "losses": 42,
+        "two_sided_exact_sign_test_p": 3.3888279489246997e-06
+      }
+    },
+    {
+      "setting": "independent_p05",
+      "candidate": "direction_sources",
+      "comparator": "direction_two_step",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": -0.0026041666666666665,
+          "upper": 0.0026041666666666665
+        },
+        "wins": 1,
+        "ties": 286,
+        "losses": 1,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.003472222222222222,
+          "upper": 0.003472222222222222
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.06076388888888889,
+        "bootstrap_95_ci": {
+          "lower": -0.07465277777777778,
+          "upper": -0.046875
+        },
+        "wins": 0,
+        "ties": 253,
+        "losses": 35,
+        "two_sided_exact_sign_test_p": 5.820766091346741e-11
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.029513888888888888,
+        "bootstrap_95_ci": {
+          "lower": 0.012152777777777778,
+          "upper": 0.046875
+        },
+        "wins": 26,
+        "ties": 253,
+        "losses": 9,
+        "two_sided_exact_sign_test_p": 0.0059881205670535564
+      }
+    },
+    {
+      "setting": "independent_p05",
+      "candidate": "direction_sources",
+      "comparator": "trust_first",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.2443576388888889,
+        "bootstrap_95_ci": {
+          "lower": -0.2651909722222222,
+          "upper": -0.2230902777777778
+        },
+        "wins": 1,
+        "ties": 41,
+        "losses": 246,
+        "two_sided_exact_sign_test_p": 2.1931722769033444e-72
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": -0.2443576388888889,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.2868923611111111,
+          "upper": -0.20182291666666666
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.011284722222222222,
+        "bootstrap_95_ci": {
+          "lower": -0.018229166666666668,
+          "upper": -0.005208333333333333
+        },
+        "wins": 0,
+        "ties": 274,
+        "losses": 14,
+        "two_sided_exact_sign_test_p": 0.0001220703125
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": -0.011284722222222222,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.02127821180555555,
+          "upper": -0.00390625
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.013888888888888888,
+        "bootstrap_95_ci": {
+          "lower": -0.07465277777777778,
+          "upper": 0.046918402777777146
+        },
+        "wins": 89,
+        "ties": 89,
+        "losses": 110,
+        "two_sided_exact_sign_test_p": 0.15608547576770992
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.2621527777777778,
+        "bootstrap_95_ci": {
+          "lower": -0.3211805555555556,
+          "upper": -0.2013888888888889
+        },
+        "wins": 59,
+        "ties": 62,
+        "losses": 167,
+        "two_sided_exact_sign_test_p": 3.8766991762766844e-13
+      }
+    },
+    {
+      "setting": "independent_p15",
+      "candidate": "direction_sources",
+      "comparator": "exact_sources",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.029513888888888888,
+        "bootstrap_95_ci": {
+          "lower": 0.020399305555555556,
+          "upper": 0.03993055555555555
+        },
+        "wins": 40,
+        "ties": 247,
+        "losses": 1,
+        "two_sided_exact_sign_test_p": 3.8198777474462986e-11
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.029513888888888888,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.009548611111111112,
+          "upper": 0.054253472222222224
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.006944444444444444,
+        "bootstrap_95_ci": {
+          "lower": -0.015625,
+          "upper": 0.0
+        },
+        "wins": 1,
+        "ties": 282,
+        "losses": 5,
+        "two_sided_exact_sign_test_p": 0.21875
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.14930555555555555,
+        "bootstrap_95_ci": {
+          "lower": -0.17708333333333334,
+          "upper": -0.12152777777777778
+        },
+        "wins": 5,
+        "ties": 205,
+        "losses": 78,
+        "two_sided_exact_sign_test_p": 6.403904916571207e-18
+      }
+    },
+    {
+      "setting": "independent_p15",
+      "candidate": "direction_same_trace",
+      "comparator": "exact_sources",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.028645833333333332,
+        "bootstrap_95_ci": {
+          "lower": 0.019965277777777776,
+          "upper": 0.038628472222222224
+        },
+        "wins": 38,
+        "ties": 250,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 7.275957614183426e-12
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.028645833333333332,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.013020833333333334,
+          "upper": 0.048177083333333336
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      }
+    },
+    {
+      "setting": "independent_p15",
+      "candidate": "direction_sources",
+      "comparator": "direction_same_trace",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0008680555555555555,
+        "bootstrap_95_ci": {
+          "lower": -0.0008680555555555555,
+          "upper": 0.0026041666666666665
+        },
+        "wins": 3,
+        "ties": 284,
+        "losses": 1,
+        "two_sided_exact_sign_test_p": 0.625
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.0008680555555555555,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.007378472222222222,
+          "upper": 0.009548611111111112
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.006944444444444444,
+        "bootstrap_95_ci": {
+          "lower": -0.015625,
+          "upper": 0.0
+        },
+        "wins": 1,
+        "ties": 282,
+        "losses": 5,
+        "two_sided_exact_sign_test_p": 0.21875
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.14930555555555555,
+        "bootstrap_95_ci": {
+          "lower": -0.17708333333333334,
+          "upper": -0.12152777777777778
+        },
+        "wins": 5,
+        "ties": 205,
+        "losses": 78,
+        "two_sided_exact_sign_test_p": 6.403904916571207e-18
+      }
+    },
+    {
+      "setting": "independent_p15",
+      "candidate": "direction_sources",
+      "comparator": "direction_two_step",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0008680555555555555,
+        "bootstrap_95_ci": {
+          "lower": -0.0008680555555555555,
+          "upper": 0.003472222222222222
+        },
+        "wins": 2,
+        "ties": 285,
+        "losses": 1,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.0008680555555555555,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.001736111111111111,
+          "upper": 0.0047851562499998425
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.012152777777777778,
+        "bootstrap_95_ci": {
+          "lower": -0.022569444444444444,
+          "upper": -0.001736111111111111
+        },
+        "wins": 2,
+        "ties": 277,
+        "losses": 9,
+        "two_sided_exact_sign_test_p": 0.0654296875
+      }
+    },
+    {
+      "setting": "independent_p15",
+      "candidate": "direction_sources",
+      "comparator": "trust_first",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.24131944444444445,
+        "bootstrap_95_ci": {
+          "lower": -0.2621527777777778,
+          "upper": -0.2191840277777778
+        },
+        "wins": 1,
+        "ties": 45,
+        "losses": 242,
+        "two_sided_exact_sign_test_p": 3.452477648802684e-71
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": -0.24131944444444445,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.2795138888888889,
+          "upper": -0.203125
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.035590277777777776,
+        "bootstrap_95_ci": {
+          "lower": -0.046440972222222224,
+          "upper": -0.025607638888888888
+        },
+        "wins": 0,
+        "ties": 237,
+        "losses": 51,
+        "two_sided_exact_sign_test_p": 8.881784197001252e-16
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": -0.035590277777777776,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.052083333333333336,
+          "upper": -0.021701388888888888
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.012152777777777778,
+        "bootstrap_95_ci": {
+          "lower": -0.07465277777777778,
+          "upper": 0.04861111111111111
+        },
+        "wins": 88,
+        "ties": 95,
+        "losses": 105,
+        "two_sided_exact_sign_test_p": 0.249376690043636
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.2951388888888889,
+        "bootstrap_95_ci": {
+          "lower": -0.35247395833333334,
+          "upper": -0.234375
+        },
+        "wins": 58,
+        "ties": 63,
+        "losses": 167,
+        "two_sided_exact_sign_test_p": 2.00620245878944e-13
+      }
+    },
+    {
+      "setting": "shared_all_p05",
+      "candidate": "direction_sources",
+      "comparator": "exact_sources",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.00043402777777777775,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0013020833333333333
+        },
+        "wins": 1,
+        "ties": 287,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.00043402777777777775,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.006510416666666667,
+          "upper": 0.008680555555555556
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.04861111111111111,
+        "bootstrap_95_ci": {
+          "lower": -0.06076388888888889,
+          "upper": -0.036458333333333336
+        },
+        "wins": 0,
+        "ties": 260,
+        "losses": 28,
+        "two_sided_exact_sign_test_p": 7.450580596923828e-09
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.052083333333333336,
+        "bootstrap_95_ci": {
+          "lower": -0.07465277777777778,
+          "upper": -0.029513888888888888
+        },
+        "wins": 10,
+        "ties": 239,
+        "losses": 39,
+        "two_sided_exact_sign_test_p": 3.845911694355664e-05
+      }
+    },
+    {
+      "setting": "shared_all_p05",
+      "candidate": "direction_same_trace",
+      "comparator": "exact_sources",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      }
+    },
+    {
+      "setting": "shared_all_p05",
+      "candidate": "direction_sources",
+      "comparator": "direction_same_trace",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.00043402777777777775,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0013020833333333333
+        },
+        "wins": 1,
+        "ties": 287,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.00043402777777777775,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.006510416666666667,
+          "upper": 0.008680555555555556
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.04861111111111111,
+        "bootstrap_95_ci": {
+          "lower": -0.06076388888888889,
+          "upper": -0.036458333333333336
+        },
+        "wins": 0,
+        "ties": 260,
+        "losses": 28,
+        "two_sided_exact_sign_test_p": 7.450580596923828e-09
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.052083333333333336,
+        "bootstrap_95_ci": {
+          "lower": -0.07465277777777778,
+          "upper": -0.029513888888888888
+        },
+        "wins": 10,
+        "ties": 239,
+        "losses": 39,
+        "two_sided_exact_sign_test_p": 3.845911694355664e-05
+      }
+    },
+    {
+      "setting": "shared_all_p05",
+      "candidate": "direction_sources",
+      "comparator": "direction_two_step",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.0008680555555555555,
+        "bootstrap_95_ci": {
+          "lower": -0.003472222222222222,
+          "upper": 0.001736111111111111
+        },
+        "wins": 1,
+        "ties": 285,
+        "losses": 2,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": -0.0008680555555555555,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.005208333333333333,
+          "upper": 0.0026041666666666665
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.00043402777777777775,
+        "bootstrap_95_ci": {
+          "lower": -0.0013020833333333333,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 287,
+        "losses": 1,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": -0.00043402777777777775,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.0026041666666666665,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.0625,
+        "bootstrap_95_ci": {
+          "lower": -0.0763888888888889,
+          "upper": -0.04861111111111111
+        },
+        "wins": 0,
+        "ties": 252,
+        "losses": 36,
+        "two_sided_exact_sign_test_p": 2.9103830456733704e-11
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.024305555555555556,
+        "bootstrap_95_ci": {
+          "lower": 0.006944444444444444,
+          "upper": 0.043402777777777776
+        },
+        "wins": 25,
+        "ties": 252,
+        "losses": 11,
+        "two_sided_exact_sign_test_p": 0.028816719655878842
+      }
+    },
+    {
+      "setting": "shared_all_p05",
+      "candidate": "direction_sources",
+      "comparator": "trust_first",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.2309027777777778,
+        "bootstrap_95_ci": {
+          "lower": -0.2513020833333333,
+          "upper": -0.2105034722222222
+        },
+        "wins": 1,
+        "ties": 42,
+        "losses": 245,
+        "two_sided_exact_sign_test_p": 4.3686576806058554e-72
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": -0.2309027777777778,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.2721462673611111,
+          "upper": -0.1896701388888889
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.005642361111111111,
+        "bootstrap_95_ci": {
+          "lower": -0.012152777777777778,
+          "upper": -0.00043402777777777775
+        },
+        "wins": 1,
+        "ties": 278,
+        "losses": 9,
+        "two_sided_exact_sign_test_p": 0.021484375
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": -0.005642361111111111,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.014756944444444444,
+          "upper": 0.00043402777777777775
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.001736111111111111,
+        "bootstrap_95_ci": {
+          "lower": -0.0625,
+          "upper": 0.06076388888888889
+        },
+        "wins": 90,
+        "ties": 90,
+        "losses": 108,
+        "two_sided_exact_sign_test_p": 0.22690555254948616
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.2482638888888889,
+        "bootstrap_95_ci": {
+          "lower": -0.3072916666666667,
+          "upper": -0.18919270833333396
+        },
+        "wins": 59,
+        "ties": 67,
+        "losses": 162,
+        "two_sided_exact_sign_test_p": 2.733633429718276e-12
+      }
+    },
+    {
+      "setting": "shared_all_p15",
+      "candidate": "direction_sources",
+      "comparator": "exact_sources",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0013020833333333333,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0030381944444444445
+        },
+        "wins": 3,
+        "ties": 285,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 0.25
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.0013020833333333333,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.011284722222222222,
+          "upper": 0.014756944444444444
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.00043402777777777775,
+        "bootstrap_95_ci": {
+          "lower": -0.0013020833333333333,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 287,
+        "losses": 1,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": -0.00043402777777777775,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.0026041666666666665,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.006944444444444444,
+        "bootstrap_95_ci": {
+          "lower": -0.015625,
+          "upper": 0.0
+        },
+        "wins": 1,
+        "ties": 282,
+        "losses": 5,
+        "two_sided_exact_sign_test_p": 0.21875
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.1388888888888889,
+        "bootstrap_95_ci": {
+          "lower": -0.16666666666666666,
+          "upper": -0.1111111111111111
+        },
+        "wins": 6,
+        "ties": 207,
+        "losses": 75,
+        "two_sided_exact_sign_test_p": 2.91096598559025e-16
+      }
+    },
+    {
+      "setting": "shared_all_p15",
+      "candidate": "direction_same_trace",
+      "comparator": "exact_sources",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": 0.0,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 288,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 1.0
+      }
+    },
+    {
+      "setting": "shared_all_p15",
+      "candidate": "direction_sources",
+      "comparator": "direction_same_trace",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.0013020833333333333,
+        "bootstrap_95_ci": {
+          "lower": 0.0,
+          "upper": 0.0030381944444444445
+        },
+        "wins": 3,
+        "ties": 285,
+        "losses": 0,
+        "two_sided_exact_sign_test_p": 0.25
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": 0.0013020833333333333,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.011284722222222222,
+          "upper": 0.014756944444444444
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.00043402777777777775,
+        "bootstrap_95_ci": {
+          "lower": -0.0013020833333333333,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 287,
+        "losses": 1,
+        "two_sided_exact_sign_test_p": 1.0
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": -0.00043402777777777775,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.0026041666666666665,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.006944444444444444,
+        "bootstrap_95_ci": {
+          "lower": -0.015625,
+          "upper": 0.0
+        },
+        "wins": 1,
+        "ties": 282,
+        "losses": 5,
+        "two_sided_exact_sign_test_p": 0.21875
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.1388888888888889,
+        "bootstrap_95_ci": {
+          "lower": -0.16666666666666666,
+          "upper": -0.1111111111111111
+        },
+        "wins": 6,
+        "ties": 207,
+        "losses": 75,
+        "two_sided_exact_sign_test_p": 2.91096598559025e-16
+      }
+    },
+    {
+      "setting": "shared_all_p15",
+      "candidate": "direction_sources",
+      "comparator": "direction_two_step",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.002170138888888889,
+        "bootstrap_95_ci": {
+          "lower": -0.006076388888888889,
+          "upper": 0.0013020833333333333
+        },
+        "wins": 2,
+        "ties": 281,
+        "losses": 5,
+        "two_sided_exact_sign_test_p": 0.453125
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": -0.002170138888888889,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.009114583333333334,
+          "upper": 0.0030381944444444445
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.001736111111111111,
+        "bootstrap_95_ci": {
+          "lower": -0.00390625,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 285,
+        "losses": 3,
+        "two_sided_exact_sign_test_p": 0.25
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": -0.001736111111111111,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.006076388888888889,
+          "upper": 0.0
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.005208333333333333,
+        "bootstrap_95_ci": {
+          "lower": -0.012152777777777778,
+          "upper": 0.0
+        },
+        "wins": 0,
+        "ties": 285,
+        "losses": 3,
+        "two_sided_exact_sign_test_p": 0.25
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.022569444444444444,
+        "bootstrap_95_ci": {
+          "lower": -0.034722222222222224,
+          "upper": -0.010416666666666666
+        },
+        "wins": 2,
+        "ties": 271,
+        "losses": 15,
+        "two_sided_exact_sign_test_p": 0.002349853515625
+      }
+    },
+    {
+      "setting": "shared_all_p15",
+      "candidate": "direction_sources",
+      "comparator": "trust_first",
+      "correct": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.2170138888888889,
+        "bootstrap_95_ci": {
+          "lower": -0.2365451388888889,
+          "upper": -0.19791666666666666
+        },
+        "wins": 0,
+        "ties": 44,
+        "losses": 244,
+        "two_sided_exact_sign_test_p": 7.074749280333369e-74
+      },
+      "correct_crossed_sensitivity": {
+        "mean_difference": -0.2170138888888889,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.2534722222222222,
+          "upper": -0.18055555555555555
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "unsafe": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.022135416666666668,
+        "bootstrap_95_ci": {
+          "lower": -0.03125,
+          "upper": -0.014322916666666666
+        },
+        "wins": 0,
+        "ties": 255,
+        "losses": 33,
+        "two_sided_exact_sign_test_p": 2.3283064365386963e-10
+      },
+      "unsafe_crossed_sensitivity": {
+        "mean_difference": -0.022135416666666668,
+        "bootstrap_seed": 20261023,
+        "bootstrap_resamples": 5000,
+        "resampling_units": "patient rows and trial columns, independently within query strata; masks averaged first",
+        "patient_count": 288,
+        "trial_count": 24,
+        "percentile_95_range": {
+          "lower": -0.03515625,
+          "upper": -0.012152777777777778
+        },
+        "scope": "Crossed resampling sensitivity on the listed arrays; selected protocols are not a random clinical-trial population sample."
+      },
+      "visits": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": 0.015625,
+        "bootstrap_95_ci": {
+          "lower": -0.046875,
+          "upper": 0.078125
+        },
+        "wins": 96,
+        "ties": 89,
+        "losses": 103,
+        "two_sided_exact_sign_test_p": 0.670704345731579
+      },
+      "actions": {
+        "cluster_unit": "synthetic_patient_within_fixed_protocol_stratum",
+        "strata": [
+          "breast_cancer",
+          "chronic_kidney_disease",
+          "heart_failure",
+          "non_small_cell_lung_cancer",
+          "obesity",
+          "type_2_diabetes"
+        ],
+        "pair_count": 288,
+        "bootstrap_seed": 20260830,
+        "bootstrap_resamples": 5000,
+        "mean_difference": -0.2777777777777778,
+        "bootstrap_95_ci": {
+          "lower": -0.3350694444444444,
+          "upper": -0.2170138888888889
+        },
+        "wins": 59,
+        "ties": 65,
+        "losses": 164,
+        "two_sided_exact_sign_test_p": 1.2573321295628887e-12
+      }
+    }
+  ]
+}

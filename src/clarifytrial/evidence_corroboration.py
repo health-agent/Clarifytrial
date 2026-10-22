@@ -7,7 +7,7 @@ independent, nor a guarantee of clinical truth. The ordinary checker is unchange
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Mapping
+from typing import Literal, Mapping
 
 from pydantic import Field
 
@@ -16,6 +16,9 @@ from .contracts import ClinicalStatus, ContractModel, EvidenceSufficiency, Patie
 from .disclaimer import DEFAULT_MEDICAL_DISCLAIMER
 from .mechanical_checks import MechanicalCriterionResult, MechanicalIssueCode, evaluate_criterion
 from .measurements import converted_value
+
+
+AgreementMode = Literal["exact_value", "criterion_direction"]
 
 
 @dataclass(frozen=True)
@@ -33,6 +36,7 @@ class EvidenceOrigin:
 class CorroborationResult(ContractModel):
     assessment: MechanicalCriterionResult
     comparison_scope: str
+    agreement_mode: AgreementMode = "exact_value"
     source_groups: list[str] = Field(default_factory=list)
     required_source_groups: int = Field(ge=2)
     issues: list[str] = Field(default_factory=list)
@@ -47,15 +51,21 @@ def evaluate_corroborated_criterion(
     origins: Mapping[str, EvidenceOrigin],
     comparison_scope: str,
     minimum_source_groups: int = 2,
+    agreement_mode: AgreementMode = "exact_value",
 ) -> CorroborationResult:
-    """Require exact converted-value agreement at the newest eligible event date.
+    """Compare current sources under an explicit, criterion-specific standard.
 
     The caller establishes the common measurement/timepoint scope. Equal dates
     or different URLs alone do not establish that scope or source independence.
-    Different values from the same source family also remain conflicting.
+    Direction agreement establishes only a predicate, never an agreed numeric
+    value. Every selected record must support the same eligibility-facing
+    direction. Source multiplicity, metadata and explicit-conflict guards apply
+    to both modes; different criteria may remain unresolved for the same pair.
     """
     if minimum_source_groups < 2 or not comparison_scope.strip():
         raise ValueError("corroboration needs at least two source groups and an explicit scope")
+    if agreement_mode not in {"exact_value", "criterion_direction"}:
+        raise ValueError("unsupported source agreement mode")
     comparison_scope=comparison_scope.strip()
     constraint = criterion.numeric_constraint
     relevant = [fact for fact in patient_state.facts if constraint is not None
@@ -71,11 +81,12 @@ def evaluate_corroborated_criterion(
         issues.append("no_evidence_in_declared_scope")
     # Evaluate each record through the ordinary date/source/verification/unit
     # guard. This keeps its policies authoritative instead of duplicating them.
-    eligible, explicit_conflicts = [], []
+    eligible, explicit_conflicts, directions_by_id = [], [], {}
     for fact in scoped:
         checked = evaluate_criterion(criterion, patient_state.model_copy(update={"facts": [fact]}))
         if checked.evidence_sufficiency is EvidenceSufficiency.SUFFICIENT and fact.event_date is not None:
             eligible.append(fact)
+            directions_by_id[fact.evidence_id] = checked.clinical_status
         if (checked.evidence_sufficiency is EvidenceSufficiency.CONFLICTING and fact.event_date is not None
             and set(checked.issue_codes).issubset({MechanicalIssueCode.EVIDENCE_CONFLICT,MechanicalIssueCode.VERIFICATION_NOT_ALLOWED})):
             explicit_conflicts.append(fact)
@@ -84,13 +95,14 @@ def evaluate_corroborated_criterion(
         selected = [fact for fact in eligible if fact.event_date == newest]
         groups = sorted({origins[fact.evidence_id].source_family for fact in selected})
         values = {converted_value(fact.value, source_unit=fact.unit, target_unit=constraint.unit) for fact in selected}
+        directions = {directions_by_id[fact.evidence_id] for fact in selected}
         if any(fact.event_date >= newest for fact in explicit_conflicts):
             issues.append("current_record_is_explicitly_conflicting")
             selected += [fact for fact in explicit_conflicts if fact.event_date >= newest]
             base = base.model_copy(update={"clinical_status": ClinicalStatus.UNKNOWN,
                 "evidence_sufficiency": EvidenceSufficiency.CONFLICTING})
-        elif len(values) > 1:
-            issues.append("source_values_disagree")
+        elif len(directions) > 1 or (agreement_mode == "exact_value" and len(values) > 1):
+            issues.append("source_directions_disagree" if len(directions) > 1 else "source_values_disagree")
             base = base.model_copy(update={"clinical_status": ClinicalStatus.UNKNOWN,
                 "evidence_sufficiency": EvidenceSufficiency.CONFLICTING})
         elif len(groups) < minimum_source_groups:
@@ -98,9 +110,10 @@ def evaluate_corroborated_criterion(
             base = base.model_copy(update={"clinical_status": ClinicalStatus.UNKNOWN,
                 "evidence_sufficiency": EvidenceSufficiency.INSUFFICIENT})
         else:
-            # Ordinary checker has already supplied the direction, and agreement
-            # covers every selected value. Cite every contributing source.
-            base = base.model_copy(update={"evidence_sufficiency": EvidenceSufficiency.SUFFICIENT})
+            if len(values) > 1:
+                issues.append("values_differ_but_criterion_direction_agrees")
+            base = base.model_copy(update={"clinical_status": next(iter(directions)),
+                "evidence_sufficiency": EvidenceSufficiency.SUFFICIENT, "issue_codes": []})
     else:
         issues.append("no_current_dated_evidence_for_corroboration")
         base = base.model_copy(update={"clinical_status": ClinicalStatus.UNKNOWN,
@@ -109,6 +122,7 @@ def evaluate_corroborated_criterion(
     question = None
     if base.evidence_sufficiency is not EvidenceSufficiency.SUFFICIENT:
         question = (f"{criterion.numeric_constraint.concept if constraint else criterion.statement}의 같은 측정·시점 범위에 해당하는 "
-                    "다른 자료원 기록을 확인해 주세요. 복사된 기록인지와 값·날짜·단위가 일치하는지도 확인해야 합니다.")
+                    "다른 자료원 기록을 확인해 주세요. 복사 여부·날짜·단위와 해당 조건에 대한 결론을 비교해야 합니다.")
     return CorroborationResult(assessment=base, comparison_scope=comparison_scope,
-        source_groups=groups, required_source_groups=minimum_source_groups, issues=issues, question=question)
+        agreement_mode=agreement_mode, source_groups=groups, required_source_groups=minimum_source_groups,
+        issues=issues, question=question)

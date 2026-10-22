@@ -8,13 +8,14 @@ from pydantic import Field
 from ..contracts import AgentAction, ContractModel, CriterionAssessment, NextAction, NextEvidenceRequest, PatientState, TrialDecision
 from ..decision_rules import aggregate_trial_decision
 from ..disclaimer import DEFAULT_MEDICAL_DISCLAIMER
-from ..evidence_corroboration import CorroborationResult, EvidenceOrigin, evaluate_corroborated_criterion
+from ..evidence_corroboration import AgreementMode, CorroborationResult, EvidenceOrigin, evaluate_corroborated_criterion
 from .contracts import InteractivePolicyView
 
 
 class CorroboratedViewResult(ContractModel):
     decisions: list[TrialDecision]
     criteria: dict[str, CorroborationResult]
+    agreement_mode: AgreementMode = "exact_value"
     pending_evidence_requests: list[NextEvidenceRequest] = Field(default_factory=list)
     assessment_scope: str = "selected_structured_conditions_only"
     full_protocol_confirmation_allowed: bool = False
@@ -22,7 +23,8 @@ class CorroboratedViewResult(ContractModel):
 
 
 def evaluate_corroborated_view(view: InteractivePolicyView, state: PatientState, *,
-        origins: Mapping[str, EvidenceOrigin], scope_by_concept: Mapping[str, str]) -> CorroboratedViewResult:
+        origins: Mapping[str, EvidenceOrigin], scope_by_concept: Mapping[str, str],
+        agreement_mode: AgreementMode = "exact_value") -> CorroboratedViewResult:
     results, decisions, criterion_by_id = {}, [], {}
     for trial in view.trials:
         assessments = []
@@ -32,7 +34,7 @@ def evaluate_corroborated_view(view: InteractivePolicyView, state: PatientState,
                 raise ValueError("research comparison requires a structured numeric criterion")
             concept = criterion.numeric_constraint.concept
             result = evaluate_corroborated_criterion(criterion, state, origins=origins,
-                comparison_scope=scope_by_concept[concept])
+                comparison_scope=scope_by_concept[concept], agreement_mode=agreement_mode)
             results[criterion.criterion_id] = result
             checked = result.assessment
             assessments.append(CriterionAssessment(criterion_id=criterion.criterion_id,
@@ -65,4 +67,5 @@ def evaluate_corroborated_view(view: InteractivePolicyView, state: PatientState,
     decisions=[decision.model_copy(update={"pending_information":[request for request in requests
         if any(criterion_by_id[cid].trial_id==decision.trial_id for cid in request.related_criterion_ids)]})
         if decision.confirmation_status.value not in {"confirmed","ineligible"} else decision for decision in decisions]
-    return CorroboratedViewResult(decisions=decisions, criteria=results,pending_evidence_requests=requests)
+    return CorroboratedViewResult(decisions=decisions, criteria=results, agreement_mode=agreement_mode,
+        pending_evidence_requests=requests)
