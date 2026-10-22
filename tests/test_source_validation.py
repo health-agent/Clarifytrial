@@ -337,6 +337,19 @@ def test_unit_conversion_is_not_assumed() -> None:
     assert not units_equivalent("mg/dL", "mmol/L")
 
 
+@pytest.mark.parametrize("text,concept,operator,threshold,unit",[
+    ("HbA1c below 7%; age at least 18 years.","hba1c","gte",7,"%"),
+    ("Serum creatinine <=1.6 mg/dL.","serum_creatinine","lte",1.6,"g/dL"),
+    ("eGFR >=30 mL/min/1.73m2.","egfr","gte",30,"mL/min"),
+    ("ALT <=3 x ULN.","ast","lte",3,"xULN"),
+])
+def test_a_calculation_cannot_borrow_another_operator_unit_or_concept(text,concept,operator,threshold,unit):
+    criterion=TrialCriterionDraft(kind="inclusion",statement=text,source_quote=text,
+        numeric_constraint={"concept":concept,"operator":operator,"threshold":threshold,"unit":unit})
+    with pytest.raises(SourceValidationError):
+        validate_trial_criterion_source(criterion,text)
+
+
 @pytest.mark.parametrize(
     ("text", "concept", "operator", "threshold", "unit"),
     [

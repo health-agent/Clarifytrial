@@ -7,7 +7,7 @@ import re
 from dataclasses import dataclass
 
 from ..agents.base import StructuredAgent
-from ..contracts import NextAction, NextEvidenceRequest, TrialCriterion
+from ..contracts import CriterionLogic, NextAction, NextEvidenceRequest, TrialCriterion
 from ..interactive.burden_contracts import AcquisitionOption
 from ..trace import TraceRecorder
 from ..workflow import ScreeningTrial
@@ -25,6 +25,9 @@ from .source_validation import (
     remove_unwritten_equality_constraint,
     resolve_source_span,
     validate_trial_criterion_source,
+)
+from .protocol_logic import (
+    GroundedLogicAtom,GroundedLogicProposal,compile_protocol_logic,
 )
 
 
@@ -78,8 +81,9 @@ def _section_start_hint(
     return None
 
 
-def _unsupported_logic_issues(text: str) -> list[str]:
-    return [message for pattern, message in _COMPLEX_LOGIC_PATTERNS if pattern.search(text)]
+def _unsupported_logic_issues(text: str,verified_spans=()) -> list[str]:
+    return list(dict.fromkeys(message for pattern,message in _COMPLEX_LOGIC_PATTERNS
+        for match in pattern.finditer(text) if not any(start<=match.start() and match.end()<=end for start,end in verified_spans)))
 
 
 def _resolve_criterion_source_span(
@@ -318,6 +322,7 @@ def structure_trial_protocol(
         char_limit=chunk_char_limit,
     )
     draft_items = []
+    draft_groups = []
     known_information_needs = [
         {
             "fact_key": item.fact_key,
@@ -352,11 +357,15 @@ def structure_trial_protocol(
             ],
         ).output
         draft_items.extend((item, chunk) for item in draft.criteria)
+        draft_groups.extend((group,chunk) for group in draft.logic_groups)
     criteria = []
     needs: list[PreparedInformationNeed] = []
     source_matches = []
     kind_corrections = []
-    protocol_logic_issues = _unsupported_logic_issues(source.eligibility_text)
+    initial_logic_issues = _unsupported_logic_issues(source.eligibility_text)
+    protocol_logic_issues = []
+    grounded_atoms = []
+    criterion_ids_by_local_key = {}
     draft_quote_counts: dict[tuple[int, str], int] = {}
     for draft_item, draft_chunk in draft_items:
         key = (draft_chunk.start_char, comparison_text(draft_item.source_quote))
@@ -401,7 +410,7 @@ def structure_trial_protocol(
             remove_unsupported_evidence_requirements(
                 item,
                 match.source_text,
-                allow_remove_recency=bool(protocol_logic_issues),
+                allow_remove_recency=bool(initial_logic_issues or protocol_logic_issues),
             )
         )
         item, numeric_constraint_corrections = (
@@ -442,6 +451,9 @@ def structure_trial_protocol(
                 evidence_requirement=item.evidence_requirement,
             )
         )
+        grounded_atoms.append(GroundedLogicAtom(criteria[-1],global_start,global_end))
+        if item.criterion_key is not None:
+            criterion_ids_by_local_key[(chunk.start_char,item.criterion_key)]=criterion_id
         source_matches.append(
             {
                 "criterion_id": criterion_id,
@@ -473,6 +485,22 @@ def structure_trial_protocol(
                     criterion_id=criterion_id,
                 )
             )
+    grounded_groups=[]
+    for group,chunk in draft_groups:
+        try:
+            match=resolve_source_span(chunk.text,group.source_quote,
+                approximate_start_char=group.start_char,approximate_end_char=group.end_char)
+            def remap(node):
+                if node.operator.value=="criterion":
+                    return node.model_copy(update={"criterion_id":criterion_ids_by_local_key[(chunk.start_char,node.criterion_id)]})
+                return node.model_copy(update={"children":[remap(child) for child in node.children]})
+            grounded_groups.append(GroundedLogicProposal(chunk.start_char+match.start_char,
+                chunk.start_char+match.end_char,remap(group.predicate_logic)))
+        except (SourceValidationError,KeyError) as error:
+            protocol_logic_issues.append(f"논리 묶음의 원문 또는 조건 참조를 연결하지 못했다: {error}")
+    compiled_logic=compile_protocol_logic(source.eligibility_text,grounded_atoms,grounded_groups)
+    protocol_logic_issues.extend(_unsupported_logic_issues(source.eligibility_text,compiled_logic.verified_spans))
+    protocol_logic_issues.extend(compiled_logic.issues)
     protocol_logic_issues = list(dict.fromkeys(protocol_logic_issues))
     trace.record(
         cycle=0,
@@ -487,12 +515,14 @@ def structure_trial_protocol(
             "kind_corrections": kind_corrections,
             "protocol_logic_supported": not protocol_logic_issues,
             "protocol_logic_issues": protocol_logic_issues,
+            "source_logic_groups":list(compiled_logic.records),
         },
     )
     return PreparedTrial(
         trial=ScreeningTrial(
             trial_id=source.trial_id,
             criteria=criteria,
+            eligibility_logic=compiled_logic.eligibility_logic,
             protocol_logic_supported=not protocol_logic_issues,
             protocol_logic_issues=protocol_logic_issues,
         ),

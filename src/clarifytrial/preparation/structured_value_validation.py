@@ -132,6 +132,13 @@ def _unit_is_present(
 ) -> bool:
     normalized = normalized_unit(unit)
     normalized_source = normalized_unit(source_text)
+    if normalized in {"g/dl","mg/dl","ug/dl","ng/dl","g/l","mg/l","ug/l","ng/l"}:
+        # A unit is a token, not a substring: mg/dL must not validate g/dL.
+        mass_units=re.findall(r"(?<![a-z])(?:milligrams?|micrograms?|nanograms?|grams?|mg|[µμu]g|ng|g)\s*(?:/|\bper\b)\s*(?:decilit(?:er|re)s?|d[lL]|lit(?:er|re)s?|[lL])\b",
+                              unicodedata.normalize("NFKC",source_text),re.I)
+        return any(normalized_unit(value)==normalized for value in mass_units)
+    if normalized=="ml/min":
+        return bool(re.search(r"ml/min(?!/1\.73)",normalized_source))
     if normalized in normalized_source:
         return True
     if "/" in normalized:
@@ -248,6 +255,43 @@ def _supported_operators(source_text: str) -> set[ComparisonOperator]:
     }
 
 
+def _operators_bound_to_number(expected: float,unit: str,source_text: str) -> set[ComparisonOperator]:
+    """Do not borrow an operator printed next to a different threshold."""
+    text=unicodedata.normalize("NFKC",source_text).casefold().replace("\\","").replace("=<","<=").replace("=>",">=")
+    unit_pattern=re.escape(unicodedata.normalize("NFKC",unit).casefold()).replace(r"\ ",r"\s*")
+    unit_spans=[(m.start(),m.end()) for m in re.finditer(unit_pattern,text)]
+    numbers=[(m.start(),m.end(),float(m[0].replace(",",""))) for m in _NUMBER_PATTERN.finditer(text)]
+    for word,value in _NUMBER_WORDS.items():
+        numbers.extend((m.start(),m.end(),float(value)) for m in re.finditer(r"\b"+word+r"\b",text))
+    numbers.sort()
+    numbers=[number for number in numbers if not any(start<=number[0] and number[1]<=end for start,end in unit_spans)]
+    supported=set()
+    neutral=re.compile(r"\b(?:the|a|an|age|of|is|be|must|value|score|level)\b")
+    for i,(start,end,value) in enumerate(numbers):
+        if not math.isclose(value,expected,rel_tol=1e-9,abs_tol=1e-9):continue
+        prefix=text[max(numbers[i-1][1] if i else 0,start-140):start]
+        candidates=[]
+        for operator,patterns in _OPERATOR_PATTERNS.items():
+            for pattern in patterns:
+                for match in pattern.finditer(prefix):
+                    gap=re.sub(r"[\s:]+","",neutral.sub("",prefix[match.end():]))
+                    if not gap:candidates.append((match.end(),match.end()-match.start(),operator))
+        if candidates:
+            specificity=max((end,length) for end,length,_ in candidates)
+            supported.update(op for end,length,op in candidates if (end,length)==specificity)
+        suffix=text[end:numbers[i+1][0] if i+1<len(numbers) else min(len(text),end+80)]
+        for operator,patterns in _OPERATOR_PATTERNS.items():
+            for pattern in patterns:
+                for match in pattern.finditer(suffix):
+                    if not re.match(r"or\s+|(?:and|or)\s+higher|이상|이하|미만|초과",match[0]):continue
+                    padding=re.sub(r"\bold\b","",suffix[:match.start()]).strip()
+                    categorical_padding=(normalized_unit(unit)=="type" and
+                        re.fullmatch(r"(?:non\s+communicating\s+)?blocks?",padding))
+                    if not padding or normalized_unit(padding)==normalized_unit(unit) or categorical_padding:
+                        supported.add(operator)
+    return supported
+
+
 _RANGE_PATTERN = re.compile(
     r"(?:\bbetween\s+|\bfrom\s+)?"
     r"([-+]?(?:\d+(?:\.\d+)?))\s*"
@@ -271,6 +315,16 @@ def _range_supports_operator(
             return True
         if operator is ComparisonOperator.LTE and math.isclose(expected, upper):
             return True
+    return False
+
+
+def _explicit_ecog_set(constraint,source_text: str) -> bool:
+    if "ecog" not in constraint.concept.casefold() or constraint.threshold not in {0,1,2,3,4,5}:
+        return False
+    source=unicodedata.normalize("NFKC",source_text)
+    for match in re.finditer(r"(?<!\d)([0-5](?:\s*,\s*[0-5])*)\s+or\s+([0-5])(?!\d)",source,re.I):
+        values={int(v) for v in re.findall(r"\d",match[0])}
+        if constraint.threshold in values:return True
     return False
 
 
@@ -415,6 +469,10 @@ def validate_trial_criterion_source(
 
     constraint = criterion.numeric_constraint
     if constraint is not None:
+        if not _concept_is_present(constraint.concept,matched_source_text):
+            raise SourceValidationError(
+                f"criterion concept {constraint.concept!r} is not supported by the cited source"
+            )
         if not _number_is_present(constraint.threshold, matched_source_text):
             raise SourceValidationError(
                 f"criterion threshold {constraint.threshold:g} is not present in the cited source"
@@ -427,9 +485,10 @@ def validate_trial_criterion_source(
             raise SourceValidationError(
                 f"criterion unit {constraint.unit!r} is not present in the cited source"
             )
-        supported = _supported_operators(matched_source_text)
+        supported = _operators_bound_to_number(constraint.threshold,constraint.unit,matched_source_text)
         if (
             constraint.operator not in supported
+            and not (constraint.operator is ComparisonOperator.EQ and _explicit_ecog_set(constraint,matched_source_text))
             and not _range_supports_operator(
                 constraint.threshold,
                 constraint.operator,
@@ -539,6 +598,7 @@ def remove_unwritten_equality_constraint(
         constraint is None
         or constraint.operator is not ComparisonOperator.EQ
         or ComparisonOperator.EQ in _supported_operators(matched_source_text)
+        or _explicit_ecog_set(constraint,matched_source_text)
     ):
         return criterion, []
     return (

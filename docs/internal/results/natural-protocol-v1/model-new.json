@@ -1,0 +1,4079 @@
+{
+  "mode": "model",
+  "source_root": "source-logic-v7",
+  "runtime": {
+    "sdk_version": "0.147.0",
+    "runtime_name": "Codex Desktop",
+    "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+    "user_agent": "Codex Desktop/0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+    "platform_family": "windows",
+    "platform_os": "windows"
+  },
+  "model": "gpt-5.6-sol",
+  "effort": "medium",
+  "scope": "Exploratory author-created synthetic numeric component probe; no clinical inference, no prose judgment model.",
+  "summary": {
+    "cases": 15,
+    "failed_cases": 0,
+    "scorable_cases": 12,
+    "scorable_worlds": 185,
+    "correct_worlds": 182,
+    "all_worlds_correct_cases": 11,
+    "resolvable_worlds": 115,
+    "correct_resolved": 112,
+    "abstained_resolvable": 3,
+    "failed_resolvable": 0,
+    "false_confirmed": 0,
+    "false_excluded": 0,
+    "prematurely_decisive": 0,
+    "unscored_scope_worlds": 33,
+    "decisive_on_unscored_scope": 1,
+    "provider_total_tokens": 240835,
+    "effective_models": [
+      "gpt-5.6-sol"
+    ]
+  },
+  "cases": [
+    {
+      "case_id": "inclusion_and",
+      "source_text": "Inclusion Criteria:\neGFR >=30 mL/min/1.73m2 and HbA1c <7%",
+      "reference_formula": [
+        "and",
+        [
+          "gte",
+          "egfr",
+          30
+        ],
+        [
+          "lt",
+          "hba1c",
+          7
+        ]
+      ],
+      "domains": {
+        "egfr": [
+          20,
+          50
+        ],
+        "hba1c": [
+          6,
+          8
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 2,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "criterion_key": "c1",
+            "statement": "eGFR must be at least 30 mL/min/1.73m2.",
+            "source_quote": "eGFR >=30 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "eGFR",
+              "operator": "gte",
+              "threshold": 30.0,
+              "unit": "mL/min/1.73m2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr_value",
+                "description": "Patient's eGFR value in mL/min/1.73m2",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "criterion_key": "c2",
+            "statement": "HbA1c must be less than 7%.",
+            "source_quote": "HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "HbA1c",
+              "operator": "lt",
+              "threshold": 7.0,
+              "unit": "%"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "hba1c_value",
+                "description": "Patient's HbA1c value as a percentage",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "eGFR >=30 mL/min/1.73m2 and HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "all",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c1",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c2",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": null,
+              "label": null
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15461,
+        "output_tokens": 538,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 156,
+        "total_tokens": 15999,
+        "latency_ms": 12240,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "inclusion_or",
+      "source_text": "Inclusion Criteria:\neGFR >=30 mL/min/1.73m2 or HbA1c <7%",
+      "reference_formula": [
+        "or",
+        [
+          "gte",
+          "egfr",
+          30
+        ],
+        [
+          "lt",
+          "hba1c",
+          7
+        ]
+      ],
+      "domains": {
+        "egfr": [
+          20,
+          50
+        ],
+        "hba1c": [
+          6,
+          8
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 2,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "criterion_key": "c1",
+            "statement": "eGFR is at least 30 mL/min/1.73m2.",
+            "source_quote": "eGFR >=30 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "eGFR",
+              "operator": "gte",
+              "threshold": 30.0,
+              "unit": "mL/min/1.73m2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr",
+                "description": "Patient's eGFR value in mL/min/1.73m2.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "criterion_key": "c2",
+            "statement": "HbA1c is less than 7%.",
+            "source_quote": "HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "HbA1c",
+              "operator": "lt",
+              "threshold": 7.0,
+              "unit": "%"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "hba1c",
+                "description": "Patient's HbA1c value as a percentage.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "eGFR >=30 mL/min/1.73m2 or HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "any",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c1",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c2",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": null,
+              "label": null
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15461,
+        "output_tokens": 582,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 204,
+        "total_tokens": 16043,
+        "latency_ms": 12941,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "exclusion_and",
+      "source_text": "Exclusion Criteria:\neGFR >=30 mL/min/1.73m2 and HbA1c <7%",
+      "reference_formula": [
+        "and",
+        [
+          "gte",
+          "egfr",
+          30
+        ],
+        [
+          "lt",
+          "hba1c",
+          7
+        ]
+      ],
+      "domains": {
+        "egfr": [
+          20,
+          50
+        ],
+        "hba1c": [
+          6,
+          8
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 2,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "criterion_key": "c1",
+            "statement": "eGFR is greater than or equal to 30 mL/min/1.73m2.",
+            "source_quote": "eGFR >=30 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "eGFR",
+              "operator": "gte",
+              "threshold": 30.0,
+              "unit": "mL/min/1.73m2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr_value",
+                "description": "Patient's eGFR value in mL/min/1.73m2.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "exclusion",
+            "criterion_key": "c2",
+            "statement": "HbA1c is less than 7%.",
+            "source_quote": "HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "HbA1c",
+              "operator": "lt",
+              "threshold": 7.0,
+              "unit": "%"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "hba1c_value",
+                "description": "Patient's HbA1c value as a percentage.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "eGFR >=30 mL/min/1.73m2 and HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "all",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c1",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c2",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": null,
+              "label": null
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15461,
+        "output_tokens": 573,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 190,
+        "total_tokens": 16034,
+        "latency_ms": 15775,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "exclusion_or",
+      "source_text": "Exclusion Criteria:\neGFR >=30 mL/min/1.73m2 or HbA1c <7%",
+      "reference_formula": [
+        "or",
+        [
+          "gte",
+          "egfr",
+          30
+        ],
+        [
+          "lt",
+          "hba1c",
+          7
+        ]
+      ],
+      "domains": {
+        "egfr": [
+          20,
+          50
+        ],
+        "hba1c": [
+          6,
+          8
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 2,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "criterion_key": "c1",
+            "statement": "eGFR\uac00 30 mL/min/1.73m2 \uc774\uc0c1\uc784",
+            "source_quote": "eGFR >=30 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "eGFR",
+              "operator": "gte",
+              "threshold": 30.0,
+              "unit": "mL/min/1.73m2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr",
+                "description": "\ud658\uc790\uc758 eGFR \uac80\uc0ac\uac12",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "exclusion",
+            "criterion_key": "c2",
+            "statement": "HbA1c\uac00 7% \ubbf8\ub9cc\uc784",
+            "source_quote": "HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "HbA1c",
+              "operator": "lt",
+              "threshold": 7.0,
+              "unit": "%"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "hba1c",
+                "description": "\ud658\uc790\uc758 HbA1c \uac80\uc0ac\uac12",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "eGFR >=30 mL/min/1.73m2 or HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "any",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c1",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c2",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": null,
+              "label": null
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15461,
+        "output_tokens": 478,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 110,
+        "total_tokens": 15939,
+        "latency_ms": 8772,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "nested_inclusion",
+      "source_text": "Inclusion Criteria:\n(eGFR >=30 mL/min/1.73m2 or HbA1c <7%) and Age >=18 years",
+      "reference_formula": [
+        "and",
+        [
+          "or",
+          [
+            "gte",
+            "egfr",
+            30
+          ],
+          [
+            "lt",
+            "hba1c",
+            7
+          ]
+        ],
+        [
+          "gte",
+          "age",
+          18
+        ]
+      ],
+      "domains": {
+        "egfr": [
+          20,
+          50
+        ],
+        "hba1c": [
+          6,
+          8
+        ],
+        "age": [
+          17,
+          25
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 3,
+      "criterion_count": 3,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "criterion_key": "c1",
+            "statement": "eGFR is at least 30 mL/min/1.73m2.",
+            "source_quote": "eGFR >=30 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "eGFR",
+              "operator": "gte",
+              "threshold": 30.0,
+              "unit": "mL/min/1.73m2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr_value",
+                "description": "Patient's eGFR value in mL/min/1.73m2.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "criterion_key": "c2",
+            "statement": "HbA1c is less than 7%.",
+            "source_quote": "HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "HbA1c",
+              "operator": "lt",
+              "threshold": 7.0,
+              "unit": "%"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "hba1c_value",
+                "description": "Patient's HbA1c value as a percentage.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "criterion_key": "c3",
+            "statement": "Age is at least 18 years.",
+            "source_quote": "Age >=18 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "Patient's age in years.",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "(eGFR >=30 mL/min/1.73m2 or HbA1c <7%) and Age >=18 years",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "all",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "any",
+                  "criterion_id": null,
+                  "children": [
+                    {
+                      "operator": "criterion",
+                      "criterion_id": "c1",
+                      "children": [],
+                      "minimum_required": null,
+                      "label": null
+                    },
+                    {
+                      "operator": "criterion",
+                      "criterion_id": "c2",
+                      "children": [],
+                      "minimum_required": null,
+                      "label": null
+                    }
+                  ],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c3",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": null,
+              "label": null
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15467,
+        "output_tokens": 704,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 178,
+        "total_tokens": 16171,
+        "latency_ms": 12391,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "nested_exclusion",
+      "source_text": "Exclusion Criteria:\n(eGFR >=30 mL/min/1.73m2 and HbA1c <7%) or Age >=18 years",
+      "reference_formula": [
+        "or",
+        [
+          "and",
+          [
+            "gte",
+            "egfr",
+            30
+          ],
+          [
+            "lt",
+            "hba1c",
+            7
+          ]
+        ],
+        [
+          "gte",
+          "age",
+          18
+        ]
+      ],
+      "domains": {
+        "egfr": [
+          20,
+          50
+        ],
+        "hba1c": [
+          6,
+          8
+        ],
+        "age": [
+          17,
+          25
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 3,
+      "criterion_count": 3,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "criterion_key": "c1",
+            "statement": "eGFR\uac00 30 mL/min/1.73m2 \uc774\uc0c1\uc774\ub2e4.",
+            "source_quote": "eGFR >=30 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "eGFR",
+              "operator": "gte",
+              "threshold": 30.0,
+              "unit": "mL/min/1.73m2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr",
+                "description": "\ud658\uc790\uc758 eGFR \uc218\uce58",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "exclusion",
+            "criterion_key": "c2",
+            "statement": "HbA1c\uac00 7% \ubbf8\ub9cc\uc774\ub2e4.",
+            "source_quote": "HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "HbA1c",
+              "operator": "lt",
+              "threshold": 7.0,
+              "unit": "%"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "hba1c",
+                "description": "\ud658\uc790\uc758 HbA1c \uc218\uce58",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "exclusion",
+            "criterion_key": "c3",
+            "statement": "\uc5f0\ub839\uc774 18\uc138 \uc774\uc0c1\uc774\ub2e4.",
+            "source_quote": "Age >=18 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "\ud658\uc790\uc758 \uc5f0\ub839",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "(eGFR >=30 mL/min/1.73m2 and HbA1c <7%) or Age >=18 years",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "any",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "all",
+                  "criterion_id": null,
+                  "children": [
+                    {
+                      "operator": "criterion",
+                      "criterion_id": "c1",
+                      "children": [],
+                      "minimum_required": null,
+                      "label": null
+                    },
+                    {
+                      "operator": "criterion",
+                      "criterion_id": "c2",
+                      "children": [],
+                      "minimum_required": null,
+                      "label": null
+                    }
+                  ],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c3",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": null,
+              "label": null
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15467,
+        "output_tokens": 663,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 149,
+        "total_tokens": 16130,
+        "latency_ms": 16247,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "two_of_three_inclusion",
+      "source_text": "Inclusion Criteria:\nAt least two of the following must apply:\n* eGFR >=30 mL/min/1.73m2\n* HbA1c <7%\n* Age >=18 years",
+      "reference_formula": [
+        "at_least",
+        2,
+        [
+          "gte",
+          "egfr",
+          30
+        ],
+        [
+          "lt",
+          "hba1c",
+          7
+        ],
+        [
+          "gte",
+          "age",
+          18
+        ]
+      ],
+      "domains": {
+        "egfr": [
+          20,
+          50
+        ],
+        "hba1c": [
+          6,
+          8
+        ],
+        "age": [
+          17,
+          25
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 3,
+      "criterion_count": 3,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "criterion_key": "c1",
+            "statement": "eGFR is at least 30 mL/min/1.73m2.",
+            "source_quote": "eGFR >=30 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "eGFR",
+              "operator": "gte",
+              "threshold": 30.0,
+              "unit": "mL/min/1.73m2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr",
+                "description": "Patient's eGFR value in mL/min/1.73m2.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "criterion_key": "c2",
+            "statement": "HbA1c is less than 7%.",
+            "source_quote": "HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "HbA1c",
+              "operator": "lt",
+              "threshold": 7.0,
+              "unit": "%"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "hba1c",
+                "description": "Patient's HbA1c value as a percentage.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "criterion_key": "c3",
+            "statement": "Age is at least 18 years.",
+            "source_quote": "Age >=18 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "Age",
+              "operator": "gte",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age",
+                "description": "Patient's age in years.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "ASK_PATIENT"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "At least two of the following must apply:\n* eGFR >=30 mL/min/1.73m2\n* HbA1c <7%\n* Age >=18 years",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "at_least",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c1",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c2",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c3",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": 2,
+              "label": null
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15484,
+        "output_tokens": 687,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15232,
+        "thinking_tokens": 171,
+        "total_tokens": 16171,
+        "latency_ms": 13250,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "two_of_three_exclusion",
+      "source_text": "Exclusion Criteria:\nAt least two of the following must apply:\n* eGFR >=30 mL/min/1.73m2\n* HbA1c <7%\n* Age >=18 years",
+      "reference_formula": [
+        "at_least",
+        2,
+        [
+          "gte",
+          "egfr",
+          30
+        ],
+        [
+          "lt",
+          "hba1c",
+          7
+        ],
+        [
+          "gte",
+          "age",
+          18
+        ]
+      ],
+      "domains": {
+        "egfr": [
+          20,
+          50
+        ],
+        "hba1c": [
+          6,
+          8
+        ],
+        "age": [
+          17,
+          25
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 3,
+      "criterion_count": 3,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "exclusion",
+            "criterion_key": "c1",
+            "statement": "eGFR is at least 30 mL/min/1.73m2.",
+            "source_quote": "eGFR >=30 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "eGFR",
+              "operator": "gte",
+              "threshold": 30.0,
+              "unit": "mL/min/1.73m2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr_value",
+                "description": "Patient's eGFR value in mL/min/1.73m2.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "exclusion",
+            "criterion_key": "c2",
+            "statement": "HbA1c is below 7%.",
+            "source_quote": "HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "HbA1c",
+              "operator": "lt",
+              "threshold": 7.0,
+              "unit": "%"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "hba1c_value",
+                "description": "Patient's HbA1c value as a percentage.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "exclusion",
+            "criterion_key": "c3",
+            "statement": "Age is at least 18 years.",
+            "source_quote": "Age >=18 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age_years",
+                "description": "Patient's age in years.",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "At least two of the following must apply:\n* eGFR >=30 mL/min/1.73m2\n* HbA1c <7%\n* Age >=18 years",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "at_least",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c1",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c2",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c3",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": 2,
+              "label": null
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15484,
+        "output_tokens": 773,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 254,
+        "total_tokens": 16257,
+        "latency_ms": 13773,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "shared_range",
+      "source_text": "Inclusion Criteria:\neGFR >=30 and <60 mL/min/1.73m2",
+      "reference_formula": [
+        "and",
+        [
+          "gte",
+          "egfr",
+          30
+        ],
+        [
+          "lt",
+          "egfr",
+          60
+        ]
+      ],
+      "domains": {
+        "egfr": [
+          20,
+          30,
+          59,
+          60
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 30
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 59
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 60
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 2,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "criterion_key": "c1",
+            "statement": "eGFR is at least 30 mL/min/1.73m2.",
+            "source_quote": "eGFR >=30 and <60 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "eGFR",
+              "operator": "gte",
+              "threshold": 30.0,
+              "unit": "mL/min/1.73m2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr",
+                "description": "Patient's eGFR value in mL/min/1.73m2.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "criterion_key": "c2",
+            "statement": "eGFR is less than 60 mL/min/1.73m2.",
+            "source_quote": "eGFR >=30 and <60 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "eGFR",
+              "operator": "lt",
+              "threshold": 60.0,
+              "unit": "mL/min/1.73m2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr",
+                "description": "Patient's eGFR value in mL/min/1.73m2.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "eGFR >=30 and <60 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "all",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c1",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c2",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": null,
+              "label": null
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15454,
+        "output_tokens": 567,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 163,
+        "total_tokens": 16021,
+        "latency_ms": 11747,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "ecog_enumeration",
+      "source_text": "Inclusion Criteria:\nECOG performance status of 0 or 1.",
+      "reference_formula": [
+        "or",
+        [
+          "eq",
+          "ecog",
+          0
+        ],
+        [
+          "eq",
+          "ecog",
+          1
+        ]
+      ],
+      "domains": {
+        "ecog": [
+          0,
+          1,
+          2
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "ecog": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "ecog": 0
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "ecog": 1
+          },
+          "expected": "confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "ecog": 2
+          },
+          "expected": "ineligible",
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 2,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "criterion_key": "c1",
+            "statement": "ECOG performance status is 0.",
+            "source_quote": "ECOG performance status of 0 or 1.",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "ECOG performance status",
+              "operator": "eq",
+              "threshold": 0.0,
+              "unit": "score"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "ecog_performance_status",
+                "description": "Current ECOG performance status score",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "criterion_key": "c2",
+            "statement": "ECOG performance status is 1.",
+            "source_quote": "ECOG performance status of 0 or 1.",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "ECOG performance status",
+              "operator": "eq",
+              "threshold": 1.0,
+              "unit": "score"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "ecog_performance_status",
+                "description": "Current ECOG performance status score",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "ECOG performance status of 0 or 1.",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "any",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c1",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c2",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": null,
+              "label": "ECOG performance status 0 or 1"
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15584,
+        "output_tokens": 349,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 0,
+        "total_tokens": 15933,
+        "latency_ms": 40722,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "age_interval",
+      "source_text": "Inclusion Criteria:\nAge between 18 and 70 years",
+      "reference_formula": [
+        "and",
+        [
+          "gte",
+          "age",
+          18
+        ],
+        [
+          "lte",
+          "age",
+          70
+        ]
+      ],
+      "domains": {
+        "age": [
+          17,
+          18,
+          70,
+          71
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "age": 18
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "age": 70
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "age": 71
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 2,
+      "criterion_count": 2,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "criterion_key": "c1",
+            "statement": "Age is at least 18 years.",
+            "source_quote": "Age between 18 and 70 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age_years",
+                "description": "Patient age in years",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "criterion_key": "c2",
+            "statement": "Age is at most 70 years.",
+            "source_quote": "Age between 18 and 70 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "lte",
+              "threshold": 70.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age_years",
+                "description": "Patient age in years",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "Age between 18 and 70 years",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "all",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c1",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c2",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": null,
+              "label": "Age range"
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15516,
+        "output_tokens": 415,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 99,
+        "total_tokens": 15931,
+        "latency_ms": 12234,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "separate_requirements",
+      "source_text": "Inclusion Criteria:\n* eGFR >=30 mL/min/1.73m2\n* HbA1c <7%\n* Age >=18 years",
+      "reference_formula": [
+        "and",
+        [
+          "gte",
+          "egfr",
+          30
+        ],
+        [
+          "lt",
+          "hba1c",
+          7
+        ],
+        [
+          "gte",
+          "age",
+          18
+        ]
+      ],
+      "domains": {
+        "egfr": [
+          20,
+          50
+        ],
+        "hba1c": [
+          6,
+          8
+        ],
+        "age": [
+          17,
+          25
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": "not_confirmed",
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": "confirmed",
+          "observed": "confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": "ineligible",
+          "observed": "ineligible"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 3,
+      "criterion_count": 3,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "criterion_key": "c1",
+            "statement": "eGFR must be at least 30 mL/min/1.73m2.",
+            "source_quote": "eGFR >=30 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "eGFR",
+              "operator": "gte",
+              "threshold": 30.0,
+              "unit": "mL/min/1.73m2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr_value",
+                "description": "Patient's eGFR value in mL/min/1.73m2",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "criterion_key": "c2",
+            "statement": "HbA1c must be less than 7%.",
+            "source_quote": "HbA1c <7%",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "HbA1c",
+              "operator": "lt",
+              "threshold": 7.0,
+              "unit": "%"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "hba1c_value",
+                "description": "Patient's HbA1c value in percent",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "criterion_key": "c3",
+            "statement": "Age must be at least 18 years.",
+            "source_quote": "Age >=18 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "age",
+              "operator": "gte",
+              "threshold": 18.0,
+              "unit": "years"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "age_years",
+                "description": "Patient's age in years",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "* eGFR >=30 mL/min/1.73m2\n* HbA1c <7%\n* Age >=18 years",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "all",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c1",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c2",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c3",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": null,
+              "label": "Inclusion Criteria"
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15542,
+        "output_tokens": 768,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 256,
+        "total_tokens": 16310,
+        "latency_ms": 11750,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "unrepresented_if",
+      "source_text": "Inclusion Criteria:\nIf liver metastases are present, eGFR >=30 mL/min/1.73m2",
+      "reference_formula": null,
+      "domains": {
+        "egfr": [
+          20,
+          50
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 0,
+      "criterion_count": 1,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "criterion_key": "c1",
+            "statement": "If liver metastases are present, eGFR must be at least 30 mL/min/1.73m2.",
+            "source_quote": "If liver metastases are present, eGFR >=30 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": null,
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "liver_metastases_status",
+                "description": "Whether liver metastases are present",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              },
+              {
+                "fact_key": "egfr_value",
+                "description": "Current eGFR value in mL/min/1.73m2",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": []
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15461,
+        "output_tokens": 292,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 112,
+        "total_tokens": 15753,
+        "latency_ms": 6415,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "ambiguous_scope",
+      "source_text": "Inclusion Criteria:\neGFR >=30 mL/min/1.73m2 or HbA1c <7% and Age >=18 years",
+      "reference_formula": null,
+      "domains": {
+        "egfr": [
+          20,
+          50
+        ],
+        "hba1c": [
+          6,
+          8
+        ],
+        "age": [
+          17,
+          25
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": null,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": null
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": 17
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": null,
+            "age": 25
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": null
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": 17
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 6,
+            "age": 25
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": null
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": 17
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 50,
+            "hba1c": 8,
+            "age": 25
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 0,
+      "criterion_count": 1,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "criterion_key": "c1",
+            "statement": "eGFR >=30 mL/min/1.73m2 or HbA1c <7% and Age >=18 years",
+            "source_quote": "eGFR >=30 mL/min/1.73m2 or HbA1c <7% and Age >=18 years",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": null,
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr_value",
+                "description": "\ud658\uc790\uc758 eGFR \uac12(mL/min/1.73m2)",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              },
+              {
+                "fact_key": "hba1c_value",
+                "description": "\ud658\uc790\uc758 HbA1c \uac12(%)",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              },
+              {
+                "fact_key": "age_years",
+                "description": "\ud658\uc790\uc758 \uc5f0\ub839(\uc138)",
+                "acceptable_actions": [
+                  "ASK_PATIENT",
+                  "LOOKUP_RECORD"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": []
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15466,
+        "output_tokens": 679,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "thinking_tokens": 459,
+        "total_tokens": 16145,
+        "latency_ms": 14352,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    },
+    {
+      "case_id": "unrepresented_infection",
+      "source_text": "Inclusion Criteria:\neGFR >=30 mL/min/1.73m2 and no active infection.",
+      "reference_formula": null,
+      "domains": {
+        "egfr": [
+          20,
+          50
+        ]
+      },
+      "worlds": [
+        {
+          "values": {
+            "egfr": null
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        },
+        {
+          "values": {
+            "egfr": 20
+          },
+          "expected": null,
+          "observed": "ineligible"
+        },
+        {
+          "values": {
+            "egfr": 50
+          },
+          "expected": null,
+          "observed": "not_confirmed"
+        }
+      ],
+      "error": null,
+      "supported": true,
+      "issues": [],
+      "numeric_count": 1,
+      "criterion_count": 2,
+      "proposal": {
+        "criteria": [
+          {
+            "kind": "inclusion",
+            "criterion_key": "c1",
+            "statement": "eGFR is at least 30 mL/min/1.73m2.",
+            "source_quote": "eGFR >=30 mL/min/1.73m2",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": {
+              "concept": "eGFR",
+              "operator": "gte",
+              "threshold": 30.0,
+              "unit": "mL/min/1.73m2"
+            },
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "egfr_value",
+                "description": "Patient's eGFR value in mL/min/1.73m2.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "inclusion",
+            "criterion_key": "c2",
+            "statement": "No active infection.",
+            "source_quote": "no active infection",
+            "start_char": null,
+            "end_char": null,
+            "numeric_constraint": null,
+            "evidence_requirement": null,
+            "information_needs": [
+              {
+                "fact_key": "active_infection_status",
+                "description": "Whether the patient has an active infection.",
+                "acceptable_actions": [
+                  "LOOKUP_RECORD",
+                  "REQUEST_VERIFICATION"
+                ]
+              }
+            ]
+          }
+        ],
+        "logic_groups": [
+          {
+            "source_quote": "eGFR >=30 mL/min/1.73m2 and no active infection.",
+            "start_char": null,
+            "end_char": null,
+            "predicate_logic": {
+              "operator": "all",
+              "criterion_id": null,
+              "children": [
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c1",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                },
+                {
+                  "operator": "criterion",
+                  "criterion_id": "c2",
+                  "children": [],
+                  "minimum_required": null,
+                  "label": null
+                }
+              ],
+              "minimum_required": null,
+              "label": null
+            }
+          }
+        ]
+      },
+      "usage": {
+        "model_id": "gpt-5.6-sol",
+        "effort": "medium",
+        "input_tokens": 15459,
+        "output_tokens": 539,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 15232,
+        "thinking_tokens": 196,
+        "total_tokens": 15998,
+        "latency_ms": 11651,
+        "finish_reason": "completed",
+        "attempts": 1,
+        "requested_model_id": "gpt-5.6-sol",
+        "requested_effort": "medium",
+        "rerouted_from_model": null,
+        "sdk_version": "0.147.0",
+        "runtime_name": "Codex Desktop",
+        "runtime_version": "0.147.0 (Windows 10.0.26200; x86_64) dumb (clarifytrial; 0.1.0)",
+        "tool_events_audited": true,
+        "web_search_events": []
+      }
+    }
+  ]
+}

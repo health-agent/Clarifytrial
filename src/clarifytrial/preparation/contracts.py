@@ -8,6 +8,7 @@ from pydantic import Field, model_validator
 
 from ..contracts import (
     ContractModel,
+    CriterionLogic,
     CriterionKind,
     EvidenceFact,
     EvidenceRequirement,
@@ -153,6 +154,7 @@ class TrialCriterionDraft(ContractModel):
     """A criterion proposed from a quoted part of a trial source."""
 
     kind: CriterionKind
+    criterion_key: str | None = Field(default=None, min_length=1)
     statement: str = Field(min_length=1)
     source_quote: str = Field(min_length=1)
     start_char: int | None = Field(default=None, ge=0)
@@ -174,10 +176,46 @@ class TrialCriterionDraft(ContractModel):
         return self
 
 
+class ProtocolLogicGroupDraft(ContractModel):
+    """A source-membership formula; leaves refer to local criterion_key values.
+
+    Exclusion negation is applied in code after source section resolution. This
+    formula must not pre-invert exclusion leaves into eligibility-facing logic.
+    """
+    source_quote: str = Field(min_length=1)
+    start_char: int | None = Field(default=None,ge=0)
+    end_char: int | None = Field(default=None,gt=0)
+    predicate_logic: CriterionLogic
+
+    @model_validator(mode="after")
+    def offsets_are_paired(self) -> "ProtocolLogicGroupDraft":
+        if (self.start_char is None)!=(self.end_char is None):
+            raise ValueError("group source offsets must be paired")
+        if self.start_char is not None and self.end_char<=self.start_char:
+            raise ValueError("group end_char must follow start_char")
+        return self
+
+
 class TrialProtocolDraft(ContractModel):
     """All normalized criteria proposed for one supplied candidate trial."""
 
     criteria: list[TrialCriterionDraft] = Field(min_length=1)
+    logic_groups: list[ProtocolLogicGroupDraft] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def logic_references_are_local_and_unambiguous(self) -> "TrialProtocolDraft":
+        keys=[item.criterion_key for item in self.criteria if item.criterion_key is not None]
+        if len(keys)!=len(set(keys)):
+            raise ValueError("criterion_key values must be unique within a protocol chunk")
+        used=set()
+        for group in self.logic_groups:
+            referenced=group.predicate_logic.referenced_criterion_ids()
+            if not referenced.issubset(set(keys)):
+                raise ValueError("logic group refers to unknown criterion_key")
+            if used & referenced:
+                raise ValueError("logic groups must not share criterion keys; use a single nested group")
+            used.update(referenced)
+        return self
 
 
 class AcquisitionPathInput(ContractModel):

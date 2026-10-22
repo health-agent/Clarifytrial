@@ -1,0 +1,128 @@
+{
+  "scripted-old": {
+    "cases": 15,
+    "failed_cases": 0,
+    "scorable_cases": 12,
+    "scorable_worlds": 185,
+    "correct_worlds": 122,
+    "all_worlds_correct_cases": 5,
+    "resolvable_worlds": 115,
+    "correct_resolved": 68,
+    "abstained_resolvable": 39,
+    "failed_resolvable": 0,
+    "false_confirmed": 0,
+    "false_excluded": 8,
+    "prematurely_decisive": 16,
+    "unscored_scope_worlds": 33,
+    "decisive_on_unscored_scope": 24,
+    "provider_total_tokens": 0,
+    "effective_models": [
+      "scripted-local"
+    ]
+  },
+  "scripted-new": {
+    "cases": 15,
+    "failed_cases": 0,
+    "scorable_cases": 12,
+    "scorable_worlds": 185,
+    "correct_worlds": 157,
+    "all_worlds_correct_cases": 10,
+    "resolvable_worlds": 115,
+    "correct_resolved": 87,
+    "abstained_resolvable": 28,
+    "failed_resolvable": 0,
+    "false_confirmed": 0,
+    "false_excluded": 0,
+    "prematurely_decisive": 0,
+    "unscored_scope_worlds": 33,
+    "decisive_on_unscored_scope": 0,
+    "provider_total_tokens": 0,
+    "effective_models": [
+      "scripted-local"
+    ]
+  },
+  "model-old": {
+    "cases": 15,
+    "failed_cases": 0,
+    "scorable_cases": 12,
+    "scorable_worlds": 185,
+    "correct_worlds": 109,
+    "all_worlds_correct_cases": 3,
+    "resolvable_worlds": 115,
+    "correct_resolved": 41,
+    "abstained_resolvable": 72,
+    "failed_resolvable": 0,
+    "false_confirmed": 0,
+    "false_excluded": 2,
+    "prematurely_decisive": 2,
+    "unscored_scope_worlds": 33,
+    "decisive_on_unscored_scope": 3,
+    "provider_total_tokens": 221618,
+    "effective_models": [
+      "gpt-5.6-sol"
+    ]
+  },
+  "model-new": {
+    "cases": 15,
+    "failed_cases": 0,
+    "scorable_cases": 12,
+    "scorable_worlds": 185,
+    "correct_worlds": 182,
+    "all_worlds_correct_cases": 11,
+    "resolvable_worlds": 115,
+    "correct_resolved": 112,
+    "abstained_resolvable": 3,
+    "failed_resolvable": 0,
+    "false_confirmed": 0,
+    "false_excluded": 0,
+    "prematurely_decisive": 0,
+    "unscored_scope_worlds": 33,
+    "decisive_on_unscored_scope": 1,
+    "provider_total_tokens": 240835,
+    "effective_models": [
+      "gpt-5.6-sol"
+    ]
+  },
+  "old-proposals-new-code": {
+    "cases": 15,
+    "failed_cases": 0,
+    "scorable_cases": 12,
+    "scorable_worlds": 185,
+    "correct_worlds": 115,
+    "all_worlds_correct_cases": 4,
+    "resolvable_worlds": 115,
+    "correct_resolved": 45,
+    "abstained_resolvable": 70,
+    "failed_resolvable": 0,
+    "false_confirmed": 0,
+    "false_excluded": 0,
+    "prematurely_decisive": 0,
+    "unscored_scope_worlds": 33,
+    "decisive_on_unscored_scope": 1,
+    "provider_total_tokens": 0,
+    "effective_models": [
+      "scripted-local"
+    ]
+  },
+  "new-proposals-old-code": {
+    "cases": 15,
+    "failed_cases": 0,
+    "scorable_cases": 12,
+    "scorable_worlds": 185,
+    "correct_worlds": 122,
+    "all_worlds_correct_cases": 5,
+    "resolvable_worlds": 115,
+    "correct_resolved": 68,
+    "abstained_resolvable": 39,
+    "failed_resolvable": 0,
+    "false_confirmed": 0,
+    "false_excluded": 8,
+    "prematurely_decisive": 16,
+    "unscored_scope_worlds": 33,
+    "decisive_on_unscored_scope": 1,
+    "provider_total_tokens": 0,
+    "effective_models": [
+      "scripted-local"
+    ]
+  }
+}
