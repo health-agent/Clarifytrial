@@ -18,7 +18,7 @@
      핵심 방법·합성 검증 원고이며 선정된 HWP를 대체하지 않는다. 새 방법의 기준은 검증 16절,
      이전 평가 중심 종합은 9–15절이다.
 7. 발표를 다룰 때 [현행 설명·질의응답과 과거 발표 구성](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md)을
-   추가로 읽는다. 첫 절만 10월 연구의 현행 설명이며 뒤의 과거 슬라이드 지시는 참고 기록이다.
+   추가로 읽는다. 과거 발표 기록 앞까지 포스터·시연·대본·질의응답의 현행 기준이다.
 
 2026-09-05의 원고 기준은 사용자가 최종본으로 지정한
 `C:\Users\kll45\Downloads\Clarifytrial 포스터.hwp`다. 내부 원고에는 02:07:54 저장본을
@@ -41,7 +41,7 @@
 | [현재 상태](CURRENT_STATUS.md) | 구현된 범위, 최신 결과와 남은 일 |
 | [연구계획 v5](CLARIFYTRIAL_RESEARCH_PLAN_V5.md) | 연구 질문, 실험 방법과 결과 해석 기준 |
 | [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) | 자료 규모, 실행 조건, 수치와 해석 범위 |
-| [연구 설명·질의응답](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 첫 절은 10월 연구의 쉬운 설명·3분 대본·분모·질의응답. 뒤는 과거 발표 기록. 실제 포스터 조판은 미완료 |
+| [포스터·연구 설명·질의응답](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 편집 포스터·PDF·오프라인 시연·30초/3분 대본·질의응답 준비. 공식 규격 대조·현장 리허설은 미완료. 뒤는 과거 발표 기록 |
 | [KOSMI 포스터 논문 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md) | 최종 HWP의 초록·본문·표·그림 연결·참고문헌과 남은 편집 제안 |
 | [통합 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md) | 관측 증거·위험 교정·선택적 재확인의 핵심 방법과 동일 모형 비교의 향상. 미제출·임상 검증 미완료 |
 
@@ -79,7 +79,9 @@
 | [외부 주석의 원문 준비](results/leaf-protocol-v1/) | 완료. 48문구·실제 추론 96회, 제안/코드 재생과 v9의 개발 수정. 주석과 원문의 차이 보존 |
 | [고정 v9의 새 24문구](results/leaf-protocol-holdout-v1/) | 완료. 개발 시험과 분리한 실제 추론 48회. 일반 우위 미재현·보류와 참고식 한계 |
 | [위험 기반 선택적 재확인](results/risk-aware-acquisition-v1/README.md) | 완료. 새 24시험·58비교식, 정책 전체 교정과 독립 합성 평가. 같은 모형의 한 단계 대비 +3.10%p·방문 17.34% 감소, 오판·분포 변화 한계 |
-| [발표용 대화형 데모](demo/clarifytrial-presentation-demo.html) | 상태 읽기, 다음 행동 결정, 확인 도구 실행, 상태 갱신과 반복·종료 판단을 잇는 합성 실행 |
+| [현행 포스터 PDF](presentation/clarifytrial-poster.pdf) · [PPTX](presentation/clarifytrial-poster.pptx) | 900×1200mm 작업 규격. 선정 제목·저자와 새 방법의 결과·한계. 공식 규격 확인 전 인쇄 확정본이 아님 |
+| [현행 선택적 재확인 시연](demo/clarifytrial-risk-replay.html) | 새 방법과 같은 모형의 한 단계 비교. 실제 합성 기록 세 사례·여섯 정책 실행을 오프라인 재생. 성공·실패와 부족한 질문 포함 |
+| [이전 워크플로 데모](demo/clarifytrial-presentation-demo.html) | 과거 구현 설명으로 보존. 새 획득 정책의 실시간 실행이나 새 실험 결과로 사용하지 않음 |
 
 ## 용어
 

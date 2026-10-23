@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ClarifyTrial 선택적 재확인 시연</title>
+<style>
+:root{font-family:'Malgun Gothic','Noto Sans KR',sans-serif;color:#183249;background:#f4f7f8;font-size:18px}
+*{box-sizing:border-box}body{margin:0}main{max-width:1420px;margin:auto;padding:28px 36px}h1{font-size:36px;line-height:1.25;margin:4px 0 12px}h2{font-size:25px;margin:0 0 10px}h3{font-size:20px;margin:16px 0 7px}p{line-height:1.6;margin:8px 0}.muted{color:#536a79}.brand{color:#087f82;font-weight:700}.topline{display:flex;justify-content:space-between;gap:20px;align-items:center}.controls{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:18px 0}button,select{font:inherit;background:#fff;border:1px solid #aabec6;border-radius:5px;padding:10px 15px;color:#183249}button{cursor:pointer}button:focus-visible,select:focus-visible{outline:3px solid #08a5ab}button:disabled{opacity:.4;cursor:default}button.primary{background:#087f82;color:white;border-color:#087f82}.summary{padding:12px 0;border-top:1px solid #c8d8df;border-bottom:1px solid #c8d8df;line-height:1.6}.panes{display:grid;grid-template-columns:1fr 1fr;gap:25px;margin-top:22px}.method{padding:20px;background:white;border-top:4px solid #8c9aa5}.method.target{border-color:#087f82}.action{min-height:82px;line-height:1.5;padding:12px 0;color:#183249;border-bottom:1px solid #d8e2e6}.method-meta{font-size:16px;color:#536a79}table{border-collapse:collapse;width:100%;font-size:16px;margin-top:12px}th,td{text-align:left;padding:10px 4px;border-bottom:1px solid #dae4e8;vertical-align:top}th{font-weight:400;color:#536a79}.state{font-weight:bold}.pass{color:#087f82}.fail{color:#914d33}.hold{color:#8b6b20}.pending{font-size:13px;color:#536a79;display:block;margin-top:4px}.observations{font-size:15px;line-height:1.6;margin-top:14px;min-height:44px}.case-title{margin:23px 0 7px;font-size:24px}.case-note{font-size:15px;color:#536a79}.gold{margin-top:20px;padding:18px;background:#fff5ea;border-left:4px solid #b06634}.hidden{display:none}.footer{font-size:13px;line-height:1.6;margin-top:20px;color:#536a79}details{margin-top:12px;font-size:14px}summary{cursor:pointer}pre{white-space:pre-wrap;word-break:break-word}#step{min-width:90px;font-variant-numeric:tabular-nums}.source{font-size:13px}.source a{color:#087f82}a:focus-visible{outline:3px solid teal}
+@media(max-width:900px){main{padding:20px}.panes{grid-template-columns:1fr}h1{font-size:30px}.topline{display:block}.controls{gap:7px}button,select{font-size:16px}.method{padding:15px}}
+@media print{.controls{display:none}main{padding:5mm}.panes{grid-template-columns:1fr 1fr}.method{break-inside:avoid}.gold{display:block!important}}
+</style></head>
+<body><main>
+<div class="topline"><strong class="brand">ClarifyTrial</strong><span class="muted">합성 실행 기록 재생 · 실제 환자 판정 아님</span></div>
+<h1>어느 자료를 다시 확인해야 할까요?</h1>
+<p class="muted">같은 확률모형·판정기·확인 예산에서 다음 행동이 달라지는 과정을 비교합니다.</p>
+<div class="summary" id="summary"></div>
+<div class="controls"><label for="case">설명 사례</label><select id="case"></select><button id="reset">처음으로</button><button id="prev">이전</button><button id="next" class="primary">다음 행동</button><span id="step" aria-live="polite"></span><button id="reveal" aria-pressed="false">정답과 한계 보기</button></div>
+<h2 class="case-title" id="case-title"></h2><p class="case-note" id="case-note"></p>
+<div class="panes" id="panes" aria-live="polite"></div>
+<section class="gold hidden" id="gold"></section>
+<details><summary>선택한 공개 수치 조건과 원문 보기</summary><div id="protocols"></div></details>
+<p class="footer" id="footer"></p>
+</main>
+<script id="replay-data" type="application/json">__REPLAY_DATA__</script>
+<script>
+'use strict';
+const data=JSON.parse(document.getElementById('replay-data').textContent);
+const el=id=>document.getElementById(id);
+const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const names={risk_myopic:'한 단계 선택',risk_targeted:'선택적 재확인'};
+const labels={'-1':['보류','hold'],'0':['수치 조건 위반','fail'],'1':['수치 조건 지지','pass']};
+let active=0,step=0,revealed=false;
+const methods=['risk_myopic','risk_targeted'];
+for(const [i,c] of data.cases.entries()){const option=document.createElement('option');option.value=i;option.textContent=c.title;el('case').append(option);}
+document.querySelector('.topline .muted').textContent='합성 실행 기록 재생 · 실제 환자 판정 아님';
+const metrics=Object.fromEntries(data.summary.metrics.map(m=>[m.method,m]));
+el('summary').textContent=`별도 평가 1,200명 전체 결과: 올바른 수치 부분조건 ${(100*metrics.risk_myopic.recovery).toFixed(2)}% / ${(100*metrics.risk_targeted.recovery).toFixed(2)}%, 방문 ${metrics.risk_myopic.visits.toLocaleString()} / ${metrics.risk_targeted.visits.toLocaleString()}회. 아래 사례만으로 효과를 추정하지 않습니다.`;
+function actionText(s,finished){
+ if(!s.action)return '시작: 관측된 자료를 읽고 다음 행동을 계산합니다.';
+ const a=s.action;return `${a.kind}: ${a.fact} · ${a.route===0?'기존 기록 조회':'방문 확인'}<br><strong>${a.value===null?'자료를 얻지 못했습니다.':esc(a.value)+' '+esc(a.unit)}</strong>${finished?' · 이후 종료':''}`;
+}
+function render(){
+ const c=data.cases[active],max=Math.max(...methods.map(m=>c.methods[m].actions));
+ step=Math.min(step,max);el('case-title').textContent=c.title;
+ el('case-note').textContent=`${c.patient} · ${data.selection_note}`;
+ el('step').textContent=`${step} / ${max}단계`;
+ el('prev').disabled=step===0;el('next').disabled=step===max;
+ el('panes').innerHTML=methods.map(method=>{
+  const m=c.methods[method],idx=Math.min(step,m.snapshots.length-1),s=m.snapshots[idx],finished=idx===m.snapshots.length-1;
+  const rows=s.decisions.map((d,i)=>{const [label,color]=labels[d.label];const wrong=revealed&&d.label>=0&&d.label!==c.gold[i];
+   return `<tr><td>${esc(d.trial_id)}</td><td class="state ${color}">${label}${wrong?' · 오판':''}${d.pending_question?'<span class="pending">'+esc(d.pending_question)+'</span>':''}</td><td>${d.witness<0?'근거 부족':(100*d.score).toFixed(2)+'%'}</td></tr>`;}).join('');
+  const observed=s.observations.map(o=>`${esc(o.name)}: ${o.reports.map(r=>`${esc(r.source)} ${r.value===null?'자료 없음':esc(r.value)+' '+esc(o.unit)}`).join(', ')}`).join('<br>');
+  return `<article class="method ${method==='risk_targeted'?'target':''}"><h2>${names[method]}</h2><div class="method-meta">지금까지 시도 ${idx}회 · 방문 ${s.visits}회 / 한도 1회</div><div class="action">${actionText(s,finished)}</div><table><thead><tr><th>선택한 시험</th><th>수치 부분조건 상태</th><th>모형 오류 점수</th></tr></thead><tbody>${rows}</tbody></table><details><summary>현재 관측한 자료</summary><div class="observations">${observed||'아직 새로 관측한 자료가 없습니다.'}</div></details><p class="pending">${finished?esc(m.stop):'남은 예산 안에서 다음 행동을 계산합니다.'}</p></article>`;
+ }).join('');
+ el('gold').classList.toggle('hidden',!revealed);el('reveal').setAttribute('aria-pressed',String(revealed));
+ el('reveal').textContent=revealed?'정답 숨기기':'정답과 한계 보기';
+ const explanation={savings:'두 방법이 같은 네 부분조건을 맞혔지만 새 방법은 방문하지 않고 종료했습니다.',verification:'실제 보고가 있어도 모형의 오류 점수가 높으면 보류합니다. 같은 측정 범위의 추가 보고를 얻은 뒤 판정을 다시 계산했습니다.',failure:'공유 오류가 있는 두 보고의 일치가 참값을 뜻하지 않습니다. 같은 독립 모형을 쓰는 이번 비교에서는 잘못된 값도 강한 근거처럼 보일 수 있습니다.'}[c.kind];
+ el('gold').innerHTML=`<h2>정답 공개와 해석</h2><p>${explanation}</p><p>전체 실행 뒤: 한 단계 ${c.methods.risk_myopic.correct}/4개 일치 · 방문 ${c.methods.risk_myopic.visits}회, 새 방법 ${c.methods.risk_targeted.correct}/4개 일치 · 방문 ${c.methods.risk_targeted.visits}회.</p><p>${c.trials.map((t,i)=>esc(t.trial_id)+': '+labels[c.gold[i]][0]).join(' / ')}</p><details><summary>채점에만 쓴 합성 참값</summary><p>${c.truth.map(v=>esc(v.name)+' '+esc(v.value)+' '+esc(v.unit)).join('<br>')}</p></details><p>${esc(data.scope_question)}</p>`;
+ el('protocols').innerHTML=c.trials.map(t=>`<h3>${esc(t.trial_id)}</h3><p>${esc(t.title)}</p><p class="source"><a href="${esc(t.source_url)}" target="_blank" rel="noopener">ClinicalTrials.gov 원문</a></p><pre>${t.criteria.map(v=>esc(v.source_text)).join('\n\n')}</pre>`).join('');
+ el('footer').textContent=`실제 Python 정책이 선택한 저장 기록을 재생합니다. 브라우저에서 새 환자를 추론하지 않습니다. 점수는 교정된 임상 오류율이 아닙니다. ${data.scope_question} ${data.disclaimer}`;
+}
+el('case').addEventListener('change',e=>{active=Number(e.target.value);step=0;revealed=false;render();});
+el('reset').addEventListener('click',()=>{step=0;revealed=false;render();});
+el('prev').addEventListener('click',()=>{step--;render();});
+el('next').addEventListener('click',()=>{step++;render();});
+el('reveal').addEventListener('click',()=>{revealed=!revealed;render();});
+document.addEventListener('keydown',e=>{if(['SELECT','INPUT','TEXTAREA','BUTTON'].includes(e.target.tagName))return;if(e.key==='ArrowRight'&&!el('next').disabled){step++;render();}if(e.key==='ArrowLeft'&&step>0){step--;render();}});
+render();
+</script></body></html>
