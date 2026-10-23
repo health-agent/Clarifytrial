@@ -15,7 +15,8 @@
 5. [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) — 분모, 비교 방법, 결과와 해석 범위
 6. [실험자료](CLARIFYTRIAL_DATASETS.md) — 자료 출처와 합성 환자·연결 구조·환자 제한의 구분
    - 확장 연구를 이어갈 때 [통합 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md)를 추가로 읽는다.
-     계산 연구의 종합 초안이며 선정된 HWP를 대체하지 않는다. 수치의 기준은 검증 결과 9–15절이다.
+     핵심 방법·합성 검증 원고이며 선정된 HWP를 대체하지 않는다. 새 방법의 기준은 검증 16절,
+     이전 평가 중심 종합은 9–15절이다.
 7. 발표를 다룰 때 [현행 설명·질의응답과 과거 발표 구성](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md)을
    추가로 읽는다. 첫 절만 10월 연구의 현행 설명이며 뒤의 과거 슬라이드 지시는 참고 기록이다.
 
@@ -30,10 +31,10 @@
 
 ## 연구와 현재 결과
 
-2026-10-22 사용자가 포스터 선정과 11월 말 발표를 알렸다. 현재 보완 방향은
-[연구계획 13절](CLARIFYTRIAL_RESEARCH_PLAN_V5.md), 첫 개발 비교는
-[검증 결과 8절](CLARIFYTRIAL_VALIDATION_RESULTS.md)에 있다. 선정된 9월 HWP와
-새 연구 결과를 구분한다.
+2026-10-22 사용자가 포스터 선정과 11월 말 발표를 알렸다. 현재 핵심 방법은
+[연구계획 14절](CLARIFYTRIAL_RESEARCH_PLAN_V5.md), 구현·합성 실증은
+[검증 결과 16절](CLARIFYTRIAL_VALIDATION_RESULTS.md)에 있다. 이전 개발 비교는
+8–15절에 보존한다. 선정된 9월 HWP와 새 연구 결과를 구분한다.
 
 | 문서 | 내용 |
 |---|---|
@@ -42,7 +43,7 @@
 | [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) | 자료 규모, 실행 조건, 수치와 해석 범위 |
 | [연구 설명·질의응답](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 첫 절은 10월 연구의 쉬운 설명·3분 대본·분모·질의응답. 뒤는 과거 발표 기록. 실제 포스터 조판은 미완료 |
 | [KOSMI 포스터 논문 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md) | 최종 HWP의 초록·본문·표·그림 연결·참고문헌과 남은 편집 제안 |
-| [통합 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md) | 계산 연구 종합 초안. 획득·대조·원문 준비의 세 질문, 핵심 표 5개·그림 3개, 상세 자료 S1–S7. 미제출·임상 검증 미완료 |
+| [통합 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md) | 관측 증거·위험 교정·선택적 재확인의 핵심 방법과 동일 모형 비교의 향상. 미제출·임상 검증 미완료 |
 
 ## 프로그램 구조
 
@@ -77,6 +78,7 @@
 | [조건별 결론의 자료원 대조](results/direction-corroboration-v1/) | 완료. 균등 오답에서 같은 행동의 판정 완화와 재계획을 분리. 공유 오류·방문·남은 오판 |
 | [외부 주석의 원문 준비](results/leaf-protocol-v1/) | 완료. 48문구·실제 추론 96회, 제안/코드 재생과 v9의 개발 수정. 주석과 원문의 차이 보존 |
 | [고정 v9의 새 24문구](results/leaf-protocol-holdout-v1/) | 완료. 개발 시험과 분리한 실제 추론 48회. 일반 우위 미재현·보류와 참고식 한계 |
+| [위험 기반 선택적 재확인](results/risk-aware-acquisition-v1/README.md) | 완료. 새 24시험·58비교식, 정책 전체 교정과 독립 합성 평가. 같은 모형의 한 단계 대비 +3.10%p·방문 17.34% 감소, 오판·분포 변화 한계 |
 | [발표용 대화형 데모](demo/clarifytrial-presentation-demo.html) | 상태 읽기, 다음 행동 결정, 확인 도구 실행, 상태 갱신과 반복·종료 판단을 잇는 합성 실행 |
 
 ## 용어

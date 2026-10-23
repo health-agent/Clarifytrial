@@ -26,9 +26,9 @@ CUTOFFS=(.01,.03,.10)
 SEEDS={"development":34001,"calibration":45001,"test":56001,"stress":67001}
 
 
-def definitions():
+def definitions(cutoffs=CUTOFFS):
     return [{"name":method if method.startswith("legacy") else f"{method}:{cutoff:g}","method":method,"cutoff":cutoff}
-        for method in METHODS for cutoff in ((None,) if method.startswith("legacy") else CUTOFFS)]
+        for method in METHODS for cutoff in ((None,) if method.startswith("legacy") else cutoffs)]
 
 
 def write_csv(path, rows):
@@ -88,22 +88,28 @@ def simulate(model, gold, fixed, outcomes, planner, method):
         "trace":json.dumps(trace),"labels":json.dumps(labels),"model_risks":json.dumps(risks)}
 
 
-def run(source, output, *, phase, episodes, split="heldout", methods=None, selection=None):
+def run(source, output, *, phase, episodes, split="heldout", methods=None, selection=None,
+        independent_belief=False, seed_override=None, cutoffs=CUTOFFS):
     data=json.loads(source.read_text(encoding="utf-8"));groups=data["groups"]
     output.mkdir(parents=True,exist_ok=True)
-    configs=definitions()
+    configs=definitions(cutoffs)
     if methods:configs=[c for c in configs if c["method"] in methods]
+    family_size=len(configs)
     if selection:
         record=json.loads(selection.read_text(encoding="utf-8"))
         if record["phase"]!="calibration" or record["source_protocol_ids"]!=sorted(t["nct_id"] for g in groups for t in g["trials"] if t["split"]==split):
             raise ValueError("frozen calibration must match deployment protocols")
+        if record.get("independent_belief",False)!=independent_belief:
+            raise ValueError("deployment belief model differs from frozen calibration")
+        family_size=record.get("family_size",17)
         chosen={r["chosen"]["name"] for r in record["calibration_by_method"].values() if r["chosen"]}
         configs=[c for c in configs if c["name"] in chosen]
     elif phase in {"test","stress"}:
         raise ValueError("test requires selection frozen from calibration")
     # Draw group, mask, sharing and latent patient independently per episode.
     # This defines the IID mixture required by the episode-level calibration.
-    seed=SEEDS[phase];rng=random.Random(seed);private=[]
+    seed=SEEDS[phase] if seed_override is None else seed_override
+    rng=random.Random(seed);private=[]
     models=[make_model(g,split) for g in groups]
     for i in range(episodes):
         group=rng.randrange(len(groups));m=models[group];mask=rng.randrange(2);rho=rng.choice((0.,.5,1.))
@@ -130,11 +136,12 @@ def run(source, output, *, phase, episodes, split="heldout", methods=None, selec
             if method=="legacy_first":planner=RoutePlanner(m,quality=(.70,.95),compact=False)
             elif method=="legacy_direction":planner=SourcePairPlanner(SourcePairModel(m),error_probability=.05)
             else:planner=RiskAwareAcquisition(m,risk_cutoff=config["cutoff"],
-                coupling=(0.,) if method=="risk_independent" else (0.,.5,1.))
+                coupling=(0.,) if independent_belief or method=="risk_independent" else (0.,.5,1.))
             for i,(g,mask,rho,truth,fixed,outcomes,gold) in enumerate(private):
                 if g!=group:continue
                 row=simulate(m,gold,fixed,outcomes,planner,method)
-                row={"patient":f"{phase}:{i}","group":groups[g]["group_id"],"mask":mask,"coupling":rho,
+                patient_id=f"{phase}:{i}" if seed_override is None else f"{phase}:{seed}:{i}"
+                row={"patient":patient_id,"group":groups[g]["group_id"],"mask":mask,"coupling":rho,
                     "configuration":config["name"],"method":method,**row}
                 rows.append(row)
             if isinstance(planner,RiskAwareAcquisition):planner.clear_caches()
@@ -156,11 +163,12 @@ def run(source, output, *, phase, episodes, split="heldout", methods=None, selec
         for method in METHODS:
             candidates=[CalibrationCandidate(c["name"],c["selected"],c["any_wrong"],c["new_correct"],c["visits"])
                 for c in metrics if c["method"]==method]
-            if candidates:calibration_by_method[method]=calibrate(candidates,family_size=len(definitions()))
+            if candidates:calibration_by_method[method]=calibrate(candidates,family_size=family_size)
     write_csv(output/"policy_metrics.csv",metrics)
     summary={"phase":phase,"seed":seed,"episodes":episodes,"scope":"Selected numeric subsets, synthetic IID episodes; not clinical enrollment",
         "source_protocol_ids":sorted(t["nct_id"] for g in groups for t in g["trials"] if t["split"]==split),
-        "risk_target":"P(any wrong new subset decision | any new decision released), alpha=.05 delta=.05; family=17",
+        "risk_target":f"P(any wrong new subset decision | any new decision released), alpha=.05 delta=.05; family={family_size}",
+        "independent_belief":independent_belief,"family_size":family_size,
         "calibration_assumption":"Fixed policies, fully labeled IID episodes from the same mixture; not arbitrary distribution shift",
         "configurations":configs,"metrics":metrics,"calibration_by_method":calibration_by_method,
         "elapsed_seconds":time.perf_counter()-started,"medical_disclaimer":DEFAULT_MEDICAL_DISCLAIMER}
@@ -172,5 +180,8 @@ if __name__=="__main__":
     p=argparse.ArgumentParser();p.add_argument("--source",type=Path,default=Path("data/paper_risk_method_v1/protocol_subsets.json"))
     p.add_argument("--output",type=Path,required=True);p.add_argument("--phase",choices=SEEDS,required=True)
     p.add_argument("--episodes",type=int,default=1200);p.add_argument("--split",default="heldout")
-    p.add_argument("--methods",nargs="+");p.add_argument("--selection",type=Path);a=p.parse_args()
-    run(a.source,a.output,phase=a.phase,episodes=a.episodes,split=a.split,methods=a.methods,selection=a.selection)
+    p.add_argument("--methods",nargs="+");p.add_argument("--selection",type=Path)
+    p.add_argument("--independent-belief",action="store_true")
+    p.add_argument("--seed",type=int);p.add_argument("--cutoffs",type=float,nargs="+",default=CUTOFFS);a=p.parse_args()
+    run(a.source,a.output,phase=a.phase,episodes=a.episodes,split=a.split,methods=a.methods,selection=a.selection,
+        independent_belief=a.independent_belief,seed_override=a.seed,cutoffs=tuple(a.cutoffs))

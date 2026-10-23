@@ -1,0 +1,731 @@
+{
+  "primary_comparator": "risk_myopic",
+  "selection": "strongest same-belief baseline by calibration, not test",
+  "uncertainty": "Paired synthetic patient-episode bootstrap, conditional on fixed purpose-selected numeric subsets and mixture",
+  "phases": {
+    "test": {
+      "metrics": [
+        {
+          "name": "risk_myopic:0.03",
+          "method": "risk_myopic",
+          "cutoff": 0.03,
+          "trials": 4800,
+          "correct": 3663,
+          "new_correct": 1969,
+          "new_released": 2001,
+          "selected": 1046,
+          "any_wrong": 23,
+          "wrong_confirmed": 11,
+          "wrong_excluded": 21,
+          "unresolved": 1105,
+          "actions": 2957,
+          "visits": 1136,
+          "initial_correct": 1694,
+          "first_opportunity": 690,
+          "first_confirmed": 466,
+          "episodes": 1200,
+          "recovery": 0.763125,
+          "selective_episode_risk": 0.02198852772466539,
+          "selective_episode_risk_upper_95": 0.031009338520026956
+        },
+        {
+          "name": "risk_entropy:0.03",
+          "method": "risk_entropy",
+          "cutoff": 0.03,
+          "trials": 4800,
+          "correct": 3636,
+          "new_correct": 1942,
+          "new_released": 1978,
+          "selected": 1019,
+          "any_wrong": 27,
+          "wrong_confirmed": 16,
+          "wrong_excluded": 20,
+          "unresolved": 1128,
+          "actions": 2942,
+          "visits": 1136,
+          "initial_correct": 1694,
+          "first_opportunity": 690,
+          "first_confirmed": 484,
+          "episodes": 1200,
+          "recovery": 0.7575,
+          "selective_episode_risk": 0.02649656526005888,
+          "selective_episode_risk_upper_95": 0.03635588117297976
+        },
+        {
+          "name": "risk_bayes:0.03",
+          "method": "risk_bayes",
+          "cutoff": 0.03,
+          "trials": 4800,
+          "correct": 3599,
+          "new_correct": 1905,
+          "new_released": 1941,
+          "selected": 1020,
+          "any_wrong": 27,
+          "wrong_confirmed": 15,
+          "wrong_excluded": 21,
+          "unresolved": 1165,
+          "actions": 2852,
+          "visits": 1136,
+          "initial_correct": 1694,
+          "first_opportunity": 690,
+          "first_confirmed": 475,
+          "episodes": 1200,
+          "recovery": 0.7497916666666666,
+          "selective_episode_risk": 0.026470588235294117,
+          "selective_episode_risk_upper_95": 0.03632041891912341
+        },
+        {
+          "name": "risk_targeted:0.03",
+          "method": "risk_targeted",
+          "cutoff": 0.03,
+          "trials": 4800,
+          "correct": 3812,
+          "new_correct": 2118,
+          "new_released": 2156,
+          "selected": 1064,
+          "any_wrong": 26,
+          "wrong_confirmed": 14,
+          "wrong_excluded": 24,
+          "unresolved": 950,
+          "actions": 3022,
+          "visits": 939,
+          "initial_correct": 1694,
+          "first_opportunity": 690,
+          "first_confirmed": 516,
+          "episodes": 1200,
+          "recovery": 0.7941666666666667,
+          "selective_episode_risk": 0.02443609022556391,
+          "selective_episode_risk_upper_95": 0.033745614422963116
+        }
+      ],
+      "paired_comparisons": [
+        {
+          "comparator": "risk_bayes",
+          "metric": "correct",
+          "cluster_unit": "independent_patient_episode_one_mask",
+          "strata": [
+            "breast_cancer",
+            "chronic_kidney_disease",
+            "heart_failure",
+            "non_small_cell_lung_cancer",
+            "obesity",
+            "type_2_diabetes"
+          ],
+          "pair_count": 1200,
+          "bootstrap_seed": 20260830,
+          "bootstrap_resamples": 5000,
+          "mean_difference": 0.044375,
+          "bootstrap_95_ci": {
+            "lower": 0.035625,
+            "upper": 0.053125
+          },
+          "wins": 246,
+          "ties": 870,
+          "losses": 84,
+          "two_sided_exact_sign_test_p": 1.3869391193582983e-19
+        },
+        {
+          "comparator": "risk_bayes",
+          "metric": "visits",
+          "cluster_unit": "independent_patient_episode_one_mask",
+          "strata": [
+            "breast_cancer",
+            "chronic_kidney_disease",
+            "heart_failure",
+            "non_small_cell_lung_cancer",
+            "obesity",
+            "type_2_diabetes"
+          ],
+          "pair_count": 1200,
+          "bootstrap_seed": 20260830,
+          "bootstrap_resamples": 5000,
+          "mean_difference": -0.16416666666666666,
+          "bootstrap_95_ci": {
+            "lower": -0.185,
+            "upper": -0.14416666666666667
+          },
+          "wins": 0,
+          "ties": 1003,
+          "losses": 197,
+          "two_sided_exact_sign_test_p": 9.956824444577827e-60
+        },
+        {
+          "comparator": "risk_bayes",
+          "metric": "first_confirmed",
+          "cluster_unit": "independent_patient_episode_one_mask",
+          "strata": [
+            "breast_cancer",
+            "chronic_kidney_disease",
+            "heart_failure",
+            "non_small_cell_lung_cancer",
+            "obesity",
+            "type_2_diabetes"
+          ],
+          "pair_count": 1200,
+          "bootstrap_seed": 20260830,
+          "bootstrap_resamples": 5000,
+          "mean_difference": 0.034166666666666665,
+          "bootstrap_95_ci": {
+            "lower": 0.019166666666666665,
+            "upper": 0.05
+          },
+          "wins": 66,
+          "ties": 1109,
+          "losses": 25,
+          "two_sided_exact_sign_test_p": 2.0283289208145566e-05
+        },
+        {
+          "comparator": "risk_entropy",
+          "metric": "correct",
+          "cluster_unit": "independent_patient_episode_one_mask",
+          "strata": [
+            "breast_cancer",
+            "chronic_kidney_disease",
+            "heart_failure",
+            "non_small_cell_lung_cancer",
+            "obesity",
+            "type_2_diabetes"
+          ],
+          "pair_count": 1200,
+          "bootstrap_seed": 20260830,
+          "bootstrap_resamples": 5000,
+          "mean_difference": 0.03666666666666667,
+          "bootstrap_95_ci": {
+            "lower": 0.027708333333333335,
+            "upper": 0.045625
+          },
+          "wins": 220,
+          "ties": 892,
+          "losses": 88,
+          "two_sided_exact_sign_test_p": 3.379698875798729e-14
+        },
+        {
+          "comparator": "risk_entropy",
+          "metric": "visits",
+          "cluster_unit": "independent_patient_episode_one_mask",
+          "strata": [
+            "breast_cancer",
+            "chronic_kidney_disease",
+            "heart_failure",
+            "non_small_cell_lung_cancer",
+            "obesity",
+            "type_2_diabetes"
+          ],
+          "pair_count": 1200,
+          "bootstrap_seed": 20260830,
+          "bootstrap_resamples": 5000,
+          "mean_difference": -0.16416666666666666,
+          "bootstrap_95_ci": {
+            "lower": -0.185,
+            "upper": -0.14416666666666667
+          },
+          "wins": 0,
+          "ties": 1003,
+          "losses": 197,
+          "two_sided_exact_sign_test_p": 9.956824444577827e-60
+        },
+        {
+          "comparator": "risk_entropy",
+          "metric": "first_confirmed",
+          "cluster_unit": "independent_patient_episode_one_mask",
+          "strata": [
+            "breast_cancer",
+            "chronic_kidney_disease",
+            "heart_failure",
+            "non_small_cell_lung_cancer",
+            "obesity",
+            "type_2_diabetes"
+          ],
+          "pair_count": 1200,
+          "bootstrap_seed": 20260830,
+          "bootstrap_resamples": 5000,
+          "mean_difference": 0.02666666666666667,
+          "bootstrap_95_ci": {
+            "lower": 0.013333333333333334,
+            "upper": 0.04
+          },
+          "wins": 50,
+          "ties": 1132,
+          "losses": 18,
+          "two_sided_exact_sign_test_p": 0.00013083876154198454
+        },
+        {
+          "comparator": "risk_myopic",
+          "metric": "correct",
+          "cluster_unit": "independent_patient_episode_one_mask",
+          "strata": [
+            "breast_cancer",
+            "chronic_kidney_disease",
+            "heart_failure",
+            "non_small_cell_lung_cancer",
+            "obesity",
+            "type_2_diabetes"
+          ],
+          "pair_count": 1200,
+          "bootstrap_seed": 20260830,
+          "bootstrap_resamples": 5000,
+          "mean_difference": 0.031041666666666665,
+          "bootstrap_95_ci": {
+            "lower": 0.022916666666666665,
+            "upper": 0.03895833333333333
+          },
+          "wins": 202,
+          "ties": 915,
+          "losses": 83,
+          "two_sided_exact_sign_test_p": 1.3013823616223852e-12
+        },
+        {
+          "comparator": "risk_myopic",
+          "metric": "visits",
+          "cluster_unit": "independent_patient_episode_one_mask",
+          "strata": [
+            "breast_cancer",
+            "chronic_kidney_disease",
+            "heart_failure",
+            "non_small_cell_lung_cancer",
+            "obesity",
+            "type_2_diabetes"
+          ],
+          "pair_count": 1200,
+          "bootstrap_seed": 20260830,
+          "bootstrap_resamples": 5000,
+          "mean_difference": -0.16416666666666666,
+          "bootstrap_95_ci": {
+            "lower": -0.185,
+            "upper": -0.14416666666666667
+          },
+          "wins": 0,
+          "ties": 1003,
+          "losses": 197,
+          "two_sided_exact_sign_test_p": 9.956824444577827e-60
+        },
+        {
+          "comparator": "risk_myopic",
+          "metric": "first_confirmed",
+          "cluster_unit": "independent_patient_episode_one_mask",
+          "strata": [
+            "breast_cancer",
+            "chronic_kidney_disease",
+            "heart_failure",
+            "non_small_cell_lung_cancer",
+            "obesity",
+            "type_2_diabetes"
+          ],
+          "pair_count": 1200,
+          "bootstrap_seed": 20260830,
+          "bootstrap_resamples": 5000,
+          "mean_difference": 0.041666666666666664,
+          "bootstrap_95_ci": {
+            "lower": 0.029166666666666667,
+            "upper": 0.055
+          },
+          "wins": 57,
+          "ties": 1136,
+          "losses": 7,
+          "two_sided_exact_sign_test_p": 7.638141345540223e-11
+        }
+      ],
+      "group_metrics": [
+        {
+          "group": "breast_cancer",
+          "method": "risk_bayes",
+          "episodes": 203,
+          "trials": 812,
+          "correct": 604,
+          "selected": 180,
+          "any_wrong": 5,
+          "visits": 193,
+          "first_opportunity": 184,
+          "first_confirmed": 140
+        },
+        {
+          "group": "breast_cancer",
+          "method": "risk_entropy",
+          "episodes": 203,
+          "trials": 812,
+          "correct": 617,
+          "selected": 172,
+          "any_wrong": 7,
+          "visits": 193,
+          "first_opportunity": 184,
+          "first_confirmed": 138
+        },
+        {
+          "group": "breast_cancer",
+          "method": "risk_myopic",
+          "episodes": 203,
+          "trials": 812,
+          "correct": 616,
+          "selected": 182,
+          "any_wrong": 5,
+          "visits": 193,
+          "first_opportunity": 184,
+          "first_confirmed": 140
+        },
+        {
+          "group": "breast_cancer",
+          "method": "risk_targeted",
+          "episodes": 203,
+          "trials": 812,
+          "correct": 667,
+          "selected": 182,
+          "any_wrong": 7,
+          "visits": 141,
+          "first_opportunity": 184,
+          "first_confirmed": 160
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "method": "risk_bayes",
+          "episodes": 176,
+          "trials": 704,
+          "correct": 466,
+          "selected": 158,
+          "any_wrong": 8,
+          "visits": 176,
+          "first_opportunity": 162,
+          "first_confirmed": 99
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "method": "risk_entropy",
+          "episodes": 176,
+          "trials": 704,
+          "correct": 471,
+          "selected": 165,
+          "any_wrong": 7,
+          "visits": 176,
+          "first_opportunity": 162,
+          "first_confirmed": 113
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "method": "risk_myopic",
+          "episodes": 176,
+          "trials": 704,
+          "correct": 461,
+          "selected": 162,
+          "any_wrong": 4,
+          "visits": 176,
+          "first_opportunity": 162,
+          "first_confirmed": 94
+        },
+        {
+          "group": "chronic_kidney_disease",
+          "method": "risk_targeted",
+          "episodes": 176,
+          "trials": 704,
+          "correct": 497,
+          "selected": 164,
+          "any_wrong": 6,
+          "visits": 160,
+          "first_opportunity": 162,
+          "first_confirmed": 118
+        },
+        {
+          "group": "heart_failure",
+          "method": "risk_bayes",
+          "episodes": 202,
+          "trials": 808,
+          "correct": 610,
+          "selected": 188,
+          "any_wrong": 3,
+          "visits": 202,
+          "first_opportunity": 107,
+          "first_confirmed": 99
+        },
+        {
+          "group": "heart_failure",
+          "method": "risk_entropy",
+          "episodes": 202,
+          "trials": 808,
+          "correct": 611,
+          "selected": 187,
+          "any_wrong": 3,
+          "visits": 202,
+          "first_opportunity": 107,
+          "first_confirmed": 97
+        },
+        {
+          "group": "heart_failure",
+          "method": "risk_myopic",
+          "episodes": 202,
+          "trials": 808,
+          "correct": 615,
+          "selected": 191,
+          "any_wrong": 4,
+          "visits": 202,
+          "first_opportunity": 107,
+          "first_confirmed": 95
+        },
+        {
+          "group": "heart_failure",
+          "method": "risk_targeted",
+          "episodes": 202,
+          "trials": 808,
+          "correct": 627,
+          "selected": 189,
+          "any_wrong": 4,
+          "visits": 193,
+          "first_opportunity": 107,
+          "first_confirmed": 94
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "method": "risk_bayes",
+          "episodes": 222,
+          "trials": 888,
+          "correct": 684,
+          "selected": 200,
+          "any_wrong": 4,
+          "visits": 214,
+          "first_opportunity": 87,
+          "first_confirmed": 67
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "method": "risk_entropy",
+          "episodes": 222,
+          "trials": 888,
+          "correct": 686,
+          "selected": 200,
+          "any_wrong": 4,
+          "visits": 214,
+          "first_opportunity": 87,
+          "first_confirmed": 66
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "method": "risk_myopic",
+          "episodes": 222,
+          "trials": 888,
+          "correct": 692,
+          "selected": 207,
+          "any_wrong": 3,
+          "visits": 214,
+          "first_opportunity": 87,
+          "first_confirmed": 65
+        },
+        {
+          "group": "non_small_cell_lung_cancer",
+          "method": "risk_targeted",
+          "episodes": 222,
+          "trials": 888,
+          "correct": 724,
+          "selected": 205,
+          "any_wrong": 3,
+          "visits": 170,
+          "first_opportunity": 87,
+          "first_confirmed": 72
+        },
+        {
+          "group": "obesity",
+          "method": "risk_bayes",
+          "episodes": 190,
+          "trials": 760,
+          "correct": 668,
+          "selected": 158,
+          "any_wrong": 3,
+          "visits": 172,
+          "first_opportunity": 68,
+          "first_confirmed": 51
+        },
+        {
+          "group": "obesity",
+          "method": "risk_entropy",
+          "episodes": 190,
+          "trials": 760,
+          "correct": 668,
+          "selected": 158,
+          "any_wrong": 3,
+          "visits": 172,
+          "first_opportunity": 68,
+          "first_confirmed": 51
+        },
+        {
+          "group": "obesity",
+          "method": "risk_myopic",
+          "episodes": 190,
+          "trials": 760,
+          "correct": 666,
+          "selected": 161,
+          "any_wrong": 3,
+          "visits": 172,
+          "first_opportunity": 68,
+          "first_confirmed": 53
+        },
+        {
+          "group": "obesity",
+          "method": "risk_targeted",
+          "episodes": 190,
+          "trials": 760,
+          "correct": 668,
+          "selected": 161,
+          "any_wrong": 3,
+          "visits": 128,
+          "first_opportunity": 68,
+          "first_confirmed": 53
+        },
+        {
+          "group": "type_2_diabetes",
+          "method": "risk_bayes",
+          "episodes": 207,
+          "trials": 828,
+          "correct": 567,
+          "selected": 136,
+          "any_wrong": 4,
+          "visits": 179,
+          "first_opportunity": 82,
+          "first_confirmed": 19
+        },
+        {
+          "group": "type_2_diabetes",
+          "method": "risk_entropy",
+          "episodes": 207,
+          "trials": 828,
+          "correct": 583,
+          "selected": 137,
+          "any_wrong": 3,
+          "visits": 179,
+          "first_opportunity": 82,
+          "first_confirmed": 19
+        },
+        {
+          "group": "type_2_diabetes",
+          "method": "risk_myopic",
+          "episodes": 207,
+          "trials": 828,
+          "correct": 613,
+          "selected": 143,
+          "any_wrong": 4,
+          "visits": 179,
+          "first_opportunity": 82,
+          "first_confirmed": 19
+        },
+        {
+          "group": "type_2_diabetes",
+          "method": "risk_targeted",
+          "episodes": 207,
+          "trials": 828,
+          "correct": 629,
+          "selected": 163,
+          "any_wrong": 3,
+          "visits": 147,
+          "first_opportunity": 82,
+          "first_confirmed": 19
+        }
+      ],
+      "coupling_metrics": [
+        {
+          "coupling": "0.0",
+          "method": "risk_bayes",
+          "episodes": 378,
+          "correct": 1126,
+          "selected": 323,
+          "any_wrong": 4,
+          "visits": 362
+        },
+        {
+          "coupling": "0.0",
+          "method": "risk_entropy",
+          "episodes": 378,
+          "correct": 1128,
+          "selected": 321,
+          "any_wrong": 5,
+          "visits": 362
+        },
+        {
+          "coupling": "0.0",
+          "method": "risk_myopic",
+          "episodes": 378,
+          "correct": 1150,
+          "selected": 333,
+          "any_wrong": 5,
+          "visits": 362
+        },
+        {
+          "coupling": "0.0",
+          "method": "risk_targeted",
+          "episodes": 378,
+          "correct": 1207,
+          "selected": 345,
+          "any_wrong": 4,
+          "visits": 306
+        },
+        {
+          "coupling": "0.5",
+          "method": "risk_bayes",
+          "episodes": 394,
+          "correct": 1185,
+          "selected": 339,
+          "any_wrong": 11,
+          "visits": 371
+        },
+        {
+          "coupling": "0.5",
+          "method": "risk_entropy",
+          "episodes": 394,
+          "correct": 1208,
+          "selected": 339,
+          "any_wrong": 10,
+          "visits": 371
+        },
+        {
+          "coupling": "0.5",
+          "method": "risk_myopic",
+          "episodes": 394,
+          "correct": 1203,
+          "selected": 345,
+          "any_wrong": 6,
+          "visits": 371
+        },
+        {
+          "coupling": "0.5",
+          "method": "risk_targeted",
+          "episodes": 394,
+          "correct": 1253,
+          "selected": 351,
+          "any_wrong": 11,
+          "visits": 308
+        },
+        {
+          "coupling": "1.0",
+          "method": "risk_bayes",
+          "episodes": 428,
+          "correct": 1288,
+          "selected": 358,
+          "any_wrong": 12,
+          "visits": 403
+        },
+        {
+          "coupling": "1.0",
+          "method": "risk_entropy",
+          "episodes": 428,
+          "correct": 1300,
+          "selected": 359,
+          "any_wrong": 12,
+          "visits": 403
+        },
+        {
+          "coupling": "1.0",
+          "method": "risk_myopic",
+          "episodes": 428,
+          "correct": 1310,
+          "selected": 368,
+          "any_wrong": 12,
+          "visits": 403
+        },
+        {
+          "coupling": "1.0",
+          "method": "risk_targeted",
+          "episodes": 428,
+          "correct": 1352,
+          "selected": 368,
+          "any_wrong": 11,
+          "visits": 325
+        }
+      ],
+      "calibration_guarantee_applies": true
+    }
+  }
+}

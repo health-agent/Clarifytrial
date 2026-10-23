@@ -1,0 +1,268 @@
+{
+  "phase": "calibration",
+  "seed": 45002,
+  "episodes": 1200,
+  "scope": "Selected numeric subsets, synthetic IID episodes; not clinical enrollment",
+  "source_protocol_ids": [
+    "NCT01399385",
+    "NCT05633810",
+    "NCT05776563",
+    "NCT06116682",
+    "NCT06552637",
+    "NCT06820281",
+    "NCT07037433",
+    "NCT07189871",
+    "NCT07310420",
+    "NCT07325201",
+    "NCT07426484",
+    "NCT07465653",
+    "NCT07592000",
+    "NCT07594067",
+    "NCT07721259",
+    "NCT07751042",
+    "NCT07753993",
+    "NCT07761117",
+    "NCT07784270",
+    "NCT07801508",
+    "NCT07858799",
+    "NCT07869472",
+    "NCT07872904",
+    "NCT07874880"
+  ],
+  "risk_target": "P(any wrong new subset decision | any new decision released), alpha=.05 delta=.05; family=4",
+  "independent_belief": true,
+  "family_size": 4,
+  "calibration_assumption": "Fixed policies, fully labeled IID episodes from the same mixture; not arbitrary distribution shift",
+  "configurations": [
+    {
+      "name": "risk_myopic:0.03",
+      "method": "risk_myopic",
+      "cutoff": 0.03
+    },
+    {
+      "name": "risk_entropy:0.03",
+      "method": "risk_entropy",
+      "cutoff": 0.03
+    },
+    {
+      "name": "risk_bayes:0.03",
+      "method": "risk_bayes",
+      "cutoff": 0.03
+    },
+    {
+      "name": "risk_targeted:0.03",
+      "method": "risk_targeted",
+      "cutoff": 0.03
+    }
+  ],
+  "metrics": [
+    {
+      "name": "risk_myopic:0.03",
+      "method": "risk_myopic",
+      "cutoff": 0.03,
+      "trials": 4800,
+      "correct": 3713,
+      "new_correct": 1975,
+      "new_released": 2015,
+      "selected": 1032,
+      "any_wrong": 31,
+      "wrong_confirmed": 17,
+      "wrong_excluded": 23,
+      "unresolved": 1047,
+      "actions": 2898,
+      "visits": 1118,
+      "initial_correct": 1738,
+      "first_opportunity": 682,
+      "first_confirmed": 516,
+      "episodes": 1200,
+      "recovery": 0.7735416666666667,
+      "selective_episode_risk": 0.030038759689922482,
+      "selective_episode_risk_upper_95": 0.04032670100210334
+    },
+    {
+      "name": "risk_entropy:0.03",
+      "method": "risk_entropy",
+      "cutoff": 0.03,
+      "trials": 4800,
+      "correct": 3639,
+      "new_correct": 1901,
+      "new_released": 1939,
+      "selected": 1000,
+      "any_wrong": 30,
+      "wrong_confirmed": 18,
+      "wrong_excluded": 20,
+      "unresolved": 1123,
+      "actions": 2896,
+      "visits": 1118,
+      "initial_correct": 1738,
+      "first_opportunity": 682,
+      "first_confirmed": 511,
+      "episodes": 1200,
+      "recovery": 0.758125,
+      "selective_episode_risk": 0.03,
+      "selective_episode_risk_upper_95": 0.04047223728086405
+    },
+    {
+      "name": "risk_bayes:0.03",
+      "method": "risk_bayes",
+      "cutoff": 0.03,
+      "trials": 4800,
+      "correct": 3611,
+      "new_correct": 1873,
+      "new_released": 1914,
+      "selected": 994,
+      "any_wrong": 32,
+      "wrong_confirmed": 17,
+      "wrong_excluded": 24,
+      "unresolved": 1148,
+      "actions": 2792,
+      "visits": 1118,
+      "initial_correct": 1738,
+      "first_opportunity": 682,
+      "first_confirmed": 498,
+      "episodes": 1200,
+      "recovery": 0.7522916666666667,
+      "selective_episode_risk": 0.03219315895372234,
+      "selective_episode_risk_upper_95": 0.04300207560632319
+    },
+    {
+      "name": "risk_targeted:0.03",
+      "method": "risk_targeted",
+      "cutoff": 0.03,
+      "trials": 4800,
+      "correct": 3869,
+      "new_correct": 2131,
+      "new_released": 2170,
+      "selected": 1058,
+      "any_wrong": 29,
+      "wrong_confirmed": 16,
+      "wrong_excluded": 23,
+      "unresolved": 892,
+      "actions": 2963,
+      "visits": 926,
+      "initial_correct": 1738,
+      "first_opportunity": 682,
+      "first_confirmed": 563,
+      "episodes": 1200,
+      "recovery": 0.8060416666666667,
+      "selective_episode_risk": 0.027410207939508508,
+      "selective_episode_risk_upper_95": 0.03718655518997628
+    }
+  ],
+  "calibration_by_method": {
+    "risk_myopic": {
+      "scope": "conditional episode-any-error risk; IID calibration/deployment only",
+      "risk": 0.05,
+      "delta": 0.05,
+      "family_size": 4,
+      "candidates": [
+        {
+          "name": "risk_myopic:0.03",
+          "selected": 1032,
+          "any_wrong": 31,
+          "correct_decisions": 1975,
+          "visits": 1118,
+          "p_value": 0.0011011558110664906,
+          "risk_upper_simultaneous": 0.044244685589232335,
+          "certified": true
+        }
+      ],
+      "chosen": {
+        "name": "risk_myopic:0.03",
+        "selected": 1032,
+        "any_wrong": 31,
+        "correct_decisions": 1975,
+        "visits": 1118,
+        "p_value": 0.0011011558110664906,
+        "risk_upper_simultaneous": 0.044244685589232335,
+        "certified": true
+      }
+    },
+    "risk_entropy": {
+      "scope": "conditional episode-any-error risk; IID calibration/deployment only",
+      "risk": 0.05,
+      "delta": 0.05,
+      "family_size": 4,
+      "candidates": [
+        {
+          "name": "risk_entropy:0.03",
+          "selected": 1000,
+          "any_wrong": 30,
+          "correct_decisions": 1901,
+          "visits": 1118,
+          "p_value": 0.0012770679174787254,
+          "risk_upper_simultaneous": 0.044463205986979296,
+          "certified": true
+        }
+      ],
+      "chosen": {
+        "name": "risk_entropy:0.03",
+        "selected": 1000,
+        "any_wrong": 30,
+        "correct_decisions": 1901,
+        "visits": 1118,
+        "p_value": 0.0012770679174787254,
+        "risk_upper_simultaneous": 0.044463205986979296,
+        "certified": true
+      }
+    },
+    "risk_bayes": {
+      "scope": "conditional episode-any-error risk; IID calibration/deployment only",
+      "risk": 0.05,
+      "delta": 0.05,
+      "family_size": 4,
+      "candidates": [
+        {
+          "name": "risk_bayes:0.03",
+          "selected": 994,
+          "any_wrong": 32,
+          "correct_decisions": 1873,
+          "visits": 1118,
+          "p_value": 0.004129279661631919,
+          "risk_upper_simultaneous": 0.047113571698111076,
+          "certified": true
+        }
+      ],
+      "chosen": {
+        "name": "risk_bayes:0.03",
+        "selected": 994,
+        "any_wrong": 32,
+        "correct_decisions": 1873,
+        "visits": 1118,
+        "p_value": 0.004129279661631919,
+        "risk_upper_simultaneous": 0.047113571698111076,
+        "certified": true
+      }
+    },
+    "risk_targeted": {
+      "scope": "conditional episode-any-error risk; IID calibration/deployment only",
+      "risk": 0.05,
+      "delta": 0.05,
+      "family_size": 4,
+      "candidates": [
+        {
+          "name": "risk_targeted:0.03",
+          "selected": 1058,
+          "any_wrong": 29,
+          "correct_decisions": 2131,
+          "visits": 926,
+          "p_value": 0.0001812664772044807,
+          "risk_upper_simultaneous": 0.040917512324792876,
+          "certified": true
+        }
+      ],
+      "chosen": {
+        "name": "risk_targeted:0.03",
+        "selected": 1058,
+        "any_wrong": 29,
+        "correct_decisions": 2131,
+        "visits": 926,
+        "p_value": 0.0001812664772044807,
+        "risk_upper_simultaneous": 0.040917512324792876,
+        "certified": true
+      }
+    }
+  },
+  "elapsed_seconds": 63.065231963060796,
+  "medical_disclaimer": "\uc774 \uacb0\uacfc\ub294 \uc758\ud559\uc801 \uc870\uc5b8\uc774 \uc544\ub2cc \ucc38\uace0\uc6a9\uc785\ub2c8\ub2e4. \uc784\uc0c1\uc2dc\ud5d8 \ucc38\uac00 \uac00\ub2a5\uc131\uc740 \ud574\ub2f9 \uc2dc\ud5d8\uc758 \ucd5c\uc2e0 \uae30\uc900\uacfc \uc804\uccb4 \uc790\ub8cc\ub97c \ubc14\ud0d5\uc73c\ub85c \ub2e4\uc2dc \ud655\uc778\ud574\uc57c \ud569\ub2c8\ub2e4."
+}

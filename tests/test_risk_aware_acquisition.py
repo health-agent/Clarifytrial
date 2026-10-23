@@ -51,6 +51,16 @@ def test_repeated_fact_bounds_are_not_treated_as_independent_probabilities():
     assert all(p[0] == pytest.approx(.3) for p in probabilities)
 
 
+@pytest.mark.parametrize("exclusion,expected",[(False,.86),(True,.84)])
+def test_nested_or_shared_fact_bounds_and_exclusion_have_exact_root_probability(exclusion,expected):
+    rules=((ScalarRule(0,"gte",1.,exclusion),ScalarRule(0,"lt",2.,False),ScalarRule(1,"gte",1.,False)),)
+    logic=(LogicalRule("any",children=(LogicalRule("all",children=(LogicalRule("criterion",0),
+        LogicalRule("criterion",1))),LogicalRule("criterion",2))),)
+    p=RiskAwareAcquisition(model(rules=rules,logic=logic))
+    probabilities,_,_=p.belief((-1,-1),p.empty_state())
+    assert all(row[0]==pytest.approx(expected) for row in probabilities)
+
+
 def test_shared_error_agreement_does_not_gain_spurious_independent_confidence():
     p = RiskAwareAcquisition(model(), coupling=(1.,), risk_cutoff=.1)
     first = p.belief((-1,2), (1,-2,-2,-2))[0][0][0]
