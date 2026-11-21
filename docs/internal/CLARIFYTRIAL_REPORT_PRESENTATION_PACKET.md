@@ -254,7 +254,13 @@ EDDI나 L2M 같은 학습 방법과 직접 비교하지 않았다. 이번 연구
 
 이 결과는 의학적 조언이 아닌 참고용입니다. 임상시험 참가 가능성은 해당 시험의 최신 기준과 전체 자료를 바탕으로 다시 확인해야 합니다.
 
-## 공식 안내 확인 — 2026-10-23
+## 게시 포스터 제작 안내
+
+11월 21일 학회 공지에 첨부된 양식 첫 장을 확인했다. 현장 포스터는 가로 90cm, 세로 160cm다. 제목과 저자 정보 영역은 높이 약 16cm이며 본문 서체와 글자 크기는 자유다. 그림과 표는 본문에 자유롭게 배치할 수 있다. 항목 순서는 서론, 연구 방법, 연구 결과, 고찰, 결론이다. [학회 공지](https://www.kosmiconference.org/content/community/post_view.php?bt=3&post_id=31&page=1) · [공식 PPT 양식](https://www.kosmiconference.org/include/lib/download_post_attachment.php?id=31&idx=0)
+
+팀 PPT는 양식과 같은 약 27.52×48.92cm의 작업 크기를 사용한다. 가로 90cm로 출력하면 글자는 파일에 표시된 크기의 약 3.27배다.
+
+### 10월 23일 확인 기록
 
 선정 형식은 **게시 포스터**다. [게시 포스터 공지](https://www.kosmiconference.org/content/community/post_view.php?bt=3&post_id=31&page=1)는
 10월 23일 당시 제목·본문 모두 준비중이었으며 템플릿·크기·질의응답 시간을 아직 제시하지 않는다.
