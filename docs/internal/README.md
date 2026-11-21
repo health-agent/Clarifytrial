@@ -19,6 +19,8 @@
      효과 귀속 점검은18절, 이전 방법 결과는16절이다. 9–15절은 이전 연구 기록이다.
 7. 발표를 다룰 때 [현행 설명·질의응답과 과거 발표 구성](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md)을
    추가로 읽는다. 과거 발표 기록 앞까지 포스터·시연·대본·질의응답의 현행 기준이다.
+   현재 편집본은 이 문서의 Google Slides 링크다. 9월 HWP는 선정 원고,
+   저장소의 10월 PDF·PPTX는 별도 후속 연구 초안으로 구분한다.
 
 2026-09-05의 원고 기준은 사용자가 최종본으로 지정한
 `C:\Users\kll45\Downloads\Clarifytrial 포스터.hwp`다. 내부 원고에는 02:07:54 저장본을
@@ -47,7 +49,7 @@
 | [현재 상태](CURRENT_STATUS.md) | 구현된 범위, 최신 결과와 남은 일 |
 | [연구계획 v5](CLARIFYTRIAL_RESEARCH_PLAN_V5.md) | 연구 질문, 실험 방법과 결과 해석 기준 |
 | [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) | 자료 규모, 실행 조건, 수치와 해석 범위 |
-| [포스터·연구 설명·질의응답](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 편집 포스터·PDF·오프라인 시연·30초/3분 대본·질의응답 준비. 공식 규격 대조·현장 리허설은 미완료. 뒤는 과거 발표 기록 |
+| [포스터·연구 설명·질의응답](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 팀원 Google Slides의 학회 양식을 유지한 편집 완료. 연구 설명·질의응답과 별도 후속 연구 시연. 인쇄·제출·현장 리허설은 미확인. 뒤는 과거 발표 기록 |
 | [KOSMI 포스터 논문 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md) | 최종 HWP의 초록·본문·표·그림 연결·참고문헌과 남은 편집 제안 |
 | [통합 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md) | 같은 위험 기준의 확인 순서 비교. 기록 우선 대비 두 단계는 +44판정·+214방문으로 일괄 우위 미확인. 미제출·임상 검증 미완료 |
 
@@ -85,7 +87,8 @@
 | [외부 주석의 원문 준비](results/leaf-protocol-v1/) | 완료. 48문구·실제 추론 96회, 제안/코드 재생과 v9의 개발 수정. 주석과 원문의 차이 보존 |
 | [고정 v9의 새 24문구](results/leaf-protocol-holdout-v1/) | 완료. 개발 시험과 분리한 실제 추론 48회. 일반 우위 미재현·보류와 참고식 한계 |
 | [위험 기반 선택적 재확인](results/risk-aware-acquisition-v1/README.md) | 최신 기록 우선 비교 완료. 새 합성 교정/평가에서 두 단계는 +0.92%포인트·+214방문. 판정·방문 동시 개선 미재현. 이전 결과도 보존 |
-| [현행 포스터 PDF](presentation/clarifytrial-poster.pdf) · [PPTX](presentation/clarifytrial-poster.pptx) | 10월 초안, 내용 재구성 전. 최신 기록 우선 결과와 선정 연구 중심 구성은 현행 발표 문서를 따름. 최종 인쇄본 아님 |
+| [현재 Google Slides 포스터](https://docs.google.com/presentation/d/1hvHXYo_FA48ae44E0otnVIlIbcw7ksEpuDEVBZWWtqA/edit) | 팀원 포스터의 양식·결과를 유지한 문장·도표 수정본. 11월 21일 PDF 판독과 Fable 검토 완료 |
+| [10월 포스터 PDF](presentation/clarifytrial-poster.pdf) · [PPTX](presentation/clarifytrial-poster.pptx) | 후속 연구 초안. 현재 Google Slides 포스터를 대체하지 않음 |
 | [현행 선택적 재확인 시연](demo/clarifytrial-risk-replay.html) | 새 방법과 같은 모형의 한 단계 비교. 실제 합성 기록 세 사례·여섯 정책 실행을 오프라인 재생. 성공·실패와 부족한 질문 포함 |
 | [이전 워크플로 데모](demo/clarifytrial-presentation-demo.html) | 과거 구현 설명으로 보존. 새 획득 정책의 실시간 실행이나 새 실험 결과로 사용하지 않음 |
 

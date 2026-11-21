@@ -1,11 +1,13 @@
 # ClarifyTrial 발표 설명·결과·질의응답
 
 2026-11-21 기준. 발표의 중심은 9월 선정 연구다. 이 문서는 기존 원고를 설명하고
-질의응답을 준비하기 위한 자료이며, 원본 HWP와 팀원 PPTX는 그대로 두었다.
+질의응답을 준비하기 위한 자료다. 지정한 Google Slides 포스터를 편집했고,
+원본 HWP와 팀원 PPTX는 그대로 두었다.
 저장소의 10월 PDF·PPTX는 후속 연구를 담은 별도 초안이다.
 
 ## 현행 설명과 파일
 
+- [현재 Google Slides 포스터](https://docs.google.com/presentation/d/1hvHXYo_FA48ae44E0otnVIlIbcw7ksEpuDEVBZWWtqA/edit): 11월 21일 문장·배치 수정본. 학회 양식과 기존 수치를 유지했다.
 - [선정 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md): 공개 시험 15건의 조건 80개와 합성 평가 환자 20명을 사용한 연구.
 - [환자별 후보 확인 결과](results/kosmi-poster-evidence-v1/candidate_progress_summary.csv): 기존 3회 확인 기록의 추가 분석. 아래 ‘정보 선택 결과의 해석’에서 설명한다.
 - [후속 연구 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md): 기록 우선 비교까지 반영한 검토본.
@@ -13,6 +15,20 @@
 - [현재 코드 실행 예제](../../scripts/run_route_order_demo.py): API 키 없이 합성 입력의 확인 순서를 계산.
 - [오프라인 저장 기록 시연](demo/clarifytrial-risk-replay.html): 10월 교육용 세 사례를 클릭하며 재생.
 - [10월 포스터 PDF](presentation/clarifytrial-poster.pdf)·[PPTX](presentation/clarifytrial-poster.pptx): 내용 재구성 전 초안. 최종 발표본으로 사용하지 않는다.
+
+### Google Slides 편집 내용
+
+본문을 짧게 다듬고 글자를 키웠다. 흐름도는 같은 입력·확인·재판정 과정을 편집 가능한
+도형으로 바꿨다. 결과 카드의 반복을 줄이고 비교 막대그래프의 축을 0부터 표시했다.
+본문의 [1]~[6] 인용에 맞춰 참고문헌 여섯 편을 정리했다. 후보 확인 추가 분석과
+10월 후속 연구는 포스터에 넣지 않았다.
+
+원본과 수정본의 페이지 크기·마스터·레이아웃, 포스터 번호·제목·저자·소속 문구를
+대조해 같음을 확인했다. 서론·방법·결과·고찰·결론과 두 단 구성도 그대로다.
+내보낸 PDF에서 80+88=168/200(84.0%), 비교 방법의 86.0%, 순서 평균과의
++5.73%p가 함께 읽힌다. Fable 5.2와 확대 판독을 마쳤으며, 흐름도 라벨이나 마지막
+문단이 화살표·하단 배너와 겹치지 않는다. 로컬 최종 PDF와 이미지는
+`runs/google-poster-edit-20261121/final.pdf`, `final.png`에 있다. 인쇄·제출 확인과는 구분한다.
 
 ## 연구 목적
 
