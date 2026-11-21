@@ -17,6 +17,7 @@ import time
 from clarifytrial.interactive.direction_corroboration import SourcePairModel, SourcePairPlanner
 from clarifytrial.interactive.paper_benchmark import (RoutePlanner, generate_patients, make_model, reference_statuses)
 from clarifytrial.interactive.risk_aware_acquisition import RiskAwareAcquisition
+from clarifytrial.interactive.route_order_baselines import RecordFirstAcquisition, ROUTE_METHODS, VISIT_PENALTIES
 from clarifytrial.interactive.selective_calibration import CalibrationCandidate, calibrate, clopper_pearson_upper
 from clarifytrial.disclaimer import DEFAULT_MEDICAL_DISCLAIMER
 
@@ -26,9 +27,11 @@ CUTOFFS=(.01,.03,.10)
 SEEDS={"development":34001,"calibration":45001,"test":56001,"stress":67001}
 
 
-def definitions(cutoffs=CUTOFFS):
+def definitions(cutoffs=CUTOFFS, methods=METHODS):
+    if any(method not in METHODS + ROUTE_METHODS for method in methods):
+        raise ValueError("unknown acquisition method")
     return [{"name":method if method.startswith("legacy") else f"{method}:{cutoff:g}","method":method,"cutoff":cutoff}
-        for method in METHODS for cutoff in ((None,) if method.startswith("legacy") else cutoffs)]
+        for method in methods for cutoff in ((None,) if method.startswith("legacy") else cutoffs)]
 
 
 def write_csv(path, rows):
@@ -49,7 +52,7 @@ def simulate(model, gold, fixed, outcomes, planner, method):
         else:
             policy={"risk_entropy":"entropy","risk_bayes":"bayes_error"}.get(method,"targeted")
             action=planner.choose(fixed,state,1-visits,remaining,policy=policy,
-                horizon=1 if method=="risk_myopic" else 2)
+                horizon=1 if method=="risk_myopic" or method in ROUTE_METHODS else 2)
         if action is None:break
         fact,route=action
         if fixed[fact]>=0 or attempted & (1 << (2*fact+route)) or route>1-visits:
@@ -92,8 +95,7 @@ def run(source, output, *, phase, episodes, split="heldout", methods=None, selec
         independent_belief=False, seed_override=None, cutoffs=CUTOFFS):
     data=json.loads(source.read_text(encoding="utf-8"));groups=data["groups"]
     output.mkdir(parents=True,exist_ok=True)
-    configs=definitions(cutoffs)
-    if methods:configs=[c for c in configs if c["method"] in methods]
+    configs=definitions(cutoffs, tuple(methods) if methods else METHODS)
     family_size=len(configs)
     if selection:
         record=json.loads(selection.read_text(encoding="utf-8"))
@@ -135,8 +137,11 @@ def run(source, output, *, phase, episodes, split="heldout", methods=None, selec
         for group,m in enumerate(models):
             if method=="legacy_first":planner=RoutePlanner(m,quality=(.70,.95),compact=False)
             elif method=="legacy_direction":planner=SourcePairPlanner(SourcePairModel(m),error_probability=.05)
-            else:planner=RiskAwareAcquisition(m,risk_cutoff=config["cutoff"],
-                coupling=(0.,) if independent_belief or method=="risk_independent" else (0.,.5,1.))
+            else:
+                planner_type = RecordFirstAcquisition if method=="risk_record_first" else RiskAwareAcquisition
+                planner=planner_type(m,risk_cutoff=config["cutoff"],
+                    visit_penalty=VISIT_PENALTIES.get(method, 0.),
+                    coupling=(0.,) if independent_belief or method=="risk_independent" else (0.,.5,1.))
             for i,(g,mask,rho,truth,fixed,outcomes,gold) in enumerate(private):
                 if g!=group:continue
                 row=simulate(m,gold,fixed,outcomes,planner,method)
@@ -160,7 +165,7 @@ def run(source, output, *, phase, episodes, split="heldout", methods=None, selec
         metrics.append(item)
     calibration_by_method={}
     if phase=="calibration":
-        for method in METHODS:
+        for method in dict.fromkeys(c["method"] for c in configs):
             candidates=[CalibrationCandidate(c["name"],c["selected"],c["any_wrong"],c["new_correct"],c["visits"])
                 for c in metrics if c["method"]==method]
             if candidates:calibration_by_method[method]=calibrate(candidates,family_size=family_size)

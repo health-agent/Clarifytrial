@@ -1,0 +1,380 @@
+{
+  "phase": "calibration",
+  "seed": 45003,
+  "episodes": 1200,
+  "scope": "Selected numeric subsets, synthetic IID episodes; not clinical enrollment",
+  "source_protocol_ids": [
+    "NCT01399385",
+    "NCT05633810",
+    "NCT05776563",
+    "NCT06116682",
+    "NCT06552637",
+    "NCT06820281",
+    "NCT07037433",
+    "NCT07189871",
+    "NCT07310420",
+    "NCT07325201",
+    "NCT07426484",
+    "NCT07465653",
+    "NCT07592000",
+    "NCT07594067",
+    "NCT07721259",
+    "NCT07751042",
+    "NCT07753993",
+    "NCT07761117",
+    "NCT07784270",
+    "NCT07801508",
+    "NCT07858799",
+    "NCT07869472",
+    "NCT07872904",
+    "NCT07874880"
+  ],
+  "risk_target": "P(any wrong new subset decision | any new decision released), alpha=.05 delta=.05; family=6",
+  "independent_belief": true,
+  "family_size": 6,
+  "calibration_assumption": "Fixed policies, fully labeled IID episodes from the same mixture; not arbitrary distribution shift",
+  "configurations": [
+    {
+      "name": "risk_myopic:0.03",
+      "method": "risk_myopic",
+      "cutoff": 0.03
+    },
+    {
+      "name": "risk_targeted:0.03",
+      "method": "risk_targeted",
+      "cutoff": 0.03
+    },
+    {
+      "name": "risk_record_first:0.03",
+      "method": "risk_record_first",
+      "cutoff": 0.03
+    },
+    {
+      "name": "risk_myopic_cost_005:0.03",
+      "method": "risk_myopic_cost_005",
+      "cutoff": 0.03
+    },
+    {
+      "name": "risk_myopic_cost_010:0.03",
+      "method": "risk_myopic_cost_010",
+      "cutoff": 0.03
+    },
+    {
+      "name": "risk_myopic_cost_025:0.03",
+      "method": "risk_myopic_cost_025",
+      "cutoff": 0.03
+    }
+  ],
+  "metrics": [
+    {
+      "name": "risk_myopic:0.03",
+      "method": "risk_myopic",
+      "cutoff": 0.03,
+      "trials": 4800,
+      "correct": 3633,
+      "new_correct": 1999,
+      "new_released": 2026,
+      "selected": 1055,
+      "any_wrong": 23,
+      "wrong_confirmed": 11,
+      "wrong_excluded": 16,
+      "unresolved": 1140,
+      "actions": 3008,
+      "visits": 1145,
+      "initial_correct": 1634,
+      "first_opportunity": 727,
+      "first_confirmed": 514,
+      "episodes": 1200,
+      "recovery": 0.756875,
+      "selective_episode_risk": 0.021800947867298578,
+      "selective_episode_risk_upper_95": 0.030746016233949028
+    },
+    {
+      "name": "risk_targeted:0.03",
+      "method": "risk_targeted",
+      "cutoff": 0.03,
+      "trials": 4800,
+      "correct": 3812,
+      "new_correct": 2178,
+      "new_released": 2207,
+      "selected": 1075,
+      "any_wrong": 24,
+      "wrong_confirmed": 11,
+      "wrong_excluded": 18,
+      "unresolved": 959,
+      "actions": 3046,
+      "visits": 957,
+      "initial_correct": 1634,
+      "first_opportunity": 727,
+      "first_confirmed": 572,
+      "episodes": 1200,
+      "recovery": 0.7941666666666667,
+      "selective_episode_risk": 0.022325581395348838,
+      "selective_episode_risk_upper_95": 0.031254850067107376
+    },
+    {
+      "name": "risk_record_first:0.03",
+      "method": "risk_record_first",
+      "cutoff": 0.03,
+      "trials": 4800,
+      "correct": 3758,
+      "new_correct": 2124,
+      "new_released": 2154,
+      "selected": 1072,
+      "any_wrong": 25,
+      "wrong_confirmed": 11,
+      "wrong_excluded": 19,
+      "unresolved": 1012,
+      "actions": 3069,
+      "visits": 736,
+      "initial_correct": 1634,
+      "first_opportunity": 727,
+      "first_confirmed": 525,
+      "episodes": 1200,
+      "recovery": 0.7829166666666667,
+      "selective_episode_risk": 0.02332089552238806,
+      "selective_episode_risk_upper_95": 0.03241996776306698
+    },
+    {
+      "name": "risk_myopic_cost_005:0.03",
+      "method": "risk_myopic_cost_005",
+      "cutoff": 0.03,
+      "trials": 4800,
+      "correct": 3633,
+      "new_correct": 1999,
+      "new_released": 2026,
+      "selected": 1055,
+      "any_wrong": 23,
+      "wrong_confirmed": 11,
+      "wrong_excluded": 16,
+      "unresolved": 1140,
+      "actions": 3010,
+      "visits": 1144,
+      "initial_correct": 1634,
+      "first_opportunity": 727,
+      "first_confirmed": 514,
+      "episodes": 1200,
+      "recovery": 0.756875,
+      "selective_episode_risk": 0.021800947867298578,
+      "selective_episode_risk_upper_95": 0.030746016233949028
+    },
+    {
+      "name": "risk_myopic_cost_010:0.03",
+      "method": "risk_myopic_cost_010",
+      "cutoff": 0.03,
+      "trials": 4800,
+      "correct": 3631,
+      "new_correct": 1997,
+      "new_released": 2025,
+      "selected": 1054,
+      "any_wrong": 24,
+      "wrong_confirmed": 11,
+      "wrong_excluded": 17,
+      "unresolved": 1141,
+      "actions": 3012,
+      "visits": 1143,
+      "initial_correct": 1634,
+      "first_opportunity": 727,
+      "first_confirmed": 513,
+      "episodes": 1200,
+      "recovery": 0.7564583333333333,
+      "selective_episode_risk": 0.022770398481973434,
+      "selective_episode_risk_upper_95": 0.03187466763533342
+    },
+    {
+      "name": "risk_myopic_cost_025:0.03",
+      "method": "risk_myopic_cost_025",
+      "cutoff": 0.03,
+      "trials": 4800,
+      "correct": 3703,
+      "new_correct": 2069,
+      "new_released": 2096,
+      "selected": 1070,
+      "any_wrong": 23,
+      "wrong_confirmed": 11,
+      "wrong_excluded": 16,
+      "unresolved": 1070,
+      "actions": 3045,
+      "visits": 870,
+      "initial_correct": 1634,
+      "first_opportunity": 727,
+      "first_confirmed": 514,
+      "episodes": 1200,
+      "recovery": 0.7714583333333334,
+      "selective_episode_risk": 0.02149532710280374,
+      "selective_episode_risk_upper_95": 0.030316944800567916
+    }
+  ],
+  "calibration_by_method": {
+    "risk_myopic": {
+      "scope": "conditional episode-any-error risk; IID calibration/deployment only",
+      "risk": 0.05,
+      "delta": 0.05,
+      "family_size": 6,
+      "candidates": [
+        {
+          "name": "risk_myopic:0.03",
+          "selected": 1055,
+          "any_wrong": 23,
+          "correct_decisions": 1999,
+          "visits": 1145,
+          "p_value": 2.1580245243843094e-06,
+          "risk_upper_simultaneous": 0.035099201651946216,
+          "certified": true
+        }
+      ],
+      "chosen": {
+        "name": "risk_myopic:0.03",
+        "selected": 1055,
+        "any_wrong": 23,
+        "correct_decisions": 1999,
+        "visits": 1145,
+        "p_value": 2.1580245243843094e-06,
+        "risk_upper_simultaneous": 0.035099201651946216,
+        "certified": true
+      }
+    },
+    "risk_targeted": {
+      "scope": "conditional episode-any-error risk; IID calibration/deployment only",
+      "risk": 0.05,
+      "delta": 0.05,
+      "family_size": 6,
+      "candidates": [
+        {
+          "name": "risk_targeted:0.03",
+          "selected": 1075,
+          "any_wrong": 24,
+          "correct_decisions": 2178,
+          "visits": 957,
+          "p_value": 2.809693915859835e-06,
+          "risk_upper_simultaneous": 0.0355945300867119,
+          "certified": true
+        }
+      ],
+      "chosen": {
+        "name": "risk_targeted:0.03",
+        "selected": 1075,
+        "any_wrong": 24,
+        "correct_decisions": 2178,
+        "visits": 957,
+        "p_value": 2.809693915859835e-06,
+        "risk_upper_simultaneous": 0.0355945300867119,
+        "certified": true
+      }
+    },
+    "risk_record_first": {
+      "scope": "conditional episode-any-error risk; IID calibration/deployment only",
+      "risk": 0.05,
+      "delta": 0.05,
+      "family_size": 6,
+      "candidates": [
+        {
+          "name": "risk_record_first:0.03",
+          "selected": 1072,
+          "any_wrong": 25,
+          "correct_decisions": 2124,
+          "visits": 736,
+          "p_value": 6.982281141080845e-06,
+          "risk_upper_simultaneous": 0.03683593809501284,
+          "certified": true
+        }
+      ],
+      "chosen": {
+        "name": "risk_record_first:0.03",
+        "selected": 1072,
+        "any_wrong": 25,
+        "correct_decisions": 2124,
+        "visits": 736,
+        "p_value": 6.982281141080845e-06,
+        "risk_upper_simultaneous": 0.03683593809501284,
+        "certified": true
+      }
+    },
+    "risk_myopic_cost_005": {
+      "scope": "conditional episode-any-error risk; IID calibration/deployment only",
+      "risk": 0.05,
+      "delta": 0.05,
+      "family_size": 6,
+      "candidates": [
+        {
+          "name": "risk_myopic_cost_005:0.03",
+          "selected": 1055,
+          "any_wrong": 23,
+          "correct_decisions": 1999,
+          "visits": 1144,
+          "p_value": 2.1580245243843094e-06,
+          "risk_upper_simultaneous": 0.035099201651946216,
+          "certified": true
+        }
+      ],
+      "chosen": {
+        "name": "risk_myopic_cost_005:0.03",
+        "selected": 1055,
+        "any_wrong": 23,
+        "correct_decisions": 1999,
+        "visits": 1144,
+        "p_value": 2.1580245243843094e-06,
+        "risk_upper_simultaneous": 0.035099201651946216,
+        "certified": true
+      }
+    },
+    "risk_myopic_cost_010": {
+      "scope": "conditional episode-any-error risk; IID calibration/deployment only",
+      "risk": 0.05,
+      "delta": 0.05,
+      "family_size": 6,
+      "candidates": [
+        {
+          "name": "risk_myopic_cost_010:0.03",
+          "selected": 1054,
+          "any_wrong": 24,
+          "correct_decisions": 1997,
+          "visits": 1143,
+          "p_value": 5.184820551286378e-06,
+          "risk_upper_simultaneous": 0.03629879068916453,
+          "certified": true
+        }
+      ],
+      "chosen": {
+        "name": "risk_myopic_cost_010:0.03",
+        "selected": 1054,
+        "any_wrong": 24,
+        "correct_decisions": 1997,
+        "visits": 1143,
+        "p_value": 5.184820551286378e-06,
+        "risk_upper_simultaneous": 0.03629879068916453,
+        "certified": true
+      }
+    },
+    "risk_myopic_cost_025": {
+      "scope": "conditional episode-any-error risk; IID calibration/deployment only",
+      "risk": 0.05,
+      "delta": 0.05,
+      "family_size": 6,
+      "candidates": [
+        {
+          "name": "risk_myopic_cost_025:0.03",
+          "selected": 1070,
+          "any_wrong": 23,
+          "correct_decisions": 2069,
+          "visits": 870,
+          "p_value": 1.3749892992515497e-06,
+          "risk_upper_simultaneous": 0.03461046778048625,
+          "certified": true
+        }
+      ],
+      "chosen": {
+        "name": "risk_myopic_cost_025:0.03",
+        "selected": 1070,
+        "any_wrong": 23,
+        "correct_decisions": 2069,
+        "visits": 870,
+        "p_value": 1.3749892992515497e-06,
+        "risk_upper_simultaneous": 0.03461046778048625,
+        "certified": true
+      }
+    }
+  },
+  "elapsed_seconds": 72.8060042350553,
+  "medical_disclaimer": "\uc774 \uacb0\uacfc\ub294 \uc758\ud559\uc801 \uc870\uc5b8\uc774 \uc544\ub2cc \ucc38\uace0\uc6a9\uc785\ub2c8\ub2e4. \uc784\uc0c1\uc2dc\ud5d8 \ucc38\uac00 \uac00\ub2a5\uc131\uc740 \ud574\ub2f9 \uc2dc\ud5d8\uc758 \ucd5c\uc2e0 \uae30\uc900\uacfc \uc804\uccb4 \uc790\ub8cc\ub97c \ubc14\ud0d5\uc73c\ub85c \ub2e4\uc2dc \ud655\uc778\ud574\uc57c \ud569\ub2c8\ub2e4."
+}

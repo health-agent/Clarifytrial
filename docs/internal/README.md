@@ -15,8 +15,8 @@
 5. [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) — 분모, 비교 방법, 결과와 해석 범위
 6. [실험자료](CLARIFYTRIAL_DATASETS.md) — 자료 출처와 합성 환자·연결 구조·환자 제한의 구분
    - 확장 연구를 이어갈 때 [통합 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md)를 추가로 읽는다.
-     핵심 방법·합성 검증 원고이며 선정된 HWP를 대체하지 않는다. 새 방법의 기준은 검증 16절,
-     이전 평가 중심 종합은 9–15절이다.
+     방법·합성 비교 원고이며 선정된 HWP를 대체하지 않는다. 최신 기록 우선 비교는 검증19절,
+     효과 귀속 점검은18절, 이전 방법 결과는16절이다. 9–15절은 이전 연구 기록이다.
 7. 발표를 다룰 때 [현행 설명·질의응답과 과거 발표 구성](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md)을
    추가로 읽는다. 과거 발표 기록 앞까지 포스터·시연·대본·질의응답의 현행 기준이다.
 
@@ -32,8 +32,8 @@
 ## 연구와 현재 결과
 
 2026-10-22 사용자가 포스터 선정과 11월 말 발표를 알렸다. 현재 핵심 방법은
-[연구계획 14절](CLARIFYTRIAL_RESEARCH_PLAN_V5.md), 구현·합성 실증은
-[검증 결과 16절](CLARIFYTRIAL_VALIDATION_RESULTS.md)에 있다. 이전 개발 비교는
+[연구계획 15절](CLARIFYTRIAL_RESEARCH_PLAN_V5.md), 최신 기록 우선 비교는
+[검증 결과 19절](CLARIFYTRIAL_VALIDATION_RESULTS.md)에 있다. 이전 개발 비교는
 8–15절에 보존한다. 선정된 9월 HWP와 새 연구 결과를 구분한다.
 
 | 문서 | 내용 |
@@ -43,7 +43,7 @@
 | [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md) | 자료 규모, 실행 조건, 수치와 해석 범위 |
 | [포스터·연구 설명·질의응답](CLARIFYTRIAL_REPORT_PRESENTATION_PACKET.md) | 편집 포스터·PDF·오프라인 시연·30초/3분 대본·질의응답 준비. 공식 규격 대조·현장 리허설은 미완료. 뒤는 과거 발표 기록 |
 | [KOSMI 포스터 논문 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md) | 최종 HWP의 초록·본문·표·그림 연결·참고문헌과 남은 편집 제안 |
-| [통합 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md) | 관측 증거·위험 교정·선택적 재확인의 핵심 방법과 동일 모형 비교의 향상. 미제출·임상 검증 미완료 |
+| [통합 논문 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md) | 같은 위험 기준의 확인 순서 비교. 기록 우선 대비 두 단계는 +44판정·+214방문으로 일괄 우위 미확인. 미제출·임상 검증 미완료 |
 
 ## 프로그램 구조
 
@@ -78,8 +78,8 @@
 | [조건별 결론의 자료원 대조](results/direction-corroboration-v1/) | 완료. 균등 오답에서 같은 행동의 판정 완화와 재계획을 분리. 공유 오류·방문·남은 오판 |
 | [외부 주석의 원문 준비](results/leaf-protocol-v1/) | 완료. 48문구·실제 추론 96회, 제안/코드 재생과 v9의 개발 수정. 주석과 원문의 차이 보존 |
 | [고정 v9의 새 24문구](results/leaf-protocol-holdout-v1/) | 완료. 개발 시험과 분리한 실제 추론 48회. 일반 우위 미재현·보류와 참고식 한계 |
-| [위험 기반 선택적 재확인](results/risk-aware-acquisition-v1/README.md) | 완료. 새 24시험·58비교식, 정책 전체 교정과 독립 합성 평가. 같은 모형의 한 단계 대비 +3.10%p·방문 17.34% 감소, 오판·분포 변화 한계 |
-| [현행 포스터 PDF](presentation/clarifytrial-poster.pdf) · [PPTX](presentation/clarifytrial-poster.pptx) | 900×1200mm 작업 규격. 선정 제목·저자와 새 방법의 결과·한계. 공식 규격 확인 전 인쇄 확정본이 아님 |
+| [위험 기반 선택적 재확인](results/risk-aware-acquisition-v1/README.md) | 최신 기록 우선 비교 완료. 새 합성 교정/평가에서 두 단계는 +0.92%포인트·+214방문. 판정·방문 동시 개선 미재현. 이전 결과도 보존 |
+| [현행 포스터 PDF](presentation/clarifytrial-poster.pdf) · [PPTX](presentation/clarifytrial-poster.pptx) | 10월 초안, 내용 재구성 전. 최신 기록 우선 결과와 선정 연구 중심 구성은 현행 발표 문서를 따름. 최종 인쇄본 아님 |
 | [현행 선택적 재확인 시연](demo/clarifytrial-risk-replay.html) | 새 방법과 같은 모형의 한 단계 비교. 실제 합성 기록 세 사례·여섯 정책 실행을 오프라인 재생. 성공·실패와 부족한 질문 포함 |
 | [이전 워크플로 데모](demo/clarifytrial-presentation-demo.html) | 과거 구현 설명으로 보존. 새 획득 정책의 실시간 실행이나 새 실험 결과로 사용하지 않음 |
 

@@ -16,9 +16,11 @@ from statistics import mean
 from clarifytrial.interactive.statistics import stratified_bootstrap_mean
 
 
-def analyze(root, output, *, resamples=5000):
+def analyze(root, output, *, resamples=5000, primary_comparator="risk_myopic"):
     output.mkdir(parents=True,exist_ok=True)
-    result={"primary_comparator":"risk_myopic", "selection":"strongest same-belief baseline by calibration, not test",
+    result={"primary_comparator":primary_comparator, "selection":
+        ("strongest same-belief baseline by calibration, not test" if primary_comparator=="risk_myopic" else
+         "record-first route question fixed after prior evaluation review, before fresh calibration/test"),
         "uncertainty":"Paired synthetic patient-episode bootstrap, conditional on fixed purpose-selected numeric subsets and mixture",
         "phases":{}}
     for phase in ("test","stress"):
@@ -64,4 +66,6 @@ def analyze(root, output, *, resamples=5000):
 
 if __name__=="__main__":
     p=argparse.ArgumentParser();p.add_argument("--root",type=Path,default=Path("."));p.add_argument("--output",type=Path,required=True)
-    p.add_argument("--resamples",type=int,default=5000);a=p.parse_args();analyze(a.root,a.output,resamples=a.resamples)
+    p.add_argument("--resamples",type=int,default=5000)
+    p.add_argument("--primary-comparator",choices=("risk_myopic","risk_record_first"),default="risk_myopic")
+    a=p.parse_args();analyze(a.root,a.output,resamples=a.resamples,primary_comparator=a.primary_comparator)
