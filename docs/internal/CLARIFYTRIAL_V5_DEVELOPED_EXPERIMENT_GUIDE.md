@@ -209,6 +209,29 @@ $repoRoot = (Get-Location).Path
 
 세 파일은 `docs/internal/results/kosmi-poster-evidence-v1/`에 저장된다.
 
+같은 확인3회 실행에서 환자별 첫 적격 후보 확인을 계산하고, 기존 정보 연결 구조의
+작은 예시를 실행하려면 다음 옵션을 사용한다. 기존 결과표 생성 명령은 그대로다.
+
+```powershell
+.\.venv\Scripts\python.exe scripts\build_kosmi_poster_measurements.py --candidate-progress
+```
+
+`runs/kosmi-transition-balance-20260902/budget-3/case-results.jsonl`의 저장된 선택 순서를
+차례대로 재생한다. 이 원시 파일이 없으면 먼저 위의 기존3회 실험을 실행해야 한다.
+새 환자·새 정책 실험이나 LLM 호출은 없다. 확인1·2회 별도 실행의 결과를3회 실행의
+중간 시점처럼 이어 붙이지 않는다. 다음 파일만 같은 결과 폴더에 추가한다.
+
+| 파일 | 내용 |
+|---|---|
+| `candidate_progress_cases.csv` | 환자·가림·방법별 첫 후보 확인 시점과 기존 선택 순서 |
+| `candidate_progress_patients.csv` | 같은 환자의 가림 A/B 결과를 한 행에 보존 |
+| `candidate_progress_summary.csv` | 후보가 있는8명·16개 가림 사례의 전체 및 가림별 집계 |
+| `structure_examples.json` | 기존 공통·연쇄 생성 사례의 실제 선택과 판정 수 |
+
+재생의 최종 적격·부적격 정리 수와 전체 상태 일치율이 저장 결과와 다르면 계산을
+중단한다. 첫 후보는 해당 합성 사례의 전체 정보 판정과 일치하는 적격 후보를 뜻한다.
+첫 확인 시점의 빈칸은 한도 안에 확인하지 못한 경우이며0회와 구분한다.
+
 ## 5. 환자 상황에 따른 확인 방법 평가
 
 이 평가는 Git에 함께 넣은 공개 조건 원문을 사용한다. 최신 ClinicalTrials.gov 응답과

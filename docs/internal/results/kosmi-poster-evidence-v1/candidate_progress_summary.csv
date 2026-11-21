@@ -1,0 +1,10 @@
+﻿policy_id,mask_id,base_patient_count,masked_case_count,cases_with_reference_eligible,newly_confirmed_trial_count,ineligible_cleanup_count,final_state_match_count,cases_with_candidate_step_0,cases_with_candidate_step_1,cases_with_candidate_step_2,cases_with_candidate_step_3
+clarifytrial_rule_v1,all,20,40,16,13,75,168,0,0,3,11
+clarifytrial_rule_v1,A,20,20,8,6,44,79,0,0,0,6
+clarifytrial_rule_v1,B,20,20,8,7,31,89,0,0,3,5
+clarifytrial_exact_coverage_v3,all,20,40,16,15,70,165,0,0,3,13
+clarifytrial_exact_coverage_v3,A,20,20,8,7,42,78,0,0,0,7
+clarifytrial_exact_coverage_v3,B,20,20,8,8,28,87,0,0,3,6
+exact_decision_tree_expected_horizon_1_v1,all,20,40,16,11,81,172,0,0,5,9
+exact_decision_tree_expected_horizon_1_v1,A,20,20,8,5,49,83,0,0,2,5
+exact_decision_tree_expected_horizon_1_v1,B,20,20,8,6,32,89,0,0,3,4

@@ -22,6 +22,11 @@ POLICY_COMPARISONS = (
     ("clarifytrial_rule_v1", "random_order_expectation"),
     ("clarifytrial_exact_coverage_v3", "clarifytrial_rule_v1"),
 )
+PROGRESS_POLICIES = (
+    "clarifytrial_rule_v1",
+    "clarifytrial_exact_coverage_v3",
+    "exact_decision_tree_expected_horizon_1_v1",
+)
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -497,6 +502,184 @@ def build(transition_root: Path, output_dir: Path) -> dict[str, Any]:
     return payload
 
 
+def _candidate_trajectory(case, fact_ids: list[str]) -> list[dict[str, Any]]:
+    """Replay one saved sequence; the full state is used only for scoring."""
+    from clarifytrial.contracts import CandidateStatus, ConfirmationStatus
+    from clarifytrial.interactive.oracle import evaluate_policy_view
+
+    view = case.public_policy_view()
+    answers = {item.request.fact_id: item.answer.evidence for item in case.hidden_facts}
+    if len(fact_ids) > case.action_budget or len(set(fact_ids)) != len(fact_ids):
+        raise ValueError("saved sequence exceeds budget or repeats a fact")
+    if not set(fact_ids) <= answers.keys():
+        raise ValueError("saved sequence contains an unknown fact")
+    state = case.initial_patient_state()
+    initial = {item.trial_id: item for item in evaluate_policy_view(view, state).decisions}
+    full_state = state.model_copy(update={
+        "facts": [*state.facts, *(answers[key] for key in sorted(answers))],
+    })
+    full = {item.trial_id: item for item in evaluate_policy_view(view, full_state).decisions}
+    eligible = {key for key, item in full.items()
+                if item.confirmation_status is ConfirmationStatus.CONFIRMED}
+    pending = {key for key, item in initial.items()
+               if item.candidate_status is CandidateStatus.RETAIN
+               and item.confirmation_status is ConfirmationStatus.NOT_CONFIRMED}
+    trajectory = []
+    for step in range(case.action_budget + 1):
+        if 0 < step <= len(fact_ids):
+            state = state.model_copy(update={"facts": [*state.facts, answers[fact_ids[step - 1]]]})
+        current = {item.trial_id: item for item in evaluate_policy_view(view, state).decisions}
+        matches = {key for key in full if (
+            current[key].candidate_status, current[key].confirmation_status
+        ) == (full[key].candidate_status, full[key].confirmation_status)}
+        confirmed = eligible & matches
+        trajectory.append({
+            "step": step,
+            "actions_used": min(step, len(fact_ids)),
+            "reference_eligible_count": len(eligible),
+            "reference_confirmed_ids": sorted(confirmed),
+            "newly_confirmed_ids": sorted(confirmed & pending),
+            "ineligible_cleanup_count": sum(
+                key in matches and full[key].confirmation_status is ConfirmationStatus.INELIGIBLE
+                for key in pending
+            ),
+            "state_match_count": len(matches),
+        })
+    return trajectory
+
+
+def build_supplement(transition_root: Path, output_dir: Path, config_path: Path) -> dict[str, Any]:
+    """Add patient-level interpretation without rerunning or changing policies."""
+    from clarifytrial.interactive.public_benchmark import build_public_case, load_public_benchmark_spec
+
+    spec = load_public_benchmark_spec(config_path)
+    cases = {
+        (group.group_id, profile.profile_id, mask.mask_id): build_public_case(group, profile, mask)
+        for group in spec.groups for profile in group.profiles if profile.split == "heldout"
+        for mask in group.masks
+    }
+    saved_rows = _read_jsonl(transition_root / "budget-3" / "case-results.jsonl")
+    progress_rows = []
+    seen = set()
+    for row in saved_rows:
+        if row["split"] != "heldout" or row["policy_id"] not in PROGRESS_POLICIES:
+            continue
+        key = (row["group_id"], row["profile_id"], row["mask_id"])
+        entry_key = (*key, row["policy_id"])
+        if entry_key in seen or row["action_budget"] != 3:
+            raise ValueError("duplicate case-policy or unexpected saved budget")
+        seen.add(entry_key)
+        case = cases[key]
+        selected = row["selected_fact_ids"]
+        if row["actions"] != len(selected):
+            raise ValueError("saved action count does not match its sequence")
+        path = _candidate_trajectory(case, selected)
+        final = path[-1]
+        if (len(final["newly_confirmed_ids"]) != row["confirmed_rescue_count"]
+                or final["ineligible_cleanup_count"] != row["ineligible_cleanup_count"]
+                or abs(final["state_match_count"] / len(case.trials) - row["trial_recovery"]) > 1e-9):
+            raise ValueError(f"replay differs from original result: {entry_key}")
+        result = {"group_id": key[0], "profile_id": key[1], "mask_id": key[2],
+                  "policy_id": row["policy_id"], "action_budget": 3,
+                  "reference_eligible_count": final["reference_eligible_count"],
+                  "initial_confirmed_count": len(path[0]["reference_confirmed_ids"]),
+                  "newly_confirmed_count": len(final["newly_confirmed_ids"]),
+                  "ineligible_cleanup_count": final["ineligible_cleanup_count"],
+                  "state_match_count": final["state_match_count"],
+                  "first_confirmation_step": next((p["step"] for p in path if p["reference_confirmed_ids"]), None),
+                  "first_new_confirmation_step": next((p["step"] for p in path if p["newly_confirmed_ids"]), None),
+                  "selected_fact_ids": json.dumps(selected),
+                  "newly_confirmed_trial_ids": json.dumps(final["newly_confirmed_ids"])}
+        result.update({f"confirmed_count_step_{p['step']}": len(p["reference_confirmed_ids"]) for p in path})
+        progress_rows.append(result)
+    expected = {(*key, policy_id) for key in cases for policy_id in PROGRESS_POLICIES}
+    if seen != expected:
+        raise ValueError("saved results do not cover every heldout case and requested policy")
+    summaries = []
+    patient_rows = []
+    for policy_id in PROGRESS_POLICIES:
+        policy_rows = [row for row in progress_rows if row["policy_id"] == policy_id]
+        for mask_id in ["all", *sorted({row["mask_id"] for row in policy_rows})]:
+            subset = [row for row in policy_rows if mask_id == "all" or row["mask_id"] == mask_id]
+            summary = {
+                "policy_id": policy_id, "mask_id": mask_id,
+                "base_patient_count": len({(r["group_id"], r["profile_id"]) for r in subset}),
+                "masked_case_count": len(subset),
+                "cases_with_reference_eligible": sum(r["reference_eligible_count"] > 0 for r in subset),
+                "newly_confirmed_trial_count": sum(r["newly_confirmed_count"] for r in subset),
+                "ineligible_cleanup_count": sum(r["ineligible_cleanup_count"] for r in subset),
+                "final_state_match_count": sum(r["state_match_count"] for r in subset),
+            }
+            summary.update({f"cases_with_candidate_step_{step}": sum(
+                r[f"confirmed_count_step_{step}"] > 0 for r in subset) for step in range(4)})
+            summaries.append(summary)
+        patients = defaultdict(list)
+        for row in policy_rows:
+            patients[(row["group_id"], row["profile_id"])].append(row)
+        for (group_id, profile_id), items in sorted(patients.items()):
+            patient = {"group_id": group_id, "profile_id": profile_id, "policy_id": policy_id,
+                       "mask_count": len(items),
+                       "masks_with_candidate": sum(r["confirmed_count_step_3"] > 0 for r in items)}
+            for item in sorted(items, key=lambda r: r["mask_id"]):
+                patient[f"first_confirmation_mask_{item['mask_id']}"] = item["first_confirmation_step"]
+                patient[f"newly_confirmed_mask_{item['mask_id']}"] = item["newly_confirmed_count"]
+            patient_rows.append(patient)
+    _write_csv(output_dir / "candidate_progress_cases.csv", progress_rows)
+    _write_csv(output_dir / "candidate_progress_summary.csv", summaries)
+    _write_csv(output_dir / "candidate_progress_patients.csv", patient_rows)
+    return {"evaluation": "saved three-action trajectories, not separate budget reruns",
+            "random_order": "not reconstructed from its mean; individual trajectories are not saved",
+            "summary": summaries}
+
+
+def build_structure_examples(output_dir: Path) -> list[dict[str, Any]]:
+    """Run fixed examples from the existing generator, not another benchmark."""
+    from clarifytrial.contracts import NextAction
+    from clarifytrial.interactive.oracle import evaluate_policy_view
+    from clarifytrial.interactive.policies import ClarifyTrialExactCoveragePolicy, ClarifyTrialRulePolicy
+    from clarifytrial.interactive.stress import build_stress_case
+
+    examples = []
+    for topology in ("fully_shared", "chain"):
+        for budget in (2, 3):
+            case = build_stress_case(topology, 0, seed=20260830, action_budget=budget)
+            view = case.public_policy_view()
+            aliases = {item.fact_id: chr(65 + int(item.fact_id.rsplit("-", 1)[1]))
+                       for item in view.available_information}
+            initial = evaluate_policy_view(view, case.initial_patient_state())
+            missing = {decision.trial_id: sorted({aliases[fact_id]
+                       for assessment in decision.criterion_assessments
+                       for fact_id in assessment.missing_information_ids})
+                       for decision in initial.decisions}
+            answers = {item.request.fact_id: item.answer for item in case.hidden_facts}
+            for policy in (ClarifyTrialRulePolicy(), ClarifyTrialExactCoveragePolicy()):
+                state = case.initial_patient_state()
+                selected, routes = [], []
+                for _ in range(budget):
+                    action = policy.select(view, evaluate_policy_view(view, state), frozenset(selected))
+                    if action.action in {NextAction.NONE, NextAction.DEFER}:
+                        break
+                    answer = answers[action.target_fact_id]
+                    if answer.access_path is not action.action:
+                        raise ValueError("example selected an unavailable route")
+                    selected.append(action.target_fact_id)
+                    routes.append(action.action.value)
+                    state = state.model_copy(update={"facts": [*state.facts, answer.evidence]})
+                path = _candidate_trajectory(case, selected)
+                examples.append({
+                    "topology": topology, "structure_number": 0, "seed": 20260830,
+                    "action_budget": budget, "policy_id": policy.policy_id,
+                    "required_information": missing,
+                    "synthetic_answers": {aliases[key]: value.evidence.value for key, value in answers.items()},
+                    "selected_information": [aliases[key] for key in selected],
+                    "selected_actions": routes,
+                    "confirmed_trial_ids": path[-1]["reference_confirmed_ids"],
+                    "confirmed_counts_by_step": [len(step["reference_confirmed_ids"]) for step in path],
+                })
+    _write_json(output_dir / "structure_examples.json", examples)
+    return examples
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Build the KOSMI poster transition measurement tables."
@@ -511,7 +694,15 @@ def main() -> None:
         type=Path,
         default=Path("docs/internal/results/kosmi-poster-evidence-v1"),
     )
+    parser.add_argument("--candidate-progress", action="store_true",
+                        help="Add candidate-progress tables and small structure examples; keep existing tables unchanged.")
+    parser.add_argument("--config", type=Path, default=Path("configs/interactive_public_benchmark_v1.json"))
     args = parser.parse_args()
+    if args.candidate_progress:
+        payload = build_supplement(args.transition_root, args.output, args.config)
+        build_structure_examples(args.output)
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return
     payload = build(args.transition_root, args.output)
     print(args.output / "summary.json")
     print(json.dumps(payload["scope"], ensure_ascii=False, sort_keys=True))

@@ -1,0 +1,431 @@
+[
+  {
+    "topology": "fully_shared",
+    "structure_number": 0,
+    "seed": 20260830,
+    "action_budget": 2,
+    "policy_id": "clarifytrial_rule_v1",
+    "required_information": {
+      "stress-fully_shared-0000-trial-0": [
+        "D"
+      ],
+      "stress-fully_shared-0000-trial-1": [
+        "C",
+        "D"
+      ],
+      "stress-fully_shared-0000-trial-2": [
+        "D",
+        "E"
+      ],
+      "stress-fully_shared-0000-trial-3": [
+        "A",
+        "D"
+      ],
+      "stress-fully_shared-0000-trial-4": [
+        "B",
+        "D"
+      ]
+    },
+    "synthetic_answers": {
+      "C": 1.0,
+      "B": 1.0,
+      "D": 1.0,
+      "E": 1.0,
+      "A": 1.0
+    },
+    "selected_information": [
+      "D",
+      "A"
+    ],
+    "selected_actions": [
+      "REQUEST_VERIFICATION",
+      "ASK_PATIENT"
+    ],
+    "confirmed_trial_ids": [
+      "stress-fully_shared-0000-trial-0",
+      "stress-fully_shared-0000-trial-3"
+    ],
+    "confirmed_counts_by_step": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "topology": "fully_shared",
+    "structure_number": 0,
+    "seed": 20260830,
+    "action_budget": 2,
+    "policy_id": "clarifytrial_exact_coverage_v3",
+    "required_information": {
+      "stress-fully_shared-0000-trial-0": [
+        "D"
+      ],
+      "stress-fully_shared-0000-trial-1": [
+        "C",
+        "D"
+      ],
+      "stress-fully_shared-0000-trial-2": [
+        "D",
+        "E"
+      ],
+      "stress-fully_shared-0000-trial-3": [
+        "A",
+        "D"
+      ],
+      "stress-fully_shared-0000-trial-4": [
+        "B",
+        "D"
+      ]
+    },
+    "synthetic_answers": {
+      "C": 1.0,
+      "B": 1.0,
+      "D": 1.0,
+      "E": 1.0,
+      "A": 1.0
+    },
+    "selected_information": [
+      "D",
+      "E"
+    ],
+    "selected_actions": [
+      "REQUEST_VERIFICATION",
+      "ASK_PATIENT"
+    ],
+    "confirmed_trial_ids": [
+      "stress-fully_shared-0000-trial-0",
+      "stress-fully_shared-0000-trial-2"
+    ],
+    "confirmed_counts_by_step": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "topology": "fully_shared",
+    "structure_number": 0,
+    "seed": 20260830,
+    "action_budget": 3,
+    "policy_id": "clarifytrial_rule_v1",
+    "required_information": {
+      "stress-fully_shared-0000-trial-0": [
+        "D"
+      ],
+      "stress-fully_shared-0000-trial-1": [
+        "C",
+        "D"
+      ],
+      "stress-fully_shared-0000-trial-2": [
+        "D",
+        "E"
+      ],
+      "stress-fully_shared-0000-trial-3": [
+        "A",
+        "D"
+      ],
+      "stress-fully_shared-0000-trial-4": [
+        "B",
+        "D"
+      ]
+    },
+    "synthetic_answers": {
+      "C": 1.0,
+      "B": 1.0,
+      "D": 1.0,
+      "E": 1.0,
+      "A": 1.0
+    },
+    "selected_information": [
+      "D",
+      "A",
+      "E"
+    ],
+    "selected_actions": [
+      "REQUEST_VERIFICATION",
+      "ASK_PATIENT",
+      "ASK_PATIENT"
+    ],
+    "confirmed_trial_ids": [
+      "stress-fully_shared-0000-trial-0",
+      "stress-fully_shared-0000-trial-2",
+      "stress-fully_shared-0000-trial-3"
+    ],
+    "confirmed_counts_by_step": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "topology": "fully_shared",
+    "structure_number": 0,
+    "seed": 20260830,
+    "action_budget": 3,
+    "policy_id": "clarifytrial_exact_coverage_v3",
+    "required_information": {
+      "stress-fully_shared-0000-trial-0": [
+        "D"
+      ],
+      "stress-fully_shared-0000-trial-1": [
+        "C",
+        "D"
+      ],
+      "stress-fully_shared-0000-trial-2": [
+        "D",
+        "E"
+      ],
+      "stress-fully_shared-0000-trial-3": [
+        "A",
+        "D"
+      ],
+      "stress-fully_shared-0000-trial-4": [
+        "B",
+        "D"
+      ]
+    },
+    "synthetic_answers": {
+      "C": 1.0,
+      "B": 1.0,
+      "D": 1.0,
+      "E": 1.0,
+      "A": 1.0
+    },
+    "selected_information": [
+      "D",
+      "C",
+      "E"
+    ],
+    "selected_actions": [
+      "REQUEST_VERIFICATION",
+      "LOOKUP_RECORD",
+      "ASK_PATIENT"
+    ],
+    "confirmed_trial_ids": [
+      "stress-fully_shared-0000-trial-0",
+      "stress-fully_shared-0000-trial-1",
+      "stress-fully_shared-0000-trial-2"
+    ],
+    "confirmed_counts_by_step": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "topology": "chain",
+    "structure_number": 0,
+    "seed": 20260830,
+    "action_budget": 2,
+    "policy_id": "clarifytrial_rule_v1",
+    "required_information": {
+      "stress-chain-0000-trial-0": [
+        "B",
+        "C"
+      ],
+      "stress-chain-0000-trial-1": [
+        "C",
+        "E"
+      ],
+      "stress-chain-0000-trial-2": [
+        "D",
+        "E"
+      ],
+      "stress-chain-0000-trial-3": [
+        "A",
+        "D"
+      ],
+      "stress-chain-0000-trial-4": [
+        "A",
+        "B"
+      ]
+    },
+    "synthetic_answers": {
+      "D": 1.0,
+      "E": 1.0,
+      "C": 1.0,
+      "B": 1.0,
+      "A": 1.0
+    },
+    "selected_information": [
+      "A",
+      "E"
+    ],
+    "selected_actions": [
+      "ASK_PATIENT",
+      "ASK_PATIENT"
+    ],
+    "confirmed_trial_ids": [],
+    "confirmed_counts_by_step": [
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "topology": "chain",
+    "structure_number": 0,
+    "seed": 20260830,
+    "action_budget": 2,
+    "policy_id": "clarifytrial_exact_coverage_v3",
+    "required_information": {
+      "stress-chain-0000-trial-0": [
+        "B",
+        "C"
+      ],
+      "stress-chain-0000-trial-1": [
+        "C",
+        "E"
+      ],
+      "stress-chain-0000-trial-2": [
+        "D",
+        "E"
+      ],
+      "stress-chain-0000-trial-3": [
+        "A",
+        "D"
+      ],
+      "stress-chain-0000-trial-4": [
+        "A",
+        "B"
+      ]
+    },
+    "synthetic_answers": {
+      "D": 1.0,
+      "E": 1.0,
+      "C": 1.0,
+      "B": 1.0,
+      "A": 1.0
+    },
+    "selected_information": [
+      "D",
+      "E"
+    ],
+    "selected_actions": [
+      "LOOKUP_RECORD",
+      "ASK_PATIENT"
+    ],
+    "confirmed_trial_ids": [
+      "stress-chain-0000-trial-2"
+    ],
+    "confirmed_counts_by_step": [
+      0,
+      0,
+      1
+    ]
+  },
+  {
+    "topology": "chain",
+    "structure_number": 0,
+    "seed": 20260830,
+    "action_budget": 3,
+    "policy_id": "clarifytrial_rule_v1",
+    "required_information": {
+      "stress-chain-0000-trial-0": [
+        "B",
+        "C"
+      ],
+      "stress-chain-0000-trial-1": [
+        "C",
+        "E"
+      ],
+      "stress-chain-0000-trial-2": [
+        "D",
+        "E"
+      ],
+      "stress-chain-0000-trial-3": [
+        "A",
+        "D"
+      ],
+      "stress-chain-0000-trial-4": [
+        "A",
+        "B"
+      ]
+    },
+    "synthetic_answers": {
+      "D": 1.0,
+      "E": 1.0,
+      "C": 1.0,
+      "B": 1.0,
+      "A": 1.0
+    },
+    "selected_information": [
+      "A",
+      "E",
+      "B"
+    ],
+    "selected_actions": [
+      "ASK_PATIENT",
+      "ASK_PATIENT",
+      "LOOKUP_RECORD"
+    ],
+    "confirmed_trial_ids": [
+      "stress-chain-0000-trial-4"
+    ],
+    "confirmed_counts_by_step": [
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  {
+    "topology": "chain",
+    "structure_number": 0,
+    "seed": 20260830,
+    "action_budget": 3,
+    "policy_id": "clarifytrial_exact_coverage_v3",
+    "required_information": {
+      "stress-chain-0000-trial-0": [
+        "B",
+        "C"
+      ],
+      "stress-chain-0000-trial-1": [
+        "C",
+        "E"
+      ],
+      "stress-chain-0000-trial-2": [
+        "D",
+        "E"
+      ],
+      "stress-chain-0000-trial-3": [
+        "A",
+        "D"
+      ],
+      "stress-chain-0000-trial-4": [
+        "A",
+        "B"
+      ]
+    },
+    "synthetic_answers": {
+      "D": 1.0,
+      "E": 1.0,
+      "C": 1.0,
+      "B": 1.0,
+      "A": 1.0
+    },
+    "selected_information": [
+      "C",
+      "B",
+      "E"
+    ],
+    "selected_actions": [
+      "REQUEST_VERIFICATION",
+      "LOOKUP_RECORD",
+      "ASK_PATIENT"
+    ],
+    "confirmed_trial_ids": [
+      "stress-chain-0000-trial-0",
+      "stress-chain-0000-trial-1"
+    ],
+    "confirmed_counts_by_step": [
+      0,
+      0,
+      1,
+      2
+    ]
+  }
+]
