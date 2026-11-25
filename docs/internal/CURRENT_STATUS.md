@@ -29,13 +29,23 @@
 
 ## 공유용 연구 정리 — 2026-11-21 최신
 
+### 결과 구성 정리 — 2026-11-25, 공유 2페이지
+
+관객이 결과의 목적을 따라갈 수 있도록 연구방법의 추가 실험 설명과 결과를 함께 고쳤다. 전체 기록과 같은 판정의 비율을 주 비교로 제시하고, 환자별 점그래프는 20명 중 16명에서 개선했다는 설명에 통합했다. 판정 변화는 초기 미정 120건 중 부적격 75건·적격 13건을 확인하고 32건이 미정으로 남은 흐름으로 표시했다. 처음부터 판정된 80건을 더하면 168/200건(84.0%)이라는 관계도 보인다. 질환별 결과와 중복된 검사·방문 제한 그래프는 덜어냈다.
+
+공통·독립·연쇄의 정의와 검사·방문 제한 실험의 목적을 연구방법에서 먼저 소개한다. 구조 비교는 9종 중 이 세 경우의 확인 2회 결과를 보여 주고, 연쇄 사례에서 A·E와 D·E를 골랐을 때의 판정 차이를 붙였다. 검사·방문 제한의 제안 수와 판정 완료 수는 표 3에서 비교한다. '상태 일치율'은 '전체 기록과 같은 판정 비율'로 풀어 썼다. 공유본을 PDF로 내보내 문구와 그림·표 배치를 확인했다.
+
+[공유 2페이지](https://docs.google.com/presentation/d/1hvHXYo_FA48ae44E0otnVIlIbcw7ksEpuDEVBZWWtqA/edit?slide=id.h3f706ea39d6e54b8_2_0) · [인쇄 PDF](../../runs/poster-readability-nov23/nov25-results/ClarifyTrial-포스터-결과정리.pdf) · [편집용 PPTX](../../runs/poster-readability-nov23/nov25-results/ClarifyTrial-포스터-결과정리.pptx) · [연구결과 확대](../../runs/poster-readability-nov23/nov25-results/연구결과-공유본.png)
+
+현재 편집 원본은 [results_nov25.py](../../runs/poster-readability-nov23/results_nov25.py)와 [results_figs_nov25.py](../../runs/poster-readability-nov23/results_figs_nov25.py)다. 아래 파일은 이전 판본이다.
+
 ### 연구방법 설명 보강 — 2026-11-25, 공유 2페이지
 
 환자와 기록, 시험을 연결한 평가 단위를 본문과 그림 3에서 설명했다. 질환별 합성 환자 10명, 환자당 7항목, 2항목만 공개한 기록 A·B, 같은 질환의 시험 5개를 명시했다. 그림 3은 실제 우울장애 평가 사례의 전체 값과 A·B에서 가린 항목을 보여 준다. 표 2는 확인할 항목의 묶음과 답별 확률 계산을 풀어 쓰고, 본문에는 5! = 120가지 확인 순서와 9종 모의실험의 목적을 적었다. 표 2에 BMI·HbA1c 선택과 답별 예상 판정 수의 계산 예시를 넣었다. 무작위 순서 평균은 120개 순서를 같은 확률로 선택할 때의 기대값으로 설명했으며, 판정에 더 이상 필요 없는 항목은 건너뛴다는 실행 조건을 포함했다. 그림 4·5의 범례와 결과 본문도 무작위 순서 평균으로 맞췄다. 공유본에서 이 문구와 표·그림 배치를 확인했다.
 
 [공유 2페이지](https://docs.google.com/presentation/d/1hvHXYo_FA48ae44E0otnVIlIbcw7ksEpuDEVBZWWtqA/edit?slide=id.h3f706ea39d6e54b8_2_0) · [인쇄 PDF](../../runs/poster-readability-nov23/nov25-methods/ClarifyTrial-포스터-연구방법.pdf) · [편집용 PPTX](../../runs/poster-readability-nov23/nov25-methods/ClarifyTrial-포스터-연구방법.pptx) · [연구방법 확대](../../runs/poster-readability-nov23/nov25-methods/연구방법-공유본.png)
 
-현재 편집 원본은 [methods_nov25.py](../../runs/poster-readability-nov23/methods_nov25.py)와 [figs.py](../../runs/poster-readability-nov23/figs.py)의 그림 3이다. 아래 윤문본은 이전 판본이다.
+연구방법 보강 단계의 편집 원본은 [methods_nov25.py](../../runs/poster-readability-nov23/methods_nov25.py)와 [figs.py](../../runs/poster-readability-nov23/figs.py)의 그림 3이다. 아래 윤문본은 이전 판본이다.
 
 ### 포스터 윤문 — 2026-11-25, 공유 2페이지
 
@@ -844,6 +854,7 @@ TrialGPT 조건 자료 1,015쌍은 질문 전에 조건 하나를 판단하는 �
 | R190 | 완료 | 공유 2페이지의 연속된 짧은 문장을 비교·원인 관계에 맞춰 잇고 그림 설명을 윤문했다. 편집용 PPTX와 인쇄 PDF에도 같은 문구를 반영했다. |
 | R191 | 완료 | 합성 환자 30명 중 평가용 20명과 7항목, 기록 A·B, 같은 질환 시험 5개, 세 선택 방식, 5! 및 모의실험 목적을 실제 사례와 연결해 공유 2페이지의 연구방법을 고쳤다. |
 | R192 | 완료 | 표 2에 세 선택 방식의 예시를 넣고, 5! = 120개 순서의 동일 가중 평균이 무작위 순서의 기대 성능임을 본문과 범례에 반영했다. 60%와 1.8개는 계산을 설명하기 위한 가정으로 표시했다. |
+| R193 | 완료 | 연구방법에서 정보 공유와 검사·방문 제한의 목적을 설명하고 결과를 세 부분으로 재구성했다. 환자별 점그래프·질환별 통계·중복 그래프를 줄이고 전체 기록과의 판정 비교를 쉽게 표현했다. |
 
 수치의 계산 과정은 [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md), 자료의 구성은
 [실험자료](CLARIFYTRIAL_DATASETS.md), 프로그램 내부 연결은
