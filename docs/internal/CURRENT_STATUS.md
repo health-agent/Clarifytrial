@@ -1,6 +1,6 @@
 # ClarifyTrial 현재 상태
 
-기준일: 2026-11-24
+기준일: 2026-11-25
 
 ## 새 세션에서 먼저 확인할 내용
 
@@ -28,6 +28,14 @@
 개발 단계에서 편집하지 않았다. 이후 사용자가 지정한 Google Slides 포스터는 아래 범위로 편집했다.
 
 ## 공유용 연구 정리 — 2026-11-21 최신
+
+### 포스터 윤문 — 2026-11-25, 공유 2페이지
+
+공용 윤문 기준에 따라 서론부터 결론까지 문장 연결과 끝맺음을 다듬고 그림 3·5 설명을 정리했다. 현재 공유본에 반영된 LLM과 규칙 처리 역할을 읽고 원고에 반영했다. 공유본 PDF와 편집용 PowerPoint에서 수정된 문구를 확인했다.
+
+[공유 2페이지](https://docs.google.com/presentation/d/1hvHXYo_FA48ae44E0otnVIlIbcw7ksEpuDEVBZWWtqA/edit?slide=id.h3f706ea39d6e54b8_2_0) · [인쇄 PDF](../../runs/poster-readability-nov23/nov25/ClarifyTrial-포스터-1125-윤문.pdf) · [편집용 PPTX](../../runs/poster-readability-nov23/nov25/ClarifyTrial-포스터-1125-윤문.pptx) · [공유본 미리보기](../../runs/poster-readability-nov23/nov25/공유본-2페이지.png)
+
+현재 편집 원본은 [polish_nov25.py](../../runs/poster-readability-nov23/polish_nov25.py)이며, 11월 24일 배치에 최신 문구를 적용해 출력한다. 아래 11월 24일 파일은 이전 판본이다.
 
 ### 학회 포스터 — 2026-11-24, 공유 2장
 
@@ -825,6 +833,7 @@ TrialGPT 조건 자료 1,015쌍은 질문 전에 조건 하나를 판단하는 �
 | R187 | 완료 | 페이블과 확인 순서 비교, 환자별 차이, 시험별 항목이 겹치는 사례와 검사·방문 제한 그림을 고치고 공유 2장에 반영했다. |
 | R188 | 완료 | 공유 포스터 2장의 고찰과 결론 폭을 조정하고 참고문헌을 오른쪽 하단에 모았다. 인쇄본과 공유본에서 본문과 학회 로고 사이의 여백을 확인했다. |
 | R189 | 완료 | 사용자가 표시한 왼쪽 아래에 미정 32건의 판정 분포를 배치했다. 공유본에서 같은 위치의 수정 전후를 비교했다. |
+| R190 | 완료 | 공유 2페이지의 연속된 짧은 문장을 비교·원인 관계에 맞춰 잇고 그림 설명을 윤문했다. 편집용 PPTX와 인쇄 PDF에도 같은 문구를 반영했다. |
 
 수치의 계산 과정은 [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md), 자료의 구성은
 [실험자료](CLARIFYTRIAL_DATASETS.md), 프로그램 내부 연결은
