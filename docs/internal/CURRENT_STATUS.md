@@ -29,13 +29,21 @@
 
 ## 공유용 연구 정리 — 2026-11-21 최신
 
+### 연구방법 설명 보강 — 2026-11-25, 공유 2페이지
+
+환자와 기록, 시험을 연결한 평가 단위를 본문과 그림 3에서 설명했다. 질환별 합성 환자 10명, 환자당 7항목, 2항목만 공개한 기록 A·B, 같은 질환의 시험 5개를 명시했다. 그림 3은 실제 우울장애 평가 사례의 전체 값과 A·B에서 가린 항목을 보여 준다. 표 2는 확인할 항목의 묶음과 답별 확률 계산을 풀어 쓰고, 본문에는 5! = 120가지 확인 순서와 9종 모의실험의 목적을 적었다. 공유본에서 이 문구와 표·그림 배치를 확인했다.
+
+[공유 2페이지](https://docs.google.com/presentation/d/1hvHXYo_FA48ae44E0otnVIlIbcw7ksEpuDEVBZWWtqA/edit?slide=id.h3f706ea39d6e54b8_2_0) · [인쇄 PDF](../../runs/poster-readability-nov23/nov25-methods/ClarifyTrial-포스터-연구방법.pdf) · [편집용 PPTX](../../runs/poster-readability-nov23/nov25-methods/ClarifyTrial-포스터-연구방법.pptx) · [연구방법 확대](../../runs/poster-readability-nov23/nov25-methods/연구방법-공유본.png)
+
+현재 편집 원본은 [methods_nov25.py](../../runs/poster-readability-nov23/methods_nov25.py)와 [figs.py](../../runs/poster-readability-nov23/figs.py)의 그림 3이다. 아래 윤문본은 이전 판본이다.
+
 ### 포스터 윤문 — 2026-11-25, 공유 2페이지
 
 공용 윤문 기준에 따라 서론부터 결론까지 문장 연결과 끝맺음을 다듬고 그림 3·5 설명을 정리했다. 현재 공유본에 반영된 LLM과 규칙 처리 역할을 읽고 원고에 반영했다. 공유본 PDF와 편집용 PowerPoint에서 수정된 문구를 확인했다.
 
 [공유 2페이지](https://docs.google.com/presentation/d/1hvHXYo_FA48ae44E0otnVIlIbcw7ksEpuDEVBZWWtqA/edit?slide=id.h3f706ea39d6e54b8_2_0) · [인쇄 PDF](../../runs/poster-readability-nov23/nov25/ClarifyTrial-포스터-1125-윤문.pdf) · [편집용 PPTX](../../runs/poster-readability-nov23/nov25/ClarifyTrial-포스터-1125-윤문.pptx) · [공유본 미리보기](../../runs/poster-readability-nov23/nov25/공유본-2페이지.png)
 
-현재 편집 원본은 [polish_nov25.py](../../runs/poster-readability-nov23/polish_nov25.py)이며, 11월 24일 배치에 최신 문구를 적용해 출력한다. 아래 11월 24일 파일은 이전 판본이다.
+11월 25일 윤문 단계의 편집 원본은 [polish_nov25.py](../../runs/poster-readability-nov23/polish_nov25.py)이며, 11월 24일 배치에 최신 문구를 적용해 출력한다. 아래 11월 24일 파일은 이전 판본이다.
 
 ### 학회 포스터 — 2026-11-24, 공유 2장
 
@@ -834,6 +842,7 @@ TrialGPT 조건 자료 1,015쌍은 질문 전에 조건 하나를 판단하는 �
 | R188 | 완료 | 공유 포스터 2장의 고찰과 결론 폭을 조정하고 참고문헌을 오른쪽 하단에 모았다. 인쇄본과 공유본에서 본문과 학회 로고 사이의 여백을 확인했다. |
 | R189 | 완료 | 사용자가 표시한 왼쪽 아래에 미정 32건의 판정 분포를 배치했다. 공유본에서 같은 위치의 수정 전후를 비교했다. |
 | R190 | 완료 | 공유 2페이지의 연속된 짧은 문장을 비교·원인 관계에 맞춰 잇고 그림 설명을 윤문했다. 편집용 PPTX와 인쇄 PDF에도 같은 문구를 반영했다. |
+| R191 | 완료 | 합성 환자 30명 중 평가용 20명과 7항목, 기록 A·B, 같은 질환 시험 5개, 세 선택 방식, 5! 및 모의실험 목적을 실제 사례와 연결해 공유 2페이지의 연구방법을 고쳤다. |
 
 수치의 계산 과정은 [검증 결과](CLARIFYTRIAL_VALIDATION_RESULTS.md), 자료의 구성은
 [실험자료](CLARIFYTRIAL_DATASETS.md), 프로그램 내부 연결은
