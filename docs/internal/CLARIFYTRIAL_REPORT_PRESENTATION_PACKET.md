@@ -7,7 +7,7 @@
 
 ## 현행 설명과 파일
 
-- [현재 Google Slides 포스터](https://docs.google.com/presentation/d/1hvHXYo_FA48ae44E0otnVIlIbcw7ksEpuDEVBZWWtqA/edit): 11월 21일 문장·배치 수정본. 학회 양식과 기존 수치를 유지했다.
+- [현재 Google Slides 포스터](https://docs.google.com/presentation/d/1hvHXYo_FA48ae44E0otnVIlIbcw7ksEpuDEVBZWWtqA/edit?slide=id.h3f706ea39d6e54b8_2_0): 11월 25일 2페이지 윤문본. 평가 단위와 선택 방식 예시, 결과 해석 및 조합 탐색의 후속 과제를 보강했다. 그림 5의 중복 표제는 삭제했으며 학회 양식과 기존 수치는 유지했다. 현재 편집 원본과 출력본은 [현재 상태](CURRENT_STATUS.md#결과고찰결론--2026-11-25-공유-2페이지)에 있다.
 - [선정 원고](CLARIFYTRIAL_KOSMI_POSTER_MANUSCRIPT.md): 공개 시험 15건의 조건 80개와 합성 평가 환자 20명을 사용한 연구.
 - [환자별 후보 확인 결과](results/kosmi-poster-evidence-v1/candidate_progress_summary.csv): 기존 3회 확인 기록의 추가 분석. 아래 ‘정보 선택 결과의 해석’에서 설명한다.
 - [후속 연구 원고](CLARIFYTRIAL_EXTENDED_MANUSCRIPT.md): 기록 우선 비교까지 반영한 검토본.
@@ -17,6 +17,8 @@
 - [10월 포스터 PDF](presentation/clarifytrial-poster.pdf)·[PPTX](presentation/clarifytrial-poster.pptx): 내용 재구성 전 초안. 최종 발표본으로 사용하지 않는다.
 
 ### Google Slides 편집 내용
+
+아래는 11월 21일 판본의 편집 기록이다. 현재 발표용 2페이지의 문구와 배치는 위 링크와 현재 상태 문서를 따른다.
 
 본문을 짧게 다듬고 글자를 키웠다. 흐름도는 같은 입력·확인·재판정 과정을 편집 가능한
 도형으로 바꾸고 추가 확인 단계를 옅은 청록색으로 묶었다. 결과 카드에는 확인 한도와
